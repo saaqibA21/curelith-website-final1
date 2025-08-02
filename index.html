@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Curelith – AI Doctor</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="assets/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="glass-header">
+    <div class="logo-box">
+      <img src="assets/logo.png" class="logo" alt="Curelith Logo"/>
+      <span class="brand">CURELITH</span>
+    </div>
+    <nav class="nav">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#demo">Demo</a>
+      <a href="#team">Team</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="hero">
+    <h1 class="hero-title">Your Smartest <span class="highlight">AI Doctor</span></h1>
+    <p class="hero-sub">Diagnose. Guide. Protect. 24/7.</p>
+    <a href="#demo" class="cta-btn"> Try Demo</a>
+  </section>
+
+  <!-- ABOUT -->
+ <section id="about" class="features">
+  <h2 class="section-heading"></h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <img src="assets/ai-diagnosis.png" alt="AI Diagnosis"/>
+      <h3>Real-Time Diagnosis</h3>
+      <p>Get clinical-level answers instantly. No appointments needed.</p>
+    </div>
+
+    
+
+    <div class="feature-card">
+      <img src="assets/image-analyzer.png" alt="Image Analyzer"/>
+      <h3>Image Analyzer</h3>
+      <p>Upload skin, wound, or rash images for instant AI-based analysis.</p>
+    </div>
+
+    
+    <div class="feature-card">
+      <img src="assets/question.png" alt="Medical Questions"/>
+      <h3>Ask Any Medical Question</h3>
+      <p>From symptoms to prevention, get AI-backed guidance on any health topic.</p>
+    </div>
+  </div>
+</section>
+
+
+  <!-- DEMO -->
+  <section id="demo" class="chat-demo">
+    <h2>Live Demo</h2>
+    <div class="chatbox">
+      <div id="messages" class="messages">
+        <div class="message ai">👋 Hi, I'm Curelith. Ask me anything!</div>
+      </div>
+      <div class="input-row">
+        <input type="text" id="userInput" placeholder="e.g., I have a headache..." />
+        <button onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="team" class="team">
+    <h2>Meet the Brains</h2>
+    <div class="team-grid">
+      <div class="member">
+        <img src="assets/saaqib.jpg" />
+        <h4>Mohammed Saaqib</h4>
+        <p>Founder & AI Architect</p>
+      </div>
+      <!-- Add more team here -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+  <p>© 2025 Curelith.</p>
+  <div class="footer-links">
+    <a href="mailto:support@curelith.com">📧 Email</a>
+    <a href="https://www.instagram.com/curelith.ai" target="_blank">📸 Instagram</a>
+    <a href="https://www.linkedin.com/company/curelith" target="_blank">🔗 LinkedIn</a>
+    <a href="#">🌐 Terms</a>
+  </div>
+</footer>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
