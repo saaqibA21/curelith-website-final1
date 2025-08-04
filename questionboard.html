@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title> Curelith Questions Board</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0a0a10;
+      color: #eee;
+      padding: 30px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      background: #1a1a2a;
+      border: none;
+      color: #fff;
+      font-size: 15px;
+    }
+    button {
+      padding: 10px 18px;
+      background: #0fffc1;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    .back-btn {
+      background: #222;
+      color: #0fffc1;
+      border: 1px solid #0fffc1;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+    .back-btn:hover {
+      background: #0fffc1;
+      color: #000;
+    }
+    .question-box {
+      background: #111120;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,255,204,0.08);
+    }
+    .meta {
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
+    .answer-section {
+      margin-top: 10px;
+      border-top: 1px solid #333;
+      padding-top: 8px;
+    }
+    .answer {
+      font-size: 14px;
+      color: #ddd;
+      margin-top: 6px;
+      padding-left: 10px;
+    }
+    .vote {
+      font-size: 16px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+    .vote:hover {
+      color: #0fffc1;
+    }
+    .small-input {
+      width: 90%;
+      padding: 6px;
+      background: #222;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    #counts {
+      margin: 20px 0 10px;
+      color: #ccc;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="back-btn" onclick="window.location.href='home.html'">← Back to Home</button>
+
+    <h2> Ask & Answer Questions</h2>
+    <form id="questionForm">
+      <textarea placeholder="Ask your medical or health question..." required></textarea>
+      <button type="submit">Post Question</button>
+    </form>
+
+    <div id="counts">Loading counts...</div>
+    <div id="allQuestions">Loading questions...</div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    let currentUser = "";
+
+    if (!token) {
+      alert("You must be logged in");
+      window.location.href = "login.html";
+    }
+
+    async function getUser() {
+      const res = await fetch("http://127.0.0.1:5000/api/auth1/me", {
+        headers: { Authorization: "Bearer " + token }
+      });
+      const data = await res.json();
+      if (res.ok) currentUser = data.email;
+    }
+
+    document.getElementById("questionForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = e.target.querySelector("textarea").value.trim();
+      if (!text) return;
+
+      const res = await fetch("http://127.0.0.1:5000/api/questions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ question: text })
+      });
+
+      if (res.ok) {
+        e.target.reset();
+        loadQuestions();
+      } else {
+        alert("❌ Failed to post");
+      }
+    });
+
+    async function loadQuestions() {
+      const res = await fetch("http://127.0.0.1:5000/api/questions");
+      const data = await res.json();
+      const container = document.getElementById("allQuestions");
+      const counts = document.getElementById("counts");
+      container.innerHTML = "";
+      let totalAnswers = 0;
+
+      data.forEach(q => {
+        const div = document.createElement("div");
+        div.className = "question-box";
+        const answers = q.answers || [];
+        totalAnswers += answers.length;
+
+        div.innerHTML = `
+          <div class="meta">🧑 ${q.user_email} | 🕒 ${q.created_at}</div>
+          <p><strong>${q.question}</strong></p>
+          ${q.user_email === currentUser ? `
+            <button onclick="editQuestion('${q.question_id}', '${q.question.replace(/'/g, "\\'")}')">✏️ Edit</button>
+            <button onclick="deleteQuestion('${q.question_id}')">🗑️ Delete</button>
+          ` : ""}
+          <div class="answer-section">
+            <input class="small-input" placeholder="Write your answer..." 
+              onkeydown="if(event.key==='Enter') postAnswer('${q.question_id}', this)">
+            ${answers.map((a, idx) => `
+              <div class="answer">
+                💬 <b>${a.responder}:</b> ${a.text}
+                <span class="vote" onclick="vote('${q.question_id}', ${idx}, 'up')">👍 ${a.up || 0}</span>
+                <span class="vote" onclick="vote('${q.question_id}', ${idx}, 'down')">👎 ${a.down || 0}</span>
+              </div>`).join('')}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      counts.innerText = `📌 Total Questions: ${data.length} | 💬 Total Answers: ${totalAnswers}`;
+    }
+
+    async function deleteQuestion(id) {
+      if (!confirm("Delete this question?")) return;
+      const res = await fetch(`http://127.0.0.1:5000/api/questions/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + token }
+      });
+      if (res.ok) loadQuestions();
+      else alert("❌ Unauthorized or failed.");
+    }
+
+    async function editQuestion(id, oldText) {
+      const newText = prompt("Edit your question:", oldText);
+      if (!newText || newText === oldText) return;
+      const res = await fetch(`http://127.0.0.1:5000/api/questions/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ question: newText })
+      });
+      if (res.ok) loadQuestions();
+      else alert("❌ Edit failed.");
+    }
+
+    async function postAnswer(id, inputElem) {
+      const text = inputElem.value.trim();
+      if (!text) return;
+      const res = await fetch(`http://127.0.0.1:5000/api/questions/${id}/answer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ text })
+      });
+      if (res.ok) {
+        inputElem.value = "";
+        loadQuestions();
+      }
+    }
+
+    async function vote(questionId, index, type) {
+      const res = await fetch(`http://127.0.0.1:5000/api/questions/${questionId}/vote`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ index, type })
+      });
+      if (res.ok) loadQuestions();
+    }
+
+    getUser().then(loadQuestions);
+  </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup – Curelith</title>
+  <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+    <h2>Sign in with Google</h2>
+
+    <div id="g_id_onload"
+         data-client_id="378376022524-ff94n11memvq4p9h1l016trhel97o7aq.apps.googleusercontent.com"
+         data-callback="handleGoogleLogin"
+         data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+    </div>
+
+    <p>Having trouble? Contact admin</p>
+  </div>
+
+  <script>
+    function handleGoogleLogin(response) {
+      console.log("🔑 Google credential:", response.credential);
+
+      fetch("http://localhost:5000/api/auth1/google-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential: response.credential }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token) {
+          alert("✅ Login successful!");
+          localStorage.setItem("token", data.token);
+          window.location.href = "home.html"; // ✅ your target screen
+        } else {
+          alert("❌ Login failed: " + (data.error || "Unknown error"));
+        }
+      })
+      .catch(err => {
+        console.error("❌ Error:", err);
+        alert("❌ Failed to connect to server.");
+      });
+    }
+  </script>
+
+</body>
+</html>

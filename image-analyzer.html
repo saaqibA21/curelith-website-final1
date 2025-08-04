@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Curelith – Image Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="assets/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="glass-header">
+    <div class="logo-box">
+      <img src="assets/logo.png" class="logo" alt="Curelith Logo"/>
+      <span class="brand">CURELITH</span>
+    </div>
+    <nav class="nav">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#demo">Demo</a>
+      <a href="index.html#team">Team</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- IMAGE ANALYZER -->
+  <section class="image-analyzer" style="padding: 4rem 1rem; text-align: center;">
+    <h2>🖼️ Image Analyzer</h2>
+    <p>Upload skin, wound, or rash images to detect possible conditions using our AI.</p>
+
+    <form id="imageForm" enctype="multipart/form-data" style="margin-top: 2rem;">
+      <input type="file" id="imageInput" accept="image/*" />
+      <button type="submit" style="margin-left: 10px;">Analyze Image</button>
+    </form>
+
+    <div id="imagePreview" style="margin-top: 20px;"></div>
+    <div id="imageResult" class="image-result" style="margin-top: 20px;"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <p>© 2025 Curelith.</p>
+    <div class="footer-links">
+      <a href="mailto:support@curelith.com">📧 Email</a>
+      <a href="https://www.instagram.com/curelith.ai" target="_blank">📸 Instagram</a>
+      <a href="https://www.linkedin.com/company/curelith" target="_blank">🔗 LinkedIn</a>
+      <a href="#">🌐 Terms</a>
+    </div>
+  </footer>
+
+  <script>
+    const BASE_URL = 'https://aeabcfe12903.ngrok-free.app/api';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const imageForm = document.getElementById('imageForm');
+      const imageInput = document.getElementById('imageInput');
+      const imageResult = document.getElementById('imageResult');
+      const imagePreview = document.getElementById('imagePreview');
+
+      if (imageForm) {
+        imageForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const file = imageInput.files[0];
+          if (!file) {
+            imageResult.textContent = "❌ Please select an image.";
+            return;
+          }
+
+          // Show preview
+          const reader = new FileReader();
+          reader.onload = () => {
+            imagePreview.innerHTML = `<img src="${reader.result}" alt="Uploaded image" style="max-width:100%; border-radius:8px;" />`;
+          };
+          reader.readAsDataURL(file);
+
+          const formData = new FormData();
+          formData.append('file', file);
+
+          imageResult.textContent = "⏳ Analyzing...";
+
+          try {
+            const res = await fetch(`${BASE_URL}/image-diagnose`, {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!res.ok) throw new Error('❌ Analysis failed');
+            const data = await res.json();
+            imageResult.textContent = `🤖 ${data.result || "No diagnosis returned."}`;
+          } catch (err) {
+            imageResult.textContent = err.message;
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

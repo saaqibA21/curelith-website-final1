@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Profile – Curelith</title>
+  <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="assets/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+  <div class="profile-container">
+    <button class="back-btn" onclick="window.location.href='home.html'">← Back to Home</button>
+    <h2>👤 User Profile</h2>
+    <div class="profile-info" id="profileInfo">
+      <p><strong>Loading...</strong></p>
+    </div>
+    <div class="profile-buttons">
+      <button class="logout-btn" onclick="logout()">Logout</button>
+      <button class="backup-btn" onclick="downloadBackup()">Download Backup</button>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You are not logged in");
+      window.location.href = "login.html";
+    }
+
+    async function fetchProfile() {
+      try {
+        const res = await fetch("http://127.0.0.1:5000/api/auth1/me", {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        });
+        const data = await res.json();
+        if (res.ok) {
+          const html = `
+            <p><strong>Name:</strong> ${data.name}</p>
+            <p><strong>Email:</strong> ${data.email}</p>
+            <p><strong>Joined:</strong> ${data.created_at}</p>
+            <p><strong>User ID:</strong> ${data.user_id}</p>
+          `;
+          document.getElementById("profileInfo").innerHTML = html;
+        } else {
+          alert("⚠️ Failed to load profile.");
+        }
+      } catch (err) {
+        console.error("❌ Error loading profile:", err);
+        alert("Server error");
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      alert("You have been logged out.");
+      window.location.href = "index.html";
+    }
+
+    async function downloadBackup() {
+      try {
+        const res = await fetch("http://127.0.0.1:5000/api/admin/backup");
+        const data = await res.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "curelith_backup.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert("❌ Could not download backup.");
+        console.error(err);
+      }
+    }
+
+    fetchProfile();
+  </script>
+</body>
+</html>

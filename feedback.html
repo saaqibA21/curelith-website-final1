@@ -1,0 +1,28 @@
+<form id="feedbackForm">
+  <textarea placeholder="Tell us your experience..." name="feedback" required></textarea>
+  <button type="submit">Submit Feedback</button>
+</form>
+
+<script>
+  document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const feedback = e.target.feedback.value;
+    const token = localStorage.getItem('token');
+
+    const res = await fetch('https://your-backend-url.com/api/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ feedback })
+    });
+
+    if (res.ok) {
+      alert("✅ Feedback submitted!");
+      e.target.reset();
+    } else {
+      alert("❌ Feedback failed.");
+    }
+  });
+</script>
