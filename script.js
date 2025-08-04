@@ -1,4 +1,4 @@
-const BASE_URL = 'https://860530a02e00.ngrok-free.app/api/';
+const BASE_URL = 'https://860530a02e00.ngrok-free.app/api';
 
 const messagesContainer = document.getElementById('messages');
 const userInput = document.getElementById('userInput');
