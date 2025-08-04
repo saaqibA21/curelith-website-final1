@@ -82,7 +82,7 @@
           imageResult.textContent = "⏳ Analyzing...";
 
           try {
-            const res = await fetch(`${BASE_URL}/image-diagnose`, {
+            const res = await fetch(`${BASE_URL}/image-diagnose/`, {
               method: 'POST',
               body: formData
             });
