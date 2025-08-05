@@ -573,21 +573,3 @@ button.backup-btn:hover {
     font-size: 14px;
   }
 }
-
-/* FOOTER FIX */
-footer {
-  padding: 20px 12px;
-  font-size: 13px;
-  text-align: center;
-}
-
-.footer-links {
-  flex-direction: column;
-  gap: 8px;
-}
-
-.footer-links a {
-  display: block;
-  margin: 4px 0;
-  font-size: 14px;
-}
