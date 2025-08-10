@@ -63,7 +63,7 @@
 
     async function downloadBackup() {
       try {
-        const res = await fetch("http://e79cdf766383.ngrok-free.app /api/admin/backup");
+        const res = await fetch("http://e79cdf766383.ngrok-free.app/api/admin/backup");
         const data = await res.json();
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
