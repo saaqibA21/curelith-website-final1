@@ -22,48 +22,73 @@
     </div>
   </div>
 
-  <script>
-    const token = localStorage.getItem("token");
+<script>
+  const BASE_URL = "https://e79cdf766383.ngrok-free.app";
+  const token = localStorage.getItem("token");
 
-    if (!token) {
-      alert("You are not logged in");
-      window.location.href = "login.html";
+  if (!token) {
+    alert("You are not logged in");
+    window.location.href = "login.html";
+  }
+
+  // Helper: safely parse JSON only if content-type is JSON
+  async function parseJsonIfPossible(res) {
+    const ct = res.headers.get("content-type") || "";
+    if (ct.includes("application/json")) {
+      return await res.json();
     }
+    // fall back to text so we can see what came back (often HTML)
+    const text = await res.text();
+    throw new Error(`Non-JSON response (${res.status} ${res.statusText}): ${text.slice(0, 400)}`);
+  }
 
-    async function fetchProfile() {
-      try {
-        const res = await fetch("https://e79cdf766383.ngrok-free.app/api/auth1/me", {
-          headers: {
-            Authorization: "Bearer " + token
-          }
-        });
-        const data = await res.json();
-        if (res.ok) {
-          const html = `
-            <p><strong>Name:</strong> ${data.name}</p>
-            <p><strong>Email:</strong> ${data.email}</p>
-            <p><strong>Joined:</strong> ${data.created_at}</p>
-            <p><strong>User ID:</strong> ${data.user_id}</p>
-          `;
-          document.getElementById("profileInfo").innerHTML = html;
-        } else {
-          alert("⚠️ Failed to load profile.");
-        }
-      } catch (err) {
-        console.error("❌ Error loading profile:", err);
-        alert("Server error");
+  async function fetchProfile() {
+    try {
+      const res = await fetch(`${BASE_URL}/api/auth1/me`, {
+        headers: {
+          Authorization: "Bearer " + token,
+          "Accept": "application/json",
+          // ngrok sometimes shows a browser warning page unless this header is present
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+
+      const data = await parseJsonIfPossible(res);
+
+      if (res.ok) {
+        const html = `
+          <p><strong>Name:</strong> ${data.name}</p>
+          <p><strong>Email:</strong> ${data.email}</p>
+          <p><strong>Joined:</strong> ${data.created_at}</p>
+          <p><strong>User ID:</strong> ${data.user_id}</p>
+        `;
+        document.getElementById("profileInfo").innerHTML = html;
+      } else {
+        alert(`⚠️ Failed to load profile: ${res.status}`);
       }
+    } catch (err) {
+      console.error("❌ Error loading profile:", err);
+      alert("Server error while loading profile. Check console for details.");
     }
+  }
 
-    function logout() {
-      localStorage.removeItem("token");
-      alert("You have been logged out.");
-      window.location.href = "index.html";
-    }
+  async function downloadBackup() {
+    try {
+      const res = await fetch(`${BASE_URL}/api/admin/backup`, {
+        headers: {
+          Authorization: "Bearer " + token,   // likely required
+          "Accept": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
 
-    async function downloadBackup() {
-      try {
-        const res = await fetch("https://e79cdf766383.ngrok-free.app/api/admin/backup");
+      const ct = res.headers.get("content-type") || "";
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Backup failed (${res.status}): ${text.slice(0, 400)}`);
+      }
+
+      if (ct.includes("application/json")) {
         const data = await res.json();
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
@@ -72,13 +97,32 @@
         a.download = "curelith_backup.json";
         a.click();
         URL.revokeObjectURL(url);
-      } catch (err) {
-        alert("❌ Could not download backup.");
-        console.error(err);
+      } else {
+        // If server returns a file stream, just save it as-is
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "curelith_backup.json";
+        a.click();
+        URL.revokeObjectURL(url);
       }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Could not download backup. Check console for details.");
     }
+  }
 
-    fetchProfile();
-  </script>
+  function logout() {
+    localStorage.removeItem("token");
+    alert("You have been logged out.");
+    window.location.href = "index.html";
+  }
+
+  window.logout = logout;
+  window.downloadBackup = downloadBackup;
+  fetchProfile();
+</script>
+
 </body>
 </html>
