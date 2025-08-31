@@ -36,7 +36,7 @@
     function handleGoogleLogin(response) {
       console.log("🔑 Google credential:", response.credential);
 
-      fetch("https://666fef04816c.ngrok-free.app/api/auth1/google-login", {
+      fetch("https://d78739729426.ngrok-free.app/api/auth1/google-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ credential: response.credential }),
