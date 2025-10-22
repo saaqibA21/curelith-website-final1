@@ -1,6 +1,6 @@
 // script.js — frontend chat logic with per-user session + crisis flow support
 
-const BASE_URL = 'https://2f9d944b9b9b.ngrok-free.app/api';
+const BASE_URL = 'https://65f77745e75a.ngrok-free.app/api';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Stable per-device session id (used by backend to isolate crisis sessions)
