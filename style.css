@@ -139,6 +139,22 @@ html, body {
   margin: 0 auto 30px;
 }
 
+/* === HERO BANNER IMAGE (placed right after hero section) === */
+.hero-banner-section {
+  width: 100%;
+  background: #ffffff;
+  padding: 0;
+  margin-top: -20px; /* pull image closer to hero — optional */
+}
+
+.hero-banner {
+  width: 100%;
+  max-width: 1400px;   /* prevents excessive stretching on desktops */
+  display: block;
+  margin: 0 auto;
+  border-radius: 0;     /* change to 12px if you want rounded corners */
+}
+
 
 .cta-btn {
   background: var(--green-primary);
