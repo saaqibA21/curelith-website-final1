@@ -364,24 +364,119 @@ html, body {
 /* =========================================
    FOOTER
 ========================================= */
-footer {
-  background: #f1f4f3;
-  padding: 30px 20px;
-  text-align: center;
-  font-size: 14px;
-  color: #4c5d58;
-  margin-top: auto;
+/* ============================= */
+/*       NEW PRO FOOTER          */
+/* ============================= */
+
+.footer {
+  background: var(--green-deep);
+  color: #e3f2ec;
+  padding: 70px 40px;
+  margin-top: 80px;
 }
 
-.footer-links a {
-  color: var(--green-primary);
-  margin: 0 14px;
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 1300px;
+  margin: auto;
+}
+
+/* LEFT SECTION */
+.footer-left {
+  max-width: 350px;
+}
+
+.footer-tagline {
+  font-size: 2rem;
+  line-height: 1.3;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #ffffff;
+}
+
+.footer-social a {
+  font-size: 22px;
+  margin-right: 14px;
+  text-decoration: none;
+  color: #c5e5da;
+  transition: 0.3s;
+}
+.footer-social a:hover {
+  color: var(--green-soft);
+}
+
+.footer-stores img {
+  width: 150px;
+  margin-top: 20px;
+  margin-right: 10px;
+}
+
+.footer-copy {
+  margin-top: 25px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* MIDDLE */
+.footer-middle {
+  min-width: 220px;
+}
+
+.footer-middle h4,
+.footer-right h4 {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.footer-links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 12px;
+}
+
+.footer-links-grid a {
+  padding: 8px 16px;
+  background: #ffffff;
+  color: var(--green-deep);
   text-decoration: none;
   font-weight: 500;
+  border-radius: 20px;
+  transition: 0.3s;
+  text-align: center;
+}
+.footer-links-grid a:hover {
+  background: var(--green-soft);
+  color: #ffffff;
 }
 
-.footer-links a:hover {
+/* RIGHT SIDE */
+.footer-right p {
+  margin-bottom: 8px;
+  color: #d7ebe3;
+}
+
+.footer-legal {
+  margin-top: 20px;
+}
+
+.footer-legal a {
+  color: #c5e5da;
+  text-decoration: none;
+  margin-right: 20px;
+}
+.footer-legal a:hover {
   text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .footer-container {
+    flex-direction: column;
+    gap: 40px;
+  }
 }
 
 /* =========================================
