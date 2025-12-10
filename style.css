@@ -84,6 +84,11 @@ html, body {
   letter-spacing: 0.4px;
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+}
+
 .nav a {
   color: var(--green-deep);
   text-decoration: none;
@@ -144,7 +149,7 @@ html, body {
   width: 100%;
   background: #ffffff;
   padding: 0;
-  margin-top: -20px; /* pull image closer to hero — optional */
+  margin-top: -20px; /* pulls image closer to hero */
 }
 
 .hero-banner {
@@ -154,8 +159,7 @@ html, body {
   margin: 0 auto;
 }
 
-
-
+/* CTA BUTTON */
 .cta-btn {
   background: var(--green-primary);
   color: #fff;
@@ -381,10 +385,6 @@ html, body {
 /* =========================================
    FOOTER
 ========================================= */
-/* ============================= */
-/*       NEW PRO FOOTER          */
-/* ============================= */
-
 .footer {
   background: var(--green-deep);
   color: #e3f2ec;
@@ -488,14 +488,6 @@ html, body {
   text-decoration: underline;
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .footer-container {
-    flex-direction: column;
-    gap: 40px;
-  }
-}
-
 /* =========================================
    DISCLAIMER MODAL
 ========================================= */
@@ -566,19 +558,168 @@ html, body {
 }
 
 /* =========================================
-   RESPONSIVE
+   RESPONSIVE – TABLET
 ========================================= */
-@media (max-width: 768px) {
-  .feature-grid, .how-grid {
-    flex-direction: column;
+@media (max-width: 900px) {
+  .glass-header {
+    padding: 10px 20px;
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  .nav a {
+    margin-left: 18px;
+  }
+
+  .hero {
+    padding: 130px 16px 80px;
   }
 
   .hero-text h1 {
-    font-size: 2.3rem;
+    font-size: 2.7rem;
+  }
+
+  .hero-banner {
+    width: 90%;
+    max-width: 900px;
+  }
+
+  .features,
+  .how-section,
+  .chat-demo {
+    padding: 80px 16px;
+  }
+
+  .footer {
+    padding: 50px 20px;
+  }
+
+  .footer-container {
+    flex-direction: column;
+    gap: 40px;
+  }
+}
+
+/* =========================================
+   RESPONSIVE – MOBILE
+========================================= */
+@media (max-width: 768px) {
+  body {
+    line-height: 1.6;
+  }
+
+  .glass-header {
+    padding: 10px 16px;
+  }
+
+  .brand {
+    font-size: 18px;
   }
 
   .nav {
     flex-wrap: wrap;
-    gap: 12px;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .nav a {
+    margin-left: 10px;
+    font-size: 13px;
+  }
+
+  .signup-btn {
+    margin-left: 10px;
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .hero {
+    padding: 110px 16px 60px;
+  }
+
+  .hero-text h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero-text p {
+    font-size: 1rem;
+    margin-bottom: 22px;
+  }
+
+  .hero-banner-section {
+    margin-top: -10px;
+  }
+
+  .hero-banner {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+  }
+
+  .features,
+  .how-section,
+  .chat-demo {
+    padding: 70px 16px;
+  }
+
+  .feature-card,
+  .how-card {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .chatbox {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .footer {
+    margin-top: 60px;
+  }
+
+  .footer-tagline {
+    font-size: 1.6rem;
+  }
+
+  .footer-stores img {
+    width: 130px;
+    margin-top: 14px;
+  }
+
+  .footer-links-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .whatsapp-box {
+    right: 16px;
+    bottom: 18px;
+    padding: 10px 16px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 100px;
+  }
+
+  .hero-text h1 {
+    font-size: 1.9rem;
+  }
+
+  .hero-text p {
+    font-size: 0.95rem;
+  }
+
+  .footer-tagline {
+    font-size: 1.4rem;
+  }
+
+  .footer-stores img {
+    width: 115px;
   }
 }
