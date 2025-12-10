@@ -139,6 +139,24 @@ html, body {
   margin: 0 auto 30px;
 }
 
+.hero.hero-image {
+  background: url("assets/hero-banner.png") no-repeat center right/cover;
+  padding: 160px 20px 180px;
+  color: #1E3D34;
+  text-align: left;
+}
+
+.hero-image h1,
+.hero-image p {
+  max-width: 550px;
+  padding-left: 40px;
+}
+
+.hero-image .cta-btn {
+  margin-left: 40px;
+}
+
+
 .cta-btn {
   background: var(--green-primary);
   color: #fff;
