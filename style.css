@@ -139,23 +139,6 @@ html, body {
   margin: 0 auto 30px;
 }
 
-.hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-  padding: 120px 60px;
-}
-
-.hero-left {
-  max-width: 550px;
-}
-
-.hero-right img.hero-art {
-  width: 600px;
-  max-width: 100%;
-}
-
 
 .cta-btn {
   background: var(--green-primary);
