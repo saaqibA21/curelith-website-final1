@@ -148,12 +148,12 @@ html, body {
 }
 
 .hero-banner {
-  width: 100%;
-  max-width: 1400px;   /* prevents excessive stretching on desktops */
+  width: 85%;
+  max-width: 1100px;
   display: block;
   margin: 0 auto;
-  border-radius: 0;     /* change to 12px if you want rounded corners */
 }
+
 
 
 .cta-btn {
