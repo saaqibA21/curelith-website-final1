@@ -20,14 +20,21 @@ html, body {
   flex-direction: column;
 }
 
+/* === BRAND COLORS (from logo) === */
+:root {
+  --bg-dark: #05050a;
+  --green-primary: #4C7F6D;
+  --green-deep: #1E3D34;
+  --green-soft: #9BBFAF;
+  --green-accent: #6C9284;
+}
 
 /* === HEADER === */
-/* GLASS HEADER */
 .glass-header {
   position: fixed;
   top: 0;
   width: 100%;
-  background: rgb(0, 0, 5);
+  background: rgba(0, 0, 5, 0.95);
   backdrop-filter: blur(12px);
   display: flex;
   justify-content: space-between;
@@ -51,20 +58,34 @@ html, body {
   letter-spacing: 0.5px;
 }
 .nav a {
-  color: #ccc;
+  color: #c9d2cc;
   text-decoration: none;
   margin-left: 25px;
   font-weight: 500;
   transition: 0.3s;
 }
 .nav a:hover {
-  color: #00ffaa;
+  color: var(--green-soft);
 }
+.signup-btn {
+  background-color: #f1f7f5;
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 20px;
+  margin-left: 20px;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+.signup-btn:hover {
+  background-color: var(--green-soft);
+  color: #000;
+}
+
 /* === HERO SECTION === */
 .hero {
   padding: 130px 20px 80px;
   text-align: center;
-  background: linear-gradient(to bottom, #0a0a10, #101018);
+  background: radial-gradient(circle at top, #182820 0%, #05050a 55%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,26 +96,28 @@ html, body {
   margin-bottom: 12px;
 }
 .hero-text .highlight {
-  color: #0fffc1;
+  color: var(--green-soft);
 }
 .hero-text p {
-  font-size: 1.2rem;
-  color: #bbb;
-  max-width: 600px;
+  font-size: 1.1rem;
+  color: #ccd7d2;
+  max-width: 620px;
   margin: 0 auto 20px;
 }
 .cta-btn {
-  background: #0fffc1;
-  color: #000;
+  background: var(--green-primary);
+  color: #fff;
   padding: 12px 28px;
   border-radius: 30px;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 16px;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 8px 24px rgba(28, 69, 55, 0.55);
 }
 .cta-btn:hover {
-  background: #00e6a3;
+  background: var(--green-accent);
+  transform: translateY(-2px);
 }
 .hero-img {
   margin-top: 40px;
@@ -105,12 +128,12 @@ html, body {
 .features {
   padding: 80px 20px;
   text-align: center;
-  background: #0b0b12;
+  background: #080a0f;
 }
 .features h2 {
   font-size: 2.2rem;
   margin-bottom: 40px;
-  color: #00ffcc;
+  color: var(--green-soft);
 }
 .feature-grid {
   display: flex;
@@ -119,66 +142,114 @@ html, body {
   justify-content: center;
 }
 .feature-card {
-  background: linear-gradient(145deg, #101020, #0c0c15);
+  background: radial-gradient(circle at top left, #20282a, #0f1417);
   border-radius: 20px;
   padding: 30px;
   width: 280px;
-  box-shadow: 0 4px 20px rgba(0, 255, 180, 0.08);
+  box-shadow: 0 4px 18px rgba(15, 25, 22, 0.6);
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
   cursor: pointer;
   text-align: center;
 }
-
 .feature-card:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 8px 30px rgba(0, 255, 180, 0.25);
-  background: linear-gradient(145deg, #0e0e1a, #121223);
+  box-shadow: 0 10px 30px rgba(20, 33, 28, 0.9);
+  background: radial-gradient(circle at top, #263732, #101618);
 }
-
 .feature-card img {
   height: 80px;
   margin-bottom: 20px;
   border-radius: 10px;
   transition: transform 0.3s ease;
 }
-
 .feature-card:hover img {
   transform: scale(1.05);
 }
-
 .feature-card h3 {
-  color: #0fffc1;
+  color: var(--green-soft);
   font-size: 20px;
   margin-bottom: 12px;
   font-weight: 700;
 }
-
 .feature-card p {
   font-size: 15px;
-  color: #aaa;
+  color: #b4c0ba;
   line-height: 1.5;
 }
 
+/* === HOW IT WORKS === */
+.how-section {
+  padding: 100px 20px;
+  background: #07090e;
+  text-align: center;
+}
+.how-title {
+  font-size: 2.4rem;
+  color: var(--green-soft);
+  margin-bottom: 10px;
+}
+.how-sub {
+  color: #a4c9b8;
+  margin-bottom: 40px;
+}
+.how-grid {
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.how-card {
+  width: 280px;
+  background: #10141b;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(12, 26, 22, 0.75);
+  transition: 0.3s;
+}
+.how-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 28px rgba(12, 26, 22, 0.95);
+}
+.how-icon {
+  width: 60px; height: 60px;
+  margin: auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-primary), var(--green-deep));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f5fbf8;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.how-card h3 {
+  color: var(--green-soft);
+  margin-bottom: 10px;
+}
+.how-card p {
+  color: #b2c3bc;
+  font-size: 14px;
+}
 
 /* === CHAT DEMO === */
 .chat-demo {
   padding: 80px 20px;
-  background: linear-gradient(to bottom, #0a0a0f, #14141f);
+  background: linear-gradient(to bottom, #06080d, #101620);
   text-align: center;
 }
 .chat-demo h2 {
   font-size: 2rem;
   margin-bottom: 30px;
-  color: #0fffc1;
+  color: var(--green-soft);
 }
 .chatbox {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(11,18,20,0.9);
   backdrop-filter: blur(12px);
   border-radius: 15px;
   padding: 20px;
   max-width: 500px;
   margin: 0 auto;
-  box-shadow: 0 4px 30px rgba(0,255,204,0.1);
+  box-shadow: 0 4px 30px rgba(10, 24, 19, 0.9);
 }
 .messages {
   max-height: 250px;
@@ -190,13 +261,13 @@ html, body {
   margin-bottom: 10px;
   text-align: left;
   font-size: 14px;
-  background: #0e0e1a;
+  background: #0f151a;
   padding: 10px 14px;
   border-radius: 10px;
 }
 .message.ai {
-  background: #142f26;
-  color: #0fffc1;
+  background: #182822;
+  color: var(--green-soft);
 }
 .input-row {
   display: flex;
@@ -208,31 +279,35 @@ html, body {
   border-radius: 30px;
   border: none;
   font-size: 14px;
-  background: #1d1d2b;
+  background: #151c22;
   color: #eee;
 }
+.input-row input::placeholder {
+  color: #72827a;
+}
 .input-row button {
-  background: #00ffc6;
+  background: var(--green-primary);
   border: none;
   border-radius: 50%;
-  color: #000;
+  color: #fff;
   padding: 10px;
   font-size: 16px;
   cursor: pointer;
+  box-shadow: 0 6px 18px rgba(26, 54, 43, 0.9);
 }
 .input-row button:hover {
-  background: #00e6a8;
+  background: var(--green-accent);
 }
 
-/* === TESTIMONIALS === */
+/* === TESTIMONIALS (kept for future use) === */
 .testimonials {
-  background: #0c0c13;
+  background: #05070c;
   padding: 80px 20px;
   text-align: center;
 }
 .testimonials h2 {
   font-size: 2rem;
-  color: #0fffc1;
+  color: var(--green-soft);
   margin-bottom: 40px;
 }
 .testimonial-grid {
@@ -242,32 +317,32 @@ html, body {
   justify-content: center;
 }
 .testimonial {
-  background: #1a1a2a;
-  color: #ccc;
+  background: #111720;
+  color: #ccd7d2;
   font-style: italic;
   padding: 20px;
   border-radius: 10px;
   max-width: 320px;
-  box-shadow: 0 2px 12px rgba(0,255,204,0.05);
+  box-shadow: 0 2px 12px rgba(12,26,22,0.7);
 }
 .testimonial span {
   display: block;
   margin-top: 12px;
-  color: #0fffc1;
+  color: var(--green-soft);
   font-weight: 500;
   font-style: normal;
 }
 
-/* === TEAM SECTION === */
+/* === TEAM SECTION (kept for future use) === */
 .team {
-  background: #0d0d15;
+  background: #05070c;
   padding: 80px 20px;
   text-align: center;
 }
 .team h2 {
   font-size: 2rem;
   margin-bottom: 40px;
-  color: #0fffc1;
+  color: var(--green-soft);
 }
 .team-grid {
   display: flex;
@@ -276,31 +351,31 @@ html, body {
   gap: 30px;
 }
 .member {
-  background: #14141f;
+  background: #10141c;
   border-radius: 12px;
   padding: 20px;
   max-width: 320px;
-  box-shadow: 0 4px 12px rgba(0,255,204,0.08);
+  box-shadow: 0 4px 12px rgba(12,26,22,0.8);
 }
 .member img {
   width: 100%;
   border-radius: 10px;
   margin-bottom: 15px;
-  border: 1px solid #0fffc1;
+  border: 1px solid var(--green-primary);
 }
 .member h4 {
-  color: #0fffc1;
+  color: var(--green-soft);
   margin-bottom: 5px;
 }
 .member p {
-  color: #aaa;
+  color: #bcc9c3;
   font-size: 14px;
 }
 
 /* === FOOTER === */
 footer {
   background: #000;
-  color: #bbb;
+  color: #b9c4be;
   padding: 25px 20px;
   text-align: center;
   font-size: 14px;
@@ -310,7 +385,7 @@ footer {
   margin-top: 10px;
 }
 .footer-links a {
-  color: #0fffc1;
+  color: var(--green-primary);
   margin: 0 12px;
   text-decoration: none;
 }
@@ -323,46 +398,31 @@ footer {
   width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #0fffc1;
+  background: var(--green-primary);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-track {
   background: #101010;
 }
 
-/* === RESPONSIVE === */
-@media (max-width: 768px) {
-  .feature-grid, .testimonial-grid {
-    flex-direction: column;
-    align-items: center;
-  }
-  .nav {
-    gap: 10px;
-  }
-  .hero-img {
-    width: 80%;
-  }
-}
-
+/* === IMAGE ANALYZER (for image-analyzer.html) === */
 .image-analyzer {
   margin-top: 2rem;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
 }
-
 .image-result {
   margin-top: 10px;
   font-weight: bold;
-  color: #eee;
+  color: #e5f1eb;
 }
-
 #imagePreview img {
   max-width: 100%;
   margin-top: 10px;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
 }
 
 /* === Disclaimer Modal === */
@@ -377,89 +437,32 @@ footer {
   align-items: center;
   backdrop-filter: blur(4px);
 }
-
 .modal-content {
-  background-color: #111;
+  background-color: #111618;
   color: #eee;
   padding: 25px;
   border-radius: 12px;
   max-width: 400px;
   text-align: center;
-  box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
+  box-shadow: 0 0 30px rgba(23, 53, 41, 0.8);
 }
-
 .modal-content h3 {
   margin-bottom: 15px;
-  color: #ffc107;
+  color: #f2c76b;
 }
-
 .modal-content p {
   font-size: 14px;
   line-height: 1.5;
   margin-bottom: 20px;
 }
-
 .modal-content button {
-  background-color: #0fffc1;
-  color: #000;
+  background-color: var(--green-primary);
+  color: #fff;
   padding: 10px 20px;
   border: none;
   border-radius: 25px;
   cursor: pointer;
   font-weight: bold;
-}
-
-/* === Added: HOW IT WORKS === */
-.how-section {
-  padding: 100px 20px;
-  background: #0b0b12;
-  text-align: center;
-}
-.how-title {
-  font-size: 2.4rem;
-  color: #0fffc1;
-  margin-bottom: 10px;
-}
-.how-sub {
-  color: #9beedb;
-  margin-bottom: 40px;
-}
-.how-grid {
-  display: flex;
-  gap: 25px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.how-card {
-  width: 280px;
-  background: #10121b;
-  padding: 28px;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0,255,204,0.15);
-  transition: 0.3s;
-}
-.how-card:hover {
-  transform: translateY(-8px);
-}
-.how-icon {
-  width: 60px; height: 60px;
-  margin: auto;
-  border-radius: 50%;
-  background: linear-gradient(135deg,#4C7F6D,#1E3D34);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  margin-bottom: 14px;
-}
-.how-card h3 {
-  color: #0fffc1;
-  margin-bottom: 10px;
-}
-.how-card p {
-  color: #aaa;
-  font-size: 14px;
 }
 
 /* === WHATSAPP FLOATING BUTTON === */
@@ -468,16 +471,34 @@ footer {
   right: 25px;
   bottom: 25px;
   padding: 14px 20px;
-  background: linear-gradient(135deg,#4C7F6D,#1E3D34);
+  background: linear-gradient(135deg, var(--green-primary), var(--green-deep));
   color: white;
   border-radius: 12px;
   font-weight: 600;
   text-decoration: none;
-  box-shadow: 0 8px 25px rgba(0,255,180,0.25);
+  box-shadow: 0 8px 25px rgba(18, 40, 31, 0.95);
   transition: 0.3s;
   z-index: 9999;
 }
 .whatsapp-box:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 35px rgba(0,255,200,0.45);
+  box-shadow: 0 12px 35px rgba(18, 40, 31, 1);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .feature-grid, .testimonial-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  .nav {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .hero-text h1 {
+    font-size: 2.2rem;
+  }
+  .hero-text p {
+    font-size: 0.98rem;
+  }
 }
