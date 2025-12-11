@@ -13,8 +13,8 @@ html {
 
 body {
   font-family: 'Outfit', sans-serif;
-  background: #ffffff;
-  color: #222;
+  background: var(--bg-light);
+  color: var(--text-dark);
   line-height: 1.65;
   overflow-x: hidden;
 }
@@ -26,28 +26,30 @@ html, body {
 }
 
 /* =========================================
-   BRAND COLOR SYSTEM
+   BRAND COLOR SYSTEM (CURELITH)
 ========================================= */
 :root {
+  /* pulled from logo + hero images */
   --green-primary: #4C7F6D;
-  --green-deep: #1E3D34;
-  --green-soft: #9BBFAF;
+  --green-deep: #1B3A36;
+  --green-soft: #AFC7BC;
   --green-accent: #6C9284;
 
-  --bg-white: #ffffff;
-  --bg-light: #f6f8f7;
-  --bg-hero: #fafdfc;
+  --bg-hero: #EFE9DB;        /* logo background */
+  --bg-light: #FAF9F4;       /* page background */
+  --bg-surface: #F5F3EB;     /* section bg */
+  --bg-white: #FFFFFF;       /* cards */
 
-  --text-dark: #1a1a1a;
-  --text-mid: #4b5b58;
-  --text-light: #6e7b78;
+  --text-dark: #1C2D28;
+  --text-mid:  #4F5D57;
+  --text-light:#6E7B78;
 
   --radius-md: 16px;
   --radius-lg: 28px;
 
-  --shadow-sm: 0 2px 12px rgba(0,0,0,0.05);
-  --shadow-md: 0 6px 20px rgba(0,0,0,0.08);
-  --shadow-lg: 0 12px 30px rgba(0,0,0,0.12);
+  --shadow-sm: 0 2px 10px rgba(0,0,0,0.04);
+  --shadow-md: 0 6px 18px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 28px rgba(0,0,0,0.12);
 }
 
 /* =========================================
@@ -56,15 +58,18 @@ html, body {
 .glass-header {
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
-  background: #EFE9DBCC;
-  backdrop-filter: blur(14px);
+  height: 78px;
+  background: rgba(239,233,219,0.92); /* match logo bg */
+  backdrop-filter: blur(20px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 36px;
+  padding: 0 46px;
   z-index: 999;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid #DDD6C4;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
 }
 
 .logo-box {
@@ -121,73 +126,67 @@ html, body {
    HERO SECTION
 ========================================= */
 .hero {
-  padding: 150px 20px 110px;
+  padding: 160px 20px 120px;
   text-align: center;
-  background: var(--bg-hero);
+  background: radial-gradient(
+      circle at 50% 0%,
+      #F3EEE4 0%,
+      #EFE9DB 55%,
+      #EFE9DB 100%
+  ); /* blends with logo + image */
 }
 
-.hero-text h1 {
-  font-size: 3.2rem;
-  color: var(--green-deep);
-  line-height: 1.25;
-   margin-top: 20px;
-  margin-bottom: 14px;
-}
-
-.hero-text .highlight {
-  color: var(--green-primary);
-}
-
-.hero-text p {
-  font-size: 1.18rem;
-  color: var(--text-mid);
-  max-width: 680px;
-   margin-top: 20px;
-  margin: 0 auto 30px;
-}
-
-/* === HERO BANNER IMAGE (placed right after hero section) === */
-.hero-banner-section {
-  width: 100%;
-  background: #ffffff;
-  padding: 0;
-  margin-top: -20px; /* pulls image closer to hero */
-}
-
-.hero-banner {
-  width: 85%;
-  max-width: 1100px;
-  display: block;
-  margin: 0 auto;
-}
-
-/* HERO IMAGE AT TOP */
+/* top hero image */
 .hero-top-image {
   width: 90%;
   max-width: 1100px;
   display: block;
   margin: 0 auto 40px auto;
   border-radius: 18px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-lg);
 }
 
-
-/* CTA BUTTON */
-.cta-btn {
-  background: var(--green-primary);
-  color: #fff;
-  padding: 14px 34px;
-  border-radius: 32px;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 17px;
-  box-shadow: var(--shadow-md);
-  transition: 0.3s ease;
+/* hero text */
+.hero-title {
+  font-size: 3.4rem;
+  color: var(--green-deep);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
 }
 
-.cta-btn:hover {
-  background: var(--green-accent);
-  transform: translateY(-3px);
+.highlight {
+  color: var(--green-primary);
+}
+
+.hero-sub {
+  font-size: 1.15rem;
+  color: var(--text-mid);
+  max-width: 680px;
+  margin: 0 auto 30px;
+}
+
+/* (no CTA for now – easy to re-add later)
+.cta-btn { ... }
+*/
+
+/* =========================================
+   HERO BANNER IMAGE
+========================================= */
+.hero-banner-section {
+  width: 100%;
+  background: var(--bg-light);
+  padding: 0;
+  margin-top: -10px;
+}
+
+.hero-banner {
+  width: 90%;
+  max-width: 1100px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 24px;
   box-shadow: var(--shadow-lg);
 }
 
@@ -197,10 +196,10 @@ html, body {
 .features {
   padding: 100px 20px;
   text-align: center;
-  background: #f5faf8;
+  background: var(--bg-surface);
 }
 
-.features h2 {
+.section-heading {
   font-size: 2.4rem;
   color: var(--green-deep);
   margin-bottom: 48px;
@@ -215,24 +214,25 @@ html, body {
 }
 
 .feature-card {
-  background: #ffffff;
-  border-radius: var(--radius-md);
-  padding: 34px;
-  width: 300px;
-  box-shadow: var(--shadow-md);
-  transition: 0.35s ease;
+  background: var(--bg-white);
+  border-radius: 22px;
+  padding: 38px;
+  width: 320px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+  transition: transform .35s ease, box-shadow .35s ease;
   cursor: pointer;
   text-align: center;
 }
 
 .feature-card:hover {
-  transform: translateY(-10px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
 }
 
 .feature-card img {
-  height: 82px;
-  margin-bottom: 22px;
+  height: 90px;
+  margin-bottom: 24px;
+  filter: drop-shadow(0 6px 14px rgba(76,127,109,0.20));
 }
 
 .feature-card h3 {
@@ -253,7 +253,7 @@ html, body {
 ========================================= */
 .how-section {
   padding: 110px 20px;
-  background: #ffffff;
+  background: var(--bg-white);
   text-align: center;
 }
 
@@ -277,23 +277,23 @@ html, body {
 }
 
 .how-card {
-  background: #ffffff;
-  width: 290px;
-  padding: 32px;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+  background: var(--bg-white);
+  width: 300px;
+  padding: 38px;
+  border-radius: 24px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.05);
   transition: 0.3s ease;
 }
 
 .how-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
 }
 
 .how-icon {
   width: 68px;
   height: 68px;
-  margin: auto;
+  margin: 0 auto 18px auto;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--green-primary), var(--green-deep));
   color: #fff;
@@ -301,7 +301,6 @@ html, body {
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  margin-bottom: 18px;
   font-size: 18px;
 }
 
@@ -318,91 +317,15 @@ html, body {
 }
 
 /* =========================================
-   DEMO SECTION
-========================================= */
-.chat-demo {
-  padding: 110px 20px;
-  background: #f0f5f3;
-  text-align: center;
-}
-
-.chat-demo h2 {
-  font-size: 2.2rem;
-  margin-bottom: 32px;
-  color: var(--green-deep);
-}
-
-.chatbox {
-  background: #ffffff;
-  border-radius: var(--radius-md);
-  padding: 24px;
-  max-width: 540px;
-  margin: 0 auto;
-  box-shadow: var(--shadow-md);
-}
-
-.messages {
-  max-height: 260px;
-  overflow-y: auto;
-  margin-bottom: 18px;
-  padding: 12px;
-}
-
-.message {
-  background: #e9f2ef;
-  font-size: 14px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  margin-bottom: 12px;
-  color: #1c2d28;
-}
-
-.message.ai {
-  background: #dfeeea;
-  color: var(--green-deep);
-}
-
-.input-row {
-  display: flex;
-  gap: 10px;
-}
-
-.input-row input {
-  flex: 1;
-  padding: 12px;
-  border-radius: 30px;
-  border: 1px solid #cfd7d4;
-  font-size: 14px;
-  color: #333;
-}
-
-.input-row input::placeholder {
-  color: #8fa7a0;
-}
-
-.input-row button {
-  background: var(--green-primary);
-  border: none;
-  padding: 12px 13px;
-  border-radius: 50%;
-  font-size: 16px;
-  color: #fff;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.input-row button:hover {
-  background: var(--green-accent);
-}
-
-/* =========================================
    FOOTER
 ========================================= */
 .footer {
-  background: var(--green-deep);
+  background: linear-gradient(180deg, #1B3A36, #102522);
   color: #e3f2ec;
-  padding: 70px 40px;
+  padding: 90px 40px 70px;
   margin-top: 80px;
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
 }
 
 .footer-container {
@@ -435,12 +358,6 @@ html, body {
 }
 .footer-social a:hover {
   color: var(--green-soft);
-}
-
-.footer-stores img {
-  width: 150px;
-  margin-top: 20px;
-  margin-right: 10px;
 }
 
 .footer-copy {
@@ -507,8 +424,10 @@ html, body {
 .modal {
   display: none;
   position: fixed;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
+  left: 0; 
+  top: 0;
+  width: 100%; 
+  height: 100%;
   background: rgba(0,0,0,0.45);
   justify-content: center;
   align-items: center;
@@ -575,7 +494,7 @@ html, body {
 ========================================= */
 @media (max-width: 900px) {
   .glass-header {
-    padding: 10px 20px;
+    padding: 0 22px;
   }
 
   .logo {
@@ -590,23 +509,22 @@ html, body {
     padding: 130px 16px 80px;
   }
 
-  .hero-text h1 {
+  .hero-title {
     font-size: 2.7rem;
   }
 
   .hero-banner {
-    width: 90%;
+    width: 92%;
     max-width: 900px;
   }
 
   .features,
-  .how-section,
-  .chat-demo {
+  .how-section {
     padding: 80px 16px;
   }
 
   .footer {
-    padding: 50px 20px;
+    padding: 70px 20px 60px;
   }
 
   .footer-container {
@@ -624,7 +542,7 @@ html, body {
   }
 
   .glass-header {
-    padding: 10px 16px;
+    padding: 0 16px;
   }
 
   .brand {
@@ -642,38 +560,27 @@ html, body {
     font-size: 13px;
   }
 
-  .signup-btn {
-    margin-left: 10px;
-    padding: 6px 14px;
-    font-size: 13px;
-  }
-
   .hero {
-    padding: 110px 16px 60px;
+    padding: 120px 16px 70px;
   }
 
-  .hero-text h1 {
+  .hero-title {
     font-size: 2.2rem;
   }
 
-  .hero-text p {
+  .hero-sub {
     font-size: 1rem;
     margin-bottom: 22px;
   }
 
-  .hero-banner-section {
-    margin-top: -10px;
-  }
-
   .hero-banner {
-    width: 100%;
+    width: 94%;
     max-width: 100%;
-    border-radius: 0;
+    border-radius: 16px;
   }
 
   .features,
-  .how-section,
-  .chat-demo {
+  .how-section {
     padding: 70px 16px;
   }
 
@@ -683,22 +590,12 @@ html, body {
     max-width: 360px;
   }
 
-  .chatbox {
-    width: 100%;
-    padding: 20px;
-  }
-
   .footer {
     margin-top: 60px;
   }
 
   .footer-tagline {
     font-size: 1.6rem;
-  }
-
-  .footer-stores img {
-    width: 130px;
-    margin-top: 14px;
   }
 
   .footer-links-grid {
@@ -717,24 +614,18 @@ html, body {
 /* Extra small devices */
 @media (max-width: 480px) {
   .hero {
-    padding-top: 100px;
+    padding-top: 110px;
   }
 
-  .hero-text h1 {
+  .hero-title {
     font-size: 1.9rem;
   }
 
-  .hero-text p {
+  .hero-sub {
     font-size: 0.95rem;
   }
 
   .footer-tagline {
     font-size: 1.4rem;
   }
-
-  .footer-stores img {
-    width: 115px;
-  }
 }
-
-
