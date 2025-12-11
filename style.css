@@ -144,27 +144,31 @@ html, body {
   margin: 0 auto 30px;
 }
 
-/* =========================================
-   FIXED HERO IMAGE BLENDING
-========================================= */
-
+/* === HERO BANNER IMAGE (placed right after hero section) === */
 .hero-banner-section {
   width: 100%;
-  background: var(--bg-hero); /* unified with hero */
+  background: #ffffff;
   padding: 0;
-  margin-top: -35px; /* smooth overlap */
+  margin-top: -20px; /* pulls image closer to hero */
 }
 
+.hero-banner {
+  width: 85%;
+  max-width: 1100px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* HERO IMAGE AT TOP */
 .hero-top-image {
   width: 90%;
   max-width: 1100px;
   display: block;
   margin: 0 auto 40px auto;
-  
-  background: var(--bg-hero); /* unify background */
-  border-radius: 14px;
-  box-shadow: none; /* remove separation */
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
 }
+
 
 /* CTA BUTTON */
 .cta-btn {
@@ -730,3 +734,5 @@ html, body {
     width: 115px;
   }
 }
+
+
