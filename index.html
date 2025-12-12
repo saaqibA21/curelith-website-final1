@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
-
 <!-- Disclaimer Modal -->
 <div id="disclaimerModal" class="modal">
   <div class="modal-content">
@@ -23,191 +22,158 @@
   </div>
 </div>
 
-
-
-
-
-
-
 <body>
 
   <!-- WHATSAPP FLOATING BUTTON -->
-<a href="https://wa.me/919042556225" class="whatsapp-box" target="_blank">
-  💬 Talk with Curelith on WhatsApp
-</a>
+  <a href="https://wa.me/919042556225" class="whatsapp-box" target="_blank">
+    💬 Talk with Curelith on WhatsApp
+  </a>
 
-
-  
   <!-- HEADER -->
   <header class="glass-header">
     <a href="index.html" class="logo-box" style="text-decoration: none;">
-  <img src="assets/logo (2).png" class="logo" alt="Curelith Logo"/>
-  <span class="brand">CURELITH</span>
-</a>
+      <img src="assets/logo (2).png" class="logo" alt="Curelith Logo"/>
+      <span class="brand">CURELITH</span>
+    </a>
 
     <nav class="nav">
       <a href="#home">Home</a>
       <a href="#about">About</a>
-      <a href="#demo">Tools</a>
+      <a href="#tools">Tools</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
 
+  <!-- HERO SECTION -->
   <section id="home" class="hero">
-  
-  <!-- HERO IMAGE AT TOP -->
-  <img src="assets/hero-elderly.png" class="hero-top-image" alt="Curelith Symptom Support">
 
-  <h1 class="hero-title">Your Smartest <span class="highlight">AI Medical Assistant</span></h1>
-  <p class="hero-sub">Listen. Learn. Heal. 24/7.</p>
-    
-  
+    <!-- HERO IMAGE AT TOP -->
+    <img src="assets/hero-elderly.png" class="hero-top-image" alt="Curelith Symptom Support">
 
-</section>
+    <h1 class="hero-title">Your Smartest <span class="highlight">AI Medical Assistant</span></h1>
+    <p class="hero-sub">Listen. Learn. Heal. 24/7.</p>
 
+  </section>
 
+  <!-- HERO BANNER -->
   <section class="hero-banner-section">
-  <img src="assets/hero-banner.png" alt="Curelith Hero Banner" class="hero-banner"/>
-</section>
+    <img src="assets/hero-banner.png" alt="Curelith Hero Banner" class="hero-banner"/>
+  </section>
 
-  <!-- ABOUT -->
- <section id="about" class="features">
-  <h2 class="section-heading"></h2>
-  <div class="feature-grid">
-    <div class="feature-card" onclick="location.href='#demo'" style="cursor: pointer;">
+  <!-- ABOUT / FEATURES SECTION -->
+  <section id="about" class="features">
+    <h2 class="section-heading"></h2>
 
-      <img src="assets/ai-diagnosis.png" alt="AI Diagnosis"/>
-      <h3>Real-Time Diagnosis</h3>
-      <p>Get clinical-level answers instantly. No appointments needed.</p>
+    <div class="feature-grid">
+
+      <!-- Real-Time Diagnosis (NOT CLICKABLE) -->
+      <div class="feature-card" style="cursor: default;">
+        <img src="assets/ai-diagnosis.png" alt="AI Diagnosis"/>
+        <h3>Real-Time Diagnosis</h3>
+        <p>Get clinical-level answers instantly. No appointments needed.</p>
+      </div>
+
+      <!-- Image Analyzer (CLICKABLE + TARGET OF TOOLS LINK) -->
+      <a id="tools" href="image-analyzer.html" style="text-decoration: none; color: inherit;">
+        <div class="feature-card">
+          <img src="assets/image-analyzer.png" alt="Image Analyzer"/>
+          <h3>Image Analyzer</h3>
+          <p>Upload skin, wound, or rash images for instant AI-based analysis.</p>
+        </div>
+      </a>
+
+      <!-- Ask Any Medical Question (NOT CLICKABLE) -->
+      <div class="feature-card" style="cursor: default;">
+        <img src="assets/question.png" alt="Medical Questions"/>
+        <h3>Ask Any Medical Question</h3>
+        <p>From symptoms to prevention, get AI-backed guidance on any health topic.</p>
+      </div>
+
     </div>
+  </section>
 
-    
+  <!-- HOW IT WORKS SECTION -->
+  <section id="how-it-works" class="how-section">
+    <h2 class="how-title">How <span class="highlight">Curelith</span> Works</h2>
+    <p class="how-sub">Four simple steps to better health insights</p>
 
-    <a href="image-analyzer.html" style="text-decoration: none; color: inherit;">
-  <div class="feature-card" style="cursor: pointer;">
-    <img src="assets/image-analyzer.png" alt="Image Analyzer"/>
-    <h3>Image Analyzer</h3>
-    <p>Upload skin, wound, or rash images for instant AI-based analysis.</p>
-  </div>
-</a>
+    <div class="how-grid">
 
+      <div class="how-card">
+        <div class="how-icon">01</div>
+        <h3>Describe Your Symptoms</h3>
+        <p>Tell Curelith about your health concerns using natural language. No medical terms needed.</p>
+      </div>
 
-    
-    <div class="feature-card" onclick="location.href='#demo'" style="cursor: pointer;">
+      <div class="how-card">
+        <div class="how-icon">02</div>
+        <h3>AI Analysis</h3>
+        <p>Our advanced AI analyzes your symptoms using millions of medical data points.</p>
+      </div>
 
-      <img src="assets/question.png" alt="Medical Questions"/>
-      <h3>Ask Any Medical Question</h3>
-      <p>From symptoms to prevention, get AI-backed guidance on any health topic.</p>
+      <div class="how-card">
+        <div class="how-icon">03</div>
+        <h3>Get Guidance</h3>
+        <p>Receive personalized insights, possible conditions, and immediate next steps.</p>
+      </div>
+
+      <div class="how-card">
+        <div class="how-icon">04</div>
+        <h3>Connect With Care</h3>
+        <p>When needed, seamlessly connect with healthcare providers or doctors.</p>
+      </div>
+
     </div>
-  </div>
-</section>
-
-
-<!-- HOW IT WORKS -->
-<section id="how-it-works" class="how-section">
-  <h2 class="how-title">How <span class="highlight">Curelith</span> Works</h2>
-  <p class="how-sub">Four simple steps to better health insights</p>
-
-  <div class="how-grid">
-
-    <div class="how-card">
-      <div class="how-icon">01</div>
-      <h3>Describe Your Symptoms</h3>
-      <p>Tell Curelith about your health concerns using natural language. No medical terms needed.</p>
-    </div>
-
-    <div class="how-card">
-      <div class="how-icon">02</div>
-      <h3>AI Analysis</h3>
-      <p>Our advanced AI analyzes your symptoms using millions of medical data points.</p>
-    </div>
-
-    <div class="how-card">
-      <div class="how-icon">03</div>
-      <h3>Get Guidance</h3>
-      <p>Receive personalized insights, possible conditions, and immediate next steps.</p>
-    </div>
-
-    <div class="how-card">
-      <div class="how-icon">04</div>
-      <h3>Connect With Care</h3>
-      <p>When needed, seamlessly connect with healthcare providers or doctors.</p>
-    </div>
-
-  </div>
-</section>
-
-  
-
-
-  <!-- DEMO -->
-<!-- DEMO -->
-
- 
-
-
+  </section>
 
   <!-- FOOTER -->
-  <footer class="footer">
-  <div class="footer-container">
+  <footer id="contact" class="footer">
+    <div class="footer-container">
 
-    <!-- LEFT SIDE TEXT -->
-    <div class="footer-left">
-      <h2 class="footer-tagline">
-        Medical Clarity<br>
-        when you need it,<br>
-        You Have It. 
-      </h2>
+      <!-- LEFT SIDE -->
+      <div class="footer-left">
+        <h2 class="footer-tagline">
+          Medical Clarity<br>
+          when you need it,<br>
+          You Have It.
+        </h2>
 
-      <div class="footer-social">
-        <a href="https://x.com/curelith" target="_blank">𝕏</a>
-        <a href="https://instagram.com/curelith.ai" target="_blank">Instagram</a>
-        <a href="https://linkedin.com/company/curelith" target="_blank">in</a>
+        <div class="footer-social">
+          <a href="https://x.com/curelith" target="_blank">𝕏</a>
+          <a href="https://instagram.com/curelith.ai" target="_blank">Instagram</a>
+          <a href="https://linkedin.com/company/curelith" target="_blank">in</a>
+        </div>
+
+        <p class="footer-copy">© 2025 Curelith. All Rights Reserved.</p>
       </div>
 
-      <!-- App Store Buttons -->
-      
-
-      <p class="footer-copy">© 2025 Curelith. All Rights Reserved.</p>
-    </div>
-
-    <!-- CENTER QUICK LINKS -->
-    <div class="footer-middle">
-      <h4>Quick Links</h4>
-      <div class="footer-links-grid">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#demo">Tools</a>
-        <a href="#">Stories</a>
-        <a href="#contact">Contact</a>
+      <!-- CENTER -->
+      <div class="footer-middle">
+        <h4>Quick Links</h4>
+        <div class="footer-links-grid">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#tools">Tools</a>
+          <a href="#">Stories</a>
+          <a href="#contact">Contact</a>
+        </div>
       </div>
-    </div>
 
-    <!-- RIGHT CONTACT -->
-    <div class="footer-right">
-      <h4>Contact</h4>
-      <p>curelithsupport@gmail.com</p>
+      <!-- RIGHT -->
+      <div class="footer-right">
+        <h4>Contact</h4>
+        <p>curelithsupport@gmail.com</p>
+        <p>Chennai, Tamil Nadu<br>India – 600001</p>
 
-      <p></p>
-      <p></p>
-
-      <p>
-        Chennai, Tamil Nadu<br>
-        India – 600001
-      </p>
-
-      <div class="footer-legal">
-        <a href="terms.html">Terms & Conditions</a>
-        <a href="privacy.html">Privacy Policy</a>
+        <div class="footer-legal">
+          <a href="terms.html">Terms & Conditions</a>
+          <a href="privacy.html">Privacy Policy</a>
+        </div>
       </div>
+
     </div>
-
-  </div>
-</footer>
-
-
+  </footer>
 
   <script src="script.js"></script>
 </body>
 </html>
-
