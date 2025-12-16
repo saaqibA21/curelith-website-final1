@@ -630,113 +630,51 @@ html, body {
   }
 }
 /* ==============================
-   ABOUT PAGE – LAYOUT FIX
+   ABOUT PAGE – FINAL FIX
 ================================ */
 
-/* Allow page to breathe full width */
-main {
+.about-section {
   width: 100%;
-  padding: 0;
-  margin: 0;
+  background: #faf9f4;
+  padding: 90px 20px;
 }
 
-/* Section wrapper */
-section {
-  width: 100%;
-  padding: 80px 20px;
+.about-section:nth-child(even) {
+  background: #ffffff;
 }
 
-/* Center content properly */
-section > article,
-section > .feature-grid,
-section > .how-grid {
-  max-width: 1000px;
+.about-container {
+  max-width: 900px;
   margin: 0 auto;
 }
 
-/* Hero refinement */
-.hero {
-  background: #f3f0e6;
-  padding: 140px 20px 100px;
-  text-align: center;
+.about-container h2 {
+  font-size: 2rem;
+  margin-bottom: 18px;
+  color: #1e3d34;
 }
 
-.hero-title {
-  font-size: clamp(2.4rem, 4vw, 3.4rem);
-  font-weight: 700;
-  color: #1a1a1a;
-}
-
-.hero-sub {
-  max-width: 620px;
-  margin: 16px auto 0;
+.about-container p {
   font-size: 1.05rem;
-  color: #4b5b58;
-}
-
-/* About content blocks */
-.feature-card,
-.how-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 36px 40px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
-
-/* Headings */
-.feature-card h2,
-.how-card h2 {
-  font-size: 1.6rem;
-  margin-bottom: 14px;
-  color: #1e3d34;
-}
-
-/* Paragraphs */
-.feature-card p,
-.how-card p {
-  font-size: 1rem;
-  line-height: 1.8;
+  line-height: 1.9;
   color: #3e4f4b;
+  margin-bottom: 16px;
 }
 
-/* Grid spacing */
-.feature-grid,
-.how-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;
+/* Hero fix */
+.hero {
+  padding: 140px 20px 120px;
+  background: #f3f0e6;
 }
 
-/* Alternate section background */
-.features {
-  background: #faf9f4;
-}
-
-.how-section {
-  background: #ffffff;
-}
-
-/* Founder emphasis */
-.how-card {
-  border-left: 5px solid #6c9284;
-}
-
-/* FAQ spacing */
-.feature-card h3 {
-  margin-top: 28px;
-  font-size: 1.1rem;
-  color: #1e3d34;
-}
-
-/* Mobile fix */
+/* Mobile */
 @media (max-width: 768px) {
-  .feature-card,
-  .how-card {
-    padding: 28px 24px;
+  .about-section {
+    padding: 60px 16px;
   }
 
-  section {
-    padding: 60px 16px;
+  .about-container h2 {
+    font-size: 1.6rem;
   }
 }
 
