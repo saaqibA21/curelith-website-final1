@@ -737,3 +737,53 @@ html, body {
   }
 }
 
+/* ==============================
+   WHY CURELITH EXISTS – BACKGROUND
+================================ */
+
+.why-bg-section {
+  background-image: url("assets/why-curelith-exists.jpg");
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  padding: 120px 20px;
+  position: relative;
+}
+
+/* Soft overlay for readability */
+.why-overlay {
+  background: rgba(248, 245, 235, 0.92);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 50px 46px;
+  border-radius: 20px;
+}
+
+/* Text container */
+.why-content h2 {
+  font-size: 2rem;
+  margin-bottom: 18px;
+  color: #1e3d34;
+}
+
+.why-content p {
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: #3e4f4b;
+  margin-bottom: 16px;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .why-bg-section {
+    padding: 70px 16px;
+    background-position: center;
+  }
+
+  .why-overlay {
+    padding: 32px 24px;
+  }
+}
+
+
