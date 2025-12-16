@@ -687,7 +687,7 @@ html, body {
   margin: 0 auto;
   height: 420px;
   border-radius: 22px;
-  background-image: url("assets/mission-curelith.jpg");
+  background-image: url("assets/mission-curelith.jpg.png");
   background-size: cover;
   background-position: left center;
   position: relative;
