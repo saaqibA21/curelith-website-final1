@@ -260,10 +260,11 @@ html, body {
 .founder-card {
   max-width: 1100px;
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1.2fr 1fr; /* text first, image second */
   gap: 60px;
   align-items: center;
 }
+
 
 .founder-image img {
   width: 100%;
