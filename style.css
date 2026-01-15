@@ -248,6 +248,61 @@ html, body {
   line-height: 1.55;
 }
 
+
+
+.founder-hero {
+  padding: 80px 20px;
+  background: #f6f3ea;
+  display: flex;
+  justify-content: center;
+}
+
+.founder-card {
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.founder-image img {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+}
+
+.founder-content h1 {
+  font-size: 36px;
+  margin-bottom: 6px;
+}
+
+.founder-content h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #4f6f64;
+  margin-bottom: 12px;
+}
+
+.founder-location {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 24px;
+}
+
+.founder-intro {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.founder-ethos {
+  font-size: 16px;
+  font-style: italic;
+  color: #444;
+}
+
+
 /* =========================================
    HOW IT WORKS SECTION
 ========================================= */
