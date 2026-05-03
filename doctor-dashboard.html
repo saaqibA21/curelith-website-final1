@@ -328,7 +328,8 @@
         document.getElementById('welcomeTitle').innerText = `Welcome, ${doctorName}`;
         document.getElementById('headerDoctorName').innerText = doctorName;
 
-        const API_BASE = "https://api.curelith.com";
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
 
         async function loadAppointments() {
             try {

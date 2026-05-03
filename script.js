@@ -1,6 +1,7 @@
 // script.js — frontend chat logic with per-user session + crisis flow support
 
-const BASE_URL = 'https://bc6236f13e2f.ngrok-free.app/api';
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const BASE_URL = isLocal ? 'http://localhost:5000/api' : 'https://api.curelith.com/api';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Stable per-device session id (used by backend to isolate crisis sessions)
