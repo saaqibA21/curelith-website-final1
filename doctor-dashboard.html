@@ -264,16 +264,19 @@
 
         <div class="stats-grid">
             <div class="stat-card">
-                <h3>Total Patients</h3>
-                <div class="value" id="statTotalPatients">0</div>
+                <h3>Bot Visibility</h3>
+                <div class="value" id="statViews">0</div>
+                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Times shown to patients</p>
             </div>
             <div class="stat-card">
-                <h3>Upcoming</h3>
-                <div class="value" id="statUpcoming">0</div>
+                <h3>Total Bookings</h3>
+                <div class="value" id="statTotalBookings">0</div>
+                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">All-time bookings</p>
             </div>
             <div class="stat-card">
-                <h3>Virtual</h3>
-                <div class="value" id="statVirtual">0</div>
+                <h3>Today's Appts</h3>
+                <div class="value" id="statToday">0</div>
+                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Scheduled for today</p>
             </div>
         </div>
 
@@ -329,19 +332,24 @@
 
         async function loadAppointments() {
             try {
-                // We'll create this endpoint in the next step
-                const response = await fetch(`${API_BASE}/doctor/appointments?name=${encodeURIComponent(doctorName)}`);
-                const data = await response.json();
+                // Fetch Appointments
+                const appRes = await fetch(`${API_BASE}/doctor/appointments?name=${encodeURIComponent(doctorName)}`);
+                const apps = await appRes.json();
                 
+                // Fetch Overall Stats (Views/Bookings)
+                const statsRes = await fetch(`${API_BASE}/doctor/stats?name=${encodeURIComponent(doctorName)}`);
+                const stats = await statsRes.json();
+
                 const list = document.getElementById('appointmentList');
                 list.innerHTML = '';
                 
-                document.getElementById('appCount').innerText = data.length;
-                document.getElementById('statUpcoming').innerText = data.length;
-                document.getElementById('statTotalPatients').innerText = new Set(data.map(a => a.patient_phone)).size;
-                document.getElementById('statVirtual').innerText = data.filter(a => a.consultation_type === 'virtual').length;
+                // Update Stats Cards
+                document.getElementById('appCount').innerText = apps.length;
+                document.getElementById('statViews').innerText = stats.view_count || 0;
+                document.getElementById('statTotalBookings').innerText = stats.booking_count || 0;
+                document.getElementById('statToday').innerText = apps.length;
 
-                data.forEach(app => {
+                apps.forEach(app => {
                     const tr = document.createElement('tr');
                     tr.className = 'patient-row';
                     tr.innerHTML = `
