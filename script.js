@@ -1,6 +1,6 @@
 // script.js — frontend chat logic with per-user session + crisis flow support
 
-const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
 const BASE_URL = isLocal ? 'http://localhost:5000/api' : 'https://api.curelith.com/api';
 
 // ──────────────────────────────────────────────────────────────────────────────

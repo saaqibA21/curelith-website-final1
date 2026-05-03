@@ -316,19 +316,20 @@
     </div>
 
     <script>
-        lucide.createIcons();
+        try { lucide.createIcons(); } catch(e) { console.warn("Lucide icons failed to load"); }
 
         const doctorName = localStorage.getItem('doctor_name');
         const doctorPhone = localStorage.getItem('doctor_phone');
 
         if (!doctorName) {
             window.location.href = 'doctor-login.html';
+            throw new Error("Not logged in"); // Stop execution
         }
 
         document.getElementById('welcomeTitle').innerText = `Welcome, ${doctorName}`;
         document.getElementById('headerDoctorName').innerText = doctorName;
 
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
 
         async function loadAppointments() {
