@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Login | Curelith</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --doctor-primary: #1e3a8a;
+            --doctor-secondary: #3b82f6;
+            --doctor-bg: #f8fafc;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h1 {
+            color: var(--doctor-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .login-card p {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.85rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--doctor-secondary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-login {
+            background: var(--doctor-primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .btn-login:hover {
+            background: #172554;
+            transform: translateY(-1px);
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 1.5rem;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h1>Curelith for Doctors</h1>
+        <p>Access your dashboard and patient reports</p>
+        
+        <form id="doctorLoginForm">
+            <div class="form-group">
+                <label>Doctor Name (As in DB)</label>
+                <input type="text" id="doctorName" placeholder="e.g. Dr. Ragul" required>
+            </div>
+            <div class="form-group">
+                <label>Registered Phone Number</label>
+                <input type="tel" id="doctorPhone" placeholder="e.g. 919150574621" required>
+            </div>
+            <button type="submit" class="btn-login">Enter Dashboard</button>
+        </form>
+
+        <a href="index.html" class="back-link">← Back to Homepage</a>
+    </div>
+
+    <script>
+        document.getElementById('doctorLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('doctorName').value;
+            const phone = document.getElementById('doctorPhone').value;
+            
+            // For now, we store in localStorage to simulate session
+            localStorage.setItem('doctor_name', name);
+            localStorage.setItem('doctor_phone', phone);
+            
+            window.location.href = 'doctor-dashboard.html';
+        });
+    </script>
+</body>
+</html>
