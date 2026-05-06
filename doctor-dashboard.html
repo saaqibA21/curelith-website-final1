@@ -369,6 +369,10 @@
                 document.getElementById('statCompleted').innerText = completedCount;
                 document.getElementById('statToday').innerText = pendingCount;
 
+                if (stats.doctor_id) {
+                    localStorage.setItem('doctor_id', stats.doctor_id);
+                }
+
                 apps.forEach(app => {
                     const isCompleted = app.status === 'completed';
                     const tr = document.createElement('tr');
