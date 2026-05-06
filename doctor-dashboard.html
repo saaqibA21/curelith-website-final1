@@ -317,11 +317,20 @@
             <div class="report-grid" id="reportGrid">
                 <!-- Loaded dynamically -->
             </div>
+            
+            <div style="margin-top: 2.5rem; text-align: center;">
+                <button class="btn-view" style="padding: 0.8rem 2.5rem; background: #64748b; color: white;" onclick="closeModal()">Close</button>
+            </div>
         </div>
     </div>
 
     <script>
-        try { lucide.createIcons(); } catch(e) { console.warn("Lucide icons failed to load"); }
+        function initIcons() {
+            try { 
+                if (typeof lucide !== 'undefined') lucide.createIcons(); 
+            } catch(e) { console.warn("Lucide icons failed to load"); }
+        }
+        initIcons();
 
         const doctorName = localStorage.getItem('doctor_name');
         const doctorPhone = localStorage.getItem('doctor_phone');
