@@ -274,9 +274,14 @@
                 <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">All-time bookings</p>
             </div>
             <div class="stat-card">
-                <h3>Today's Appts</h3>
-                <div class="value" id="statToday">0</div>
-                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Scheduled for today</p>
+                <h3>Completed</h3>
+                <div class="value" id="statCompleted" style="color: #16a34a;">0</div>
+                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Consultations finished</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <div class="value" id="statToday" style="color: #eab308;">0</div>
+                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Awaiting consultation</p>
             </div>
         </div>
 
@@ -346,24 +351,54 @@
                 list.innerHTML = '';
                 
                 // Update Stats Cards
-                document.getElementById('appCount').innerText = apps.length;
+                const completedCount = apps.filter(a => a.status === 'completed').length;
+                const pendingCount = apps.length - completedCount;
+
+                document.getElementById('appCount').innerText = pendingCount;
                 document.getElementById('statViews').innerText = stats.view_count || 0;
                 document.getElementById('statTotalBookings').innerText = stats.booking_count || 0;
-                document.getElementById('statToday').innerText = apps.length;
+                document.getElementById('statCompleted').innerText = completedCount;
+                document.getElementById('statToday').innerText = pendingCount;
 
                 apps.forEach(app => {
+                    const isCompleted = app.status === 'completed';
                     const tr = document.createElement('tr');
                     tr.className = 'patient-row';
                     tr.innerHTML = `
                         <td>${app.patient_phone}</td>
                         <td><span class="badge badge-${app.consultation_type}">${app.consultation_type.toUpperCase()}</span></td>
-                        <td><span style="color: #16a34a; font-weight: 600;">Confirmed</span></td>
-                        <td><button class="btn-view" onclick="viewPatient('${app.patient_phone}')">View Reports</button></td>
+                        <td>
+                            <span style="color: ${isCompleted ? '#16a34a' : '#eab308'}; font-weight: 600;">
+                                ${isCompleted ? '✅ Consulted' : '⏳ Pending'}
+                            </span>
+                        </td>
+                        <td style="display: flex; gap: 8px;">
+                            <button class="btn-view" onclick="viewPatient('${app.patient_phone}')">View Reports</button>
+                            ${!isCompleted ? `<button class="btn-view" style="background: #16a34a; color: white;" onclick="markConsulted(${app.id})">Consulted</button>` : ''}
+                        </td>
                     `;
                     list.appendChild(tr);
                 });
             } catch (err) {
                 console.error("Error loading appointments:", err);
+            }
+        }
+
+        async function markConsulted(appId) {
+            if (!confirm("Mark this consultation as completed?")) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/doctor/appointment/complete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: appId })
+                });
+                const res = await response.json();
+                if (res.status === 'success') {
+                    loadAppointments();
+                }
+            } catch (err) {
+                console.error("Error updating status:", err);
             }
         }
 
