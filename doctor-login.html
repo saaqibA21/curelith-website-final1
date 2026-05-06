@@ -110,26 +110,56 @@
                 <input type="text" id="doctorName" placeholder="e.g. Dr. Ragul" required>
             </div>
             <div class="form-group">
-                <label>Registered Phone Number</label>
-                <input type="tel" id="doctorPhone" placeholder="e.g. 919150574621" required>
+                <label>Unique Password</label>
+                <input type="password" id="doctorPassword" placeholder="Enter your unique password" required>
             </div>
-            <button type="submit" class="btn-login">Enter Dashboard</button>
+            <div id="loginError" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
+            <button type="submit" class="btn-login" id="loginBtn">Enter Dashboard</button>
         </form>
 
         <a href="index.html" class="back-link">← Back to Homepage</a>
     </div>
 
     <script>
-        document.getElementById('doctorLoginForm').addEventListener('submit', function(e) {
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+
+        document.getElementById('doctorLoginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const name = document.getElementById('doctorName').value;
-            const phone = document.getElementById('doctorPhone').value;
+            const password = document.getElementById('doctorPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            const btn = document.getElementById('loginBtn');
+
+            errorDiv.style.display = 'none';
+            btn.innerText = 'Verifying...';
+            btn.disabled = true;
             
-            // For now, we store in localStorage to simulate session
-            localStorage.setItem('doctor_name', name);
-            localStorage.setItem('doctor_phone', phone);
-            
-            window.location.href = 'doctor-dashboard.html';
+            try {
+                const response = await fetch(`${API_BASE}/doctor/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    localStorage.setItem('doctor_name', result.doctor.name);
+                    localStorage.setItem('doctor_id', result.doctor.id);
+                    window.location.href = 'doctor-dashboard.html';
+                } else {
+                    errorDiv.innerText = result.message || 'Invalid name or password';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                console.error("Login error:", err);
+                errorDiv.innerText = 'Connection error. Please try again.';
+                errorDiv.style.display = 'block';
+            } finally {
+                btn.innerText = 'Enter Dashboard';
+                btn.disabled = false;
+            }
         });
     </script>
 </body>
