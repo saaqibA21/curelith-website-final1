@@ -406,6 +406,16 @@
             document.getElementById('modalPatientPhone').innerText = `Patient: ${phone}`;
             document.getElementById('patientModal').style.display = 'flex';
             
+            // Log the view to the backend for admin tracking
+            const doctorId = localStorage.getItem('doctor_id');
+            if (doctorId) {
+                fetch(`${API_BASE}/doctor/log-view`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ doctor_id: doctorId, patient_phone: phone })
+                }).catch(err => console.warn("Failed to log view tracking:", err));
+            }
+            
             try {
                 const response = await fetch(`${API_BASE}/locker/list/${phone}`);
                 const reports = await response.json();

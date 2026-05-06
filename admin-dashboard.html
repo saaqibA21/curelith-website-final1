@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Curelith</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <style>
+        :root {
+            --admin-primary: #0f172a;
+            --admin-accent: #6366f1;
+            --admin-bg: #f8fafc;
+        }
+
+        body {
+            background-color: var(--admin-bg);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--admin-primary);
+            color: white;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .main {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .doctor-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .doctor-table th {
+            text-align: left;
+            padding: 1rem;
+            color: #64748b;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .doctor-table td {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-active { background: #dcfce7; color: #166534; }
+        .badge-inactive { background: #fee2e2; color: #991b1b; }
+
+        .btn-edit {
+            background: #f1f5f9;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--admin-accent);
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 24px;
+            padding: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: inherit;
+        }
+
+        .view-list {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .view-item {
+            background: #f8fafc;
+            padding: 5px 10px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2><i data-lucide="layout-dashboard"></i> Curelith Admin</h2>
+        <a href="#" class="nav-item active"><i data-lucide="users"></i> Doctors Management</a>
+        <a href="#" class="nav-item"><i data-lucide="bar-chart-3"></i> Global Stats</a>
+        <a href="#" class="nav-item"><i data-lucide="settings"></i> System Settings</a>
+    </div>
+
+    <div class="main">
+        <header>
+            <h1>Doctors Directory</h1>
+            <button class="btn-edit" style="background: var(--admin-accent); color: white; padding: 0.8rem 1.5rem;" onclick="loadDoctors()">
+                <i data-lucide="refresh-cw" style="width: 16px; display: inline; vertical-align: middle;"></i> Sync Data
+            </button>
+        </header>
+
+        <div class="card">
+            <table class="doctor-table">
+                <thead>
+                    <tr>
+                        <th>Doctor Name</th>
+                        <th>Speciality / Location</th>
+                        <th>Status</th>
+                        <th>Consultations</th>
+                        <th>Record Views</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="doctorList">
+                    <!-- Loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Edit Doctor Details</h2>
+            <hr style="border: 1px solid #f1f5f9; margin: 1.5rem 0;">
+            <form id="editForm">
+                <input type="hidden" id="editId">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="editName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Speciality</label>
+                        <input type="text" id="editSpeciality" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="editLocation" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="editPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="text" id="editPassword" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Account Status</label>
+                    <select id="editStatus">
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button type="submit" class="btn-edit" style="flex: 1; background: var(--admin-accent); color: white;">Save Changes</button>
+                    <button type="button" class="btn-edit" style="flex: 1;" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+
+        let allDoctors = [];
+
+        async function loadDoctors() {
+            try {
+                const response = await fetch(`${API_BASE}/doctor/admin/doctors`);
+                allDoctors = await response.json();
+                
+                const list = document.getElementById('doctorList');
+                list.innerHTML = '';
+                
+                allDoctors.forEach(doc => {
+                    const tr = document.createElement('tr');
+                    
+                    // Format recent views
+                    const viewsHtml = doc.recent_views.length > 0 
+                        ? doc.recent_views.map(v => `
+                            <div class="view-item">
+                                <span>${v.patient_phone}</span>
+                                <span style="font-size: 0.7rem; color: #94a3b8;">${new Date(v.view_date).toLocaleDateString()} ${new Date(v.view_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            </div>
+                        `).join('')
+                        : '<span style="color: #cbd5e1;">No recent activity</span>';
+
+                    tr.innerHTML = `
+                        <td>
+                            <div style="font-weight: 600;">${doc.name}</div>
+                            <div style="font-size: 0.75rem; color: #64748b;">ID: ${doc.id} | Pass: ${doc.password}</div>
+                        </td>
+                        <td>
+                            <div>${doc.speciality}</div>
+                            <div style="font-size: 0.75rem; color: #64748b;">${doc.location}</div>
+                        </td>
+                        <td>
+                            <span class="badge badge-${doc.is_active ? 'active' : 'inactive'}">
+                                ${doc.is_active ? 'ACTIVE' : 'INACTIVE'}
+                            </span>
+                        </td>
+                        <td style="font-weight: 700; color: #0f172a;">${doc.consultations_completed}</td>
+                        <td>
+                            <div style="font-weight: 700;">${doc.record_views_count} views</div>
+                            <div class="view-list">
+                                <div style="font-size: 0.7rem; font-weight: 600; margin-bottom: 4px;">Recent Opens:</div>
+                                ${viewsHtml}
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn-edit" onclick="openEditModal(${doc.id})">Edit</button>
+                        </td>
+                    `;
+                    list.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Failed to load doctors:", err);
+            }
+        }
+
+        function openEditModal(id) {
+            const doc = allDoctors.find(d => d.id === id);
+            if (!doc) return;
+            
+            document.getElementById('editId').value = doc.id;
+            document.getElementById('editName').value = doc.name;
+            document.getElementById('editSpeciality').value = doc.speciality;
+            document.getElementById('editLocation').value = doc.location;
+            document.getElementById('editPhone').value = doc.phone || '';
+            document.getElementById('editPassword').value = doc.password;
+            document.getElementById('editStatus').value = doc.is_active;
+            
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        document.getElementById('editForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const data = {
+                id: parseInt(document.getElementById('editId').value),
+                name: document.getElementById('editName').value,
+                speciality: document.getElementById('editSpeciality').value,
+                location: document.getElementById('editLocation').value,
+                phone: document.getElementById('editPhone').value,
+                password: document.getElementById('editPassword').value,
+                is_active: parseInt(document.getElementById('editStatus').value)
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/doctor/admin/doctor/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const res = await response.json();
+                if (res.status === 'success') {
+                    closeModal();
+                    loadDoctors();
+                }
+            } catch (err) {
+                console.error("Update failed:", err);
+                alert("Failed to update doctor details.");
+            }
+        });
+
+        loadDoctors();
+    </script>
+</body>
+</html>
