@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curelith | Neural Lab Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <style>
+        :root {
+            --cl-primary: #1B3A36;
+            --cl-accent: #4C7F6D;
+            --cl-bg: #F3EEE4;
+            --cl-card: #FFFFFF;
+            --cl-text: #1B3A36;
+            --cl-text-dim: #4F5D57;
+        }
+
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+
+        body {
+            background-color: var(--cl-bg);
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            color: var(--cl-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container { width: 100%; max-width: 900px; }
+
+        .white-card {
+            background: var(--cl-card);
+            padding: 4rem;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(27, 58, 54, 0.05);
+            text-align: center;
+            border: 1px solid #DDD6C4;
+        }
+
+        h1 { font-size: 2.5rem; font-weight: 700; margin: 0; color: var(--cl-primary); }
+        p.sub { color: var(--cl-text-dim); margin-top: 1rem; font-size: 1.1rem; }
+
+        .upload-zone {
+            margin-top: 3rem;
+            border: 2px dashed #DDD6C4;
+            padding: 5rem;
+            border-radius: 30px;
+            background: #FAF9F4;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover { border-color: var(--cl-accent); background: white; }
+        .upload-zone i { width: 50px; height: 50px; color: var(--cl-accent); margin-bottom: 1.5rem; }
+
+        .btn-analyze {
+            margin-top: 2rem; width: 100%; padding: 1.2rem;
+            border-radius: 15px; background: var(--cl-primary);
+            color: white; border: none; font-weight: 700; cursor: pointer; display: none;
+        }
+
+        .results-container { display: none; margin-top: 3rem; text-align: left; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-block {
+            background: #FAF9F4; padding: 2rem; border-radius: 25px;
+            margin-bottom: 2rem; border: 1px solid #DDD6C4;
+        }
+
+        .test-row { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #DDD6C4; }
+        .status-badge { padding: 0.3rem 0.8rem; border-radius: 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .status-normal { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .status-high, .status-low { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
+
+        .loader { display: none; margin-top: 2rem; font-weight: 700; color: var(--cl-accent); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="white-card">
+            <h1>Neural Lab Intelligence</h1>
+            <p class="sub">Decrypt clinical lab reports with responsible AI guidance.</p>
+            
+            <div class="upload-zone" onclick="document.getElementById('fileInput').click()" id="dropZone">
+                <i data-lucide="upload-cloud"></i>
+                <div id="uText">
+                    <h3>Select Report</h3>
+                    <p style="color: var(--cl-text-dim);">PDF or Image accepted</p>
+                </div>
+                <div id="uPrev" style="display: none;">
+                    <i data-lucide="file-check"></i>
+                    <h3 id="fName">Ready</h3>
+                </div>
+                <input type="file" id="fileInput" style="display: none;" accept="image/*,application/pdf" onchange="handleFile(this)">
+            </div>
+
+            <button class="btn-analyze" id="analyzeBtn" onclick="execute()">Begin Clinical Analysis</button>
+            <div class="loader" id="loader">ANALYZING REPORT...</div>
+
+            <div class="results-container" id="results">
+                <div class="result-block">
+                    <h3 style="color: var(--cl-primary);">Interpretation</h3>
+                    <p id="iText" style="line-height: 1.7;"></p>
+                </div>
+                <div id="testList"></div>
+                <button class="btn-analyze" style="display: block; background: #FAF9F4; color: var(--cl-text); border: 1px solid #DDD6C4;" onclick="location.reload()">Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+        let sFile = null;
+
+        function initIcons() { try { lucide.createIcons(); } catch(e) {} }
+
+        function handleFile(i) {
+            if (i.files && i.files[0]) {
+                sFile = i.files[0];
+                document.getElementById('uText').style.display = 'none';
+                document.getElementById('uPrev').style.display = 'block';
+                document.getElementById('fName').innerText = sFile.name;
+                document.getElementById('analyzeBtn').style.display = 'block';
+                initIcons();
+            }
+        }
+
+        async function execute() {
+            if (!sFile) return;
+            const fd = new FormData(); fd.append('file', sFile);
+            document.getElementById('analyzeBtn').style.display = 'none';
+            document.getElementById('dropZone').style.display = 'none';
+            document.getElementById('loader').style.display = 'block';
+
+            try {
+                const res = await fetch(`${API_BASE}/ai/analyze-lab`, { method: 'POST', body: fd });
+                const d = await res.json();
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('results').style.display = 'block';
+                document.getElementById('iText').innerText = d.clinical_interpretation;
+                const list = document.getElementById('testList');
+                list.innerHTML = '';
+                d.tests.forEach(t => {
+                    const r = document.createElement('div'); r.className = 'result-block';
+                    r.innerHTML = `<div class="test-row"><div><strong>${t.name}</strong><br><small>Range: ${t.normal_range}</small></div><div style="text-align:right;"><strong>${t.value}</strong><br><span class="status-badge status-${t.status.toLowerCase()}">${t.status}</span></div></div>`;
+                    list.appendChild(r);
+                });
+                initIcons();
+            } catch (e) { alert("Fail."); location.reload(); }
+        }
+        document.addEventListener('DOMContentLoaded', initIcons);
+    </script>
+</body>
+</html>

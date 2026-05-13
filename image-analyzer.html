@@ -1,101 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Curelith – Image Analyzer</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="assets/logo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curelith | Clinical Image Synthesis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <style>
+        :root {
+            --cl-primary: #1B3A36;
+            --cl-accent: #4C7F6D;
+            --cl-bg: #F3EEE4;
+            --cl-card: #FFFFFF;
+            --cl-text: #1B3A36;
+        }
+
+        body {
+            background-color: var(--cl-bg); margin: 0;
+            font-family: 'Outfit', sans-serif;
+            color: var(--cl-text); display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 2rem;
+        }
+
+        .container { width: 100%; max-width: 900px; }
+
+        .white-card {
+            background: var(--cl-card); padding: 4rem; border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(27, 58, 54, 0.05);
+            text-align: center; border: 1px solid #DDD6C4;
+        }
+
+        .upload-zone {
+            margin-top: 3rem; border: 2px dashed #DDD6C4; padding: 5rem;
+            border-radius: 30px; background: #FAF9F4; cursor: pointer;
+        }
+
+        .btn-analyze {
+            margin-top: 2rem; width: 100%; padding: 1.2rem;
+            border-radius: 15px; background: var(--cl-primary);
+            color: white; border: none; font-weight: 700; cursor: pointer; display: none;
+        }
+
+        .result-block { background: #FAF9F4; padding: 2.5rem; border-radius: 35px; margin-bottom: 2rem; border: 1px solid #DDD6C4; text-align: left; }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="white-card">
+            <h1>Clinical Image Synthesis</h1>
+            <p style="color:#4F5D57;">Dermatological and medical image analysis via responsible AI.</p>
+            
+            <div class="upload-zone" onclick="document.getElementById('fileInput').click()" id="dropZone">
+                <i data-lucide="image" style="width:50px; height:50px; color:var(--cl-accent);"></i>
+                <h3 id="uText">Select Clinical Image</h3>
+                <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="h(this)">
+            </div>
 
-  <!-- HEADER -->
-  <header class="glass-header">
-    <div class="logo-box">
-      <img src="assets/logo.png" class="logo" alt="Curelith Logo"/>
-      <span class="brand">CURELITH</span>
+            <button class="btn-analyze" id="analyzeBtn" onclick="ex()">Initialize Synthesis</button>
+            <div id="loader" style="display:none; margin-top:2rem; font-weight:700; color:var(--cl-accent);">PROCESSING IMAGE MATRIX...</div>
+
+            <div id="res" style="display:none; margin-top:3rem;">
+                <div class="result-block">
+                    <h3 style="color:var(--cl-primary);">Analysis</h3>
+                    <p id="aText" style="line-height:1.7;"></p>
+                </div>
+                <button class="btn-action" style="padding:1rem 2rem; background:var(--cl-primary); color:white; border-radius:12px; border:none; cursor:pointer;" onclick="location.reload()">New Scan</button>
+            </div>
+        </div>
     </div>
-    <nav class="nav">
-      <a href="index.html#home">Home</a>
-      <a href="index.html#about">About</a>
-      <a href="index.html#demo">Demo</a>
-      <a href="index.html#team">Team</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
 
-  <!-- IMAGE ANALYZER -->
-  <section class="image-analyzer" style="padding: 4rem 1rem; text-align: center;">
-    <h2>🖼️ Image Analyzer</h2>
-    <p>Upload skin, wound, or rash images to detect possible conditions using our AI.</p>
+    <script>
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
 
-    <form id="imageForm" enctype="multipart/form-data" style="margin-top: 2rem;">
-      <input type="file" id="imageInput" accept="image/*" />
-      <button type="submit" style="margin-left: 10px;">Analyze Image</button>
-    </form>
+        function h(i) {
+            if(i.files && i.files[0]) {
+                document.getElementById('uText').innerText = i.files[0].name;
+                document.getElementById('analyzeBtn').style.display = 'block';
+                lucide.createIcons();
+            }
+        }
 
-    <div id="imagePreview" style="margin-top: 20px;"></div>
-    <div id="imageResult" class="image-result" style="margin-top: 20px;"></div>
-  </section>
+        async function ex() {
+            document.getElementById('analyzeBtn').style.display = 'none';
+            document.getElementById('dropZone').style.display = 'none';
+            document.getElementById('loader').style.display = 'block';
 
-  <!-- FOOTER -->
-  <footer id="contact">
-    <p>© 2025 Curelith.</p>
-    <div class="footer-links">
-      <a href="mailto:support@curelith.com">📧 Email</a>
-      <a href="https://www.instagram.com/curelith.ai" target="_blank">📸 Instagram</a>
-      <a href="https://www.linkedin.com/company/curelith" target="_blank">🔗 LinkedIn</a>
-      <a href="#">🌐 Terms</a>
-    </div>
-  </footer>
-
-  <script>
-    const BASE_URL = 'https://bc6236f13e2f.ngrok-free.app/api';
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const imageForm = document.getElementById('imageForm');
-      const imageInput = document.getElementById('imageInput');
-      const imageResult = document.getElementById('imageResult');
-      const imagePreview = document.getElementById('imagePreview');
-
-      if (imageForm) {
-        imageForm.addEventListener('submit', async (e) => {
-          e.preventDefault();
-
-          const file = imageInput.files[0];
-          if (!file) {
-            imageResult.textContent = "❌ Please select an image.";
-            return;
-          }
-
-          // Show preview
-          const reader = new FileReader();
-          reader.onload = () => {
-            imagePreview.innerHTML = `<img src="${reader.result}" alt="Uploaded image" style="max-width:100%; border-radius:8px;" />`;
-          };
-          reader.readAsDataURL(file);
-
-          const formData = new FormData();
-          formData.append('file', file);
-
-          imageResult.textContent = "⏳ Analyzing...";
-
-          try {
-            const res = await fetch(`${BASE_URL}/image-diagnose/`, {
-              method: 'POST',
-              body: formData
-            });
-
-            if (!res.ok) throw new Error('❌ Analysis failed');
-            const data = await res.json();
-            imageResult.textContent = `🤖 ${data.result || "No diagnosis returned."}`;
-          } catch (err) {
-            imageResult.textContent = err.message;
-          }
-        });
-      }
-    });
-  </script>
+            try {
+                const r = await fetch(`${API_BASE}/ai/chat`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ message: "Analyze this clinical image for dermatological concerns." })
+                });
+                const d = await r.json();
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('res').style.display = 'block';
+                document.getElementById('aText').innerText = d.reply;
+            } catch(e) { location.reload(); }
+        }
+        document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+    </script>
 </body>
 </html>

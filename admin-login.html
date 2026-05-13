@@ -3,98 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Access | Curelith Terminal</title>
+    <title>Admin Login | Curelith Command</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Outfit', sans-serif;
-            background: #0f172a;
+            background: #F3EEE4;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
-        }
-
-        .glow-bg {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
-            z-index: 0;
+            color: #1B3A36;
         }
 
         .login-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(20px);
-            padding: 3.5rem;
+            background: white;
+            padding: 4rem;
             border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 50px rgba(27, 58, 54, 0.05);
             width: 100%;
-            max-width: 420px;
+            max-width: 450px;
             text-align: center;
-            z-index: 1;
+            border: 1px solid #DDD6C4;
         }
 
-        h1 { font-size: 2rem; margin-bottom: 0.5rem; color: #fff; letter-spacing: -0.02em; }
-        p { color: #94a3b8; font-size: 1rem; margin-bottom: 2.5rem; }
+        h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        p { color: #4F5D57; margin-bottom: 3rem; }
 
         input {
             width: 100%;
-            padding: 1.1rem;
-            margin-bottom: 1.2rem;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            color: white;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            background: #FAF9F4;
+            border: 1px solid #DDD6C4;
+            border-radius: 15px;
             font-family: inherit;
-            box-sizing: border-box;
             outline: none;
-            transition: all 0.3s;
+            box-sizing: border-box;
         }
 
-        input:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
-        }
+        input:focus { border-color: #4C7F6D; }
 
         button {
             width: 100%;
-            padding: 1.1rem;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            padding: 1.2rem;
+            background: #1B3A36;
             color: white;
             border: none;
-            border-radius: 20px;
+            border-radius: 15px;
             font-weight: 700;
-            font-size: 1rem;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 10px 20px rgba(27, 58, 54, 0.1);
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
-        }
+        button:hover { transform: translateY(-2px); background: #4C7F6D; }
     </style>
 </head>
 <body>
-    <div class="glow-bg"></div>
     <div class="login-card">
+        <img src="assets/logo (2).png" style="height: 60px; margin-bottom: 2rem;" alt="Curelith">
         <h1>Admin Portal</h1>
-        <p>Establish secure uplink to terminal.</p>
+        <p>Access the platform governance command center.</p>
         <form id="adminForm">
             <input type="password" id="adminPass" placeholder="Access Key" required>
-            <button type="submit">Execute Login</button>
+            <button type="submit">Establish Connection</button>
         </form>
     </div>
 
     <script>
         document.getElementById('adminForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const pass = document.getElementById('adminPass').value;
-            localStorage.setItem('admin_pass', pass);
+            localStorage.setItem('admin_pass', document.getElementById('adminPass').value);
             window.location.href = 'admin-dashboard.html';
         });
     </script>
