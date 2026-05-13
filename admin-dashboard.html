@@ -167,40 +167,97 @@
             display: flex;
             justify-content: space-between;
         }
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .stat-box h3 { margin: 0; font-size: 0.8rem; color: #64748b; text-transform: uppercase; }
+        .stat-box .value { font-size: 1.8rem; font-weight: 700; margin-top: 0.5rem; color: #1e293b; }
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-top: 2rem;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="sidebar">
         <h2><i data-lucide="layout-dashboard"></i> Curelith Admin</h2>
-        <a href="#" class="nav-item active"><i data-lucide="users"></i> Doctors Management</a>
-        <a href="#" class="nav-item"><i data-lucide="bar-chart-3"></i> Global Stats</a>
+        <a href="#" class="nav-item active" onclick="showView('doctors')"><i data-lucide="users"></i> Doctors Management</a>
+        <a href="#" class="nav-item" onclick="showView('stats')"><i data-lucide="bar-chart-3"></i> Global Stats</a>
         <a href="#" class="nav-item"><i data-lucide="settings"></i> System Settings</a>
+        <a href="#" class="nav-item" style="margin-top: auto;" onclick="logout()"><i data-lucide="log-out"></i> Logout</a>
     </div>
 
     <div class="main">
-        <header>
-            <h1>Doctors Directory</h1>
-            <button class="btn-edit" style="background: var(--admin-accent); color: white; padding: 0.8rem 1.5rem;" onclick="loadDoctors()">
-                <i data-lucide="refresh-cw" style="width: 16px; display: inline; vertical-align: middle;"></i> Sync Data
-            </button>
-        </header>
+        <!-- DOCTORS VIEW -->
+        <div id="view-doctors">
+            <header>
+                <h1>Doctors Directory</h1>
+                <button class="btn-edit" style="background: var(--admin-accent); color: white; padding: 0.8rem 1.5rem;" onclick="loadDoctors()">
+                    <i data-lucide="refresh-cw" style="width: 16px; display: inline; vertical-align: middle;"></i> Sync Data
+                </button>
+            </header>
 
-        <div class="card">
-            <table class="doctor-table">
-                <thead>
-                    <tr>
-                        <th>Doctor Name</th>
-                        <th>Speciality / Location</th>
-                        <th>Status</th>
-                        <th>Consultations</th>
-                        <th>Record Views</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="doctorList">
-                    <!-- Loaded dynamically -->
-                </tbody>
-            </table>
+            <div class="card">
+                <table class="doctor-table">
+                    <thead>
+                        <tr>
+                            <th>Doctor Name</th>
+                            <th>Speciality / Location</th>
+                            <th>Status</th>
+                            <th>Consultations</th>
+                            <th>Record Views</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doctorList">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- STATS VIEW -->
+        <div id="view-stats" style="display: none;">
+            <header>
+                <h1>Platform Analytics</h1>
+            </header>
+            
+            <div class="stats-summary">
+                <div class="stat-box">
+                    <h3>Total Doctors</h3>
+                    <div class="value" id="globalTotalDoctors">0</div>
+                </div>
+                <div class="stat-box">
+                    <h3>Active Now</h3>
+                    <div class="value" id="globalActiveDoctors" style="color: #10b981;">0</div>
+                </div>
+                <div class="stat-box">
+                    <h3>Consultations</h3>
+                    <div class="value" id="globalTotalConsultations">0</div>
+                </div>
+                <div class="stat-box">
+                    <h3>Record Views</h3>
+                    <div class="value" id="globalTotalViews" style="color: #6366f1;">0</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 style="margin-top: 0;">Patient Activity (Last 7 Days)</h3>
+                <canvas id="activityChart"></canvas>
+            </div>
         </div>
     </div>
 
@@ -251,9 +308,34 @@
     </div>
 
     <script>
+        const adminPass = localStorage.getItem('admin_pass');
+        if (!adminPass) {
+            window.location.href = 'admin-login.html';
+        }
+
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+        const HEADERS = { 'X-Admin-Password': adminPass };
         let allDoctors = [];
+        let activityChart = null;
+
+        function showView(view) {
+            document.getElementById('view-doctors').style.display = view === 'doctors' ? 'block' : 'none';
+            document.getElementById('view-stats').style.display = view === 'stats' ? 'block' : 'none';
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.innerText.toLowerCase().includes(view)) item.classList.add('active');
+            });
+
+            if (view === 'stats') loadGlobalStats();
+            if (view === 'doctors') loadDoctors();
+        }
+
+        function logout() {
+            localStorage.removeItem('admin_pass');
+            window.location.href = 'admin-login.html';
+        }
         
         function initIcons() {
             try { 
@@ -264,7 +346,8 @@
         async function loadDoctors() {
             initIcons();
             try {
-                const response = await fetch(`${API_BASE}/doctor/admin/doctors`);
+                const response = await fetch(`${API_BASE}/doctor/admin/doctors`, { headers: HEADERS });
+                if (response.status === 401) return logout();
                 allDoctors = await response.json();
                 
                 const list = document.getElementById('doctorList');
@@ -350,7 +433,10 @@
             try {
                 const response = await fetch(`${API_BASE}/doctor/admin/doctor/update`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        ...HEADERS,
+                        'Content-Type': 'application/json' 
+                    },
                     body: JSON.stringify(data)
                 });
                 const res = await response.json();
@@ -364,8 +450,54 @@
             }
         });
 
+        async function loadGlobalStats() {
+            try {
+                const res = await fetch(`${API_BASE}/admin/stats`, { headers: HEADERS });
+                const stats = await res.json();
+
+                document.getElementById('globalTotalDoctors').innerText = stats.total_doctors;
+                document.getElementById('globalActiveDoctors').innerText = stats.active_doctors;
+                document.getElementById('globalTotalConsultations').innerText = stats.total_consultations;
+                document.getElementById('globalTotalViews').innerText = stats.total_record_views;
+
+                renderChart(stats.daily_activity);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderChart(data) {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            if (activityChart) activityChart.destroy();
+
+            // Sort data by date ascending
+            const sorted = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sorted.map(d => new Date(d.date).toLocaleDateString([], { month: 'short', day: 'numeric' })),
+                    datasets: [{
+                        label: 'Record Views',
+                        data: sorted.map(d => d.count),
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            loadDoctors();
+            showView('doctors');
             initIcons();
         });
     </script>

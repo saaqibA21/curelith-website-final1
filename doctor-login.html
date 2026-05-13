@@ -147,6 +147,7 @@
                 if (result.status === 'success') {
                     localStorage.setItem('doctor_name', result.doctor.name);
                     localStorage.setItem('doctor_id', result.doctor.id);
+                    localStorage.setItem('doctor_password', password); // Store for API headers
                     window.location.href = 'doctor-dashboard.html';
                 } else {
                     errorDiv.innerText = result.message || 'Invalid name or password';

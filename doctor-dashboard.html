@@ -334,8 +334,9 @@
 
         const doctorName = localStorage.getItem('doctor_name');
         const doctorPhone = localStorage.getItem('doctor_phone');
+        const doctorPass = localStorage.getItem('doctor_password');
 
-        if (!doctorName) {
+        if (!doctorName || !doctorPass) {
             window.location.href = 'doctor-login.html';
             throw new Error("Not logged in"); // Stop execution
         }
@@ -348,12 +349,16 @@
 
         async function loadAppointments() {
             try {
+                const headers = {
+                    'X-Doctor-Name': doctorName,
+                    'X-Doctor-Password': doctorPass
+                };
                 // Fetch Appointments
-                const appRes = await fetch(`${API_BASE}/doctor/appointments?name=${encodeURIComponent(doctorName)}`);
+                const appRes = await fetch(`${API_BASE}/doctor/appointments?name=${encodeURIComponent(doctorName)}`, { headers });
                 const apps = await appRes.json();
                 
                 // Fetch Overall Stats (Views/Bookings)
-                const statsRes = await fetch(`${API_BASE}/doctor/stats?name=${encodeURIComponent(doctorName)}`);
+                const statsRes = await fetch(`${API_BASE}/doctor/stats?name=${encodeURIComponent(doctorName)}`, { headers });
                 const stats = await statsRes.json();
 
                 const list = document.getElementById('appointmentList');
@@ -403,7 +408,11 @@
             try {
                 const response = await fetch(`${API_BASE}/doctor/appointment/complete`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Doctor-Name': doctorName,
+                        'X-Doctor-Password': doctorPass
+                    },
                     body: JSON.stringify({ id: appId })
                 });
                 const res = await response.json();
@@ -424,7 +433,11 @@
             if (doctorId) {
                 fetch(`${API_BASE}/doctor/log-view`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-Doctor-Name': doctorName,
+                        'X-Doctor-Password': doctorPass
+                    },
                     body: JSON.stringify({ doctor_id: doctorId, patient_phone: phone })
                 }).catch(err => console.warn("Failed to log view tracking:", err));
             }
