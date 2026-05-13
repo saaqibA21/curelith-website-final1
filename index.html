@@ -4,86 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curelith | Calm AI Medical Assistant</title>
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
     <style>
-        :root {
-            --cl-primary: #1B3A36;
-            --cl-accent: #4C7F6D;
-            --cl-bg: #F3EEE4;
-            --cl-card: #FFFFFF;
-            --cl-text: #1B3A36;
-            --cl-text-dim: #4F5D57;
-            --cl-glass: rgba(255, 255, 255, 0.7);
-        }
-
-        * { box-sizing: border-box; transition: all 0.3s ease; }
-
-        body {
-            background-color: var(--cl-bg);
-            margin: 0;
-            font-family: 'Outfit', sans-serif;
-            color: var(--cl-text);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        /* Header - Matches the Image */
-        header {
-            padding: 1.5rem 4rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: transparent;
-            position: absolute;
-            top: 0; width: 100%;
-            z-index: 1000;
-        }
-
-        .logo-box { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--cl-text); }
-        .logo-img { width: 40px; height: 40px; }
-        .brand { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-
-        nav { display: flex; gap: 30px; }
-        nav a { text-decoration: none; color: var(--cl-text); font-weight: 500; font-size: 0.9rem; }
-        nav a:hover { color: var(--cl-accent); }
-
-        /* Hero Section - Matching the Image Vibe */
+        /* Homepage-specific refinements */
         .hero {
-            padding: 12rem 2rem 8rem;
+            padding: 10rem 0 6rem;
             text-align: center;
-            background: radial-gradient(circle at top, #FAF9F4 0%, var(--cl-bg) 100%);
+            background: radial-gradient(circle at top, #FAF9F4 0%, var(--bg) 100%);
         }
 
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--cl-text);
-        }
-
-        .hero h1 span { color: var(--cl-accent); }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--cl-text-dim);
-            margin-top: 1.5rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Search Section - Calm Style */
         .search-container {
             margin: 4rem auto;
-            background: var(--cl-card);
+            background: var(--card);
             padding: 8px;
             border-radius: 50px;
             display: flex;
             width: 100%;
             max-width: 700px;
             box-shadow: 0 15px 35px rgba(27, 58, 54, 0.08);
-            border: 1px solid rgba(27, 58, 54, 0.05);
+            border: var(--border);
         }
 
         .search-container input {
@@ -91,121 +32,74 @@
             background: transparent;
             border: none;
             padding: 1.2rem 2rem;
-            color: var(--cl-text);
+            color: var(--text);
             font-size: 1rem;
             outline: none;
             font-family: inherit;
         }
 
-        .btn-search {
-            background: var(--cl-primary);
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-search:hover { background: var(--cl-accent); transform: translateY(-2px); }
-
-        /* "Why Curelith Exists" Section - From the Image */
         .why-section {
-            padding: 6rem 4rem;
-            position: relative;
-            background-image: url('assets/hero-banner.png'); /* Simulated background from user image */
+            padding: 6rem 0;
+            background: linear-gradient(rgba(243, 238, 228, 0.8), rgba(243, 238, 228, 0.8)), url('assets/hero-banner.png');
             background-size: cover;
             background-position: center;
-            display: flex;
-            justify-content: center;
         }
 
         .why-card {
-            background: var(--cl-glass);
+            background: var(--glass);
             backdrop-filter: blur(20px);
             padding: 4rem;
             border-radius: 40px;
             max-width: 800px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+            box-shadow: var(--shadow);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .why-card h2 { font-size: 2.5rem; margin-bottom: 2rem; color: var(--cl-primary); }
-        .why-card p { font-size: 1.1rem; color: var(--cl-text-dim); margin-bottom: 1.5rem; }
-
-        /* Stats & Features - Calm Style */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2.5rem;
-            padding: 8rem 4rem;
+            margin-top: 4rem;
         }
 
-        .feature-card {
-            background: var(--cl-card);
-            padding: 3rem;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(27, 58, 54, 0.03);
-            border: 1px solid rgba(27, 58, 54, 0.05);
-            cursor: pointer;
+        .feature-card i { width: 45px; height: 45px; color: var(--accent); margin-bottom: 1.5rem; }
+
+        .doctors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
         }
 
-        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 20px 45px rgba(27, 58, 54, 0.06); }
-        .feature-card i { width: 45px; height: 45px; color: var(--cl-accent); margin-bottom: 1.5rem; }
-        .feature-card h3 { color: var(--cl-primary); margin-bottom: 1rem; }
-
-        /* Doctor List - Clean Grid */
-        .doctors-section { padding: 8rem 4rem; background: #FAF9F4; }
         .doc-card {
             background: white;
             padding: 2.5rem;
             border-radius: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow);
+            border: var(--border);
         }
 
-        /* Floating Chat Widget - Calm Green */
+        /* Chat Widget */
         .chat-toggle {
-            position: fixed;
-            bottom: 40px; right: 40px;
-            width: 70px; height: 70px;
-            background: var(--cl-primary);
-            border-radius: 25px;
-            color: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 2001;
-            box-shadow: 0 15px 30px rgba(27, 58, 54, 0.2);
+            position: fixed; bottom: 40px; right: 40px;
+            width: 70px; height: 70px; background: var(--primary);
+            border-radius: 25px; color: white; display: flex;
+            align-items: center; justify-content: center; cursor: pointer; z-index: 2001;
         }
 
         .chat-widget {
-            position: fixed;
-            bottom: 120px; right: 40px;
-            width: 380px; height: 500px;
-            background: white;
-            border-radius: 30px;
-            display: none; flex-direction: column;
-            z-index: 2000; overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(0,0,0,0.05);
+            position: fixed; bottom: 120px; right: 40px;
+            width: 380px; height: 500px; background: white;
+            border-radius: 30px; display: none; flex-direction: column;
+            z-index: 2000; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1); overflow: hidden;
         }
 
-        .chat-header { background: var(--cl-primary); color: white; padding: 1.5rem; display: flex; justify-content: space-between; }
-        .msg-user { background: var(--cl-accent); color: white; align-self: flex-end; }
-        .msg-ai { background: #f0f2f1; color: var(--cl-text); align-self: flex-start; }
-
-        footer { padding: 6rem 4rem; background: var(--cl-primary); color: white; }
-        .footer-col a { color: #AFC7BC; text-decoration: none; display: block; margin-bottom: 10px; }
-        .footer-col a:hover { color: white; }
-
-        @media (max-width: 768px) {
-            header { padding: 1.5rem 2rem; }
-            .hero h1 { font-size: 2.5rem; }
-            .why-card { padding: 2rem; }
-            .features-grid { padding: 4rem 2rem; }
-        }
+        .chat-header { background: var(--primary); color: white; padding: 1.5rem; display: flex; justify-content: space-between; }
+        .chat-messages { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 1rem; border-radius: 15px; font-size: 0.9rem; max-width: 85%; }
+        .msg-ai { background: #f0f2f1; align-self: flex-start; }
+        .msg-user { background: var(--accent); color: white; align-self: flex-end; }
     </style>
 </head>
 <body>
@@ -215,88 +109,107 @@
             <span class="brand">CURELITH</span>
         </a>
         <nav>
-            <a href="index.html">Home</a>
+            <a href="index.html" class="active">Home</a>
             <a href="about.html">About</a>
-            <a href="#features">Tools</a>
-            <a href="#contact">Contact</a>
+            <a href="#tools">Tools</a>
+            <a href="#doctors">Physicians</a>
         </nav>
-        <div style="display: flex; gap: 15px;">
-            <a href="doctor-login.html" style="text-decoration: none; font-weight: 600; color: var(--cl-text);">Physician Login</a>
+        <div>
+            <a href="doctor-login.html" class="btn btn-secondary">Physician Access</a>
         </div>
     </header>
 
     <section id="home" class="hero">
-        <h1>Your Smartest <br><span>AI Medical Assistant</span></h1>
-        <p>Listen. Learn. Heal. A calm, responsible clinical intelligence system designed to reduce health anxiety and provide clarity.</p>
-        
-        <div class="search-container">
-            <input type="text" id="mainSearch" placeholder="Find Doctors or Specialities..." onkeyup="handleSearch(this.value)">
-            <button class="btn-search"><i data-lucide="search"></i> Search</button>
-        </div>
-    </section>
-
-    <section class="why-section">
-        <div class="why-card">
-            <h2>Why Curelith Exists</h2>
-            <p>Many people—especially elders—experience anxiety when a health concern begins. Online searches often amplify fear through complex language and alarming information.</p>
-            <p>Curelith exists to support the first moment of uncertainty with calm, understandable guidance—before confusion turns into panic.</p>
-        </div>
-    </section>
-
-    <section id="features" class="features-grid">
-        <div class="feature-card" onclick="window.location.href='lab-analyzer.html'">
-            <i data-lucide="flask-conical"></i>
-            <h3>Lab Intelligence</h3>
-            <p>Decrypt complex medical reports with responsible AI guidance.</p>
-        </div>
-        <div class="feature-card" onclick="window.location.href='image-analyzer.html'">
-            <i data-lucide="camera"></i>
-            <h3>Image Analysis</h3>
-            <p>High-resolution clinical analysis for dermatological observations.</p>
-        </div>
-        <div class="feature-card" onclick="window.location.href='medical-locker.html'">
-            <i data-lucide="lock"></i>
-            <h3>Medical Locker</h3>
-            <p>Secure, patient-owned data vaults for your health history.</p>
-        </div>
-    </section>
-
-    <section id="doctors" class="doctors-section">
-        <div style="text-align: center; margin-bottom: 4rem;">
-            <h2 style="font-size: 2.5rem; color: var(--cl-primary);">Active Providers</h2>
-            <p style="color: var(--cl-text-dim);">Certified medical professionals in our network.</p>
-        </div>
-        <div class="doctors-grid" id="publicDoctorList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
-            <!-- Dynamic -->
-        </div>
-    </section>
-
-    <footer>
-        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4rem;">
-            <div>
-                <h2 style="letter-spacing: 2px;">CURELITH</h2>
-                <p style="color: #AFC7BC; max-width: 300px; margin-top: 1rem;">Medical clarity when you need it, you have it.</p>
-            </div>
-            <div class="footer-col">
-                <h4>QUICK LINKS</h4>
-                <a href="#home">Home</a>
-                <a href="about.html">About</a>
-                <a href="medical-locker.html">Patient Locker</a>
-                <a href="admin-login.html">Admin Portal</a>
-            </div>
-            <div class="footer-col">
-                <h4>CONTACT</h4>
-                <p>curelith.ai@gmail.com</p>
-                <p>Chennai, Tamil Nadu, India</p>
+        <div class="container">
+            <h1>Healthcare Clarity <br><span>Powered by Empathy</span></h1>
+            <p>A calm, clinical intelligence system designed to reduce health anxiety and support your journey to wellness.</p>
+            
+            <div class="search-container">
+                <input type="text" id="mainSearch" placeholder="Search by Speciality or Physician name..." onkeyup="handleSearch(this.value)">
+                <button class="btn btn-primary" onclick="handleSearch(document.getElementById('mainSearch').value)">
+                    <i data-lucide="search"></i> Search
+                </button>
             </div>
         </div>
-        <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; opacity: 0.6;">
-            © 2025 Curelith. All Rights Reserved.
+    </section>
+
+    <section id="about" class="why-section">
+        <div class="container">
+            <div class="why-card">
+                <h2>Why Curelith Exists</h2>
+                <p>Anxiety often stems from confusion. Traditional health searches can amplify fear through alarming, non-contextual information.</p>
+                <p>Curelith serves as your first point of clinical contact—providing calm, understandable guidance before uncertainty turns into panic.</p>
+                <a href="about.html" class="btn btn-secondary" style="margin-top: 1rem;">Learn Our Story</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="tools" class="section-padding">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h2>Clinical Intelligence Tools</h2>
+                <p>Advanced diagnostic support at your fingertips.</p>
+            </div>
+            <div class="features-grid">
+                <div class="card feature-card" onclick="window.location.href='lab-analyzer.html'" style="cursor:pointer;">
+                    <i data-lucide="flask-conical"></i>
+                    <h3>Lab Report Analyzer</h3>
+                    <p>Neural decryption of complex clinical results into plain language.</p>
+                </div>
+                <div class="card feature-card" onclick="window.location.href='image-analyzer.html'" style="cursor:pointer;">
+                    <i data-lucide="camera"></i>
+                    <h3>Derm-Image Analysis</h3>
+                    <p>Clinical synthesis for dermatological and skin-related observations.</p>
+                </div>
+                <div class="card feature-card" onclick="window.location.href='medical-locker.html'" style="cursor:pointer;">
+                    <i data-lucide="lock"></i>
+                    <h3>Secure Health Locker</h3>
+                    <p>Patient-owned data vaults for encrypted health records.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="doctors" class="section-padding" style="background: #FAF9F4;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h2>Our Physician Network</h2>
+                <p>Certified providers ready to support your health journey.</p>
+            </div>
+            <div class="doctors-grid" id="publicDoctorList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h2 style="color: white; letter-spacing: 2px;">CURELITH</h2>
+                    <p style="color: #AFC7BC; margin-top: 1.5rem;">The intersection of clinical intelligence and human responsibility.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>PLATFORM</h4>
+                    <a href="#home">Back to Top</a>
+                    <a href="about.html">About Us</a>
+                    <a href="medical-locker.html">Patient Portal</a>
+                    <a href="admin-login.html">Administration</a>
+                </div>
+                <div class="footer-col">
+                    <h4>SUPPORT</h4>
+                    <p style="color: #AFC7BC;">curelith.ai@gmail.com</p>
+                    <p style="color: #AFC7BC;">Tamil Nadu, India</p>
+                </div>
+            </div>
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; opacity: 0.6; text-align: center;">
+                © 2025 Curelith Intelligence. Not a replacement for professional medical advice.
+            </div>
         </div>
     </footer>
 
     <div class="chat-toggle" onclick="toggleChat()">
-        <i data-lucide="message-circle"></i>
+        <i data-lucide="sparkles"></i>
     </div>
 
     <div class="chat-widget" id="curelithChat">
@@ -304,12 +217,12 @@
             <span style="font-weight: 700;">Curelith AI</span>
             <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer;"><i data-lucide="x"></i></button>
         </div>
-        <div style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;" id="chatMessages">
-            <div style="padding: 1rem; border-radius: 15px; background: #f0f2f1; align-self: flex-start; font-size: 0.9rem;">Hello. How can I assist you today?</div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="msg msg-ai">Greetings. I am Curelith AI. How can I assist your health journey today?</div>
         </div>
         <div style="padding: 1.2rem; display: flex; gap: 10px; border-top: 1px solid #eee;">
-            <input type="text" id="chatInput" placeholder="Type here..." style="flex: 1; padding: 0.8rem; border: 1px solid #ddd; border-radius: 12px; outline: none;">
-            <button onclick="sendChatMessage()" style="background: var(--cl-primary); color: white; border: none; padding: 0 1.2rem; border-radius: 12px; cursor: pointer;"><i data-lucide="send"></i></button>
+            <input type="text" id="chatInput" placeholder="Ask anything..." style="flex: 1; padding: 0.8rem; border: 1px solid #ddd; border-radius: 12px; outline: none;" onkeypress="if(event.key==='Enter')sendChatMessage()">
+            <button onclick="sendChatMessage()" style="background: var(--primary); color: white; border: none; padding: 0 1.2rem; border-radius: 12px; cursor: pointer;"><i data-lucide="send"></i></button>
         </div>
     </div>
 
@@ -325,24 +238,32 @@
                 const res = await fetch(`${API_BASE}/doctor/public/doctors`);
                 allDoctors = await res.json();
                 renderDoctors(allDoctors);
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error("Network offline or API error."); }
         }
 
         function renderDoctors(docs) {
             const list = document.getElementById('publicDoctorList');
             list.innerHTML = '';
+            if(!docs.length) { list.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No physicians found in this node.</p>'; return; }
             docs.forEach(doc => {
                 const tr = document.createElement('div');
                 tr.className = 'doc-card';
                 tr.innerHTML = `
-                    <h3 style="margin: 0; color: var(--cl-primary);">${doc.name}</h3>
-                    <p style="color: var(--cl-accent); font-weight: 600;">${doc.speciality}</p>
-                    <p style="color: var(--cl-text-dim); font-size: 0.9rem; margin-top: 5px;">${doc.location}</p>
-                    <button style="margin-top: 1.5rem; width: 100%; padding: 0.8rem; background: var(--cl-bg); border: 1px solid #DDD6C4; border-radius: 12px; color: var(--cl-text); font-weight: 600; cursor: pointer;" onclick="book('${doc.name}')">Book Appointment</button>
+                    <h3 style="margin: 0; color: var(--primary);">${doc.name}</h3>
+                    <p style="color: var(--accent); font-weight: 600; margin-bottom: 5px;">${doc.speciality}</p>
+                    <p style="color: var(--text-dim); font-size: 0.9rem;">${doc.location}</p>
+                    <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
+                        <button class="btn btn-secondary" style="flex:1; font-size: 0.8rem;" onclick="book('${doc.name}')">Book Appointment</button>
+                    </div>
                 `;
                 list.appendChild(tr);
             });
             initIcons();
+        }
+
+        function handleSearch(q) {
+            const f = allDoctors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.speciality.toLowerCase().includes(q.toLowerCase()));
+            renderDoctors(f);
         }
 
         function toggleChat() {
@@ -356,13 +277,13 @@
             if(!msg) return;
             const container = document.getElementById('chatMessages');
             const uDiv = document.createElement('div');
-            uDiv.style = "padding: 1rem; border-radius: 15px; background: var(--cl-accent); color: white; align-self: flex-end; font-size: 0.9rem;";
+            uDiv.className = "msg msg-user";
             uDiv.innerText = msg;
             container.appendChild(uDiv);
             input.value = '';
             
             const aiDiv = document.createElement('div');
-            aiDiv.style = "padding: 1rem; border-radius: 15px; background: #f0f2f1; align-self: flex-start; font-size: 0.9rem;";
+            aiDiv.className = "msg msg-ai";
             aiDiv.innerText = "...";
             container.appendChild(aiDiv);
             container.scrollTop = container.scrollHeight;
@@ -374,18 +295,14 @@
                     body: JSON.stringify({ message: msg })
                 });
                 const data = await res.json();
-                aiDiv.innerText = data.reply;
-            } catch (e) { aiDiv.innerText = "Connection error."; }
+                aiDiv.innerText = data.reply || "Error: System response invalid.";
+            } catch (e) { aiDiv.innerText = "Connection lost. Please check your network."; }
             container.scrollTop = container.scrollHeight;
         }
 
         function book(name) {
-            window.open(`https://wa.me/919042556225?text=${encodeURIComponent("Booking with "+name)}`, '_blank');
-        }
-
-        function handleSearch(q) {
-            const f = allDoctors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.speciality.toLowerCase().includes(q.toLowerCase()));
-            renderDoctors(f);
+            const msg = encodeURIComponent(`Hello, I'd like to book an appointment with ${name} via Curelith.`);
+            window.open(`https://wa.me/919042556225?text=${msg}`, '_blank');
         }
 
         document.addEventListener('DOMContentLoaded', () => { loadPublicDoctors(); initIcons(); });
