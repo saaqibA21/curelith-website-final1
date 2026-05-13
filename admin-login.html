@@ -3,57 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | Curelith</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Admin Access | Curelith Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: #f8fafc;
+            font-family: 'Outfit', sans-serif;
+            background: #0f172a;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
+
+        .glow-bg {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            z-index: 0;
+        }
+
         .login-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            padding: 3.5rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            text-align: center;
+            z-index: 1;
         }
-        h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #1e293b; }
-        p { color: #64748b; font-size: 0.9rem; margin-bottom: 2rem; }
+
+        h1 { font-size: 2rem; margin-bottom: 0.5rem; color: #fff; letter-spacing: -0.02em; }
+        p { color: #94a3b8; font-size: 1rem; margin-bottom: 2.5rem; }
+
         input {
             width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            padding: 1.1rem;
+            margin-bottom: 1.2rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: white;
+            font-family: inherit;
             box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s;
         }
+
+        input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
         button {
             width: 100%;
-            padding: 0.8rem;
-            background: #6366f1;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: white;
             border: none;
-            border-radius: 12px;
-            font-weight: 600;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
-            transition: opacity 0.2s;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
         }
-        button:hover { opacity: 0.9; }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+        }
     </style>
 </head>
 <body>
+    <div class="glow-bg"></div>
     <div class="login-card">
-        <h1>Admin Access</h1>
-        <p>Please enter the administrator password.</p>
+        <h1>Admin Portal</h1>
+        <p>Establish secure uplink to terminal.</p>
         <form id="adminForm">
-            <input type="password" id="adminPass" placeholder="Password" required>
-            <button type="submit">Login</button>
+            <input type="password" id="adminPass" placeholder="Access Key" required>
+            <button type="submit">Execute Login</button>
         </form>
     </div>
 

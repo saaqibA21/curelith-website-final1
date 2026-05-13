@@ -3,358 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Dashboard | Curelith</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Curelith Portal | Professional Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
     <style>
         :root {
-            --sidebar-bg: #1e293b;
-            --main-bg: #f1f5f9;
-            --accent: #3b82f6;
+            --dr-primary: #6366f1;
+            --dr-accent: #10b981;
+            --dr-bg: #0f172a;
+            --dr-card-bg: rgba(30, 41, 59, 0.7);
+            --dr-text: #f8fafc;
+            --dr-text-dim: #94a3b8;
         }
 
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
         body {
-            background-color: var(--main-bg);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             margin: 0;
             display: flex;
             min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            color: #1e293b;
+            font-family: 'Outfit', sans-serif;
+            color: var(--dr-text);
+            overflow: hidden;
         }
 
-        /* Sidebar */
+        /* Futuristic Sidebar */
         .sidebar {
-            width: 260px;
-            background: var(--sidebar-bg);
-            color: white;
-            padding: 2rem 1.5rem;
+            width: 280px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem 1.5rem;
             display: flex;
             flex-direction: column;
+            z-index: 100;
         }
 
         .sidebar h2 {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
+            font-size: 2rem;
+            margin-bottom: 3.5rem;
             font-weight: 700;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 0.8rem 1rem;
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
+            gap: 15px;
+            padding: 1.1rem 1.3rem;
+            border-radius: 20px;
+            margin-bottom: 0.8rem;
             cursor: pointer;
-            transition: all 0.2s;
-            color: #94a3b8;
+            color: var(--dr-text-dim);
             text-decoration: none;
+            font-weight: 500;
         }
 
-        .nav-item:hover, .nav-item.active {
-            background: rgba(255, 255, 255, 0.1);
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
             color: white;
+            transform: translateX(8px);
         }
 
-        /* Main Content */
+        .nav-item.active {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Main Scrollable Content */
         .main-content {
             flex: 1;
-            padding: 2.5rem;
+            padding: 3rem 4rem;
             overflow-y: auto;
+            background: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
         }
 
         header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2.5rem;
+            align-items: flex-end;
+            margin-bottom: 4rem;
         }
 
-        .welcome-msg h1 {
-            margin: 0;
-            font-size: 1.8rem;
-        }
+        .greeter h1 { margin: 0; font-size: 2.5rem; font-weight: 700; letter-spacing: -0.03em; }
+        .greeter p { color: var(--dr-text-dim); font-size: 1.1rem; margin-top: 8px; }
 
-        .doctor-info {
-            background: white;
-            padding: 0.5rem 1rem;
+        .doctor-profile-pill {
+            background: var(--dr-card-bg);
+            padding: 0.8rem 1.5rem;
             border-radius: 50px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Dashboard Cards */
+        /* Stat Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
         }
 
         .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            background: var(--dr-card-bg);
+            padding: 2.5rem;
+            border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
         }
 
-        .stat-card h3 {
-            margin: 0;
-            font-size: 0.85rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: -20px; right: -20px;
+            width: 100px; height: 100px;
+            background: var(--dr-primary);
+            opacity: 0.05;
+            filter: blur(40px);
+            border-radius: 50%;
         }
 
-        .stat-card .value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-top: 0.5rem;
+        .stat-card h3 { margin: 0; font-size: 0.9rem; color: var(--dr-text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+        .stat-card .value { font-size: 3rem; font-weight: 700; margin-top: 1rem; }
+
+        /* Modern Table / Cards View */
+        .glass-panel {
+            background: var(--dr-card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
         }
 
-        /* Table */
-        .appointments-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-
-        .section-header {
+        .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            text-align: left;
-            padding: 1rem;
-            color: #64748b;
-            font-size: 0.85rem;
-            border-bottom: 2px solid #f1f5f9;
-        }
-
-        td {
-            padding: 1.2rem 1rem;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 0.95rem;
-        }
-
-        .patient-row:hover {
-            background: #f8fafc;
-            cursor: pointer;
-        }
-
-        .badge {
-            padding: 0.4rem 0.8rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-virtual { background: #dcfce7; color: #166534; }
-        .badge-physical { background: #fef9c3; color: #854d0e; }
-        .badge-home { background: #e0f2fe; color: #075985; }
-
-        .btn-view {
-            background: #f1f5f9;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--accent);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-view:hover {
-            background: var(--accent);
+        .search-input {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.8rem;
+            border-radius: 20px;
             color: white;
+            width: 350px;
+            outline: none;
         }
 
-        /* Modal / Detail View */
+        .search-input:focus { border-color: var(--dr-primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1.5rem; color: var(--dr-text-dim); font-weight: 600; font-size: 0.9rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        td { padding: 1.8rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+        .patient-phone { font-weight: 700; font-size: 1.1rem; }
+        
+        .badge { padding: 0.6rem 1.2rem; border-radius: 14px; font-size: 0.75rem; font-weight: 700; }
+        .badge-virtual { background: rgba(99, 102, 241, 0.1); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.2); }
+        .badge-physical { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 16px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-action:hover { background: var(--dr-primary); border-color: var(--dr-primary); transform: scale(1.05); }
+
+        /* Modal Overhaul */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
         }
 
         .modal-content {
-            background: white;
+            background: #1e293b;
             width: 90%;
-            max-width: 800px;
-            height: 80vh;
-            border-radius: 24px;
-            padding: 2rem;
-            position: relative;
+            max-width: 900px;
+            max-height: 85vh;
+            border-radius: 45px;
+            padding: 4rem;
             overflow-y: auto;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            cursor: pointer;
-            color: #64748b;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
         }
 
         .report-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
         }
 
         .report-item {
-            border: 1px solid #e2e8f0;
-            padding: 1rem;
-            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 28px;
             text-align: center;
-            transition: all 0.2s;
+            cursor: pointer;
         }
 
-        .report-item:hover {
-            border-color: var(--accent);
-            transform: scale(1.05);
+        .report-item:hover { background: var(--dr-primary); transform: translateY(-10px); }
+        .report-item i { width: 35px; height: 35px; margin-bottom: 15px; }
+
+        /* Forms */
+        .form-input {
+            width: 100%;
+            padding: 1.2rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            color: white;
+            font-family: inherit;
+            margin-bottom: 2rem;
         }
 
-        .report-item i { color: var(--accent); }
-        .report-item p { font-size: 0.75rem; margin-top: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .form-input:focus { border-color: var(--dr-primary); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2><i data-lucide="shield-plus"></i> Curelith</h2>
-        <a href="#" class="nav-item active" onclick="showView('appointments')"><i data-lucide="calendar"></i> Appointments</a>
-        <a href="#" class="nav-item" onclick="showView('patients')"><i data-lucide="users"></i> My Patients</a>
-        <a href="#" class="nav-item" onclick="showView('settings')"><i data-lucide="settings"></i> Settings</a>
+        <h2><i data-lucide="activity"></i> Curelith</h2>
+        <a href="#" class="nav-item active" onclick="showView('appointments')"><i data-lucide="calendar"></i> Schedule</a>
+        <a href="#" class="nav-item" onclick="showView('patients')"><i data-lucide="users"></i> Patients</a>
+        <a href="#" class="nav-item" onclick="showView('settings')"><i data-lucide="sliders"></i> Settings</a>
+        
         <div style="margin-top: auto;">
-            <a href="#" class="nav-item" onclick="logout()"><i data-lucide="log-out"></i> Logout</a>
+            <a href="#" class="nav-item" onclick="logout()"><i data-lucide="power"></i> Terminate Session</a>
         </div>
     </div>
 
     <div class="main-content">
         <header>
-            <div class="welcome-msg">
-                <h1 id="welcomeTitle">Welcome, Dr.</h1>
-                <p style="color: #64748b; margin-top: 5px;">You have <span id="appCount">0</span> appointments today</p>
+            <div class="greeter">
+                <p id="timeGreeting">Optimizing results...</p>
+                <h1 id="welcomeTitle">Dr. Professional</h1>
             </div>
-            <div class="doctor-info">
-                <i data-lucide="user-circle"></i>
-                <span id="headerDoctorName">Dr. Ragul</span>
+            <div class="doctor-profile-pill">
+                <div style="width: 40px; height: 40px; background: var(--dr-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;" id="doctorInitial">D</div>
+                <span id="headerDoctorName" style="font-weight: 600;">Dr. Loading</span>
             </div>
         </header>
 
         <div id="view-appointments">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>Bot Visibility</h3>
+                    <h3>Visibility Velocity</h3>
                     <div class="value" id="statViews">0</div>
-                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Times shown to patients</p>
+                    <p style="color: var(--dr-text-dim); font-size: 0.8rem; margin-top: 10px;">Network impressions</p>
                 </div>
                 <div class="stat-card">
-                    <h3>Total Bookings</h3>
+                    <h3>Engagement Ratio</h3>
                     <div class="value" id="statTotalBookings">0</div>
-                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">All-time bookings</p>
+                    <p style="color: var(--dr-text-dim); font-size: 0.8rem; margin-top: 10px;">Successful bookings</p>
                 </div>
                 <div class="stat-card">
-                    <h3>Completed</h3>
-                    <div class="value" id="statCompleted" style="color: #16a34a;">0</div>
-                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Consultations finished</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Pending</h3>
-                    <div class="value" id="statToday" style="color: #eab308;">0</div>
-                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Awaiting consultation</p>
+                    <h3>Operational Flow</h3>
+                    <div class="value" id="statToday" style="color: var(--dr-primary);">0</div>
+                    <p style="color: var(--dr-text-dim); font-size: 0.8rem; margin-top: 10px;">Active appointments</p>
                 </div>
             </div>
 
-            <div class="appointments-section">
-                <div class="section-header">
-                    <h2>Today's Schedule</h2>
-                    <button class="btn-view" onclick="loadAppointments()"><i data-lucide="refresh-cw" style="width: 14px;"></i> Refresh</button>
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h2>Live Schedule</h2>
+                    <input type="text" class="search-input" placeholder="Search appointments..." id="appSearch" onkeyup="filterAppointments(this.value)">
                 </div>
-                <table>
+                <table id="appointmentsTable">
                     <thead>
                         <tr>
-                            <th>Patient Phone</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>PATIENT IDENTIFIER</th>
+                            <th>MODALITY</th>
+                            <th>STATUS</th>
+                            <th>PROTOCOL</th>
                         </tr>
                     </thead>
-                    <tbody id="appointmentList">
-                        <!-- Loaded dynamically -->
-                    </tbody>
+                    <tbody id="appointmentList"></tbody>
                 </table>
             </div>
         </div>
 
         <div id="view-patients" style="display: none;">
-            <div class="appointments-section">
-                <div class="section-header">
-                    <h2>My Patients</h2>
-                    <p style="color: #64748b;">History of all patients you have consulted</p>
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h2>Patient Database</h2>
+                    <input type="text" class="search-input" placeholder="Filter patient records..." id="patientSearch" onkeyup="filterPatients(this.value)">
                 </div>
                 <table>
                     <thead>
                         <tr>
-                            <th>Patient Phone</th>
-                            <th>Last Visit</th>
-                            <th>Total Visits</th>
-                            <th>Action</th>
+                            <th>IDENTIFIER</th>
+                            <th>LAST CONSULTATION</th>
+                            <th>TOTAL VISITS</th>
+                            <th>ACTIONS</th>
                         </tr>
                     </thead>
-                    <tbody id="patientHistoryList">
-                        <!-- Loaded dynamically -->
-                    </tbody>
+                    <tbody id="patientHistoryList"></tbody>
                 </table>
             </div>
         </div>
 
         <div id="view-settings" style="display: none;">
-            <div class="appointments-section" style="max-width: 600px;">
-                <h2>Profile Settings</h2>
-                <hr style="border: 1px solid #f1f5f9; margin: 1.5rem 0;">
+            <div class="glass-panel" style="max-width: 700px; margin: 0 auto;">
+                <h2>System Configuration</h2>
+                <p style="color: var(--dr-text-dim); margin-bottom: 3rem;">Adjust your professional profile parameters</p>
+                
                 <form id="settingsForm">
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Speciality</label>
-                        <input type="text" id="setSpeciality" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--dr-text-dim); margin-bottom: 8px; display: block;">SPECIALIZATION</label>
+                            <input type="text" id="setSpeciality" class="form-input">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--dr-text-dim); margin-bottom: 8px; display: block;">GEOGRAPHIC NODE</label>
+                            <input type="text" id="setLocation" class="form-input">
+                        </div>
                     </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Location</label>
-                        <input type="text" id="setLocation" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
-                    </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Phone Number</label>
-                        <input type="text" id="setPhone" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
-                    </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Availability</label>
-                        <input type="text" id="setAvailability" placeholder="e.g. 10am-1pm, 7pm-9pm" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
-                    </div>
-                    <div style="margin-bottom: 2rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Password</label>
-                        <input type="text" id="setPass" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
-                    </div>
-                    <button type="submit" class="btn-view" style="width: 100%; padding: 1rem; background: var(--accent); color: white;">Save Profile Changes</button>
+                    <label style="font-size: 0.8rem; color: var(--dr-text-dim); margin-bottom: 8px; display: block;">OPERATIONAL HOURS</label>
+                    <input type="text" id="setAvailability" class="form-input" placeholder="e.g. 09:00 - 17:00">
+                    
+                    <label style="font-size: 0.8rem; color: var(--dr-text-dim); margin-bottom: 8px; display: block;">ACCESS KEY (PASSWORD)</label>
+                    <input type="text" id="setPass" class="form-input">
+                    
+                    <button type="submit" class="btn-action" style="width: 100%; padding: 1.2rem; background: var(--dr-primary); justify-content: center;">
+                        Synchronize Profile Changes
+                    </button>
                 </form>
             </div>
         </div>
@@ -363,208 +368,162 @@
     <!-- Patient Detail Modal -->
     <div class="modal" id="patientModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()"><i data-lucide="x"></i></span>
-            <h2 id="modalPatientPhone">Patient: +91XXXX</h2>
-            <hr style="border: 1px solid #f1f5f9; margin: 1.5rem 0;">
-            
-            <h3>Medical Locker Reports</h3>
-            <div class="report-grid" id="reportGrid">
-                <!-- Loaded dynamically -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h2 id="modalPatientPhone" style="margin: 0; font-size: 2rem;">Patient Record</h2>
+                    <p style="color: var(--dr-text-dim); margin-top: 10px;">Medical Locker Data Stream</p>
+                </div>
+                <button class="btn-action" onclick="closeModal()" style="border-radius: 50%; padding: 1rem;"><i data-lucide="x"></i></button>
             </div>
             
-            <div style="margin-top: 2.5rem; text-align: center;">
-                <button class="btn-view" style="padding: 0.8rem 2.5rem; background: #64748b; color: white;" onclick="closeModal()">Close</button>
+            <div class="report-grid" id="reportGrid"></div>
+            
+            <div style="margin-top: 4rem; display: flex; justify-content: center;">
+                <button class="btn-action" onclick="closeModal()" style="padding: 1.2rem 3rem;">Close Terminal</button>
             </div>
         </div>
     </div>
 
     <script>
-        function initIcons() {
-            try { 
-                if (typeof lucide !== 'undefined') lucide.createIcons(); 
-            } catch(e) { console.warn("Lucide icons failed to load"); }
-        }
-        initIcons();
-
         const doctorName = localStorage.getItem('doctor_name');
-        const doctorPhone = localStorage.getItem('doctor_phone');
         const doctorPass = localStorage.getItem('doctor_password');
+        const doctorId = localStorage.getItem('doctor_id');
 
-        if (!doctorName || !doctorPass) {
-            window.location.href = 'doctor-login.html';
-            throw new Error("Not logged in"); // Stop execution
-        }
-
-        document.getElementById('welcomeTitle').innerText = `Welcome, ${doctorName}`;
-        document.getElementById('headerDoctorName').innerText = doctorName;
-
-        function showView(view) {
-            document.getElementById('view-appointments').style.display = view === 'appointments' ? 'block' : 'none';
-            document.getElementById('view-patients').style.display = view === 'patients' ? 'block' : 'none';
-            document.getElementById('view-settings').style.display = view === 'settings' ? 'block' : 'none';
-            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.innerText.toLowerCase().includes(view.replace('view-', ''))) item.classList.add('active');
-            });
-
-            if (view === 'patients') loadPatientHistory();
-            if (view === 'settings') loadSettings();
-            if (view === 'appointments') loadAppointments();
-        }
-
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'doctor-login.html';
-        }
+        if (!doctorName || !doctorPass) window.location.href = 'doctor-login.html';
 
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+        const headers = { 'X-Doctor-Name': doctorName, 'X-Doctor-Password': doctorPass };
+
+        let allAppointments = [];
+        let allPatients = [];
+
+        function initIcons() { try { lucide.createIcons(); } catch(e) {} }
+
+        function setGreeting() {
+            const hr = new Date().getHours();
+            let g = "System online. Good ";
+            if (hr < 12) g += "Morning";
+            else if (hr < 18) g += "Afternoon";
+            else g += "Evening";
+            document.getElementById('timeGreeting').innerText = g;
+            document.getElementById('welcomeTitle').innerText = doctorName;
+            document.getElementById('headerDoctorName').innerText = doctorName;
+            document.getElementById('doctorInitial').innerText = doctorName[0].toUpperCase();
+        }
+
+        function showView(view) {
+            ['appointments', 'patients', 'settings'].forEach(v => {
+                document.getElementById('view-' + v).style.display = view === v ? 'block' : 'none';
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.innerText.toLowerCase().includes(view.slice(0, 3))) item.classList.add('active');
+            });
+            if (view === 'appointments') loadAppointments();
+            if (view === 'patients') loadPatientHistory();
+            if (view === 'settings') loadSettings();
+        }
 
         async function loadAppointments() {
             try {
-                const headers = {
-                    'X-Doctor-Name': doctorName,
-                    'X-Doctor-Password': doctorPass
-                };
-                // Fetch Appointments
                 const appRes = await fetch(`${API_BASE}/doctor/appointments?name=${encodeURIComponent(doctorName)}`, { headers });
-                const apps = await appRes.json();
+                allAppointments = await appRes.json();
                 
-                // Fetch Overall Stats (Views/Bookings)
                 const statsRes = await fetch(`${API_BASE}/doctor/stats?name=${encodeURIComponent(doctorName)}`, { headers });
                 const stats = await statsRes.json();
 
-                const list = document.getElementById('appointmentList');
-                list.innerHTML = '';
-                
-                // Update Stats Cards
-                const completedCount = apps.filter(a => a.status === 'completed').length;
-                const pendingCount = apps.length - completedCount;
-
-                document.getElementById('appCount').innerText = pendingCount;
                 document.getElementById('statViews').innerText = stats.view_count || 0;
                 document.getElementById('statTotalBookings').innerText = stats.booking_count || 0;
-                document.getElementById('statCompleted').innerText = completedCount;
-                document.getElementById('statToday').innerText = pendingCount;
+                const pending = allAppointments.filter(a => a.status !== 'completed').length;
+                document.getElementById('statToday').innerText = pending;
 
-                if (stats.doctor_id) {
-                    localStorage.setItem('doctor_id', stats.doctor_id);
-                }
-
-                apps.forEach(app => {
-                    const isCompleted = app.status === 'completed';
-                    const tr = document.createElement('tr');
-                    tr.className = 'patient-row';
-                    tr.innerHTML = `
-                        <td>${app.patient_phone}</td>
-                        <td><span class="badge badge-${app.consultation_type}">${app.consultation_type.toUpperCase()}</span></td>
-                        <td>
-                            <span style="color: ${isCompleted ? '#16a34a' : '#eab308'}; font-weight: 600;">
-                                ${isCompleted ? '✅ Consulted' : '⏳ Pending'}
-                            </span>
-                        </td>
-                        <td style="display: flex; gap: 8px;">
-                            <button class="btn-view" onclick="viewPatient('${app.patient_phone}')">View Reports</button>
-                            ${!isCompleted ? `<button class="btn-view" style="background: #16a34a; color: white;" onclick="markConsulted(${app.id})">Consulted</button>` : ''}
-                        </td>
-                    `;
-                    list.appendChild(tr);
-                });
-            } catch (err) {
-                console.error("Error loading appointments:", err);
-            }
+                renderAppointments(allAppointments);
+            } catch (err) { console.error(err); }
         }
 
-        async function markConsulted(appId) {
-            if (!confirm("Mark this consultation as completed?")) return;
-            
-            try {
-                const response = await fetch(`${API_BASE}/doctor/appointment/complete`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'X-Doctor-Name': doctorName,
-                        'X-Doctor-Password': doctorPass
-                    },
-                    body: JSON.stringify({ id: appId })
-                });
-                const res = await response.json();
-                if (res.status === 'success') {
-                    loadAppointments();
-                }
-            } catch (err) {
-                console.error("Error updating status:", err);
-            }
+        function renderAppointments(apps) {
+            const list = document.getElementById('appointmentList');
+            list.innerHTML = '';
+            apps.forEach(app => {
+                const isDone = app.status === 'completed';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="patient-phone">${app.patient_phone}</td>
+                    <td><span class="badge badge-${app.consultation_type}">${app.consultation_type.toUpperCase()}</span></td>
+                    <td>
+                        <span style="color: ${isDone ? 'var(--dr-accent)' : '#fbbf24'}; font-weight: 700;">
+                            ${isDone ? 'COMPLETED' : 'AWAITING'}
+                        </span>
+                    </td>
+                    <td style="display: flex; gap: 10px;">
+                        <button class="btn-action" onclick="viewPatient('${app.patient_phone}')"><i data-lucide="file-search"></i> Reports</button>
+                        ${!isDone ? `<button class="btn-action" style="background: var(--dr-accent);" onclick="markConsulted(${app.id})"><i data-lucide="check-circle"></i></button>` : ''}
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+            initIcons();
         }
 
-        async function viewPatient(phone) {
-            document.getElementById('modalPatientPhone').innerText = `Patient: ${phone}`;
-            document.getElementById('patientModal').style.display = 'flex';
-            
-            // Log the view to the backend for admin tracking
-            const doctorId = localStorage.getItem('doctor_id');
-            if (doctorId) {
-                fetch(`${API_BASE}/doctor/log-view`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'X-Doctor-Name': doctorName,
-                        'X-Doctor-Password': doctorPass
-                    },
-                    body: JSON.stringify({ doctor_id: doctorId, patient_phone: phone })
-                }).catch(err => console.warn("Failed to log view tracking:", err));
-            }
-            
-            try {
-                const response = await fetch(`${API_BASE}/locker/list/${phone}`);
-                const reports = await response.json();
-                
-                const grid = document.getElementById('reportGrid');
-                grid.innerHTML = '';
-                
-                if (reports.length === 0) {
-                    grid.innerHTML = '<p style="color: #64748b;">No reports found in locker.</p>';
-                } else {
-                    reports.forEach(r => {
-                        const div = document.createElement('div');
-                        div.className = 'report-item';
-                        div.onclick = () => window.open(`${API_BASE}${r.file_path}`, '_blank');
-                        
-                        const isPdf = r.file_type === 'pdf';
-                        div.innerHTML = `
-                            <i data-lucide="${isPdf ? 'file-text' : 'image'}"></i>
-                            <p>${r.original_name}</p>
-                        `;
-                        grid.appendChild(div);
-                    });
-                    lucide.createIcons();
-                }
-            } catch (err) {
-                console.error("Error loading reports:", err);
-            }
+        function filterAppointments(q) {
+            const f = allAppointments.filter(a => a.patient_phone.includes(q) || a.consultation_type.includes(q.toLowerCase()));
+            renderAppointments(f);
         }
 
         async function loadPatientHistory() {
             try {
                 const res = await fetch(`${API_BASE}/doctor/patients?name=${encodeURIComponent(doctorName)}`, { headers });
-                const patients = await res.json();
-                
-                const list = document.getElementById('patientHistoryList');
-                list.innerHTML = '';
-                
-                patients.forEach(p => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${p.patient_phone}</td>
-                        <td>${new Date(p.last_visit).toLocaleDateString()}</td>
-                        <td style="font-weight: 600;">${p.total_visits}</td>
-                        <td>
-                            <button class="btn-view" onclick="viewPatient('${p.patient_phone}')">View Reports</button>
-                        </td>
-                    `;
-                    list.appendChild(tr);
+                allPatients = await res.json();
+                renderPatients(allPatients);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderPatients(pats) {
+            const list = document.getElementById('patientHistoryList');
+            list.innerHTML = '';
+            pats.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="patient-phone">${p.patient_phone}</td>
+                    <td style="color: var(--dr-text-dim);">${new Date(p.last_visit).toLocaleDateString()}</td>
+                    <td style="font-weight: 700;">${p.total_visits}</td>
+                    <td><button class="btn-action" onclick="viewPatient('${p.patient_phone}')"><i data-lucide="database"></i> Inspect Reports</button></td>
+                `;
+                list.appendChild(tr);
+            });
+            initIcons();
+        }
+
+        function filterPatients(q) {
+            const f = allPatients.filter(p => p.patient_phone.includes(q));
+            renderPatients(f);
+        }
+
+        async function viewPatient(phone) {
+            document.getElementById('modalPatientPhone').innerText = phone;
+            document.getElementById('patientModal').style.display = 'flex';
+            if (doctorId) {
+                fetch(`${API_BASE}/doctor/log-view`, {
+                    method: 'POST',
+                    headers: { ...headers, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ doctor_id: doctorId, patient_phone: phone })
+                }).catch(e => {});
+            }
+            try {
+                const res = await fetch(`${API_BASE}/locker/list/${phone}`);
+                const data = await res.json();
+                const grid = document.getElementById('reportGrid');
+                grid.innerHTML = data.length ? '' : '<p>No data packets detected.</p>';
+                data.forEach(r => {
+                    const div = document.createElement('div');
+                    div.className = 'report-item';
+                    div.onclick = () => window.open(`${API_BASE}${r.file_path}`, '_blank');
+                    const icon = r.file_type === 'pdf' ? 'file-text' : 'image';
+                    div.innerHTML = `<i data-lucide="${icon}"></i><p style="font-size: 0.8rem; margin-top: 10px;">${r.original_name}</p>`;
+                    grid.appendChild(div);
                 });
+                initIcons();
             } catch (err) { console.error(err); }
         }
 
@@ -572,12 +531,8 @@
             try {
                 const res = await fetch(`${API_BASE}/doctor/stats?name=${encodeURIComponent(doctorName)}`, { headers });
                 const stats = await res.json();
-                
-                // Assuming stats endpoint also returns these doctor details from earlier fetch
-                // Actually we should fetch full doctor profile. Let's reuse stats which has some.
                 document.getElementById('setSpeciality').value = stats.speciality || '';
                 document.getElementById('setLocation').value = stats.location || '';
-                document.getElementById('setPhone').value = stats.phone || '';
                 document.getElementById('setAvailability').value = stats.availability || '';
                 document.getElementById('setPass').value = doctorPass;
             } catch (err) { console.error(err); }
@@ -588,31 +543,36 @@
             const data = {
                 speciality: document.getElementById('setSpeciality').value,
                 location: document.getElementById('setLocation').value,
-                phone: document.getElementById('setPhone').value,
+                phone: '',
                 availability: document.getElementById('setAvailability').value,
                 password: document.getElementById('setPass').value
             };
-
             try {
                 const res = await fetch(`${API_BASE}/doctor/update-profile`, {
                     method: 'POST',
                     headers: { ...headers, 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-                const result = await res.json();
-                if (result.status === 'success') {
-                    alert("✅ Profile updated successfully!");
-                    localStorage.setItem('doctor_password', data.password);
-                    location.reload();
-                }
-            } catch (err) { alert("❌ Update failed"); }
+                if (res.ok) { alert("Matrix Updated."); localStorage.setItem('doctor_password', data.password); location.reload(); }
+            } catch (err) { alert("Sync Failed."); }
         });
 
-        function closeModal() {
-            document.getElementById('patientModal').style.display = 'none';
+        async function markConsulted(id) {
+            if (!confirm("Confirm completion?")) return;
+            try {
+                const res = await fetch(`${API_BASE}/doctor/appointment/complete`, {
+                    method: 'POST',
+                    headers: { ...headers, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                if (res.ok) loadAppointments();
+            } catch (e) {}
         }
 
-        showView('appointments');
+        function closeModal() { document.getElementById('patientModal').style.display = 'none'; }
+        function logout() { localStorage.clear(); window.location.href = 'doctor-login.html'; }
+
+        document.addEventListener('DOMContentLoaded', () => { setGreeting(); showView('appointments'); initIcons(); });
     </script>
 </body>
 </html>

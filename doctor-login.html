@@ -3,121 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Login | Curelith</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Doctor Login | Curelith Secure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --doctor-primary: #1e3a8a;
-            --doctor-secondary: #3b82f6;
-            --doctor-bg: #f8fafc;
+            --primary: #6366f1;
+            --bg: #0f172a;
         }
 
         body {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
+            color: white;
+            overflow: hidden;
         }
 
-        .login-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        .login-container {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(25px);
+            padding: 4rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             text-align: center;
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
         }
 
-        .login-card h1 {
-            color: var(--doctor-primary);
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
+        h1 { font-size: 2.2rem; margin-bottom: 0.8rem; font-weight: 700; }
+        p { color: #94a3b8; margin-bottom: 3rem; }
 
-        .login-card p {
-            color: #64748b;
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-        }
+        .input-group { text-align: left; margin-bottom: 1.5rem; }
+        .input-group label { display: block; font-size: 0.8rem; color: #64748b; margin-bottom: 10px; font-weight: 600; letter-spacing: 0.05em; }
 
-        .form-group {
-            text-align: left;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.85rem;
-        }
-
-        .form-group input {
+        input {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
+            padding: 1.2rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            color: white;
             font-family: inherit;
-            transition: all 0.2s;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s;
         }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--doctor-secondary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
 
         .btn-login {
-            background: var(--doctor-primary);
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: white;
             border: none;
             width: 100%;
-            padding: 1rem;
-            border-radius: 12px;
-            font-weight: 600;
+            padding: 1.2rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            margin-top: 1rem;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
         }
 
-        .btn-login:hover {
-            background: #172554;
-            transform: translateY(-1px);
-        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4); }
 
-        .back-link {
-            display: block;
-            margin-top: 1.5rem;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
+        .footer-links { margin-top: 2rem; }
+        .footer-links a { color: #64748b; text-decoration: none; font-size: 0.9rem; }
+        .footer-links a:hover { color: white; }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <h1>Curelith for Doctors</h1>
-        <p>Access your dashboard and patient reports</p>
+    <div class="login-container">
+        <h1>Doctor Portal</h1>
+        <p>Authenticate to access clinical data.</p>
         
         <form id="doctorLoginForm">
-            <div class="form-group">
-                <label>Doctor Name (As in DB)</label>
-                <input type="text" id="doctorName" placeholder="e.g. Dr. Ragul" required>
+            <div class="input-group">
+                <label>PROFESSIONAL NAME</label>
+                <input type="text" id="doctorName" placeholder="Dr. Full Name" required>
             </div>
-            <div class="form-group">
-                <label>Unique Password</label>
-                <input type="password" id="doctorPassword" placeholder="Enter your unique password" required>
+            <div class="input-group">
+                <label>ENCRYPTION KEY</label>
+                <input type="password" id="doctorPassword" placeholder="Unique Password" required>
             </div>
-            <div id="loginError" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
-            <button type="submit" class="btn-login" id="loginBtn">Enter Dashboard</button>
+            <div id="loginError" style="color: #f43f5e; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
+            <button type="submit" class="btn-login" id="loginBtn">Initialize Dashboard</button>
         </form>
 
-        <a href="index.html" class="back-link">← Back to Homepage</a>
+        <div class="footer-links">
+            <a href="index.html">← Return to Homepage</a>
+        </div>
     </div>
 
     <script>
@@ -132,7 +112,7 @@
             const btn = document.getElementById('loginBtn');
 
             errorDiv.style.display = 'none';
-            btn.innerText = 'Verifying...';
+            btn.innerText = 'Verifying Protocol...';
             btn.disabled = true;
             
             try {
@@ -141,24 +121,21 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, password })
                 });
-                
                 const result = await response.json();
-                
                 if (result.status === 'success') {
                     localStorage.setItem('doctor_name', result.doctor.name);
                     localStorage.setItem('doctor_id', result.doctor.id);
-                    localStorage.setItem('doctor_password', password); // Store for API headers
+                    localStorage.setItem('doctor_password', password);
                     window.location.href = 'doctor-dashboard.html';
                 } else {
-                    errorDiv.innerText = result.message || 'Invalid name or password';
+                    errorDiv.innerText = result.message || 'Access Denied: Invalid Credentials';
                     errorDiv.style.display = 'block';
                 }
             } catch (err) {
-                console.error("Login error:", err);
-                errorDiv.innerText = 'Connection error. Please try again.';
+                errorDiv.innerText = 'Uplink Error. Check network.';
                 errorDiv.style.display = 'block';
             } finally {
-                btn.innerText = 'Enter Dashboard';
+                btn.innerText = 'Initialize Dashboard';
                 btn.disabled = false;
             }
         });
