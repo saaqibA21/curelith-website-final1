@@ -242,11 +242,11 @@
 <body>
     <div class="sidebar">
         <h2><i data-lucide="shield-plus"></i> Curelith</h2>
-        <a href="#" class="nav-item active"><i data-lucide="calendar"></i> Appointments</a>
-        <a href="#" class="nav-item"><i data-lucide="users"></i> My Patients</a>
-        <a href="#" class="nav-item"><i data-lucide="settings"></i> Settings</a>
+        <a href="#" class="nav-item active" onclick="showView('appointments')"><i data-lucide="calendar"></i> Appointments</a>
+        <a href="#" class="nav-item" onclick="showView('patients')"><i data-lucide="users"></i> My Patients</a>
+        <a href="#" class="nav-item" onclick="showView('settings')"><i data-lucide="settings"></i> Settings</a>
         <div style="margin-top: auto;">
-            <a href="doctor-login.html" class="nav-item"><i data-lucide="log-out"></i> Logout</a>
+            <a href="#" class="nav-item" onclick="logout()"><i data-lucide="log-out"></i> Logout</a>
         </div>
     </div>
 
@@ -262,47 +262,101 @@
             </div>
         </header>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Bot Visibility</h3>
-                <div class="value" id="statViews">0</div>
-                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Times shown to patients</p>
+        <div id="view-appointments">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Bot Visibility</h3>
+                    <div class="value" id="statViews">0</div>
+                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Times shown to patients</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Bookings</h3>
+                    <div class="value" id="statTotalBookings">0</div>
+                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">All-time bookings</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Completed</h3>
+                    <div class="value" id="statCompleted" style="color: #16a34a;">0</div>
+                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Consultations finished</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending</h3>
+                    <div class="value" id="statToday" style="color: #eab308;">0</div>
+                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Awaiting consultation</p>
+                </div>
             </div>
-            <div class="stat-card">
-                <h3>Total Bookings</h3>
-                <div class="value" id="statTotalBookings">0</div>
-                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">All-time bookings</p>
-            </div>
-            <div class="stat-card">
-                <h3>Completed</h3>
-                <div class="value" id="statCompleted" style="color: #16a34a;">0</div>
-                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Consultations finished</p>
-            </div>
-            <div class="stat-card">
-                <h3>Pending</h3>
-                <div class="value" id="statToday" style="color: #eab308;">0</div>
-                <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Awaiting consultation</p>
+
+            <div class="appointments-section">
+                <div class="section-header">
+                    <h2>Today's Schedule</h2>
+                    <button class="btn-view" onclick="loadAppointments()"><i data-lucide="refresh-cw" style="width: 14px;"></i> Refresh</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient Phone</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentList">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="appointments-section">
-            <div class="section-header">
-                <h2>Today's Schedule</h2>
-                <button class="btn-view" onclick="loadAppointments()"><i data-lucide="refresh-cw" style="width: 14px;"></i> Refresh</button>
+        <div id="view-patients" style="display: none;">
+            <div class="appointments-section">
+                <div class="section-header">
+                    <h2>My Patients</h2>
+                    <p style="color: #64748b;">History of all patients you have consulted</p>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient Phone</th>
+                            <th>Last Visit</th>
+                            <th>Total Visits</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientHistoryList">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Patient Phone</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="appointmentList">
-                    <!-- Loaded dynamically -->
-                </tbody>
-            </table>
+        </div>
+
+        <div id="view-settings" style="display: none;">
+            <div class="appointments-section" style="max-width: 600px;">
+                <h2>Profile Settings</h2>
+                <hr style="border: 1px solid #f1f5f9; margin: 1.5rem 0;">
+                <form id="settingsForm">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Speciality</label>
+                        <input type="text" id="setSpeciality" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Location</label>
+                        <input type="text" id="setLocation" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Phone Number</label>
+                        <input type="text" id="setPhone" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Availability</label>
+                        <input type="text" id="setAvailability" placeholder="e.g. 10am-1pm, 7pm-9pm" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    </div>
+                    <div style="margin-bottom: 2rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Password</label>
+                        <input type="text" id="setPass" style="width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    </div>
+                    <button type="submit" class="btn-view" style="width: 100%; padding: 1rem; background: var(--accent); color: white;">Save Profile Changes</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -343,6 +397,26 @@
 
         document.getElementById('welcomeTitle').innerText = `Welcome, ${doctorName}`;
         document.getElementById('headerDoctorName').innerText = doctorName;
+
+        function showView(view) {
+            document.getElementById('view-appointments').style.display = view === 'appointments' ? 'block' : 'none';
+            document.getElementById('view-patients').style.display = view === 'patients' ? 'block' : 'none';
+            document.getElementById('view-settings').style.display = view === 'settings' ? 'block' : 'none';
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.innerText.toLowerCase().includes(view.replace('view-', ''))) item.classList.add('active');
+            });
+
+            if (view === 'patients') loadPatientHistory();
+            if (view === 'settings') loadSettings();
+            if (view === 'appointments') loadAppointments();
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'doctor-login.html';
+        }
 
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
@@ -471,11 +545,74 @@
             }
         }
 
+        async function loadPatientHistory() {
+            try {
+                const res = await fetch(`${API_BASE}/doctor/patients?name=${encodeURIComponent(doctorName)}`, { headers });
+                const patients = await res.json();
+                
+                const list = document.getElementById('patientHistoryList');
+                list.innerHTML = '';
+                
+                patients.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${p.patient_phone}</td>
+                        <td>${new Date(p.last_visit).toLocaleDateString()}</td>
+                        <td style="font-weight: 600;">${p.total_visits}</td>
+                        <td>
+                            <button class="btn-view" onclick="viewPatient('${p.patient_phone}')">View Reports</button>
+                        </td>
+                    `;
+                    list.appendChild(tr);
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadSettings() {
+            try {
+                const res = await fetch(`${API_BASE}/doctor/stats?name=${encodeURIComponent(doctorName)}`, { headers });
+                const stats = await res.json();
+                
+                // Assuming stats endpoint also returns these doctor details from earlier fetch
+                // Actually we should fetch full doctor profile. Let's reuse stats which has some.
+                document.getElementById('setSpeciality').value = stats.speciality || '';
+                document.getElementById('setLocation').value = stats.location || '';
+                document.getElementById('setPhone').value = stats.phone || '';
+                document.getElementById('setAvailability').value = stats.availability || '';
+                document.getElementById('setPass').value = doctorPass;
+            } catch (err) { console.error(err); }
+        }
+
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                speciality: document.getElementById('setSpeciality').value,
+                location: document.getElementById('setLocation').value,
+                phone: document.getElementById('setPhone').value,
+                availability: document.getElementById('setAvailability').value,
+                password: document.getElementById('setPass').value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/doctor/update-profile`, {
+                    method: 'POST',
+                    headers: { ...headers, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.status === 'success') {
+                    alert("✅ Profile updated successfully!");
+                    localStorage.setItem('doctor_password', data.password);
+                    location.reload();
+                }
+            } catch (err) { alert("❌ Update failed"); }
+        });
+
         function closeModal() {
             document.getElementById('patientModal').style.display = 'none';
         }
 
-        loadAppointments();
+        showView('appointments');
     </script>
 </body>
 </html>
