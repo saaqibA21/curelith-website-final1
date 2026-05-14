@@ -1,203 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet the Founder | Curelith Intelligence</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <style>
+        .founder-hero {
+            padding: 10rem 0 6rem;
+            background: linear-gradient(to bottom, #FAF9F4, var(--bg));
+            text-align: center;
+        }
 
-  <!-- PRIMARY SEO -->
-  <title>Mohammed Saaqib | Founder of Curelith | Calm AI Healthcare from Tamil Nadu</title>
+        .founder-image-container {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 3rem;
+            border-radius: 60px;
+            overflow: hidden;
+            border: 8px solid white;
+            box-shadow: var(--shadow);
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-  <meta name="description" content="Mohammed Saaqib is the founder of Curelith, a calm and responsible AI medical assistant built in Tamil Nadu to reduce health anxiety—especially for elders and non-technical users." />
+        .founder-image-container i {
+            width: 100px;
+            height: 100px;
+            color: white;
+            opacity: 0.5;
+        }
 
-  <meta name="keywords" content="
-    Mohammed Saaqib,
-    Mohammed Saaqib Founder,
-    Founder of Curelith,
-    Curelith Founder,
-    AI Healthcare Tamil Nadu,
-    Chennai HealthTech Founder,
-    Responsible AI Healthcare India
-  " />
+        .story-section {
+            padding: 6rem 0;
+            line-height: 1.8;
+        }
 
-  <!-- GEO -->
-  <meta name="geo.region" content="IN-TN">
-  <meta name="geo.placename" content="Chennai, Tamil Nadu">
-  <meta name="geo.position" content="13.0827;80.2707">
-  <meta name="ICBM" content="13.0827, 80.2707">
+        .quote-box {
+            background: var(--primary);
+            color: white;
+            padding: 4rem;
+            border-radius: 50px;
+            margin: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
 
-  <!-- OPEN GRAPH (LinkedIn / Google Preview) -->
-  <meta property="og:title" content="Mohammed Saaqib | Founder of Curelith" />
-  <meta property="og:description" content="Building calm, responsible AI healthcare from Tamil Nadu. Founder of Curelith." />
-  <meta property="og:image" content="assets/founder-saaqib.jpg" />
-  <meta property="og:url" content="https://curelith.com/founder.html" />
-  <meta property="og:type" content="profile" />
+        .quote-box i.quote-icon {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 150px;
+            height: 150px;
+            opacity: 0.05;
+            color: white;
+        }
 
-  <!-- TWITTER -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Mohammed Saaqib | Founder of Curelith">
-  <meta name="twitter:description" content="Founder building calm AI healthcare for elders and everyday users.">
-  <meta name="twitter:image" content="assets/founder-saaqib.jpg">
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 3rem;
+        }
 
-  <!-- STYLES -->
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            box-shadow: var(--shadow);
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-5px);
+        }
+    </style>
 </head>
-
 <body>
+    <header>
+        <a href="index.html" class="logo-box">
+            <img src="assets/logo (2).png" class="logo-img" alt="Curelith Logo">
+            <span class="brand">CURELITH</span>
+        </a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="index.html#tools">Tools</a>
+            <a href="index.html#doctors">Physicians</a>
+        </nav>
+        <div style="width: 140px;"></div>
+    </header>
 
-<!-- HEADER -->
-<header class="glass-header">
-  <a href="index.html" class="logo-box" style="text-decoration:none;">
-    <img src="assets/logo (2).png" class="logo" alt="Curelith Logo"/>
-    <span class="brand">CURELITH</span>
-  </a>
+    <section class="founder-hero">
+        <div class="container">
+            <div class="founder-image-container">
+                <i data-lucide="user"></i> <!-- Placeholder for founder image -->
+            </div>
+            <h1 style="font-size: 3rem;">Saaqib <span style="color: var(--accent);">Ahmed</span></h1>
+            <p style="font-size: 1.2rem; margin-top: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--accent);">Founder & Architect</p>
+        </div>
+    </section>
 
-  <nav class="nav">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="founder.html" class="active">Founder</a>
-    <a href="index.html#contact">Contact</a>
-  </nav>
-</header>
+    <section class="story-section">
+        <div class="container" style="max-width: 800px;">
+            <h2>The Visionary Behind Curelith</h2>
+            <p>Driven by a mission to humanize artificial intelligence in healthcare, Saaqib Ahmed founded Curelith with a single purpose: to eliminate the anxiety that comes with medical uncertainty.</p>
+            
+            <p>Observing the struggles of elders and non-technical users in navigating complex health information, Saaqib envisioned a system that doesn't just provide data, but provides <strong>clarity</strong>. Curelith is the manifestation of that vision—a calm, responsible, and clinical intelligence system built for people, not just for processing.</p>
 
-<main>
+            <div class="quote-box">
+                <i data-lucide="quote" class="quote-icon"></i>
+                <h3 style="color: white; font-size: 1.8rem; font-style: italic; font-weight: 400; line-height: 1.5; position: relative;">"Technology in healthcare should be a bridge to comfort, not a source of confusion. We are building Curelith to ensure no one has to face a health concern with fear."</h3>
+            </div>
 
-  <!-- HERO -->
-  <section class="founder-hero">
-  <div class="founder-card">
+            <p>As a student entrepreneur and developer, Saaqib focuses on the intersection of deep learning and human psychology. Every feature within Curelith—from the Neural Lab Intelligence to the Voice-First interaction—is meticulously designed to maintain clinical rigor while ensuring an empathetic user experience.</p>
 
-    <!-- LEFT: IMAGE -->
-    <div class="founder-image">
-      <img src="assets/founder-saaqib.jpg" 
-           alt="Mohammed Saaqib, Founder of Curelith, Chennai Tamil Nadu">
-    </div>
+            <div class="social-links">
+                <a href="#" class="social-btn"><i data-lucide="linkedin"></i></a>
+                <a href="#" class="social-btn"><i data-lucide="twitter"></i></a>
+                <a href="#" class="social-btn"><i data-lucide="mail"></i></a>
+            </div>
+        </div>
+    </section>
 
-    <!-- RIGHT: CONTENT -->
-    <div class="founder-content">
-      <h1>Mohammed Saaqib</h1>
-      <h2>Founder, Curelith</h2>
+    <footer style="background: var(--primary); color: white; padding: 6rem 0;">
+        <div class="container" style="text-align: center;">
+            <h2 style="color: white;">Let's Build the Future of Healthcare Together</h2>
+            <p style="color: #AFC7BC; margin-top: 1rem;">Clinical Intelligence for a calmer world.</p>
+            <div style="margin-top: 3rem;">
+                <a href="index.html" class="btn btn-secondary">Return Home</a>
+            </div>
+        </div>
+    </footer>
 
-      <p class="founder-location">
-        Chennai, Tamil Nadu, India
-      </p>
-
-      <p class="founder-intro">
-        Building calm, responsible AI healthcare to reduce fear
-        at the first moment of medical uncertainty —
-        especially for elders and non-technical users.
-      </p>
-
-      <p class="founder-ethos">
-        I believe healthcare technology should explain better,
-        not alarm faster.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-
-  <!-- STORY -->
-  <section class="about-section">
-    <div class="about-container">
-      <h2>How Curelith Started</h2>
-
-      <p>
-        Curelith didn’t begin as a startup idea.
-        It began as a concern.
-      </p>
-
-      <p>
-        I watched elders around me panic after reading confusing or alarming
-        health information online—even when their condition wasn’t serious.
-        The problem wasn’t a lack of hospitals or doctors.
-        It was the lack of calm explanation.
-      </p>
-
-      <p>
-        I started building Curelith alone to answer a simple question:
-        <strong>Can technology reduce fear instead of increasing it?</strong>
-      </p>
-    </div>
-  </section>
-
-  <!-- PHILOSOPHY -->
-  <section class="about-section">
-    <div class="about-container">
-      <h2>My Approach to Healthcare AI</h2>
-
-      <p>
-        I don’t believe AI should replace doctors.
-        I believe it should prepare people to meet doctors
-        with clarity instead of anxiety.
-      </p>
-
-      <p>
-        Every explanation in Curelith is designed to be:
-      </p>
-
-      <ul>
-        <li>Calm, not alarming</li>
-        <li>Clear, not technical</li>
-        <li>Responsible, not speculative</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- GEO AUTHORITY -->
-  <section class="about-section">
-    <div class="about-container">
-      <h2>Building from Tamil Nadu</h2>
-
-      <p>
-        Tamil Nadu has world-class hospitals and doctors.
-        But many people—especially elders—still struggle to understand
-        healthcare information in their everyday lives.
-      </p>
-
-      <p>
-        Curelith is built locally, with cultural context,
-        language sensitivity, and responsibility at its core.
-      </p>
-    </div>
-  </section>
-
-  <!-- CLOSING -->
-  <section class="about-section">
-    <div class="about-container">
-      <h2>Why I’m Building This</h2>
-
-      <p>
-        Healthcare is not just a technical problem.
-        It’s an emotional one.
-      </p>
-
-      <p>
-        If technology can reduce fear in even one moment of uncertainty,
-        then it’s worth building carefully—even if it takes longer.
-      </p>
-    </div>
-  </section>
-
-</main>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-container">
-    <div class="footer-left">
-      <h2 class="footer-tagline">
-        Built slowly.<br>
-        Built with care.
-      </h2>
-      <p class="footer-copy">© 2025 Curelith. All Rights Reserved.</p>
-    </div>
-
-    <div class="footer-right">
-      <p>curelith.ai@gmail.com</p>
-      <p>Chennai, Tamil Nadu, India</p>
-    </div>
-  </div>
-</footer>
-
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
