@@ -3,87 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meet the Founder | Curelith Intelligence</title>
+    <title>Mohammed Saaqib | Founder of Curelith</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
     <style>
         .founder-hero {
-            padding: 10rem 0 6rem;
-            background: linear-gradient(to bottom, #FAF9F4, var(--bg));
-            text-align: center;
-        }
-
-        .founder-image-container {
-            width: 220px;
-            height: 220px;
-            margin: 0 auto 3rem;
-            border-radius: 60px;
-            overflow: hidden;
-            border: 8px solid white;
-            box-shadow: var(--shadow);
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .founder-image-container i {
-            width: 100px;
-            height: 100px;
-            color: white;
-            opacity: 0.5;
-        }
-
-        .story-section {
-            padding: 6rem 0;
-            line-height: 1.8;
-        }
-
-        .quote-box {
-            background: var(--primary);
-            color: white;
-            padding: 4rem;
-            border-radius: 50px;
-            margin: 4rem 0;
+            padding: 8rem 0;
+            background: var(--bg);
             position: relative;
             overflow: hidden;
-        }
-
-        .quote-box i.quote-icon {
-            position: absolute;
-            top: -20px;
-            left: -20px;
-            width: 150px;
-            height: 150px;
-            opacity: 0.05;
-            color: white;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 3rem;
-        }
-
-        .social-btn {
-            width: 50px;
-            height: 50px;
-            background: white;
-            border-radius: 15px;
+            min-height: 80vh;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            box-shadow: var(--shadow);
-            text-decoration: none;
         }
 
-        .social-btn:hover {
+        /* Decorative Background Text */
+        .bg-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 25vw;
+            font-weight: 900;
+            color: rgba(27, 58, 54, 0.02);
+            z-index: 1;
+            white-space: nowrap;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+
+        .hero-split {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 5rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .founder-image-box {
+            position: relative;
+        }
+
+        .founder-image-box::before {
+            content: '';
+            position: absolute;
+            top: -20px; left: -20px;
+            width: 100%; height: 100%;
+            border: 2px solid var(--accent);
+            border-radius: 60px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .founder-img {
+            width: 100%;
+            max-width: 520px;
+            border-radius: 50px;
+            box-shadow: 0 50px 100px rgba(27, 58, 54, 0.1);
+            border: 10px solid white;
+        }
+
+        .founder-info h1 {
+            font-size: 4.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .founder-tagline {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .founder-bio {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+        }
+
+        .stats-strip {
+            display: flex;
+            gap: 4rem;
+            padding: 3rem 0;
+            border-top: 1px solid rgba(27, 58, 54, 0.1);
+            margin-top: 2rem;
+        }
+
+        .stat-item h4 { font-size: 2.5rem; margin: 0; color: var(--primary); }
+        .stat-item p { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--accent); margin-top: 5px; }
+
+        /* Journey Grid */
+        .journey-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .journey-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 40px;
+            border: 1px solid #DDD6C4;
+            transition: transform 0.3s ease;
+        }
+
+        .journey-card:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
+
+        .journey-card span {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+
+        .journey-card h3 { margin-bottom: 1rem; color: var(--primary); }
+
+        .quote-section {
             background: var(--primary);
             color: white;
-            transform: translateY(-5px);
+            padding: 10rem 4rem;
+            text-align: center;
+            border-radius: 80px;
+            margin: 6rem 0;
+        }
+
+        @media (max-width: 992px) {
+            .hero-split { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
+            .founder-img { max-width: 380px; margin: 0 auto; }
+            .founder-info h1 { font-size: 3rem; }
+            .stats-strip { justify-content: center; gap: 2rem; }
+            .journey-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -97,50 +154,89 @@
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="index.html#tools">Tools</a>
-            <a href="index.html#doctors">Physicians</a>
+            <a href="#journey">Journey</a>
         </nav>
         <div style="width: 140px;"></div>
     </header>
 
     <section class="founder-hero">
+        <div class="bg-text">CURELITH</div>
         <div class="container">
-            <div class="founder-image-container">
-                <img src="assets/founder-saaqib.jpg" alt="Mohammed Saaqib" style="width: 100%; height: 100%; object-fit: cover;">
+            <div class="hero-split">
+                <div class="founder-image-box">
+                    <img src="assets/founder-saaqib.png" class="founder-img" alt="Mohammed Saaqib">
+                </div>
+                <div class="founder-info">
+                    <span class="founder-tagline">Founder & Architect</span>
+                    <h1>Mohammed <span style="color: var(--accent);">Saaqib</span></h1>
+                    <p class="founder-bio">
+                        Curelith is built independently by a student entrepreneur from Tamil Nadu. 
+                        Every design and wording choice is made with responsibility in mind, 
+                        because healthcare directly affects people’s emotions and trust.
+                    </p>
+                    <div class="stats-strip">
+                        <div class="stat-item">
+                            <h4>2023</h4>
+                            <p>Spark of Care</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>1</h4>
+                            <p>Unified Vision</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>∞</h4>
+                            <p>Commitment</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h1 style="font-size: 3rem;">Mohammed <span style="color: var(--accent);">Saaqib</span></h1>
-            <p style="font-size: 1.2rem; margin-top: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--accent);">Founder & Architect</p>
         </div>
     </section>
 
-    <section class="story-section">
-        <div class="container" style="max-width: 800px;">
-            <h2>Built by a Solo Founder</h2>
-            <p>Curelith is built independently by a student entrepreneur from Tamil Nadu.</p>
+    <section id="journey" class="section-padding" style="background: white;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="font-size: 3rem;">The Road to Clinical Clarity</h2>
+                <p>Establishing the global standard for empathetic intelligence.</p>
+            </div>
             
-            <p>Every design and wording choice is made with responsibility in mind, because healthcare directly affects people’s emotions and trust.</p>
-
-            <div class="quote-box">
-                <i data-lucide="quote" class="quote-icon"></i>
-                <h3 style="color: white; font-size: 1.8rem; font-style: italic; font-weight: 400; line-height: 1.5; position: relative;">"Healthcare information should guide people gently—not overwhelm them or create fear."</h3>
+            <div class="journey-grid">
+                <div class="journey-card">
+                    <span>PHASE 01</span>
+                    <h3>The Spark</h3>
+                    <p>Recognizing the anxiety elders face with technology. The first lines of Curelith are written in Tamil Nadu.</p>
+                </div>
+                <div class="journey-card">
+                    <span>PHASE 02</span>
+                    <h3>Neural Node</h3>
+                    <p>Deployment of the Lab Intelligence engine and establishing the decentralized physician network.</p>
+                </div>
+                <div class="journey-card">
+                    <span>PHASE 03</span>
+                    <h3>Global Uplink</h3>
+                    <p>Expanding to regional languages and integrating real-time clinical biometrics for preventative care.</p>
+                </div>
             </div>
         </div>
     </section>
 
-            <div class="social-links">
-                <a href="#" class="social-btn"><i data-lucide="linkedin"></i></a>
-                <a href="#" class="social-btn"><i data-lucide="twitter"></i></a>
-                <a href="#" class="social-btn"><i data-lucide="mail"></i></a>
-            </div>
+    <section class="container">
+        <div class="quote-section">
+            <i data-lucide="quote" style="width: 80px; height: 80px; opacity: 0.1; margin-bottom: 2rem;"></i>
+            <h2 style="color: white; font-style: italic; font-weight: 400; line-height: 1.5; font-size: 2.5rem;">
+                "Healthcare information should guide people gently—not overwhelm them or create fear."
+            </h2>
+            <p style="margin-top: 3rem; letter-spacing: 3px; font-weight: 700;">MOHAMMED SAAQIB</p>
         </div>
     </section>
 
-    <footer style="background: var(--primary); color: white; padding: 6rem 0;">
-        <div class="container" style="text-align: center;">
-            <h2 style="color: white;">Let's Build the Future of Healthcare Together</h2>
-            <p style="color: #AFC7BC; margin-top: 1rem;">Clinical Intelligence for a calmer world.</p>
-            <div style="margin-top: 3rem;">
-                <a href="index.html" class="btn btn-secondary">Return Home</a>
+    <footer style="background: var(--primary); color: white; padding: 4rem 0; text-align: center;">
+        <div class="container">
+            <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 3rem;">
+                <a href="https://linkedin.com/in/mohammed-saaqib" style="color: white; text-decoration: none;"><i data-lucide="linkedin"></i></a>
+                <a href="mailto:curelith.ai@gmail.com" style="color: white; text-decoration: none;"><i data-lucide="mail"></i></a>
             </div>
+            <p style="opacity: 0.4; font-size: 0.8rem;">© 2025 Curelith Intelligence | Built with Responsibility in India</p>
         </div>
     </footer>
 
