@@ -353,7 +353,18 @@
                 </div>
                 <button onclick="closeModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
             </div>
-            <div id="recapTimeline" style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+            
+            <!-- AI Recap Card -->
+            <div id="aiRecapCard" style="background: rgba(27, 58, 54, 0.05); border: 1px solid rgba(27, 58, 54, 0.1); border-left: 5px solid var(--cl-accent); border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; display: none;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;">
+                    <i data-lucide="sparkles" style="color: var(--cl-accent); width: 20px; height: 20px;"></i>
+                    <h4 style="margin: 0; color: var(--cl-primary); font-size: 0.95rem; font-weight: 700;">Curelith Clinical AI Recap</h4>
+                </div>
+                <p id="aiRecapContent" style="margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--cl-primary); white-space: pre-wrap; font-weight: 500;"></p>
+            </div>
+            
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--cl-text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">Original History Timeline</div>
+            <div id="recapTimeline" style="display: flex; flex-direction: column; gap: 1.5rem;">
                 <!-- Timeline items injected here -->
             </div>
         </div>
@@ -857,9 +868,35 @@
         async function showRecap(phone) {
             document.getElementById('recapPatientPhone').innerText = `Clinical Recap: ${phone}`;
             const timeline = document.getElementById('recapTimeline');
-            timeline.innerHTML = '<p style="color: var(--cl-text-dim); text-align: center; padding: 1rem;">Loading clinical timeline...</p>';
-            document.getElementById('recapModal').style.display = 'flex';
             
+            // Hide AI Recap card and set loading content
+            const aiCard = document.getElementById('aiRecapCard');
+            const aiContent = document.getElementById('aiRecapContent');
+            aiCard.style.display = 'block';
+            aiContent.innerHTML = '<span style="color: var(--cl-text-dim); display: flex; align-items: center; gap: 8px;"><i data-lucide="loader-2" class="animate-spin" style="width:16px; height:16px;"></i> Curating clinical AI synthesis...</span>';
+            
+            timeline.innerHTML = '<p style="color: var(--cl-text-dim); text-align: center; padding: 1rem;">Loading historical records...</p>';
+            document.getElementById('recapModal').style.display = 'flex';
+            initIcons();
+            
+            // 1. Fetch AI Recap
+            fetch(`${API_BASE}/doctor/patient/ai-recap?phone=${encodeURIComponent(phone)}`, { headers })
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.recap) {
+                        aiContent.innerText = data.recap;
+                        aiCard.style.display = 'block';
+                    } else {
+                        aiCard.style.display = 'none';
+                    }
+                    initIcons();
+                })
+                .catch(e => {
+                    console.error("AI recap error:", e);
+                    aiCard.style.display = 'none';
+                });
+                
+            // 2. Fetch Timeline History
             try {
                 const res = await fetch(`${API_BASE}/doctor/patient/recap?phone=${encodeURIComponent(phone)}`, { headers });
                 const data = await res.json();
