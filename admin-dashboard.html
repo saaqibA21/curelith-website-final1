@@ -222,20 +222,39 @@
                 <div class="stat-card">
                     <h3>ACTIVE DOCTORS</h3>
                     <div class="value" id="statActiveDocs">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Activated Physician Nodes</div>
                 </div>
                 <div class="stat-card">
                     <h3>CONSULTATIONS</h3>
                     <div class="value" id="statTotalConsults">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Completed Encounters</div>
                 </div>
                 <div class="stat-card">
                     <h3>DATA INTERROGATIONS</h3>
                     <div class="value" id="statTotalViews">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Locker File Inspections</div>
+                </div>
+                <div class="stat-card">
+                    <h3>INTERROGATION RATIO</h3>
+                    <div class="value" id="statRatio">0.0x</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Inspections per Consultation</div>
                 </div>
             </div>
 
-            <div class="white-panel">
-                <h3>Global Activity Metrics</h3>
-                <canvas id="activityChart" height="100"></canvas>
+            <!-- Two-Column Chart & Leaderboard Section -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+                <div class="white-panel" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--admin-primary);">Daily Record Inspections Trend</h3>
+                    <div style="position: relative; height: 260px; width: 100%;">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+                <div class="white-panel" style="margin-bottom: 0; display: flex; flex-direction: column;">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--admin-primary);">Locker Interrogation Leaderboard</h3>
+                    <div id="leaderboardList" style="flex: 1; display: flex; flex-direction: column; gap: 1rem; justify-content: center;">
+                        <!-- Leaderboard items injected here -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -257,6 +276,28 @@
                         </tr>
                     </thead>
                     <tbody id="doctorsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="view-activity" style="display: none;">
+            <div class="white-panel">
+                <div class="panel-header">
+                    <h2>Clinical Interrogation Audit Logs</h2>
+                    <input type="text" class="search-box" id="activitySearch" placeholder="Search by doctor / patient phone..." onkeyup="filterActivity(this.value)">
+                </div>
+                <table id="activityTable">
+                    <thead>
+                        <tr>
+                            <th>DOCTOR</th>
+                            <th>SPECIALITY</th>
+                            <th>PATIENT IDENTIFIER</th>
+                            <th>INTERROGATED TIMESTAMP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityList">
+                        <!-- Interrogation logs injected here -->
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -334,20 +375,26 @@
         const headers = { 'X-Admin-Password': adminPass };
 
         let allDoctors = [];
+        let allActivity = [];
 
         function initIcons() { try { lucide.createIcons(); } catch(e) {} }
 
         function showView(view) {
             document.getElementById('view-overview').style.display = view === 'overview' ? 'block' : 'none';
             document.getElementById('view-doctors').style.display = view === 'doctors' ? 'block' : 'none';
+            document.getElementById('view-activity').style.display = view === 'activity' ? 'block' : 'none';
             
             document.querySelectorAll('.nav-item').forEach(i => {
                 i.classList.remove('active');
                 if (i.innerText.toLowerCase().includes(view)) i.classList.add('active');
             });
 
-            if (view === 'overview') loadGlobalStats();
+            if (view === 'overview') {
+                loadGlobalStats();
+                loadLeaderboard();
+            }
             if (view === 'doctors') loadDoctors();
+            if (view === 'activity') loadActivityLogs();
         }
 
         async function loadGlobalStats() {
@@ -358,6 +405,10 @@
                 document.getElementById('statActiveDocs').innerText = data.active_doctors;
                 document.getElementById('statTotalConsults').innerText = data.total_consultations;
                 document.getElementById('statTotalViews').innerText = data.total_record_views;
+                
+                // Calculate and update Interrogation-to-Consultation Ratio
+                const ratio = data.total_consultations > 0 ? (data.total_record_views / data.total_consultations).toFixed(1) : 0;
+                document.getElementById('statRatio').innerText = ratio + "x";
 
                 renderChart(data.daily_activity);
             } catch (err) { console.error(err); }
@@ -380,10 +431,48 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: { y: { beginAtZero: true }, x: { grid: { display: false } } }
                 }
             });
+        }
+
+        async function loadLeaderboard() {
+            try {
+                const res = await fetch(`${API_BASE}/doctor/admin/doctors`, { headers });
+                const docs = await res.json();
+                
+                // Sort by interrogation count (record_views_count) descending
+                const sorted = docs.sort((a, b) => b.record_views_count - a.record_views_count).slice(0, 3);
+                
+                const list = document.getElementById('leaderboardList');
+                list.innerHTML = '';
+                
+                if (sorted.length === 0) {
+                    list.innerHTML = '<p style="color: var(--admin-text-dim); text-align: center; padding: 1rem;">No doctor activity logged yet.</p>';
+                    return;
+                }
+                
+                const ranks = ['🥇', '🥈', '🥉'];
+                sorted.forEach((doc, idx) => {
+                    const row = document.createElement('div');
+                    row.style = "display: flex; align-items: center; gap: 12px; padding: 1rem; background: var(--admin-bg); border-radius: 15px; border-left: 5px solid var(--admin-accent);";
+                    
+                    row.innerHTML = `
+                        <div style="font-size: 1.5rem;">${ranks[idx]}</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; color: var(--admin-primary); font-size: 0.9rem;">${doc.name}</div>
+                            <div style="font-size: 0.75rem; color: var(--admin-text-dim); text-transform: uppercase; font-weight: 600;">${doc.speciality}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--admin-primary);">${doc.record_views_count}</div>
+                            <div style="font-size: 0.65rem; color: var(--admin-text-dim); text-transform: uppercase; font-weight: 600;">Views</div>
+                        </div>
+                    `;
+                    list.appendChild(row);
+                });
+            } catch(e) { console.error(e); }
         }
 
         async function loadDoctors() {
@@ -407,7 +496,7 @@
                         <span class="status-dot ${doc.is_active ? 'status-active' : 'status-inactive'}"></span>
                         ${doc.is_active ? 'Online' : 'Offline'}
                     </td>
-                    <td>${doc.consultations_completed} consults</td>
+                    <td>${doc.consultations_completed} consults | ${doc.record_views_count} inspections</td>
                     <td>
                         <button class="btn-action" onclick="openEditModal(${doc.id})">Edit Profile</button>
                     </td>
@@ -415,6 +504,45 @@
                 list.appendChild(tr);
             });
             initIcons();
+        }
+
+        async function loadActivityLogs() {
+            try {
+                const res = await fetch(`${API_BASE}/doctor/admin/interrogations`, { headers });
+                allActivity = await res.json();
+                renderActivity(allActivity);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderActivity(logs) {
+            const list = document.getElementById('activityList');
+            list.innerHTML = '';
+            
+            if (logs.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--admin-text-dim); padding: 2rem;">No data interrogations logged on the platform yet.</td></tr>`;
+                return;
+            }
+
+            logs.forEach(log => {
+                const tr = document.createElement('tr');
+                const date = new Date(log.view_date).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${log.doctor_name}</td>
+                    <td><span style="font-size:0.8rem; font-weight:700; color:var(--admin-accent); text-transform:uppercase; background:rgba(76,127,109,0.1); padding:4px 10px; border-radius:8px;">${log.doctor_speciality}</span></td>
+                    <td style="font-weight: 500;">${log.patient_phone}</td>
+                    <td style="color: var(--admin-text-dim); font-size:0.9rem;">${date}</td>
+                `;
+                list.appendChild(tr);
+            });
+            initIcons();
+        }
+
+        function filterActivity(q) {
+            const filtered = allActivity.filter(l => 
+                l.doctor_name.toLowerCase().includes(q.toLowerCase()) || 
+                l.patient_phone.includes(q)
+            );
+            renderActivity(filtered);
         }
 
         function openEditModal(id) {
