@@ -391,6 +391,54 @@
         let allApps = [];
         let dynamicViews = [];
 
+        function parseMarkdown(text) {
+            if (!text) return '';
+            
+            // Escape HTML tags to prevent XSS
+            let html = text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+                
+            // Replace horizontal rules
+            html = html.replace(/^---$/gm, '<hr style="opacity: 0.15; margin: 1rem 0; border: none; border-top: 1px solid var(--cl-primary);">');
+            
+            // Replace bolding
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 700; color: var(--cl-primary);">$1</strong>');
+            
+            // Parse lists and paragraphs
+            let lines = html.split('\n');
+            let inList = false;
+            let resultLines = [];
+            
+            lines.forEach(line => {
+                let trimmed = line.trim();
+                if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+                    if (!inList) {
+                        resultLines.push('<ul style="margin: 0.5rem 0; padding-left: 1.5rem; list-style-type: disc;">');
+                        inList = true;
+                    }
+                    resultLines.push(`<li style="margin-bottom: 0.5rem; line-height: 1.6;">${trimmed.substring(2)}</li>`);
+                } else {
+                    if (inList) {
+                        resultLines.push('</ul>');
+                        inList = false;
+                    }
+                    if (trimmed) {
+                        resultLines.push(`<p style="margin: 0.5rem 0; line-height: 1.6;">${line}</p>`);
+                    } else {
+                        resultLines.push('<br>');
+                    }
+                }
+            });
+            
+            if (inList) {
+                resultLines.push('</ul>');
+            }
+            
+            return resultLines.join('\n');
+        }
+
         function initIcons() { try { lucide.createIcons(); } catch(e) {} }
 
         function showView(view) {
@@ -884,7 +932,7 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.recap) {
-                        aiContent.innerText = data.recap;
+                        aiContent.innerHTML = parseMarkdown(data.recap);
                         aiCard.style.display = 'block';
                     } else {
                         aiCard.style.display = 'none';
