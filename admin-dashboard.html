@@ -157,6 +157,40 @@
             outline: none;
             font-family: inherit;
         }
+
+        /* Modal for Editing Doctors */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(27, 58, 54, 0.6); backdrop-filter: blur(10px);
+            z-index: 1000; align-items: center; justify-content: center;
+        }
+
+        .modal-content {
+            background: white; width: 90%; max-width: 650px;
+            padding: 3rem; border-radius: 40px; border: 1px solid #DDD6C4;
+            max-height: 90vh; overflow-y: auto; text-align: left;
+        }
+
+        .form-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;
+        }
+
+        .form-group {
+            display: flex; flex-direction: column; gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 0.75rem; font-weight: 700; color: var(--admin-text-dim); text-transform: uppercase; letter-spacing: 0.05em;
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.9rem 1.2rem; border: 1px solid #DDD6C4; border-radius: 12px;
+            font-family: inherit; font-size: 0.95rem; outline: none; background: #FAF9F4;
+            box-sizing: border-box; width: 100%;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--admin-accent); background: white;
+        }
     </style>
 </head>
 <body>
@@ -219,11 +253,75 @@
                             <th>NODE</th>
                             <th>STATUS</th>
                             <th>ENGAGEMENT</th>
+                            <th>ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody id="doctorsList"></tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal for Editing Doctors -->
+    <div class="modal" id="editDocModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 style="margin: 0; color: var(--admin-primary);">Modify Doctor Profile</h2>
+                    <p style="color: var(--admin-text-dim); margin-top: 5px;">Configure consultation modalities, fees, and credentials</p>
+                </div>
+                <button onclick="closeModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <form id="editDocForm">
+                <input type="hidden" id="editDocId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Doctor Name</label>
+                        <input type="text" id="editDocName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Speciality</label>
+                        <input type="text" id="editDocSpec" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Clinic Location</label>
+                        <input type="text" id="editDocLoc" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="editDocPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Availability Times</label>
+                        <input type="text" id="editDocAvail" placeholder="e.g. 10am-1pm, 6pm-9pm">
+                    </div>
+                    <div class="form-group">
+                        <label>Portal Password</label>
+                        <input type="text" id="editDocPass" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Virtual Consult Fee (₹)</label>
+                        <input type="number" id="editDocFeeVirtual" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Clinic Consult Fee (₹)</label>
+                        <input type="number" id="editDocFeePhysical" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Home Care Fee (₹)</label>
+                        <input type="number" id="editDocFeeHomeCare" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Activation Status</label>
+                        <select id="editDocActive">
+                            <option value="1">Active / Online</option>
+                            <option value="0">Inactive / Offline</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%; margin-top: 2rem; padding: 1.1rem; background: var(--admin-primary); color: white; font-weight: 700; border-radius: 15px;">Commit Profile Configuration</button>
+            </form>
         </div>
     </div>
 
@@ -310,11 +408,73 @@
                         ${doc.is_active ? 'Online' : 'Offline'}
                     </td>
                     <td>${doc.consultations_completed} consults</td>
+                    <td>
+                        <button class="btn-action" onclick="openEditModal(${doc.id})">Edit Profile</button>
+                    </td>
                 `;
                 list.appendChild(tr);
             });
             initIcons();
         }
+
+        function openEditModal(id) {
+            const doc = allDoctors.find(d => d.id === id);
+            if (!doc) return;
+
+            document.getElementById('editDocId').value = doc.id;
+            document.getElementById('editDocName').value = doc.name || '';
+            document.getElementById('editDocSpec').value = doc.speciality || '';
+            document.getElementById('editDocLoc').value = doc.location || '';
+            document.getElementById('editDocPhone').value = doc.phone || '';
+            document.getElementById('editDocAvail').value = doc.availability || 'On call';
+            document.getElementById('editDocPass').value = doc.password || '';
+            document.getElementById('editDocFeeVirtual').value = doc.fee_virtual !== undefined ? doc.fee_virtual : 0;
+            document.getElementById('editDocFeePhysical').value = doc.fee_physical !== undefined ? doc.fee_physical : 0;
+            document.getElementById('editDocFeeHomeCare').value = doc.fee_home_care !== undefined ? doc.fee_home_care : 0;
+            document.getElementById('editDocActive').value = doc.is_active ? "1" : "0";
+
+            document.getElementById('editDocModal').style.display = 'flex';
+            initIcons();
+        }
+
+        function closeModal() {
+            document.getElementById('editDocModal').style.display = 'none';
+        }
+
+        document.getElementById('editDocForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('editDocId').value, 10);
+            const data = {
+                id: id,
+                name: document.getElementById('editDocName').value,
+                speciality: document.getElementById('editDocSpec').value,
+                location: document.getElementById('editDocLoc').value,
+                phone: document.getElementById('editDocPhone').value,
+                availability: document.getElementById('editDocAvail').value,
+                password: document.getElementById('editDocPass').value,
+                fee_virtual: parseInt(document.getElementById('editDocFeeVirtual').value, 10) || 0,
+                fee_physical: parseInt(document.getElementById('editDocFeePhysical').value, 10) || 0,
+                fee_home_care: parseInt(document.getElementById('editDocFeeHomeCare').value, 10) || 0,
+                is_active: parseInt(document.getElementById('editDocActive').value, 10)
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/doctor/admin/doctor/update`, {
+                    method: 'POST',
+                    headers: { ...headers, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    alert("Doctor profile successfully updated!");
+                    closeModal();
+                    loadDoctors();
+                } else {
+                    alert("Failed to update profile.");
+                }
+            } catch (err) {
+                alert("Connection error.");
+            }
+        });
 
         function filterDocs(q) {
             const f = allDoctors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.speciality.toLowerCase().includes(q.toLowerCase()));
