@@ -161,12 +161,14 @@
             <!-- Timeframe Filter Dropdown -->
             <div style="display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-bottom: 2rem;">
                 <label style="font-size: 0.8rem; font-weight: 700; color: var(--cl-text-dim); text-transform: uppercase; letter-spacing: 1px;">Timeframe Filter:</label>
-                <select id="timeframeSelect" onchange="applyTimeframeFilter(this.value)" style="background: white; border: 1px solid #DDD6C4; padding: 0.8rem 1.5rem; border-radius: 12px; font-family: inherit; font-size: 0.9rem; color: var(--cl-primary); font-weight: 600; outline: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <select id="timeframeSelect" onchange="handleTimeframeChange(this.value)" style="background: white; border: 1px solid #DDD6C4; padding: 0.8rem 1.5rem; border-radius: 12px; font-family: inherit; font-size: 0.9rem; color: var(--cl-primary); font-weight: 600; outline: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
                     <option value="today">Today</option>
                     <option value="month">This Month</option>
                     <option value="year">This Year</option>
                     <option value="all" selected>All Time</option>
+                    <option value="specific">Specific Date...</option>
                 </select>
+                <input type="date" id="specificDatePicker" onchange="applySpecificDateFilter(this.value)" style="display:none; background: white; border: 1px solid #DDD6C4; padding: 0.8rem 1.5rem; border-radius: 12px; font-family: inherit; font-size: 0.9rem; color: var(--cl-primary); font-weight: 600; outline: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
             </div>
 
             <div class="stats-grid">
@@ -316,6 +318,47 @@
         </div>
     </div>
 
+    <!-- Modal for Completing Consultation and entering Doctor Report -->
+    <div class="modal" id="completeModal">
+        <div class="modal-content" style="max-width: 500px; padding: 3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 style="margin: 0; color: var(--cl-primary);">Consultation Report</h2>
+                    <p style="color: var(--cl-text-dim); margin-top: 5px;">Enter clinical report and instructions</p>
+                </div>
+                <button onclick="closeModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="completeConsultForm">
+                <input type="hidden" id="completeAppId">
+                <div style="margin-bottom: 1.5rem;">
+                     <label style="font-size: 0.8rem; color: var(--cl-text-dim); text-transform: uppercase; font-weight: 600;">Patient Phone</label>
+                     <input type="text" id="completePatientPhone" readonly style="width: 100%; padding: 0.8rem; border: 1px solid #DDD6C4; border-radius: 12px; margin-top: 8px; background: #FAF9F4; outline: none; font-family: inherit;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                     <label style="font-size: 0.8rem; color: var(--cl-text-dim); text-transform: uppercase; font-weight: 600;">Doctor Report & Instructions *</label>
+                     <textarea id="doctorReportText" required placeholder="Describe where you left off, instructions given, and expected outcomes..." style="width: 100%; height: 120px; padding: 0.8rem; border: 1px solid #DDD6C4; border-radius: 12px; margin-top: 8px; resize: none; font-family: inherit; outline: none;"></textarea>
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%; padding: 1rem; background: var(--cl-accent); color: white; border-color: var(--cl-accent);">Save & Complete Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Patient Recap Timeline -->
+    <div class="modal" id="recapModal">
+        <div class="modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto; padding: 3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 id="recapPatientPhone" style="margin: 0; color: var(--cl-primary);">Clinical Recap</h2>
+                    <p style="color: var(--cl-text-dim); margin-top: 5px;">Historical report summary</p>
+                </div>
+                <button onclick="closeModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <div id="recapTimeline" style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+                <!-- Timeline items injected here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         const docName = localStorage.getItem('doctor_name');
         const docPass = localStorage.getItem('doctor_password');
@@ -323,11 +366,19 @@
 
         if (!docName || !docPass) window.location.href = 'doctor-login.html';
 
+        // Set doctor name instantly on page load
+        if (docName) {
+            document.getElementById('headerDocName').innerText = docName;
+            document.getElementById('welcomeTitle').innerText = docName;
+            document.getElementById('docInit').innerText = docName[0].toUpperCase();
+        }
+
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
         const headers = { 'X-Doctor-Name': docName, 'X-Doctor-Password': docPass };
 
         let allApps = [];
+        let dynamicViews = [];
 
         function initIcons() { try { lucide.createIcons(); } catch(e) {} }
 
@@ -365,12 +416,47 @@
                 feePhysical = s.fee_physical !== undefined ? s.fee_physical : 300;
                 feeHomeCare = s.fee_home_care !== undefined ? s.fee_home_care : 500;
 
-                document.getElementById('statViews').innerText = s.view_count || 0;
+                // Save dynamic record views list
+                dynamicViews = s.record_views || [];
 
-                // Apply timeframe filtering dynamically on load
+                // Use the new timeframe filtering system
                 const filterVal = document.getElementById('timeframeSelect').value;
-                applyTimeframeFilter(filterVal);
+                if (filterVal === 'specific') {
+                    applySpecificDateFilter(document.getElementById('specificDatePicker').value);
+                } else {
+                    applyTimeframeFilter(filterVal);
+                }
             } catch (err) { console.error(err); }
+        }
+
+        function handleTimeframeChange(val) {
+            const datePicker = document.getElementById('specificDatePicker');
+            if (val === 'specific') {
+                datePicker.style.display = 'inline-block';
+                if (!datePicker.value) {
+                    const today = new Date().toISOString().slice(0, 10);
+                    datePicker.value = today;
+                }
+                applySpecificDateFilter(datePicker.value);
+            } else {
+                datePicker.style.display = 'none';
+                applyTimeframeFilter(val);
+            }
+        }
+
+        function applySpecificDateFilter(dateStr) {
+            if (!dateStr) return;
+            
+            const parts = dateStr.split('-');
+            const displayDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : dateStr;
+            const labelSuffix = `(${displayDate})`;
+
+            const filtered = allApps.filter(app => {
+                const appDate = app.created_at ? app.created_at.slice(0, 10) : '';
+                return appDate === dateStr;
+            });
+
+            updateDashboardStatsAndCharts(filtered, labelSuffix, 'specific', dateStr);
         }
 
         function applyTimeframeFilter(timeframe) {
@@ -402,6 +488,10 @@
                 labelSuffix = "(THIS YEAR)";
             }
 
+            updateDashboardStatsAndCharts(filtered, labelSuffix, timeframe, null);
+        }
+
+        function updateDashboardStatsAndCharts(filtered, labelSuffix, timeframe, specificDateStr) {
             // Update headings dynamically
             document.getElementById('consultationsLabel').innerText = `CONSULTATIONS ${labelSuffix}`;
             document.getElementById('activeLabel').innerText = `AWAITING ${labelSuffix}`;
@@ -410,7 +500,7 @@
             // Calculate Completion Rate
             const total = filtered.length;
             const completed = filtered.filter(a => a.status === 'completed').length;
-            const awaiting = total - completed;
+            const awaiting = filtered.filter(a => a.status !== 'completed').length;
             const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
             // Calculate Estimated Revenue
@@ -426,12 +516,33 @@
                 }
             });
 
+            // Calculate dynamic record views
+            let matchingViewsCount = 0;
+            const now = new Date();
+            const todayStr = now.toISOString().slice(0, 10);
+            const thisMonthStr = now.toISOString().slice(0, 7);
+            const thisYearStr = now.toISOString().slice(0, 4);
+
+            if (timeframe === 'all') {
+                const storedViews = parseInt(document.getElementById('statViews').innerText) || 0;
+                matchingViewsCount = Math.max(storedViews, dynamicViews.length);
+            } else if (timeframe === 'today') {
+                matchingViewsCount = dynamicViews.filter(v => v.slice(0, 10) === todayStr).length;
+            } else if (timeframe === 'month') {
+                matchingViewsCount = dynamicViews.filter(v => v.slice(0, 7) === thisMonthStr).length;
+            } else if (timeframe === 'year') {
+                matchingViewsCount = dynamicViews.filter(v => v.slice(0, 4) === thisYearStr).length;
+            } else if (timeframe === 'specific') {
+                matchingViewsCount = dynamicViews.filter(v => v.slice(0, 10) === specificDateStr).length;
+            }
+
             // Update stats DOM
             document.getElementById('statBookings').innerText = total;
             document.getElementById('statActive').innerText = awaiting;
             document.getElementById('statCompletionRate').innerText = `${completionRate}% Completed`;
             document.getElementById('statRevenue').innerText = `₹${totalRevenue.toLocaleString()}`;
             document.getElementById('statRevenueTally').innerText = `${paidCount} Paid Consults`;
+            document.getElementById('statViews').innerText = matchingViewsCount;
 
             // Smart Summaries calculations
             calculateSmartSummaries(filtered);
@@ -619,16 +730,23 @@
         function renderApps(apps) {
             const list = document.getElementById('appointmentList');
             list.innerHTML = '';
-            apps.forEach(app => {
+            // Hide completed appointments from schedule table
+            const awaitingApps = apps.filter(app => app.status !== 'completed');
+            
+            if (awaitingApps.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--cl-text-dim); padding: 2rem;">No pending appointments in schedule.</td></tr>`;
+                return;
+            }
+
+            awaitingApps.forEach(app => {
                 const tr = document.createElement('tr');
-                const isDone = app.status === 'completed';
                 tr.innerHTML = `
                     <td style="font-weight: 600;">${app.patient_phone}</td>
                     <td><span class="badge badge-${app.consultation_type}">${app.consultation_type.toUpperCase()}</span></td>
-                    <td style="color: ${isDone ? 'var(--cl-accent)' : '#cc9b2e'}; font-weight: 700;">${isDone ? 'COMPLETED' : 'AWAITING'}</td>
+                    <td style="color: #cc9b2e; font-weight: 700;">AWAITING</td>
                     <td>
                         <button class="btn-action" onclick="viewReports('${app.patient_phone}')">View Reports</button>
-                        ${!isDone ? `<button class="btn-action" style="background: var(--cl-accent); color: white; border-color: var(--cl-accent);" onclick="markDone(${app.id})">Mark Done</button>` : ''}
+                        <button class="btn-action" style="background: var(--cl-accent); color: white; border-color: var(--cl-accent); margin-left: 5px;" onclick="openCompleteModal(${app.id}, '${app.patient_phone}')">Mark Done</button>
                     </td>
                 `;
                 list.appendChild(tr);
@@ -642,13 +760,22 @@
                 const pats = await res.json();
                 const list = document.getElementById('patientList');
                 list.innerHTML = '';
+                
+                if (pats.length === 0) {
+                    list.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--cl-text-dim); padding: 2rem;">No clinical patient records found.</td></tr>`;
+                    return;
+                }
+
                 pats.forEach(p => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td style="font-weight: 600;">${p.patient_phone}</td>
                         <td>${new Date(p.last_visit).toLocaleDateString()}</td>
                         <td>${p.total_visits}</td>
-                        <td><button class="btn-action" onclick="viewReports('${p.patient_phone}')">Inspect</button></td>
+                        <td>
+                            <button class="btn-action" onclick="viewReports('${p.patient_phone}')">Inspect</button>
+                            <button class="btn-action" style="background: var(--cl-accent); color: white; border-color: var(--cl-accent); margin-left: 8px;" onclick="showRecap('${p.patient_phone}')">Recap</button>
+                        </td>
                     `;
                     list.appendChild(tr);
                 });
@@ -699,13 +826,98 @@
             } catch (err) { alert("Update failed."); }
         });
 
-        async function markDone(id) {
-            if(!confirm("Consultation complete?")) return;
-            try { await fetch(`${API_BASE}/doctor/appointment/complete`, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) }); loadApps(); } catch(e) {}
+        function openCompleteModal(id, phone) {
+            document.getElementById('completeAppId').value = id;
+            document.getElementById('completePatientPhone').value = phone;
+            document.getElementById('doctorReportText').value = '';
+            document.getElementById('completeModal').style.display = 'flex';
+        }
+        
+        document.getElementById('completeConsultForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('completeAppId').value;
+            const doctor_report = document.getElementById('doctorReportText').value;
+            try {
+                const res = await fetch(`${API_BASE}/doctor/appointment/complete`, {
+                    method: 'POST',
+                    headers: { ...headers, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, doctor_report })
+                });
+                if (res.ok) {
+                    closeModal();
+                    loadApps();
+                } else {
+                    alert("Failed to complete consultation.");
+                }
+            } catch(e) {
+                alert("Error completing consultation.");
+            }
+        });
+
+        async function showRecap(phone) {
+            document.getElementById('recapPatientPhone').innerText = `Clinical Recap: ${phone}`;
+            const timeline = document.getElementById('recapTimeline');
+            timeline.innerHTML = '<p style="color: var(--cl-text-dim); text-align: center; padding: 1rem;">Loading clinical timeline...</p>';
+            document.getElementById('recapModal').style.display = 'flex';
+            
+            try {
+                const res = await fetch(`${API_BASE}/doctor/patient/recap?phone=${encodeURIComponent(phone)}`, { headers });
+                const data = await res.json();
+                
+                if (!data || data.length === 0) {
+                    timeline.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; background: #FAF9F4; border: 1px solid #DDD6C4; border-radius: 20px;">
+                            <i data-lucide="alert-circle" style="width: 40px; height: 40px; color: var(--cl-text-dim); opacity: 0.5; margin-bottom: 10px; margin-left: auto; margin-right: auto;"></i>
+                            <p style="margin: 0; font-weight: 600; color: var(--cl-primary);">No Clinical Reports Found</p>
+                            <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: var(--cl-text-dim);">Reports will appear here once consultations are marked completed with a report.</p>
+                        </div>
+                    `;
+                    initIcons();
+                    return;
+                }
+                
+                timeline.innerHTML = '';
+                data.forEach((r, idx) => {
+                    const item = document.createElement('div');
+                    item.style = "position: relative; padding: 1.5rem; background: #FAF9F4; border: 1px solid #DDD6C4; border-radius: 20px; border-left: 5px solid var(--cl-accent); margin-bottom: 0.5rem;";
+                    const date = new Date(r.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    
+                    item.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; gap: 10px; flex-wrap: wrap;">
+                            <span style="font-size: 0.75rem; font-weight: 700; color: var(--cl-text-dim); text-transform: uppercase;">Consultation #${data.length - idx} (${r.consultation_type.toUpperCase()})</span>
+                            <span style="font-size: 0.75rem; color: var(--cl-text-dim); font-weight: 500;">${date}</span>
+                        </div>
+                        <p style="margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--cl-primary); white-space: pre-wrap; font-weight: 500;">${r.doctor_report}</p>
+                    `;
+                    timeline.appendChild(item);
+                });
+                initIcons();
+            } catch (e) {
+                timeline.innerHTML = '<p style="color: red; text-align: center;">Error loading recap timeline.</p>';
+            }
         }
 
-        function filterApps(q) { renderApps(allApps.filter(a => a.patient_phone.includes(q))); }
-        function closeModal() { document.getElementById('pModal').style.display = 'none'; }
+        function filterApps(q) { 
+            const awaitingApps = allApps.filter(app => app.status !== 'completed');
+            renderApps(awaitingApps.filter(a => a.patient_phone.includes(q))); 
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal')) {
+                closeModal();
+            }
+        };
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
         function logout() { localStorage.clear(); window.location.href = 'doctor-login.html'; }
 
         document.addEventListener('DOMContentLoaded', () => { showView('appointments'); initIcons(); });
