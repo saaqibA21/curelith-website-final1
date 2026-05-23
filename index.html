@@ -121,10 +121,9 @@
         <div class="container">
             <h1>Healthcare Clarity <br><span>Powered by Empathy</span></h1>
             <p>A calm, clinical intelligence system designed to reduce health anxiety and support your journey to wellness.</p>
-            
             <div class="search-container">
-                <input type="text" id="mainSearch" placeholder="Search by Speciality or Physician name..." onkeyup="handleSearch(this.value)">
-                <button class="btn btn-primary" onclick="handleSearch(document.getElementById('mainSearch').value)">
+                <input type="text" id="mainSearch" placeholder="Search by Speciality or Physician name..." onkeyup="handleSearch(this.value)" onkeypress="if(event.key === 'Enter') { handleSearch(this.value); scrollToDoctors(); }">
+                <button class="btn btn-primary" onclick="handleSearch(document.getElementById('mainSearch').value); scrollToDoctors();">
                     <i data-lucide="search"></i> Search
                 </button>
             </div>
@@ -257,6 +256,13 @@
         function handleSearch(q) {
             const f = allDoctors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.speciality.toLowerCase().includes(q.toLowerCase()));
             renderDoctors(f);
+        }
+
+        function scrollToDoctors() {
+            const el = document.getElementById('doctors');
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
         function toggleChat() {
