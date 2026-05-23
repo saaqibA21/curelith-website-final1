@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curelith | Clinical Image Synthesis</title>
+    <title>Curelith | Clinical Image Synthesis Demo</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
     <style>
@@ -13,7 +13,10 @@
             --cl-bg: #F3EEE4;
             --cl-card: #FFFFFF;
             --cl-text: #1B3A36;
+            --cl-text-dim: #4F5D57;
         }
+
+        * { box-sizing: border-box; transition: all 0.3s ease; }
 
         body {
             background-color: var(--cl-bg); margin: 0;
@@ -28,75 +31,202 @@
             background: var(--cl-card); padding: 4rem; border-radius: 40px;
             box-shadow: 0 20px 50px rgba(27, 58, 54, 0.05);
             text-align: center; border: 1px solid #DDD6C4;
+            position: relative;
+            overflow: hidden;
         }
 
+        .demo-badge {
+            background: var(--cl-accent);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        h1 { font-size: 2.5rem; font-weight: 700; margin: 0; color: var(--cl-primary); }
+        p.sub { color: var(--cl-text-dim); margin-top: 1rem; font-size: 1.1rem; line-height: 1.6; }
+
         .upload-zone {
-            margin-top: 3rem; border: 2px dashed #DDD6C4; padding: 5rem;
+            margin-top: 3rem; border: 2px dashed #DDD6C4; padding: 4rem;
             border-radius: 30px; background: #FAF9F4; cursor: pointer;
         }
 
-        .btn-analyze {
+        .upload-zone:hover { border-color: var(--cl-accent); background: white; }
+        .upload-zone i { width: 50px; height: 50px; color: var(--cl-accent); margin-bottom: 1.5rem; }
+
+        .btn-action {
             margin-top: 2rem; width: 100%; padding: 1.2rem;
             border-radius: 15px; background: var(--cl-primary);
-            color: white; border: none; font-weight: 700; cursor: pointer; display: none;
+            color: white; border: none; font-weight: 700; cursor: pointer;
+            font-size: 1rem; box-shadow: 0 10px 20px rgba(27, 58, 54, 0.1);
         }
 
-        .result-block { background: #FAF9F4; padding: 2.5rem; border-radius: 35px; margin-bottom: 2rem; border: 1px solid #DDD6C4; text-align: left; }
+        .btn-action:hover { background: var(--cl-accent); transform: translateY(-2px); }
+
+        .btn-secondary-action {
+            margin-top: 1rem; width: 100%; padding: 1.2rem;
+            border-radius: 15px; background: #FAF9F4;
+            color: var(--cl-primary); border: 1px solid #DDD6C4; font-weight: 700; cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-secondary-action:hover { background: white; }
+
+        .results-container { display: none; margin-top: 3rem; text-align: left; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-block {
+            background: #FAF9F4; padding: 2.5rem; border-radius: 35px; margin-bottom: 2rem; border: 1px solid #DDD6C4; text-align: left;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid #DDD6C4;
+        }
+
+        .stat-item h4 { margin: 0; color: var(--cl-accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-item p { margin: 5px 0 0 0; color: var(--cl-primary); font-size: 1.2rem; font-weight: 700; }
+
+        .loader { display: none; margin-top: 3rem; font-weight: 700; color: var(--cl-accent); }
+
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid rgba(76, 127, 109, 0.1);
+            border-top-color: var(--cl-accent);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin: 2rem auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .nav-back {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--cl-accent);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-back:hover { color: var(--cl-primary); }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="white-card">
-            <h1>Clinical Image Synthesis</h1>
-            <p style="color:#4F5D57;">Dermatological and medical image analysis via responsible AI.</p>
+            <a href="index.html" class="nav-back"><i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Back to Home</a>
+            
+            <div class="demo-badge">Feature Showcase</div>
+            <h1>Derm-Image Synthesis</h1>
+            <p class="sub">
+                This feature demonstrates Curelith's upcoming dermatological image analysis technology. Upload a photo of any skin irritation, rash, or mark, or load our sample to see how the system categorizes symmetry, uniformity, and Irritants.
+            </p>
             
             <div class="upload-zone" onclick="document.getElementById('fileInput').click()" id="dropZone">
                 <i data-lucide="image" style="width:50px; height:50px; color:var(--cl-accent);"></i>
                 <h3 id="uText">Select Clinical Image</h3>
+                <p style="color: var(--cl-text-dim); margin-top: 5px;">Select any image to load the feature preview</p>
                 <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="h(this)">
             </div>
 
-            <button class="btn-analyze" id="analyzeBtn" onclick="ex()">Initialize Synthesis</button>
-            <div id="loader" style="display:none; margin-top:2rem; font-weight:700; color:var(--cl-accent);">PROCESSING IMAGE MATRIX...</div>
+            <button class="btn-action" id="analyzeBtn" onclick="ex()" style="display: none;">Initialize Demonstration Scan</button>
+            <button class="btn-secondary-action" id="demoBtn" onclick="loadDemo()">See Live Feature Sample</button>
+            
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <h3>PROCESSING IMAGE MATRIX...</h3>
+                <p style="color: var(--cl-text-dim); font-weight: normal; font-size: 0.9rem;">Executing neural clinical image diagnostic model</p>
+            </div>
 
-            <div id="res" style="display:none; margin-top:3rem;">
-                <div class="result-block">
-                    <h3 style="color:var(--cl-primary);">Analysis</h3>
-                    <p id="aText" style="line-height:1.7;"></p>
+            <div id="res" class="results-container">
+                <div class="result-block" style="border-left: 5px solid var(--cl-accent);">
+                    <h3 style="color: var(--cl-primary); margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="info" style="color: var(--cl-accent);"></i> How this feature works
+                    </h3>
+                    <p style="line-height: 1.7; color: var(--cl-text-dim); margin-bottom: 0;">
+                        Curelith leverages advanced computer vision models to evaluate visual characteristics of skin lesions and rashes. The AI classifies geometric symmetry, color margins, and boundaries to help patients assess potential risks and determine if a dermatology consultation is needed.
+                    </p>
                 </div>
-                <button class="btn-action" style="padding:1rem 2rem; background:var(--cl-primary); color:white; border-radius:12px; border:none; cursor:pointer;" onclick="location.reload()">New Scan</button>
+
+                <div class="result-block">
+                    <h3 style="color:var(--cl-primary); margin-top: 0;">Dermatological Synthesis (Sample Result)</h3>
+                    <p id="aText" style="line-height:1.7; color: var(--cl-text-dim);"></p>
+                    
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <h4>Symmetry</h4>
+                            <p>High</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Color Uniformity</h4>
+                            <p>Consistent</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Potential Category</h4>
+                            <p>Contact Dermatitis</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Urgency Tier</h4>
+                            <p style="color: #10b981;">Low (Self-Care)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-secondary-action" onclick="location.reload()">Reset Feature Demo</button>
             </div>
         </div>
     </div>
 
     <script>
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
-        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
-
         function h(i) {
             if(i.files && i.files[0]) {
                 document.getElementById('uText').innerText = i.files[0].name;
                 document.getElementById('analyzeBtn').style.display = 'block';
+                document.getElementById('demoBtn').style.display = 'none';
                 lucide.createIcons();
             }
         }
 
-        async function ex() {
+        function ex() {
+            simulateAnalysis();
+        }
+
+        function loadDemo() {
+            simulateAnalysis();
+        }
+
+        function simulateAnalysis() {
             document.getElementById('analyzeBtn').style.display = 'none';
+            document.getElementById('demoBtn').style.display = 'none';
             document.getElementById('dropZone').style.display = 'none';
             document.getElementById('loader').style.display = 'block';
 
-            try {
-                const r = await fetch(`${API_BASE}/ai/chat`, {
-                    method: 'POST',
-                    headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({ message: "Analyze this clinical image for dermatological concerns." })
-                });
-                const d = await r.json();
+            setTimeout(() => {
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('res').style.display = 'block';
-                document.getElementById('aText').innerText = d.reply;
-            } catch(e) { location.reload(); }
+                document.getElementById('aText').innerText = 
+                    "The sample scan indicates a mild skin rash with highly symmetric boundaries and a consistent coloration pattern. " +
+                    "These visual characteristics align most closely with contact dermatitis (likely caused by minor topical irritation from soaps, detergents, or fabric). " +
+                    "We recommend keeping the affected area clean, dry, and cool. Avoid applying harsh cosmetic chemicals. If itching or redness persists beyond 48 hours, " +
+                    "please book a consultation with a clinical dermatologist for custom topical relief.";
+                lucide.createIcons();
+            }, 1800);
         }
         document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
     </script>

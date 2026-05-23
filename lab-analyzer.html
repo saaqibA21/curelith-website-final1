@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curelith | Neural Lab Intelligence</title>
+    <title>Curelith | Neural Lab Intelligence Demo</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
     <style>
@@ -39,15 +39,30 @@
             box-shadow: 0 20px 50px rgba(27, 58, 54, 0.05);
             text-align: center;
             border: 1px solid #DDD6C4;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-badge {
+            background: var(--cl-accent);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
         }
 
         h1 { font-size: 2.5rem; font-weight: 700; margin: 0; color: var(--cl-primary); }
-        p.sub { color: var(--cl-text-dim); margin-top: 1rem; font-size: 1.1rem; }
+        p.sub { color: var(--cl-text-dim); margin-top: 1rem; font-size: 1.1rem; line-height: 1.6; }
 
         .upload-zone {
             margin-top: 3rem;
             border: 2px dashed #DDD6C4;
-            padding: 5rem;
+            padding: 4rem;
             border-radius: 30px;
             background: #FAF9F4;
             cursor: pointer;
@@ -56,11 +71,23 @@
         .upload-zone:hover { border-color: var(--cl-accent); background: white; }
         .upload-zone i { width: 50px; height: 50px; color: var(--cl-accent); margin-bottom: 1.5rem; }
 
-        .btn-analyze {
+        .btn-action {
             margin-top: 2rem; width: 100%; padding: 1.2rem;
             border-radius: 15px; background: var(--cl-primary);
-            color: white; border: none; font-weight: 700; cursor: pointer; display: none;
+            color: white; border: none; font-weight: 700; cursor: pointer;
+            font-size: 1rem; box-shadow: 0 10px 20px rgba(27, 58, 54, 0.1);
         }
+
+        .btn-action:hover { background: var(--cl-accent); transform: translateY(-2px); }
+
+        .btn-secondary-action {
+            margin-top: 1rem; width: 100%; padding: 1.2rem;
+            border-radius: 15px; background: #FAF9F4;
+            color: var(--cl-primary); border: 1px solid #DDD6C4; font-weight: 700; cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-secondary-action:hover { background: white; }
 
         .results-container { display: none; margin-top: 3rem; text-align: left; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -71,24 +98,54 @@
         }
 
         .test-row { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #DDD6C4; }
-        .status-badge { padding: 0.3rem 0.8rem; border-radius: 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .test-row:last-child { border-bottom: none; }
+        
+        .status-badge { padding: 0.3rem 0.8rem; border-radius: 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; display: inline-block; }
         .status-normal { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-        .status-high, .status-low { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
+        .status-low, .status-high { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
 
-        .loader { display: none; margin-top: 2rem; font-weight: 700; color: var(--cl-accent); }
+        .loader { display: none; margin-top: 3rem; font-weight: 700; color: var(--cl-accent); }
+        
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid rgba(76, 127, 109, 0.1);
+            border-top-color: var(--cl-accent);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin: 2rem auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .nav-back {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--cl-accent);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-back:hover { color: var(--cl-primary); }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="white-card">
+            <a href="index.html" class="nav-back"><i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i> Back to Home</a>
+            
+            <div class="demo-badge">Feature Showcase</div>
             <h1>Neural Lab Intelligence</h1>
-            <p class="sub">Decrypt clinical lab reports with responsible AI guidance.</p>
+            <p class="sub">
+                This feature demonstrates how Curelith's upcoming AI decryption system will simplify complex clinical lab reports. Upload any report or load our sample to see how it extracts key markers and explains them in plain language.
+            </p>
             
             <div class="upload-zone" onclick="document.getElementById('fileInput').click()" id="dropZone">
                 <i data-lucide="upload-cloud"></i>
                 <div id="uText">
-                    <h3>Select Report</h3>
-                    <p style="color: var(--cl-text-dim);">PDF or Image accepted</p>
+                    <h3>Select Lab Report</h3>
+                    <p style="color: var(--cl-text-dim);">Select any file to load the feature preview</p>
                 </div>
                 <div id="uPrev" style="display: none;">
                     <i data-lucide="file-check"></i>
@@ -97,23 +154,39 @@
                 <input type="file" id="fileInput" style="display: none;" accept="image/*,application/pdf" onchange="handleFile(this)">
             </div>
 
-            <button class="btn-analyze" id="analyzeBtn" onclick="execute()">Begin Clinical Analysis</button>
-            <div class="loader" id="loader">ANALYZING REPORT...</div>
+            <button class="btn-action" id="analyzeBtn" onclick="execute()" style="display: none;">Begin Demonstration Analysis</button>
+            <button class="btn-secondary-action" id="demoBtn" onclick="loadDemo()">See Live Feature Sample</button>
+            
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <h3>DECRYPTING LAB MATRIX...</h3>
+                <p style="color: var(--cl-text-dim); font-weight: normal; font-size: 0.9rem;">Simulating neural clinical analysis pipeline</p>
+            </div>
 
             <div class="results-container" id="results">
-                <div class="result-block">
-                    <h3 style="color: var(--cl-primary);">Interpretation</h3>
-                    <p id="iText" style="line-height: 1.7;"></p>
+                <div class="result-block" style="border-left: 5px solid var(--cl-accent);">
+                    <h3 style="color: var(--cl-primary); margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="info" style="color: var(--cl-accent);"></i> How this feature works
+                    </h3>
+                    <p style="line-height: 1.7; color: var(--cl-text-dim); margin-bottom: 0;">
+                        Curelith automatically digitizes PDF reports or scanned images, parses every individual biomarker, cross-references clinical ranges, and synthesizes an empathetic explanation so patients can prepare for their physician consultation with complete peace of mind.
+                    </p>
                 </div>
+
+                <div class="result-block">
+                    <h3 style="color: var(--cl-primary); margin-top: 0;">Clinical Synthesis (Sample Result)</h3>
+                    <p id="iText" style="line-height: 1.7; color: var(--cl-text-dim);"></p>
+                </div>
+                
+                <h3 style="color: var(--cl-primary); margin-bottom: 1.5rem;">Biomarker Extraction</h3>
                 <div id="testList"></div>
-                <button class="btn-analyze" style="display: block; background: #FAF9F4; color: var(--cl-text); border: 1px solid #DDD6C4;" onclick="location.reload()">Start Over</button>
+                
+                <button class="btn-secondary-action" onclick="location.reload()">Reset Feature Demo</button>
             </div>
         </div>
     </div>
 
     <script>
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
-        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
         let sFile = null;
 
         function initIcons() { try { lucide.createIcons(); } catch(e) {} }
@@ -125,33 +198,70 @@
                 document.getElementById('uPrev').style.display = 'block';
                 document.getElementById('fName').innerText = sFile.name;
                 document.getElementById('analyzeBtn').style.display = 'block';
+                document.getElementById('demoBtn').style.display = 'none';
                 initIcons();
             }
         }
 
-        async function execute() {
-            if (!sFile) return;
-            const fd = new FormData(); fd.append('file', sFile);
+        function execute() {
+            simulateAnalysis();
+        }
+
+        function loadDemo() {
+            simulateAnalysis();
+        }
+
+        function simulateAnalysis() {
             document.getElementById('analyzeBtn').style.display = 'none';
+            document.getElementById('demoBtn').style.display = 'none';
             document.getElementById('dropZone').style.display = 'none';
             document.getElementById('loader').style.display = 'block';
 
-            try {
-                const res = await fetch(`${API_BASE}/ai/analyze-lab`, { method: 'POST', body: fd });
-                const d = await res.json();
+            setTimeout(() => {
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('results').style.display = 'block';
-                document.getElementById('iText').innerText = d.clinical_interpretation;
+                
+                document.getElementById('iText').innerText = 
+                    "Based on our sample report analysis, the AI has detected a mild Vitamin D deficiency and slightly elevated LDL cholesterol. " +
+                    "All other biomarkers—including thyroid performance, complete blood count (CBC), and blood sugar levels—reside well within healthy boundaries. " +
+                    "We recommend discussing these findings with your doctor, who may suggest minor dietary tweaks or a daily Vitamin D supplement.";
+
+                const testData = [
+                    { name: "Vitamin D (25-Hydroxy)", value: "18 ng/mL", range: "30 - 100 ng/mL", status: "Low" },
+                    { name: "LDL Cholesterol", value: "135 mg/dL", range: "< 100 mg/dL", status: "High" },
+                    { name: "Hemoglobin (Hb)", value: "14.2 g/dL", range: "13.8 - 17.2 g/dL", status: "Normal" },
+                    { name: "Thyroid Stimulating Hormone (TSH)", value: "2.4 uIU/mL", range: "0.4 - 4.0 uIU/mL", status: "Normal" }
+                ];
+
                 const list = document.getElementById('testList');
                 list.innerHTML = '';
-                d.tests.forEach(t => {
-                    const r = document.createElement('div'); r.className = 'result-block';
-                    r.innerHTML = `<div class="test-row"><div><strong>${t.name}</strong><br><small>Range: ${t.normal_range}</small></div><div style="text-align:right;"><strong>${t.value}</strong><br><span class="status-badge status-${t.status.toLowerCase()}">${t.status}</span></div></div>`;
+                
+                testData.forEach(t => {
+                    const r = document.createElement('div');
+                    r.className = 'result-block';
+                    r.style.padding = '1.5rem 2rem';
+                    r.style.marginBottom = '1rem';
+                    
+                    const badgeClass = t.status === 'Normal' ? 'status-normal' : 'status-low';
+                    
+                    r.innerHTML = `
+                        <div class="test-row">
+                            <div>
+                                <strong style="color: var(--cl-primary); font-size: 1.1rem;">${t.name}</strong><br>
+                                <small style="color: var(--cl-text-dim);">Reference Range: ${t.range}</small>
+                            </div>
+                            <div style="text-align:right;">
+                                <strong style="color: var(--cl-primary); font-size: 1.1rem; display:block; margin-bottom: 5px;">${t.value}</strong>
+                                <span class="status-badge ${badgeClass}">${t.status}</span>
+                            </div>
+                        </div>
+                    `;
                     list.appendChild(r);
                 });
                 initIcons();
-            } catch (e) { alert("Fail."); location.reload(); }
+            }, 1800);
         }
+
         document.addEventListener('DOMContentLoaded', initIcons);
     </script>
 </body>
