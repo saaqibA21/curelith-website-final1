@@ -6,6 +6,7 @@
     <title>Curelith | Clinical Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --cl-primary: #1B3A36;
@@ -115,6 +116,11 @@
             padding: 0.8rem 1.5rem; border-radius: 15px;
             width: 300px; outline: none;
         }
+
+        .analytics-grid { display: grid; grid-template-columns: 2.2fr 1.3fr; gap: 3rem; }
+        @media (max-width: 992px) {
+            .analytics-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+        }
     </style>
 </head>
 <body>
@@ -142,18 +148,51 @@
         </header>
 
         <div id="view-appointments">
+            <!-- Timeframe Filter Dropdown -->
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-bottom: 2rem;">
+                <label style="font-size: 0.8rem; font-weight: 700; color: var(--cl-text-dim); text-transform: uppercase; letter-spacing: 1px;">Timeframe Filter:</label>
+                <select id="timeframeSelect" onchange="applyTimeframeFilter(this.value)" style="background: white; border: 1px solid #DDD6C4; padding: 0.8rem 1.5rem; border-radius: 12px; font-family: inherit; font-size: 0.9rem; color: var(--cl-primary); font-weight: 600; outline: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <option value="today">Today</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                    <option value="all" selected>All Time</option>
+                </select>
+            </div>
+
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>CONSULTATIONS</h3>
+                    <h3 id="consultationsLabel">CONSULTATIONS (ALL TIME)</h3>
                     <div class="value" id="statBookings">0</div>
                 </div>
                 <div class="stat-card">
-                    <h3>PROFILE VIEWS</h3>
+                    <h3>ALL TIME VIEWS</h3>
                     <div class="value" id="statViews">0</div>
                 </div>
                 <div class="stat-card">
-                    <h3>ACTIVE TODAY</h3>
+                    <h3 id="activeLabel">AWAITING (ALL TIME)</h3>
                     <div class="value" id="statActive" style="color: var(--cl-accent);">0</div>
+                </div>
+            </div>
+
+            <!-- Insights Panel with Dynamic Charts -->
+            <div class="white-panel" style="margin-bottom: 3rem;">
+                <div class="panel-header" style="margin-bottom: 1.5rem;">
+                    <h2>Clinical Insights & Analytics</h2>
+                    <span style="font-size: 0.85rem; color: var(--cl-text-dim); font-weight: 600;">Modality & Volume Trends</span>
+                </div>
+                <div class="analytics-grid">
+                    <div style="background: #FAF9F4; padding: 2rem; border-radius: 20px; border: 1px solid #DDD6C4; position: relative; min-height: 320px;">
+                        <h4 style="margin: 0 0 1.5rem 0; font-size: 0.9rem; color: var(--cl-primary); font-weight: 700;">Consultation Volume Trend</h4>
+                        <div style="position: relative; height: 210px; width: 100%;">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                    <div style="background: #FAF9F4; padding: 2rem; border-radius: 20px; border: 1px solid #DDD6C4; position: relative; min-height: 320px; display: flex; flex-direction: column;">
+                        <h4 style="margin: 0 0 1.5rem 0; font-size: 0.9rem; color: var(--cl-primary); font-weight: 700;">Modality Distribution</h4>
+                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative; width: 100%;">
+                            <canvas id="modalityChart" style="max-height: 180px; max-width: 180px;"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -259,6 +298,9 @@
             if (view === 'settings') loadSettings();
         }
 
+        let trendChartInstance = null;
+        let modalityChartInstance = null;
+
         async function loadApps() {
             try {
                 const res = await fetch(`${API_BASE}/doctor/appointments?name=${encodeURIComponent(docName)}`, { headers });
@@ -268,11 +310,185 @@
                 const s = await sRes.json();
 
                 document.getElementById('statViews').innerText = s.view_count || 0;
-                document.getElementById('statBookings').innerText = s.booking_count || 0;
-                document.getElementById('statActive').innerText = allApps.filter(a => a.status !== 'completed').length;
 
-                renderApps(allApps);
+                // Apply timeframe filtering dynamically on load
+                const filterVal = document.getElementById('timeframeSelect').value;
+                applyTimeframeFilter(filterVal);
             } catch (err) { console.error(err); }
+        }
+
+        function applyTimeframeFilter(timeframe) {
+            const now = new Date();
+            const todayStr = now.toISOString().slice(0, 10);
+            const thisMonthStr = now.toISOString().slice(0, 7); // "YYYY-MM"
+            const thisYearStr = now.toISOString().slice(0, 4);  // "YYYY"
+
+            let filtered = allApps;
+            let labelSuffix = "(ALL TIME)";
+
+            if (timeframe === 'today') {
+                filtered = allApps.filter(app => {
+                    const dateStr = app.created_at ? app.created_at.slice(0, 10) : '';
+                    return dateStr === todayStr;
+                });
+                labelSuffix = "(TODAY)";
+            } else if (timeframe === 'month') {
+                filtered = allApps.filter(app => {
+                    const dateStr = app.created_at ? app.created_at.slice(0, 7) : '';
+                    return dateStr === thisMonthStr;
+                });
+                labelSuffix = "(THIS MONTH)";
+            } else if (timeframe === 'year') {
+                filtered = allApps.filter(app => {
+                    const dateStr = app.created_at ? app.created_at.slice(0, 4) : '';
+                    return dateStr === thisYearStr;
+                });
+                labelSuffix = "(THIS YEAR)";
+            }
+
+            // Update headings dynamically
+            document.getElementById('consultationsLabel').innerText = `CONSULTATIONS ${labelSuffix}`;
+            document.getElementById('activeLabel').innerText = `AWAITING ${labelSuffix}`;
+
+            // Update stats
+            document.getElementById('statBookings').innerText = filtered.length;
+            document.getElementById('statActive').innerText = filtered.filter(a => a.status !== 'completed').length;
+
+            renderApps(filtered);
+            updateCharts(filtered, timeframe);
+        }
+
+        function updateCharts(apps, timeframe) {
+            // --- 1. MODALITY DISTRIBUTION (DOUGHNUT) ---
+            const modalityData = getModalityData(apps);
+            const modalityCtx = document.getElementById('modalityChart').getContext('2d');
+
+            if (modalityChartInstance) {
+                modalityChartInstance.destroy();
+            }
+
+            modalityChartInstance = new Chart(modalityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Virtual', 'Clinic Visit', 'Home Care'],
+                    datasets: [{
+                        data: modalityData,
+                        backgroundColor: ['#6366f1', '#1B3A36', '#cc9b2e'],
+                        borderWidth: 2,
+                        borderColor: '#FAF9F4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 10,
+                                padding: 10,
+                                font: { family: 'Outfit', size: 11, weight: 600 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // --- 2. TREND CHART (LINE) ---
+            const trend = getTrendData(apps);
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+
+            if (trendChartInstance) {
+                trendChartInstance.destroy();
+            }
+
+            const gradient = trendCtx.createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(76, 127, 109, 0.4)');
+            gradient.addColorStop(1, 'rgba(76, 127, 109, 0.0)');
+
+            trendChartInstance = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: trend.labels,
+                    datasets: [{
+                        label: 'Consultations',
+                        data: trend.data,
+                        borderColor: '#4C7F6D',
+                        borderWidth: 3,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#1B3A36',
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                font: { family: 'Outfit', size: 11 }
+                            },
+                            grid: {
+                                color: 'rgba(27, 58, 54, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { family: 'Outfit', size: 11 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function getTrendData(apps) {
+            const counts = {};
+            apps.forEach(app => {
+                const date = app.created_at ? app.created_at.slice(0, 10) : 'Unknown';
+                counts[date] = (counts[date] || 0) + 1;
+            });
+            const sortedDates = Object.keys(counts).sort();
+            const data = sortedDates.map(d => counts[d]);
+            return { labels: sortedDates.map(d => formatDateLabel(d)), data: data };
+        }
+
+        function formatDateLabel(dateStr) {
+            if (dateStr === 'Unknown') return 'Unknown';
+            try {
+                const d = new Date(dateStr);
+                return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+            } catch(e) {
+                return dateStr;
+            }
+        }
+
+        function getModalityData(apps) {
+            let virtual = 0;
+            let physical = 0;
+            let home = 0;
+
+            apps.forEach(app => {
+                const type = app.consultation_type ? app.consultation_type.toLowerCase() : '';
+                if (type === 'virtual') virtual++;
+                else if (type === 'physical' || type === 'clinic_visit') physical++;
+                else if (type === 'home_care') home++;
+            });
+
+            return [virtual, physical, home];
         }
 
         function renderApps(apps) {
