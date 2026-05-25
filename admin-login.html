@@ -34,7 +34,7 @@
         input {
             width: 100%;
             padding: 1.2rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0;
             background: #FAF9F4;
             border: 1px solid #DDD6C4;
             border-radius: 15px;
@@ -58,6 +58,50 @@
         }
 
         button:hover { transform: translateY(-2px); background: #4C7F6D; }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .password-wrapper input {
+            padding-right: 3.5rem;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1.2rem;
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 24px !important;
+            height: 24px !important;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4F5D57;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        .toggle-password:hover {
+            color: #1B3A36;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
     </style>
 </head>
 <body>
@@ -66,7 +110,19 @@
         <h1>Admin Portal</h1>
         <p>Access the platform governance command center.</p>
         <form id="adminForm">
-            <input type="password" id="adminPass" placeholder="Access Key" required>
+            <div class="password-wrapper">
+                <input type="password" id="adminPass" placeholder="Access Key" required>
+                <button type="button" class="toggle-password" id="togglePass">
+                    <svg class="eye-icon" viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg class="eye-off-icon" viewBox="0 0 24 24" style="display: none;">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                </button>
+            </div>
             <button type="submit">Establish Connection</button>
         </form>
     </div>
@@ -76,6 +132,19 @@
             e.preventDefault();
             localStorage.setItem('admin_pass', document.getElementById('adminPass').value);
             window.location.href = 'admin-dashboard.html';
+        });
+
+        // Toggle password visibility
+        const togglePass = document.getElementById('togglePass');
+        const adminPass = document.getElementById('adminPass');
+        const eyeIcon = togglePass.querySelector('.eye-icon');
+        const eyeOffIcon = togglePass.querySelector('.eye-off-icon');
+
+        togglePass.addEventListener('click', () => {
+            const isPassword = adminPass.getAttribute('type') === 'password';
+            adminPass.setAttribute('type', isPassword ? 'text' : 'password');
+            eyeIcon.style.display = isPassword ? 'none' : 'block';
+            eyeOffIcon.style.display = isPassword ? 'block' : 'none';
         });
     </script>
 </body>
