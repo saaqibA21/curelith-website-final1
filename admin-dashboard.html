@@ -260,9 +260,14 @@
 
         <div id="view-doctors" style="display: none;">
             <div class="white-panel">
-                <div class="panel-header">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
                     <h2>Professional Directory</h2>
-                    <input type="text" class="search-box" placeholder="Filter by name/speciality..." onkeyup="filterDocs(this.value)">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <input type="text" class="search-box" placeholder="Filter by name/speciality..." onkeyup="filterDocs(this.value)">
+                        <button class="btn-action" style="background: var(--admin-primary); color: white; border-color: var(--admin-primary); font-weight: 700; border-radius: 12px; height: 45px; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="openAddModal()">
+                            <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i> Add Doctor
+                        </button>
+                    </div>
                 </div>
                 <table id="doctorsTable">
                     <thead>
@@ -354,6 +359,15 @@
                         <input type="number" id="editDocFeeHomeCare" min="0" required>
                     </div>
                     <div class="form-group">
+                        <label>Consultation Modality</label>
+                        <select id="editDocConsultType">
+                            <option value="both">Both (Virtual & Physical)</option>
+                            <option value="virtual">Virtual Only</option>
+                            <option value="physical">Physical Only</option>
+                            <option value="home_care">Home Care Only</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Activation Status</label>
                         <select id="editDocActive">
                             <option value="1">Active / Online</option>
@@ -362,6 +376,77 @@
                     </div>
                 </div>
                 <button type="submit" class="btn-action" style="width: 100%; margin-top: 2rem; padding: 1.1rem; background: var(--admin-primary); color: white; font-weight: 700; border-radius: 15px;">Commit Profile Configuration</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Doctors -->
+    <div class="modal" id="addDocModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 style="margin: 0; color: var(--admin-primary);">Add New Doctor</h2>
+                    <p style="color: var(--admin-text-dim); margin-top: 5px;">Create a new physician profile node</p>
+                </div>
+                <button onclick="closeAddModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <form id="addDocForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Doctor Name</label>
+                        <input type="text" id="addDocName" placeholder="e.g. Dr. Jane Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Speciality</label>
+                        <input type="text" id="addDocSpec" placeholder="e.g. general medicine" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Clinic Location</label>
+                        <input type="text" id="addDocLoc" placeholder="e.g. Chennai" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="addDocPhone" placeholder="e.g. 919876543210">
+                    </div>
+                    <div class="form-group">
+                        <label>Availability Times</label>
+                        <input type="text" id="addDocAvail" placeholder="e.g. 10am-1pm, 6pm-9pm" value="On call">
+                    </div>
+                    <div class="form-group">
+                        <label>Portal Password</label>
+                        <input type="text" id="addDocPass" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Virtual Consult Fee (₹)</label>
+                        <input type="number" id="addDocFeeVirtual" min="0" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Clinic Consult Fee (₹)</label>
+                        <input type="number" id="addDocFeePhysical" min="0" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Home Care Fee (₹)</label>
+                        <input type="number" id="addDocFeeHomeCare" min="0" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Consultation Modality</label>
+                        <select id="addDocConsultType">
+                            <option value="both">Both (Virtual & Physical)</option>
+                            <option value="virtual">Virtual Only</option>
+                            <option value="physical">Physical Only</option>
+                            <option value="home_care">Home Care Only</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Activation Status</label>
+                        <select id="addDocActive">
+                            <option value="1">Active / Online</option>
+                            <option value="0">Inactive / Offline</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%; margin-top: 2rem; padding: 1.1rem; background: var(--admin-primary); color: white; font-weight: 700; border-radius: 15px;">Create Doctor Profile</button>
             </form>
         </div>
     </div>
@@ -559,6 +644,7 @@
             document.getElementById('editDocFeeVirtual').value = doc.fee_virtual !== undefined ? doc.fee_virtual : 0;
             document.getElementById('editDocFeePhysical').value = doc.fee_physical !== undefined ? doc.fee_physical : 0;
             document.getElementById('editDocFeeHomeCare').value = doc.fee_home_care !== undefined ? doc.fee_home_care : 0;
+            document.getElementById('editDocConsultType').value = doc.consultation_type || 'both';
             document.getElementById('editDocActive').value = doc.is_active ? "1" : "0";
 
             document.getElementById('editDocModal').style.display = 'flex';
@@ -583,6 +669,7 @@
                 fee_virtual: parseInt(document.getElementById('editDocFeeVirtual').value, 10) || 0,
                 fee_physical: parseInt(document.getElementById('editDocFeePhysical').value, 10) || 0,
                 fee_home_care: parseInt(document.getElementById('editDocFeeHomeCare').value, 10) || 0,
+                consultation_type: document.getElementById('editDocConsultType').value,
                 is_active: parseInt(document.getElementById('editDocActive').value, 10)
             };
 
@@ -604,12 +691,64 @@
             }
         });
 
+        function openAddModal() {
+            document.getElementById('addDocForm').reset();
+            document.getElementById('addDocModal').style.display = 'flex';
+            initIcons();
+        }
+
+        function closeAddModal() {
+            document.getElementById('addDocModal').style.display = 'none';
+        }
+
+        document.getElementById('addDocForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('addDocName').value,
+                speciality: document.getElementById('addDocSpec').value,
+                location: document.getElementById('addDocLoc').value,
+                phone: document.getElementById('addDocPhone').value,
+                availability: document.getElementById('addDocAvail').value,
+                password: document.getElementById('addDocPass').value,
+                fee_virtual: parseInt(document.getElementById('addDocFeeVirtual').value, 10) || 0,
+                fee_physical: parseInt(document.getElementById('addDocFeePhysical').value, 10) || 0,
+                fee_home_care: parseInt(document.getElementById('addDocFeeHomeCare').value, 10) || 0,
+                consultation_type: document.getElementById('addDocConsultType').value,
+                is_active: parseInt(document.getElementById('addDocActive').value, 10)
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/doctor/admin/doctor/add`, {
+                    method: 'POST',
+                    headers: { ...headers, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    alert("Doctor profile successfully created!");
+                    closeAddModal();
+                    loadDoctors();
+                } else {
+                    alert("Failed to create profile.");
+                }
+            } catch (err) {
+                alert("Connection error.");
+            }
+        });
+
         function filterDocs(q) {
             const f = allDoctors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.speciality.toLowerCase().includes(q.toLowerCase()));
             renderDoctors(f);
         }
 
         function logout() { localStorage.clear(); window.location.href = 'admin-login.html'; }
+
+        // Close modals when clicking on the backdrop overlay
+        window.addEventListener('click', (e) => {
+            const editModal = document.getElementById('editDocModal');
+            const addModal = document.getElementById('addDocModal');
+            if (e.target === editModal) closeModal();
+            if (e.target === addModal) closeAddModal();
+        });
 
         document.addEventListener('DOMContentLoaded', () => { showView('overview'); initIcons(); });
     </script>
