@@ -298,6 +298,10 @@
                         <label style="font-size: 0.8rem; color: var(--cl-text-dim); text-transform: uppercase;">Availability</label>
                         <input type="text" id="setAvail" style="width: 100%; padding: 1rem; border: 1px solid #DDD6C4; border-radius: 12px; margin-top: 8px;">
                     </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="font-size: 0.8rem; color: var(--cl-text-dim); text-transform: uppercase;">Portal Password</label>
+                        <input type="password" id="setPass" style="width: 100%; padding: 1rem; border: 1px solid #DDD6C4; border-radius: 12px; margin-top: 8px;" required>
+                    </div>
                     <button type="submit" class="btn-action" style="width: 100%; padding: 1rem; background: var(--cl-primary); color: white;">Update Profile</button>
                 </form>
             </div>
@@ -870,6 +874,7 @@
                 document.getElementById('setSpec').value = s.speciality || '';
                 document.getElementById('setLoc').value = s.location || '';
                 document.getElementById('setAvail').value = s.availability || '';
+                document.getElementById('setPass').value = localStorage.getItem('doctor_password') || '';
                 document.getElementById('headerDocName').innerText = docName;
                 document.getElementById('welcomeTitle').innerText = docName;
                 document.getElementById('docInit').innerText = docName[0].toUpperCase();
@@ -878,10 +883,27 @@
 
         document.getElementById('settingsForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const data = { speciality: document.getElementById('setSpec').value, location: document.getElementById('setLoc').value, phone: '', availability: document.getElementById('setAvail').value, password: docPass };
+            const newPass = document.getElementById('setPass').value;
+            const data = {
+                speciality: document.getElementById('setSpec').value,
+                location: document.getElementById('setLoc').value,
+                phone: '',
+                availability: document.getElementById('setAvail').value,
+                password: newPass
+            };
             try {
-                const res = await fetch(`${API_BASE}/doctor/update-profile`, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-                if (res.ok) alert("Profile updated.");
+                const res = await fetch(`${API_BASE}/doctor/update-profile`, {
+                    method: 'POST',
+                    headers: { ...headers, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    localStorage.setItem('doctor_password', newPass);
+                    headers['X-Doctor-Password'] = newPass;
+                    alert("Profile updated successfully.");
+                } else {
+                    alert("Update failed.");
+                }
             } catch (err) { alert("Update failed."); }
         });
 
