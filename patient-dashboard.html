@@ -412,7 +412,7 @@
                     Last updated: ${new Date(latestFit.uploaded_at).toLocaleString()}
                 </div>
             `;
-            lucide.createIcons();
+            initIcons();
         }
 
         // Render Locker Grid with Folder Grouping
@@ -476,7 +476,7 @@
                 }
             }
 
-            lucide.createIcons();
+            initIcons();
         }
 
         // File Select Handler (Uploads directly to /locker/upload)
@@ -547,8 +547,18 @@
             window.location.href = 'patient-login.html';
         }
 
+        function initIcons() {
+            try {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            } catch (e) {
+                console.error("Lucide failed:", e);
+            }
+        }
+
         // Initialize Lucide icons on start
-        lucide.createIcons();
+        initIcons();
         loadDashboard();
     </script>
 </body>
