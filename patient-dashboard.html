@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard | Curelith</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <style>
+        :root {
+            --cl-primary: #1B3A36;
+            --cl-accent: #4C7F6D;
+            --cl-bg: #F3EEE4;
+            --cl-card: #FFFFFF;
+            --cl-text: #1B3A36;
+            --cl-text-dim: #4F5D57;
+            --cl-border: #DDD6C4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--cl-bg);
+            color: var(--cl-text);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--cl-border);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            height: 45px;
+        }
+
+        .user-phone {
+            background: #E8EDE4;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--cl-primary);
+        }
+
+        .btn-logout {
+            background: transparent;
+            color: var(--cl-text-dim);
+            border: 1px solid var(--cl-border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-logout:hover {
+            background: #E8EDE4;
+            color: var(--cl-primary);
+            border-color: var(--cl-primary);
+        }
+
+        /* DASHBOARD GRID */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--cl-card);
+            border-radius: 32px;
+            border: 1px solid var(--cl-border);
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(27, 58, 54, 0.02);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--cl-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* VITALS CARD */
+        .vitals-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .vital-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #FAF9F5;
+            border-radius: 20px;
+            border: 1px solid #FAF9F5;
+        }
+
+        .vital-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .vital-steps { background: #4C7F6D; }
+        .vital-heart { background: #e06c75; }
+        .vital-cal { background: #d19a66; }
+
+        .vital-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vital-label {
+            font-size: 0.75rem;
+            color: var(--cl-text-dim);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .vital-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--cl-primary);
+        }
+
+        .no-vitals {
+            text-align: center;
+            color: var(--cl-text-dim);
+            font-size: 0.85rem;
+            padding: 1.5rem 0;
+            line-height: 1.5;
+        }
+
+        .no-vitals a {
+            color: var(--cl-accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* UPLOAD ZONE */
+        .upload-zone {
+            border: 2px dashed var(--cl-accent);
+            background: #FAF9F5;
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+
+        .upload-zone:hover {
+            background: #E8EDE4;
+        }
+
+        .upload-zone input {
+            display: none;
+        }
+
+        .upload-text {
+            font-size: 0.9rem;
+            color: var(--cl-text-dim);
+            margin-top: 10px;
+        }
+
+        .upload-text b {
+            color: var(--cl-primary);
+        }
+
+        /* LOCKER GRID */
+        .locker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .file-card {
+            padding: 1.5rem;
+            border-radius: 24px;
+            background: #F8F7F2;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid var(--cl-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(27, 58, 54, 0.05);
+            background: var(--cl-card);
+        }
+
+        .file-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--cl-text);
+            margin-top: 10px;
+            word-break: break-all;
+            line-height: 1.3;
+        }
+
+        .folder-card {
+            border: 2px dashed var(--cl-accent);
+            background: #E8EDE4;
+        }
+
+        .folder-badge {
+            font-size: 0.65rem;
+            color: var(--cl-accent);
+            font-weight: 600;
+            margin-top: 5px;
+            background: #DCE5E0;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: var(--cl-accent);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        #uploadProgress {
+            display: none;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--cl-accent);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo-section">
+                <img src="assets/logo (2).png" class="logo-img" alt="Curelith">
+                <span class="user-phone" id="userPhoneDisplay">+91 9876543210</span>
+            </div>
+            <button class="btn-logout" onclick="logout()">Sign Out</button>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <div class="dashboard-grid">
+            
+            <!-- LEFT PANEL: VITALS -->
+            <div class="card">
+                <h2><i data-lucide="activity"></i> Vitals Summary</h2>
+                <div id="vitalsContainer" class="vitals-grid">
+                    <div class="no-vitals">Loading smartwatch details...</div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: MEDICAL LOCKER -->
+            <div class="card">
+                <h2><i data-lucide="folder-open"></i> Secure Medical Locker</h2>
+                
+                <!-- Upload Zone -->
+                <div class="upload-zone" onclick="document.getElementById('fileInput').click()" id="dropZone">
+                    <input type="file" id="fileInput" accept="image/*,application/pdf" onchange="handleFileSelect(event)">
+                    <i data-lucide="upload-cloud" style="width: 48px; height: 48px; color: var(--cl-accent); margin: 0 auto;"></i>
+                    <div class="upload-text">
+                        <b>Click to upload</b> or drag and drop<br>
+                        <span>Images or PDFs up to 10MB</span>
+                    </div>
+                    <div id="uploadProgress">Uploading & analyzing file...</div>
+                </div>
+
+                <!-- File Grid -->
+                <div id="lockerBackBtnContainer"></div>
+                <div class="locker-grid" id="lockerGrid">
+                    <div class="no-vitals">Loading locker items...</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+
+        const patientPhone = localStorage.getItem('patient_phone');
+
+        if (!patientPhone) {
+            window.location.href = 'patient-login.html';
+        }
+
+        document.getElementById('userPhoneDisplay').innerText = patientPhone;
+
+        let lockerData = [];
+
+        // Fetch and load dashboard contents
+        async function loadDashboard() {
+            try {
+                const res = await fetch(`${API_BASE}/locker/list/${patientPhone}`);
+                lockerData = await res.json();
+                
+                renderVitals();
+                renderLocker(false);
+            } catch (e) {
+                console.error("Dashboard load failed:", e);
+            }
+        }
+
+        // Render Vitals summary
+        function renderVitals() {
+            const vitalsContainer = document.getElementById('vitalsContainer');
+            // Find the most recent fit report
+            const latestFit = lockerData.find(r => r.file_type === 'fit');
+
+            if (!latestFit || !latestFit.extracted_summary) {
+                vitalsContainer.innerHTML = `
+                    <div class="no-vitals">
+                        ⌚ <b>Smartwatch Not Linked</b><br><br>
+                        Connect Google Fit on WhatsApp to display steps, heart rate, and active calories here.<br><br>
+                        <i>Reply with <b>"connect smartwatch"</b> in WhatsApp to begin!</i>
+                    </div>
+                `;
+                return;
+            }
+
+            // Parse extracted_summary
+            const lines = latestFit.extracted_summary.split('\n');
+            let steps = "0";
+            let hr = "0 BPM";
+            let cal = "0 kcal";
+
+            lines.forEach(l => {
+                if (l.includes("Steps:")) steps = l.replace("Steps:", "").trim();
+                if (l.includes("Heart Rate:")) hr = l.replace("Average Heart Rate:", "").trim();
+                if (l.includes("Calories:")) cal = l.replace("Active Calories Burned:", "").trim();
+            });
+
+            vitalsContainer.innerHTML = `
+                <div class="vital-row">
+                    <div class="vital-icon vital-steps"><i data-lucide="footprints"></i></div>
+                    <div class="vital-info">
+                        <span class="vital-label">Steps Today</span>
+                        <span class="vital-value">${steps}</span>
+                    </div>
+                </div>
+                <div class="vital-row">
+                    <div class="vital-icon vital-heart"><i data-lucide="heart"></i></div>
+                    <div class="vital-info">
+                        <span class="vital-label">Avg Heart Rate</span>
+                        <span class="vital-value">${hr}</span>
+                    </div>
+                </div>
+                <div class="vital-row">
+                    <div class="vital-icon vital-cal"><i data-lucide="flame"></i></div>
+                    <div class="vital-info">
+                        <span class="vital-label">Calories Burned</span>
+                        <span class="vital-value">${cal}</span>
+                    </div>
+                </div>
+                <div style="font-size: 0.7rem; color: var(--cl-text-dim); text-align: center; margin-top: 10px;">
+                    Last updated: ${new Date(latestFit.uploaded_at).toLocaleString()}
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Render Locker Grid with Folder Grouping
+        function renderLocker(showFitFolderOnly = false) {
+            const grid = document.getElementById('lockerGrid');
+            const backBtnContainer = document.getElementById('lockerBackBtnContainer');
+            
+            grid.innerHTML = '';
+            backBtnContainer.innerHTML = '';
+
+            const fitReports = lockerData.filter(r => r.file_type === 'fit');
+            const otherFiles = lockerData.filter(r => r.file_type !== 'fit');
+
+            if (showFitFolderOnly) {
+                // RENDER SUB-FOLDER VIEW
+                const backBtn = document.createElement('div');
+                backBtn.className = 'back-btn';
+                backBtn.onclick = () => renderLocker(false);
+                backBtn.innerHTML = `<i data-lucide="arrow-left" style="width:18px; height:18px; margin-right:5px;"></i> Back to Locker`;
+                backBtnContainer.appendChild(backBtn);
+
+                if (!fitReports.length) {
+                    grid.innerHTML = '<div class="no-vitals">No reports found.</div>';
+                } else {
+                    fitReports.forEach(r => {
+                        const div = document.createElement('div');
+                        div.className = 'file-card';
+                        div.onclick = () => window.open(`${API_BASE}${r.file_path}`, '_blank');
+                        div.innerHTML = `<i data-lucide="activity" style="color:var(--cl-accent);"></i><div class="file-name">${r.original_name}</div>`;
+                        grid.appendChild(div);
+                    });
+                }
+            } else {
+                // RENDER MAIN VIEW
+                if (!lockerData.length) {
+                    grid.innerHTML = '<div class="no-vitals">Locker is empty. Upload medical files or images above.</div>';
+                    return;
+                }
+
+                // Render ordinary files (PDFs/Images)
+                otherFiles.forEach(r => {
+                    const div = document.createElement('div');
+                    div.className = 'file-card';
+                    div.onclick = () => window.open(`${API_BASE}${r.file_path}`, '_blank');
+                    const iconType = r.file_type === 'pdf' ? 'file-text' : 'image';
+                    div.innerHTML = `<i data-lucide="${iconType}"></i><div class="file-name">${r.original_name}</div>`;
+                    grid.appendChild(div);
+                });
+
+                // Render Folder Card for Fit reports
+                if (fitReports.length > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'file-card folder-card';
+                    div.onclick = () => renderLocker(true);
+                    div.innerHTML = `
+                        <i data-lucide="folder-heart" style="color:var(--cl-accent); width:32px; height:32px;"></i>
+                        <div class="file-name" style="font-weight:700; color:var(--cl-primary);">Smartwatch Vitals</div>
+                        <span class="folder-badge">${fitReports.length} reports</span>
+                    `;
+                    grid.appendChild(div);
+                }
+            }
+
+            lucide.createIcons();
+        }
+
+        // File Select Handler (Uploads directly to /locker/upload)
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const progress = document.getElementById('uploadProgress');
+            progress.style.display = 'block';
+
+            const formData = new FormData();
+            formData.append('sender', patientPhone);
+            formData.append('file', file);
+            
+            // Detect file type
+            const ext = file.name.split('.').pop().toLowerCase();
+            const type = ext === 'pdf' ? 'pdf' : 'image';
+            formData.append('type', type);
+
+            try {
+                const res = await fetch(`${API_BASE}/locker/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    progress.style.display = 'none';
+                    alert("File successfully added to locker!");
+                    loadDashboard();
+                } else {
+                    progress.style.display = 'none';
+                    alert("Upload failed. Please try again.");
+                }
+            } catch (err) {
+                progress.style.display = 'none';
+                alert("Connection error during upload.");
+            }
+        }
+
+        // Drag and Drop handlers
+        const dropZone = document.getElementById('dropZone');
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.style.background = '#E8EDE4';
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.style.background = '#FAF9F5';
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) {
+                document.getElementById('fileInput').files = files;
+                handleFileSelect({ target: { files } });
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('patient_phone');
+            window.location.href = 'patient-login.html';
+        }
+
+        // Initialize Lucide icons on start
+        lucide.createIcons();
+        loadDashboard();
+    </script>
+</body>
+</html>

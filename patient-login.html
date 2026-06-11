@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Login | Curelith</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #F3EEE4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #1B3A36;
+        }
+
+        .login-card {
+            background: white;
+            padding: 4rem;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(27, 58, 54, 0.05);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid #DDD6C4;
+        }
+
+        h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        p { color: #4F5D57; margin-bottom: 3rem; }
+
+        .input-group { text-align: left; margin-bottom: 1.5rem; }
+        .input-group label { display: block; font-size: 0.75rem; color: #4F5D57; text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
+
+        input {
+            width: 100%;
+            padding: 1.2rem;
+            background: #FAF9F4;
+            border: 1px solid #DDD6C4;
+            border-radius: 15px;
+            font-family: inherit;
+            outline: none;
+            box-sizing: border-box;
+            font-size: 1rem;
+            color: #1B3A36;
+        }
+
+        input:focus { border-color: #4C7F6D; }
+
+        button {
+            width: 100%;
+            padding: 1.2rem;
+            background: #1B3A36;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
+        button:hover { background: #4C7F6D; }
+        button:disabled { background: #C5CECA; cursor: not-allowed; }
+        
+        .footer-link { margin-top: 2rem; display: block; color: #4F5D57; text-decoration: none; font-size: 0.9rem; }
+        .resend-container { margin-top: 1.5rem; font-size: 0.85rem; color: #4F5D57; }
+        .resend-btn { background: none; border: none; color: #4C7F6D; font-weight: 700; padding: 0; margin: 0; width: auto; font-size: 0.85rem; display: inline; cursor: pointer; }
+        .resend-btn:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <img src="assets/logo (2).png" style="height: 60px; margin-bottom: 2rem;" alt="Curelith">
+        <h1>Patient Portal</h1>
+        <p id="portalDesc">Sign in securely using WhatsApp verification.</p>
+        
+        <!-- Step 1: Phone Form -->
+        <form id="phoneForm">
+            <div class="input-group">
+                <label>WhatsApp Phone Number</label>
+                <input type="tel" id="patientPhone" placeholder="e.g. +91 9876543210" required>
+            </div>
+            <div id="phoneErrMsg" style="color: #f43f5e; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
+            <button type="submit" id="sendOtpBtn">Send Verification Code</button>
+        </form>
+
+        <!-- Step 2: OTP Form (Hidden Initially) -->
+        <form id="otpForm" style="display: none;">
+            <div class="input-group">
+                <label>6-Digit Verification Code</label>
+                <input type="text" id="otpCode" maxlength="6" placeholder="Enter code" pattern="\d{6}" required>
+            </div>
+            <div id="otpErrMsg" style="color: #f43f5e; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
+            <button type="submit" id="verifyOtpBtn">Verify & Login</button>
+            <div class="resend-container">
+                Didn't receive the code? 
+                <span id="timerText">Resend in <span id="countdown">30</span>s</span>
+                <button type="button" class="resend-btn" id="resendBtn" style="display: none;">Resend Code</button>
+            </div>
+        </form>
+        
+        <a href="index.html" class="footer-link">← Return Home</a>
+    </div>
+
+    <script>
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+
+        let userPhoneNumber = "";
+        let countdownTimer;
+
+        // Step 1: Send OTP
+        document.getElementById('phoneForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('patientPhone').value.trim();
+            const btn = document.getElementById('sendOtpBtn');
+            const err = document.getElementById('phoneErrMsg');
+
+            btn.disabled = true;
+            btn.innerText = "Sending Code...";
+            err.style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_BASE}/whatsapp/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone })
+                });
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    userPhoneNumber = phone;
+                    document.getElementById('phoneForm').style.display = 'none';
+                    document.getElementById('otpForm').style.display = 'block';
+                    document.getElementById('portalDesc').innerText = `Enter the verification code sent to your WhatsApp number.`;
+                    startResendCountdown();
+                } else {
+                    err.innerText = data.error || "Failed to send code.";
+                    err.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerText = "Send Verification Code";
+                }
+            } catch (e) {
+                err.innerText = "Connection failure. Please try again.";
+                err.style.display = 'block';
+                btn.disabled = false;
+                btn.innerText = "Send Verification Code";
+            }
+        });
+
+        // Step 2: Verify OTP
+        document.getElementById('otpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const otp = document.getElementById('otpCode').value.trim();
+            const btn = document.getElementById('verifyOtpBtn');
+            const err = document.getElementById('otpErrMsg');
+
+            btn.disabled = true;
+            btn.innerText = "Verifying...";
+            err.style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_BASE}/whatsapp/verify-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: userPhoneNumber, otp })
+                });
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    localStorage.setItem('patient_phone', data.phone);
+                    window.location.href = 'patient-dashboard.html';
+                } else {
+                    err.innerText = data.error || "Invalid verification code.";
+                    err.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerText = "Verify & Login";
+                }
+            } catch (e) {
+                err.innerText = "Connection failure. Please try again.";
+                err.style.display = 'block';
+                btn.disabled = false;
+                btn.innerText = "Verify & Login";
+            }
+        });
+
+        // Step 3: Resend Code logic
+        document.getElementById('resendBtn').addEventListener('click', async () => {
+            const err = document.getElementById('otpErrMsg');
+            err.style.display = 'none';
+            document.getElementById('resendBtn').style.display = 'none';
+            document.getElementById('timerText').style.display = 'inline';
+            
+            try {
+                await fetch(`${API_BASE}/whatsapp/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: userPhoneNumber })
+                });
+                startResendCountdown();
+            } catch (e) {
+                err.innerText = "Connection failure. Please try again.";
+                err.style.display = 'block';
+                document.getElementById('resendBtn').style.display = 'inline';
+                document.getElementById('timerText').style.display = 'none';
+            }
+        });
+
+        function startResendCountdown() {
+            let timeLeft = 30;
+            document.getElementById('countdown').innerText = timeLeft;
+            document.getElementById('timerText').style.display = 'inline';
+            document.getElementById('resendBtn').style.display = 'none';
+
+            clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('countdown').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    document.getElementById('timerText').style.display = 'none';
+                    document.getElementById('resendBtn').style.display = 'inline';
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
