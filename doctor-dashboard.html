@@ -131,6 +131,17 @@
         @media (max-width: 992px) {
             .analytics-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
         }
+
+        .profile-pic-container {
+            position: relative;
+            cursor: pointer;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .profile-pic-container:hover .profile-pic-hover {
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body>
@@ -152,7 +163,12 @@
                 <p id="timeGreeting" style="color: var(--cl-text-dim); margin-top: 5px;">Synchronizing clinical data...</p>
             </div>
             <div class="profile-pill">
-                <div style="width: 35px; height: 35px; background: var(--cl-accent); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;" id="docInit">D</div>
+                <div class="profile-pic-container" onclick="document.getElementById('docProfilePicInput').click()" style="width: 35px; height: 35px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 1px solid var(--cl-accent); display: flex; align-items: center; justify-content: center; position: relative; background: var(--cl-accent);" title="Click to upload profile picture">
+                    <div id="docInit" style="color: white; font-weight: 700; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">D</div>
+                    <img id="docProfilePic" src="" class="profile-pic" style="display:none; width: 100%; height: 100%; object-fit: cover;">
+                    <div class="profile-pic-hover" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(27, 58, 54, 0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s ease; color: white;"><i data-lucide="camera" style="width:12px; height:12px;"></i></div>
+                </div>
+                <input type="file" id="docProfilePicInput" accept="image/*" style="display:none;" onchange="uploadDocProfilePic(event)">
                 <span id="headerDocName" style="font-weight: 600;">Dr. Loading</span>
             </div>
         </header>
@@ -929,8 +945,49 @@
                 document.getElementById('setPass').value = localStorage.getItem('doctor_password') || '';
                 document.getElementById('headerDocName').innerText = docName;
                 document.getElementById('welcomeTitle').innerText = docName;
-                document.getElementById('docInit').innerText = docName[0].toUpperCase();
+                
+                if (s.profile_pic) {
+                    const picUrl = `${API_BASE}${s.profile_pic}`;
+                    document.getElementById('docProfilePic').src = picUrl;
+                    document.getElementById('docProfilePic').style.display = 'block';
+                    document.getElementById('docInit').style.display = 'none';
+                } else {
+                    document.getElementById('docInit').innerText = docName[0].toUpperCase();
+                    document.getElementById('docInit').style.display = 'flex';
+                    document.getElementById('docProfilePic').style.display = 'none';
+                }
             } catch (e) {}
+        }
+
+        async function uploadDocProfilePic(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch(`${API_BASE}/doctor/upload-profile-pic`, {
+                    method: 'POST',
+                    headers: { 'X-Doctor-Name': docName, 'X-Doctor-Password': docPass },
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.profile_pic) {
+                        const picUrl = `${API_BASE}${data.profile_pic}`;
+                        document.getElementById('docProfilePic').src = picUrl;
+                        document.getElementById('docProfilePic').style.display = 'block';
+                        document.getElementById('docInit').style.display = 'none';
+                        alert("Profile picture updated successfully!");
+                    }
+                } else {
+                    alert("Failed to upload profile picture.");
+                }
+            } catch (err) {
+                alert("Connection error during profile picture upload.");
+            }
         }
 
         document.getElementById('settingsForm').addEventListener('submit', async (e) => {
@@ -1079,7 +1136,7 @@
 
         function logout() { localStorage.clear(); window.location.href = 'doctor-login.html'; }
 
-        document.addEventListener('DOMContentLoaded', () => { showView('appointments'); initIcons(); });
+        document.addEventListener('DOMContentLoaded', () => { showView('appointments'); loadSettings(); initIcons(); });
     </script>
 </body>
 </html>

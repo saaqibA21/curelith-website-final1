@@ -59,6 +59,45 @@
             height: 45px;
         }
 
+        .profile-pic-container {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid var(--cl-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FFFFFF;
+        }
+
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-pic-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(27, 58, 54, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            color: #FFFFFF;
+        }
+
+        .profile-pic-container:hover .profile-pic-hover {
+            opacity: 1;
+        }
+
         .user-phone {
             background: #E8EDE4;
             padding: 0.5rem 1rem;
@@ -289,6 +328,11 @@
         <header>
             <div class="logo-section">
                 <img src="assets/logo (2).png" class="logo-img" alt="Curelith">
+                <div class="profile-pic-container" onclick="document.getElementById('profilePicInput').click()" title="Click to upload profile picture">
+                    <img id="headerProfilePic" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%234F5D57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E" class="profile-pic" alt="Profile Picture">
+                    <div class="profile-pic-hover"><i data-lucide="camera" style="width:14px; height:14px;"></i></div>
+                </div>
+                <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="uploadProfilePic(event)">
                 <span class="user-phone" id="userPhoneDisplay">+91 9876543210</span>
             </div>
             <button class="btn-logout" onclick="logout()">Sign Out</button>
@@ -542,6 +586,48 @@
             }
         });
 
+        async function loadProfile() {
+            try {
+                const res = await fetch(`${API_BASE}/locker/profile/${encodeURIComponent(patientPhone)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.profile_pic) {
+                        document.getElementById('headerProfilePic').src = `${API_BASE}${data.profile_pic}`;
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to load profile:", e);
+            }
+        }
+
+        async function uploadProfilePic(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('phone', patientPhone);
+            formData.append('file', file);
+
+            try {
+                const res = await fetch(`${API_BASE}/locker/upload-profile-pic`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.profile_pic) {
+                        document.getElementById('headerProfilePic').src = `${API_BASE}${data.profile_pic}`;
+                        alert("Profile picture updated successfully!");
+                    }
+                } else {
+                    alert("Failed to upload profile picture.");
+                }
+            } catch (err) {
+                alert("Connection error during profile picture upload.");
+            }
+        }
+
         function logout() {
             localStorage.removeItem('patient_phone');
             window.location.href = 'patient-login.html';
@@ -559,6 +645,7 @@
 
         // Initialize Lucide icons on start
         initIcons();
+        loadProfile();
         loadDashboard();
     </script>
 </body>
