@@ -1169,7 +1169,7 @@
 
         async function loadIgConfig() {
             try {
-                const res = await fetch(`${API_BASE}/admin/instagram-config`, { headers });
+                const res = await fetch(`${API_BASE}/doctor/admin/instagram-config`, { headers });
                 if (res.ok) {
                     const data = await res.json();
                     document.getElementById('igAccessToken').value = data.access_token || '';
@@ -1186,7 +1186,7 @@
             };
             
             try {
-                const res = await fetch(`${API_BASE}/admin/instagram-config`, {
+                const res = await fetch(`${API_BASE}/doctor/admin/instagram-config`, {
                     method: 'POST',
                     headers: { ...headers, 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
