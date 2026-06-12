@@ -372,7 +372,7 @@
             <div class="white-panel">
                 <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                     <h2>Instagram Lead Management</h2>
-                    <div style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
                         <input type="text" class="search-box" id="igSearch" placeholder="Search by name or handle..." onkeyup="filterIgLeads()">
                         <select id="igStatusFilter" onchange="filterIgLeads()" style="padding: 0.8rem 1.5rem; border: 1px solid #DDD6C4; border-radius: 15px; background: var(--admin-bg); outline: none; font-family: inherit; font-weight: 500; color: var(--admin-text); cursor: pointer;">
                             <option value="all">All Statuses</option>
@@ -381,12 +381,6 @@
                             <option value="replied">Replied</option>
                             <option value="seen_no_reply">Seen (No Reply)</option>
                         </select>
-                        <button class="btn-action" style="background: var(--admin-bg); border-color: #DDD6C4; font-weight: 600; border-radius: 12px; height: 45px; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="openIgApiSettingsModal()">
-                            <i data-lucide="settings" style="width: 18px; height: 18px;"></i> API Settings
-                        </button>
-                        <button id="igSyncBtn" class="btn-action" style="background: var(--admin-accent); color: white; border-color: var(--admin-accent); font-weight: 600; border-radius: 12px; height: 45px; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="syncInstagramDMs()">
-                            <i data-lucide="refresh-cw" style="width: 18px; height: 18px;"></i> Sync DMs
-                        </button>
                         <button class="btn-action" style="background: var(--admin-primary); color: white; border-color: var(--admin-primary); font-weight: 700; border-radius: 12px; height: 45px; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="openIgLeadModal()">
                             <i data-lucide="plus" style="width: 18px; height: 18px;"></i> Add Lead
                         </button>
@@ -401,7 +395,6 @@
                             <th>SPECIALITY</th>
                             <th>STATUS</th>
                             <th>LAST CONTACTED</th>
-                            <th>LAST MESSAGE</th>
                             <th style="width: 250px;">NOTES</th>
                             <th>ACTIONS</th>
                         </tr>
@@ -955,7 +948,7 @@
             list.innerHTML = '';
             
             if (leads.length === 0) {
-                list.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--admin-text-dim); padding: 2rem;">No Instagram outreach leads logged yet.</td></tr>`;
+                list.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--admin-text-dim); padding: 2rem;">No Instagram outreach leads logged yet.</td></tr>`;
                 return;
             }
 
@@ -980,7 +973,6 @@
                         <span class="ig-status ig-status-${lead.status}">${statusLabel}</span>
                     </td>
                     <td style="font-size:0.9rem;">${lastContactDate}</td>
-                    <td style="font-size:0.9rem; color:var(--admin-text); font-weight: 500; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${lead.last_message || ''}">${lead.last_message || '-'}</td>
                     <td style="font-size:0.9rem; color:var(--admin-text-dim); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${lead.notes || ''}">${lead.notes || '-'}</td>
                     <td>
                         <div style="display:flex; gap: 6px;">
