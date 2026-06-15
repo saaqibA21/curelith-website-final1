@@ -898,7 +898,8 @@
                         const div = document.createElement('div');
                         div.style = "padding: 1.5rem; border-radius: 20px; background: #f0f2f1; text-align: center; cursor: pointer; border: 1px solid #ddd;";
                         div.onclick = () => window.open(`${API_BASE}${r.file_path}`, '_blank');
-                        div.innerHTML = `<i data-lucide="activity" style="margin-bottom: 10px; color: var(--cl-accent);"></i><div style="font-size: 0.75rem; font-weight: 600; color: var(--cl-text);">${r.original_name}</div><div style="font-size: 0.6rem; color: var(--cl-text-dim); margin-top: 5px;">Click to view JSON</div>`;
+                        div.innerHTML = `<i data-lucide="activity" style="margin-bottom: 10px; color: var(--cl-accent);"></i><div class="file-name" style="font-size: 0.75rem; font-weight: 600; color: var(--cl-text);"></div><div style="font-size: 0.6rem; color: var(--cl-text-dim); margin-top: 5px;">Click to view JSON</div>`;
+                        div.querySelector('.file-name').textContent = r.original_name;
                         grid.appendChild(div);
                     });
                 }
@@ -914,7 +915,8 @@
                     div.style = "padding: 1.5rem; border-radius: 20px; background: #f0f2f1; text-align: center; cursor: pointer;";
                     div.onclick = () => window.open(`${API_BASE}${r.file_path}`, '_blank');
                     const ic = r.file_type === 'pdf' ? 'file-text' : 'image';
-                    div.innerHTML = `<i data-lucide="${ic}" style="margin-bottom: 10px;"></i><div style="font-size: 0.75rem; font-weight: 600; color: var(--cl-text);">${r.original_name}</div>`;
+                    div.innerHTML = `<i data-lucide="${ic}" style="margin-bottom: 10px;"></i><div class="file-name" style="font-size: 0.75rem; font-weight: 600; color: var(--cl-text);"></div>`;
+                    div.querySelector('.file-name').textContent = r.original_name;
                     grid.appendChild(div);
                 });
                 

@@ -236,18 +236,53 @@
         function renderDoctors(docs) {
             const list = document.getElementById('publicDoctorList');
             list.innerHTML = '';
-            if(!docs.length) { list.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No physicians found in this node.</p>'; return; }
+            if(!docs.length) { 
+                const emptyMsg = document.createElement('p');
+                emptyMsg.style.gridColumn = '1/-1';
+                emptyMsg.style.textAlign = 'center';
+                emptyMsg.textContent = 'No physicians found in this node.';
+                list.appendChild(emptyMsg);
+                return; 
+            }
             docs.forEach(doc => {
                 const tr = document.createElement('div');
                 tr.className = 'doc-card';
-                tr.innerHTML = `
-                    <h3 style="margin: 0; color: var(--primary);">${doc.name}</h3>
-                    <p style="color: var(--accent); font-weight: 600; margin-bottom: 5px;">${doc.speciality}</p>
-                    <p style="color: var(--text-dim); font-size: 0.9rem;">${doc.location}</p>
-                    <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
-                        <button class="btn btn-secondary" style="flex:1; font-size: 0.8rem;" onclick="book('${doc.name}')">Book Appointment</button>
-                    </div>
-                `;
+                
+                const title = document.createElement('h3');
+                title.style.margin = '0';
+                title.style.color = 'var(--primary)';
+                title.textContent = doc.name;
+                
+                const spec = document.createElement('p');
+                spec.style.color = 'var(--accent)';
+                spec.style.fontWeight = '600';
+                spec.style.marginBottom = '5px';
+                spec.textContent = doc.speciality;
+                
+                const loc = document.createElement('p');
+                loc.style.color = 'var(--text-dim)';
+                loc.style.fontSize = '0.9rem';
+                loc.textContent = doc.location;
+                
+                const btnContainer = document.createElement('div');
+                btnContainer.style.marginTop = '1.5rem';
+                btnContainer.style.display = 'flex';
+                btnContainer.style.gap = '10px';
+                
+                const bookBtn = document.createElement('button');
+                bookBtn.className = 'btn btn-secondary';
+                bookBtn.style.flex = '1';
+                bookBtn.style.fontSize = '0.8rem';
+                bookBtn.textContent = 'Book Appointment';
+                bookBtn.addEventListener('click', () => book(doc.name));
+                
+                btnContainer.appendChild(bookBtn);
+                
+                tr.appendChild(title);
+                tr.appendChild(spec);
+                tr.appendChild(loc);
+                tr.appendChild(btnContainer);
+                
                 list.appendChild(tr);
             });
             initIcons();
