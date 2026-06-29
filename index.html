@@ -375,14 +375,7 @@
   .reveal-stagger.in-view > *:nth-child(4){ transition-delay:.3s; }
   .reveal-stagger.in-view > *{ opacity:1; transform:translateY(0); }
 
-  .btn-primary{ position:relative; isolation:isolate; }
-  .btn-primary::after{
-    content:""; position:absolute; inset:0; z-index:-1;
-    background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%);
-    transform:translateX(-120%);
-    transition:transform .6s ease;
-  }
-  .btn-primary:hover::after{ transform:translateX(120%); }
+
 
   .tool-card .ring{ transition:transform .6s ease; }
   .tool-card:hover .ring{ transform:rotate(35deg); }
