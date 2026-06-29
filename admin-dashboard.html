@@ -837,12 +837,12 @@
             const id = parseInt(document.getElementById('editDocId').value, 10);
             const data = {
                 id: id,
-                name: document.getElementById('editDocName').value,
-                speciality: document.getElementById('editDocSpec').value,
-                location: document.getElementById('editDocLoc').value,
-                phone: document.getElementById('editDocPhone').value,
-                availability: document.getElementById('editDocAvail').value,
-                password: document.getElementById('editDocPass').value,
+                name: document.getElementById('editDocName').value.trim(),
+                speciality: document.getElementById('editDocSpec').value.trim(),
+                location: document.getElementById('editDocLoc').value.trim(),
+                phone: document.getElementById('editDocPhone').value.trim(),
+                availability: document.getElementById('editDocAvail').value.trim(),
+                password: document.getElementById('editDocPass').value.trim(),
                 fee_virtual: parseInt(document.getElementById('editDocFeeVirtual').value, 10) || 0,
                 fee_physical: parseInt(document.getElementById('editDocFeePhysical').value, 10) || 0,
                 fee_home_care: parseInt(document.getElementById('editDocFeeHomeCare').value, 10) || 0,
@@ -881,12 +881,12 @@
         document.getElementById('addDocForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = {
-                name: document.getElementById('addDocName').value,
-                speciality: document.getElementById('addDocSpec').value,
-                location: document.getElementById('addDocLoc').value,
-                phone: document.getElementById('addDocPhone').value,
-                availability: document.getElementById('addDocAvail').value,
-                password: document.getElementById('addDocPass').value,
+                name: document.getElementById('addDocName').value.trim(),
+                speciality: document.getElementById('addDocSpec').value.trim(),
+                location: document.getElementById('addDocLoc').value.trim(),
+                phone: document.getElementById('addDocPhone').value.trim(),
+                availability: document.getElementById('addDocAvail').value.trim(),
+                password: document.getElementById('addDocPass').value.trim(),
                 fee_virtual: parseInt(document.getElementById('addDocFeeVirtual').value, 10) || 0,
                 fee_physical: parseInt(document.getElementById('addDocFeePhysical').value, 10) || 0,
                 fee_home_care: parseInt(document.getElementById('addDocFeeHomeCare').value, 10) || 0,

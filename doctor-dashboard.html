@@ -147,6 +147,15 @@
 <body>
     <div class="sidebar">
         <h2><i data-lucide="activity"></i> Curelith</h2>
+        
+        <!-- Location Switcher Dropdown -->
+        <div id="locationSwitcherContainer" style="display: none; margin-bottom: 2rem; padding: 0 0.5rem;">
+            <label style="font-size: 0.7rem; color: #AFC7BC; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; display: block; margin-bottom: 8px;">Active Location</label>
+            <select id="locationSelect" onchange="handleLocationChange(this.value)" style="width: 100%; background: var(--cl-accent); border: 1px solid rgba(255,255,255,0.2); padding: 0.8rem 1rem; border-radius: 12px; font-family: inherit; font-size: 0.85rem; color: white; font-weight: 600; outline: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <!-- Dynamically populated options -->
+            </select>
+        </div>
+
         <div class="nav-item active" onclick="showView('appointments')"><i data-lucide="calendar"></i> Schedule</div>
         <div class="nav-item" onclick="showView('patients')"><i data-lucide="users"></i> Patients</div>
         <div class="nav-item" onclick="showView('settings')"><i data-lucide="settings"></i> Settings</div>
@@ -482,12 +491,21 @@
         let feePhysical = 300;
         let feeHomeCare = 500;
 
+        let activeProfiles = [];
+        let selectedProfileId = localStorage.getItem('doctor_id') || 'all';
+
         async function loadApps() {
             try {
+                // Fetch appointments for all profiles under this doctor name
                 const res = await fetch(`${API_BASE}/doctor/appointments?name=${encodeURIComponent(docName)}`, { headers });
                 allApps = await res.json();
                 
-                const sRes = await fetch(`${API_BASE}/doctor/stats?name=${encodeURIComponent(docName)}`, { headers });
+                // Fetch stats for the selected doctor profile ID
+                let url = `${API_BASE}/doctor/stats?name=${encodeURIComponent(docName)}`;
+                if (selectedProfileId && selectedProfileId !== 'all') {
+                    url += `&id=${selectedProfileId}`;
+                }
+                const sRes = await fetch(url, { headers });
                 const s = await sRes.json();
 
                 // Save doctor specific fees
@@ -497,6 +515,12 @@
 
                 // Save dynamic record views list
                 dynamicViews = s.record_views || [];
+                
+                // Save active profiles list
+                activeProfiles = s.profiles || [];
+                
+                // Populate switcher dropdown
+                populateLocationSwitcher();
 
                 // Use the new timeframe filtering system
                 const filterVal = document.getElementById('timeframeSelect').value;
@@ -506,6 +530,76 @@
                     applyTimeframeFilter(filterVal);
                 }
             } catch (err) { console.error(err); }
+        }
+
+        function populateLocationSwitcher() {
+            const container = document.getElementById('locationSwitcherContainer');
+            const select = document.getElementById('locationSelect');
+            
+            if (activeProfiles && activeProfiles.length > 1) {
+                container.style.display = 'block';
+                
+                // Keep the current selection if it still exists
+                const prevVal = select.value || selectedProfileId;
+                
+                select.innerHTML = '';
+                
+                // Option for All Locations
+                const allOpt = document.createElement('option');
+                allOpt.value = 'all';
+                allOpt.innerText = 'All Locations';
+                select.appendChild(allOpt);
+                
+                // Options for each individual location
+                activeProfiles.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.innerText = p.location;
+                    select.appendChild(opt);
+                });
+                
+                if (prevVal && [...select.options].some(o => o.value == prevVal)) {
+                    select.value = prevVal;
+                    selectedProfileId = prevVal;
+                } else {
+                    select.value = 'all';
+                    selectedProfileId = 'all';
+                }
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        async function handleLocationChange(val) {
+            selectedProfileId = val;
+            
+            // Re-load stats for the selected location profile
+            try {
+                let url = `${API_BASE}/doctor/stats?name=${encodeURIComponent(docName)}`;
+                if (selectedProfileId && selectedProfileId !== 'all') {
+                    url += `&id=${selectedProfileId}`;
+                }
+                const sRes = await fetch(url, { headers });
+                const s = await sRes.json();
+
+                feeVirtual = s.fee_virtual !== undefined ? s.fee_virtual : 300;
+                feePhysical = s.fee_physical !== undefined ? s.fee_physical : 300;
+                feeHomeCare = s.fee_home_care !== undefined ? s.fee_home_care : 500;
+                dynamicViews = s.record_views || [];
+
+                // Re-run filter and update stats/charts
+                const filterVal = document.getElementById('timeframeSelect').value;
+                if (filterVal === 'specific') {
+                    applySpecificDateFilter(document.getElementById('specificDatePicker').value);
+                } else {
+                    applyTimeframeFilter(filterVal);
+                }
+                
+                // If Settings tab is active, refresh settings view
+                if (document.getElementById('view-settings').style.display === 'block') {
+                    loadSettings();
+                }
+            } catch (e) { console.error(e); }
         }
 
         function handleTimeframeChange(val) {
@@ -530,7 +624,15 @@
             const displayDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : dateStr;
             const labelSuffix = `(${displayDate})`;
 
-            const filtered = allApps.filter(app => {
+            // Filter appointments by selected location profile first
+            let baseApps = allApps;
+            if (selectedProfileId && selectedProfileId !== 'all') {
+                const profile = activeProfiles.find(p => p.id == selectedProfileId);
+                const loc = profile ? profile.location : '';
+                baseApps = allApps.filter(app => app.doctor_id == selectedProfileId || app.location === loc);
+            }
+
+            const filtered = baseApps.filter(app => {
                 const appDate = app.created_at ? app.created_at.slice(0, 10) : '';
                 return appDate === dateStr;
             });
@@ -544,23 +646,31 @@
             const thisMonthStr = now.toISOString().slice(0, 7); // "YYYY-MM"
             const thisYearStr = now.toISOString().slice(0, 4);  // "YYYY"
 
-            let filtered = allApps;
+            // Filter appointments by selected location profile first
+            let baseApps = allApps;
+            if (selectedProfileId && selectedProfileId !== 'all') {
+                const profile = activeProfiles.find(p => p.id == selectedProfileId);
+                const loc = profile ? profile.location : '';
+                baseApps = allApps.filter(app => app.doctor_id == selectedProfileId || app.location === loc);
+            }
+
+            let filtered = baseApps;
             let labelSuffix = "(ALL TIME)";
 
             if (timeframe === 'today') {
-                filtered = allApps.filter(app => {
+                filtered = baseApps.filter(app => {
                     const dateStr = app.created_at ? app.created_at.slice(0, 10) : '';
                     return dateStr === todayStr;
                 });
                 labelSuffix = "(TODAY)";
             } else if (timeframe === 'month') {
-                filtered = allApps.filter(app => {
+                filtered = baseApps.filter(app => {
                     const dateStr = app.created_at ? app.created_at.slice(0, 7) : '';
                     return dateStr === thisMonthStr;
                 });
                 labelSuffix = "(THIS MONTH)";
             } else if (timeframe === 'year') {
-                filtered = allApps.filter(app => {
+                filtered = baseApps.filter(app => {
                     const dateStr = app.created_at ? app.created_at.slice(0, 4) : '';
                     return dateStr === thisYearStr;
                 });
@@ -939,7 +1049,11 @@
 
         async function loadSettings() {
             try {
-                const res = await fetch(`${API_BASE}/doctor/stats?name=${encodeURIComponent(docName)}`, { headers });
+                let url = `${API_BASE}/doctor/stats?name=${encodeURIComponent(docName)}`;
+                if (selectedProfileId && selectedProfileId !== 'all') {
+                    url += `&id=${selectedProfileId}`;
+                }
+                const res = await fetch(url, { headers });
                 const s = await res.json();
                 document.getElementById('setSpec').value = s.speciality || '';
                 document.getElementById('setLoc').value = s.location || '';
@@ -1002,6 +1116,9 @@
                 availability: document.getElementById('setAvail').value,
                 password: newPass
             };
+            if (selectedProfileId && selectedProfileId !== 'all') {
+                data.id = parseInt(selectedProfileId, 10);
+            }
             try {
                 const res = await fetch(`${API_BASE}/doctor/update-profile`, {
                     method: 'POST',
@@ -1009,8 +1126,10 @@
                     body: JSON.stringify(data)
                 });
                 if (res.ok) {
-                    localStorage.setItem('doctor_password', newPass);
-                    headers['X-Doctor-Password'] = newPass;
+                    if (!data.id || data.id == localStorage.getItem('doctor_id')) {
+                        localStorage.setItem('doctor_password', newPass);
+                        headers['X-Doctor-Password'] = newPass;
+                    }
                     alert("Profile updated successfully.");
                 } else {
                     alert("Update failed.");
