@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mohammed Saaqib | Founder of Curelith</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
     <style>
         .founder-hero {
-            padding: 8rem 0;
-            background: var(--bg);
+            padding: 120px 0 90px 0;
+            background: var(--paper);
             position: relative;
             overflow: hidden;
             min-height: 80vh;
@@ -23,9 +25,9 @@
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 25vw;
+            font-size: 20vw;
             font-weight: 900;
-            color: rgba(27, 58, 54, 0.02);
+            color: rgba(30, 66, 61, 0.015);
             z-index: 1;
             white-space: nowrap;
             pointer-events: none;
@@ -50,7 +52,7 @@
             position: absolute;
             top: -20px; left: -20px;
             width: 100%; height: 100%;
-            border: 2px solid var(--accent);
+            border: 2px solid var(--clay);
             border-radius: 60px;
             z-index: -1;
             opacity: 0.3;
@@ -60,30 +62,35 @@
             width: 100%;
             max-width: 520px;
             border-radius: 50px;
-            box-shadow: 0 50px 100px rgba(27, 58, 54, 0.1);
+            box-shadow: 0 50px 100px rgba(15, 27, 25, 0.08);
             border: 10px solid white;
         }
 
         .founder-info h1 {
-            font-size: 4.5rem;
+            font-family: var(--serif);
+            font-size: clamp(38px, 5vw, 64px);
             line-height: 1.1;
             margin-bottom: 1.5rem;
+            color: var(--void);
+        }
+        .founder-info h1 span {
+            color: var(--clay-deep);
         }
 
         .founder-tagline {
-            font-size: 1.1rem;
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
-            letter-spacing: 5px;
-            font-weight: 700;
-            color: var(--accent);
+            color: var(--clay-deep);
             margin-bottom: 2rem;
             display: block;
         }
 
         .founder-bio {
-            font-size: 1.2rem;
+            font-size: 16.5px;
             line-height: 1.8;
-            color: var(--text-dim);
+            color: var(--ink-soft);
             margin-bottom: 3rem;
         }
 
@@ -91,48 +98,52 @@
             display: flex;
             gap: 4rem;
             padding: 3rem 0;
-            border-top: 1px solid rgba(27, 58, 54, 0.1);
+            border-top: 1px solid var(--line);
             margin-top: 2rem;
         }
 
-        .stat-item h4 { font-size: 2.5rem; margin: 0; color: var(--primary); }
-        .stat-item p { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--accent); margin-top: 5px; }
+        .stat-item h4 { font-family: var(--serif); font-size: 2.2rem; margin: 0; color: var(--pine); }
+        .stat-item p { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-soft); margin-top: 5px; }
 
         /* Journey Grid */
         .journey-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
-            margin-top: 4rem;
+            margin-top: 40px;
         }
 
         .journey-card {
             background: white;
-            padding: 3rem;
-            border-radius: 40px;
-            border: 1px solid #DDD6C4;
-            transition: transform 0.3s ease;
+            padding: 3rem 2.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--line);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .journey-card:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
+        .journey-card:hover { transform: translateY(-8px); box-shadow: 0 16px 36px rgba(15, 27, 25, 0.05); }
 
         .journey-card span {
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: var(--accent);
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: var(--clay-deep);
             display: block;
             margin-bottom: 1.5rem;
         }
 
-        .journey-card h3 { margin-bottom: 1rem; color: var(--primary); }
+        .journey-card h3 { font-family: var(--serif); font-size: 22px; margin-bottom: 1rem; color: var(--void); }
+        .journey-card p { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
 
         .quote-section {
-            background: var(--primary);
+            background: var(--void-soft);
             color: white;
-            padding: 10rem 4rem;
+            padding: 8rem 4rem;
             text-align: center;
-            border-radius: 80px;
-            margin: 6rem 0;
+            border-radius: 40px;
+            margin: 6rem auto;
+            border: 1px solid var(--line-dark);
+            max-width: 1000px;
         }
 
         @media (max-width: 992px) {
@@ -141,34 +152,42 @@
             .founder-info h1 { font-size: 3rem; }
             .stats-strip { justify-content: center; gap: 2rem; }
             .journey-grid { grid-template-columns: 1fr; }
+            .quote-section { padding: 5rem 2rem; margin: 3rem 0; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <a href="index.html" class="logo-box">
-            <img src="assets/logo.png" class="logo-img" alt="Curelith Logo">
-            <span class="brand">CURELITH</span>
-        </a>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="index.html#tools">Tools</a>
-            <a href="#journey">Journey</a>
-        </nav>
-        <div style="width: 140px;"></div>
-    </header>
 
+<header>
+  <div class="wrap nav">
+    <a href="index.html" class="brand">
+      <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+      Curelith
+    </a>
+    <nav class="links">
+      <a href="index.html#why">Why Curelith</a>
+      <a href="index.html#tools">Tools</a>
+      <a href="index.html#doctors">Physicians</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="medical-locker.html" class="btn btn-ghost-dark btn-sm">Patient portal</a>
+      <a href="index.html#consult" class="btn btn-primary btn-sm">Start a consult</a>
+    </div>
+  </div>
+</header>
+
+<main>
     <section class="founder-hero">
         <div class="bg-text">CURELITH</div>
-        <div class="container">
+        <div class="wrap">
             <div class="hero-split">
                 <div class="founder-image-box">
                     <img src="assets/founder-saaqib.png" class="founder-img" alt="Mohammed Saaqib">
                 </div>
                 <div class="founder-info">
-                    <span class="founder-tagline">Founder & Architect</span>
-                    <h1>Mohammed <span style="color: var(--accent);">Saaqib</span></h1>
+                    <span class="founder-tagline">Founder &amp; Architect</span>
+                    <h1>Mohammed <span>Saaqib</span></h1>
                     <p class="founder-bio">
                         Curelith is built with a deep sense of responsibility. 
                         Every design and wording choice is carefully crafted to ensure clarity, 
@@ -193,11 +212,12 @@
         </div>
     </section>
 
-    <section id="journey" class="section-padding" style="background: white;">
-        <div class="container">
+    <section id="journey" style="padding: 100px 0; background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+        <div class="wrap">
             <div style="text-align: center; margin-bottom: 4rem;">
-                <h2 style="font-size: 3rem;">The Road to Clinical Clarity</h2>
-                <p>Establishing the global standard for empathetic intelligence.</p>
+                <span class="eyebrow" style="justify-content:center;">The Timeline</span>
+                <h2 style="font-family: var(--serif); font-size: 36px; font-weight: 600; margin-top: 12px; color: var(--void);">The Road to Clinical Clarity</h2>
+                <p style="font-size: 16px; color: var(--ink-soft); margin-top: 8px;">Establishing the global standard for empathetic intelligence.</p>
             </div>
             
             <div class="journey-grid">
@@ -220,28 +240,51 @@
         </div>
     </section>
 
-    <section class="container">
+    <section class="wrap" style="padding: 10px 0;">
         <div class="quote-section">
-            <i data-lucide="quote" style="width: 80px; height: 80px; opacity: 0.1; margin-bottom: 2rem;"></i>
-            <h2 style="color: white; font-style: italic; font-weight: 400; line-height: 1.5; font-size: 2.5rem;">
+            <i data-lucide="quote" style="width: 60px; height: 60px; opacity: 0.15; margin-bottom: 2rem; color: var(--gold);"></i>
+            <h2 style="color: white; font-family: var(--serif); font-style: italic; font-weight: 400; line-height: 1.5; font-size: clamp(22px, 3.5vw, 36px); max-width: 750px; margin: 0 auto;">
                 "Healthcare information should guide people gently—not overwhelm them or create fear."
             </h2>
-            <p style="margin-top: 3rem; letter-spacing: 3px; font-weight: 700;">MOHAMMED SAAQIB</p>
+            <p style="margin-top: 3rem; letter-spacing: 3px; font-weight: 700; font-family: var(--mono); font-size: 12px; color: var(--gold);">MOHAMMED SAAQIB</p>
         </div>
     </section>
+</main>
 
-    <footer style="background: var(--primary); color: white; padding: 4rem 0; text-align: center;">
-        <div class="container">
-            <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 3rem;">
-                <a href="https://linkedin.com/in/mohammed-saaqib" style="color: white; text-decoration: none;"><i data-lucide="linkedin"></i></a>
-                <a href="mailto:curelith.ai@gmail.com" style="color: white; text-decoration: none;"><i data-lucide="mail"></i></a>
-            </div>
-            <p style="opacity: 0.4; font-size: 0.8rem;">© 2025 Curelith Intelligence | Built with Responsibility in India</p>
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">
+          <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+          Curelith
         </div>
-    </footer>
+        <p>The intersection of clinical intelligence and human responsibility. Built in Tamil Nadu, India.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Platform</h5>
+        <a href="index.html">Home</a>
+        <a href="about.html">About us</a>
+        <a href="medical-locker.html">Patient portal</a>
+        <a href="admin-login.html">Administration</a>
+        <a href="terms.html">Terms &amp; conditions</a>
+        <a href="privacy.html">Privacy policy</a>
+      </div>
+      <div class="foot-col">
+        <h5>Support</h5>
+        <span class="line">curelith.ai@gmail.com</span>
+        <span class="line">Tamil Nadu, India</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Curelith Intelligence</span>
+      <span class="disclaimer">Not a replacement for professional medical advice.</span>
+    </div>
+  </div>
+</footer>
 
-    <script>
-        lucide.createIcons();
-    </script>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>
