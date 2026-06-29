@@ -1,347 +1,1200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curelith | Calm AI Medical Assistant</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
-    <style>
-        /* Homepage-specific refinements */
-        .hero {
-            padding: 10rem 0 6rem;
-            text-align: center;
-            background: radial-gradient(circle at top, #FAF9F4 0%, var(--bg) 100%);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curelith — A calmer first step in healthcare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
 
-        .search-container {
-            margin: 4rem auto;
-            background: var(--card);
-            padding: 8px;
-            border-radius: 50px;
-            display: flex;
-            width: 100%;
-            max-width: 700px;
-            box-shadow: 0 15px 35px rgba(27, 58, 54, 0.08);
-            border: var(--border);
-        }
+  :root{
+    --void:       #0F1B19;
+    --void-soft:  #16241F;
+    --paper:      #F5F3ED;
+    --card:       #FFFFFF;
+    --card-tint:  #EDEAE0;
+    --ink:        #14201D;
+    --ink-soft:   #4D5C57;
+    --pine:       #1E423D;
+    --pine-light: #2E5C54;
+    --mist:       #8FA89F;
+    --mist-dim:   #5C7A71;
+    --line:       #DCD7C8;
+    --line-dark:  rgba(255,255,255,0.09);
+    --clay:       #D4824A;
+    --clay-deep:  #B5642F;
+    --gold:       #E8C77B;
 
-        .search-container input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 1.2rem 2rem;
-            color: var(--text);
-            font-size: 1rem;
-            outline: none;
-            font-family: inherit;
-        }
+    --serif: "Fraunces", Georgia, serif;
+    --sans:  "Inter", -apple-system, sans-serif;
+    --mono:  "IBM Plex Mono", monospace;
 
-        .why-section {
-            padding: 6rem 0;
-            background: linear-gradient(rgba(243, 238, 228, 0.8), rgba(243, 238, 228, 0.8)), url('assets/hero-banner.png');
-            background-size: cover;
-            background-position: center;
-        }
+    --max: 1240px;
+    --radius: 16px;
+  }
 
-        .why-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            padding: 4rem;
-            border-radius: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            margin-top: 4rem;
-        }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    font-size:16px;
+  }
 
-        .feature-card i { width: 45px; height: 45px; color: var(--accent); margin-bottom: 1.5rem; }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
 
-        .doctors-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            margin-top: 4rem;
-        }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
 
-        .doc-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 30px;
-            box-shadow: var(--shadow);
-            border: var(--border);
-        }
+  :focus-visible{
+    outline:2px solid var(--clay);
+    outline-offset:3px;
+    border-radius:3px;
+  }
 
-        /* Chat Widget */
-        .chat-toggle {
-            position: fixed; bottom: 40px; right: 40px;
-            width: 70px; height: 70px; background: var(--primary);
-            border-radius: 25px; color: white; display: flex;
-            align-items: center; justify-content: center; cursor: pointer; z-index: 2001;
-        }
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 40px; }
 
-        .chat-widget {
-            position: fixed; bottom: 120px; right: 40px;
-            width: 380px; height: 500px; background: white;
-            border-radius: 30px; display: none; flex-direction: column;
-            z-index: 2000; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1); overflow: hidden;
-        }
+  /* ================= PATTERN SYSTEM ================= */
+  .vital-grid{
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.09) 1px, transparent 1.6px);
+    background-size: 28px 28px;
+  }
+  .vital-grid-light{
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(20,32,29,0.10) 1px, transparent 1.6px);
+    background-size: 24px 24px;
+  }
+  .contour-corner{
+    position:absolute;
+    width:340px; height:340px;
+    pointer-events:none;
+    opacity:0.5;
+  }
 
-        .chat-header { background: var(--primary); color: white; padding: 1.5rem; display: flex; justify-content: space-between; }
-        .chat-messages { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .msg { padding: 1rem; border-radius: 15px; font-size: 0.9rem; max-width: 85%; }
-        .msg-ai { background: #f0f2f1; align-self: flex-start; }
-        .msg-user { background: var(--accent); color: white; align-self: flex-end; }
-    </style>
+  /* ================= UTILITY ================= */
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--clay-deep);
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:14px; height:1px;
+    background:var(--clay-deep);
+    display:inline-block;
+  }
+  .eyebrow.on-dark{ color:var(--gold); }
+  .eyebrow.on-dark::before{ background:var(--gold); }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:9px;
+    font-family:var(--sans); font-weight:600; font-size:15px;
+    padding:14px 26px; border-radius:10px; cursor:pointer;
+    border:1px solid transparent;
+    transition:transform .15s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+    white-space:nowrap;
+  }
+  .btn:active{ transform:translateY(1px); }
+  .btn-primary{ background:var(--clay); color:#241208; box-shadow:0 10px 24px -10px rgba(212,130,74,0.55); }
+  .btn-primary:hover{ background:var(--clay-deep); box-shadow:0 14px 28px -10px rgba(181,100,47,0.6); }
+  .btn-ghost-dark{ background:transparent; border-color:rgba(255,255,255,0.22); color:#fff; }
+  .btn-ghost-dark:hover{ border-color:rgba(255,255,255,0.5); background:rgba(255,255,255,0.06); }
+  .btn-ghost{ background:transparent; border-color:var(--line); color:var(--ink); }
+  .btn-ghost:hover{ border-color:var(--pine); background:var(--card); }
+  .btn-sm{ padding:10px 18px; font-size:13.5px; }
+
+  /* ================= HEADER ================= */
+  header{
+    position:sticky; top:0; z-index:60;
+    background:rgba(15,27,25,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-dark);
+  }
+  .nav{ display:flex; align-items:center; justify-content:space-between; height:80px; }
+  .brand{ display:flex; align-items:center; gap:11px; font-family:var(--serif); font-weight:600; font-size:21px; color:#fff; }
+  .brand-mark{
+    width:34px; height:34px;
+    flex:none;
+    display:block;
+  }
+  .brand-mark svg{ width:100%; height:100%; }
+
+  nav.links{ display:flex; align-items:center; gap:38px; }
+  nav.links a{ font-size:14.5px; font-weight:500; color:var(--mist); transition:color .15s ease; }
+  nav.links a:hover{ color:#fff; }
+  .nav-actions{ display:flex; align-items:center; gap:14px; }
+  .menu-toggle{ display:none; background:none; border:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
+  .menu-toggle span{ width:22px; height:2px; background:#fff; display:block; }
+
+  /* ================= HERO ================= */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse 900px 500px at 80% -10%, rgba(212,130,74,0.16), transparent 60%),
+      var(--void);
+    color:#fff;
+    overflow:hidden;
+    padding-bottom:0;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 1.6px);
+    background-size: 30px 30px;
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent 85%);
+    mask-image: linear-gradient(to bottom, black, transparent 85%);
+  }
+
+  .hero-top{ position:relative; z-index:2; padding:104px 0 64px; }
+  .hero-grid{ display:grid; grid-template-columns:1.08fr 0.92fr; gap:64px; align-items:end; }
+
+  .hero-copy h1{
+    font-family:var(--serif); font-weight:600;
+    font-size:clamp(40px, 5vw, 64px);
+    line-height:1.04; letter-spacing:-0.015em;
+    margin:20px 0 24px;
+  }
+  .hero-copy h1 .accent{ color:var(--gold); font-style:italic; }
+  .hero-copy p.lede{ font-size:18.5px; color:var(--mist); max-width:480px; margin-bottom:36px; line-height:1.6; }
+  .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
+
+  .hero-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    border-top:1px solid var(--line-dark);
+    margin-top:64px;
+  }
+  .stat{ padding:26px 0 0; border-left:1px solid var(--line-dark); padding-left:24px; }
+  .stat:first-child{ border-left:none; padding-left:0; }
+  .stat .num{ font-family:var(--serif); font-size:34px; color:#fff; font-weight:600; }
+  .stat .num span{ color:var(--gold); }
+  .stat .label{ font-family:var(--mono); font-size:11.5px; color:var(--mist-dim); text-transform:uppercase; letter-spacing:0.06em; margin-top:6px; display:block; }
+
+  /* intake-card */
+  .intake-card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:0 40px 80px -30px rgba(15,27,25,0.5), 0 0 0 1px rgba(15,27,25,0.04);
+    overflow:hidden;
+  }
+  .intake-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 22px; border-bottom:1px solid var(--line);
+    background:var(--card-tint);
+  }
+  .intake-head .label{ font-family:var(--mono); font-size:11px; letter-spacing:0.07em; text-transform:uppercase; color:var(--ink-soft); }
+  .intake-head .status{ font-family:var(--mono); font-size:11px; color:var(--pine); display:flex; gap:6px; align-items:center; }
+  .intake-head .status .dot{ width:6px; height:6px; border-radius:50%; background:var(--pine); }
+  .intake-body{ padding:24px 22px; }
+
+  .chat-row{ display:flex; gap:11px; margin-bottom:16px; align-items:flex-start; }
+  .chat-row.user{ flex-direction:row-reverse; }
+  .avatar{ width:30px; height:30px; border-radius:9px; flex:none; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; font-weight:500; }
+  .avatar.ai{ background:var(--pine); color:#fff; }
+  .avatar.user{ background:var(--card-tint); color:var(--ink-soft); border:1px solid var(--line); }
+  .bubble{ font-size:14.5px; line-height:1.55; padding:12px 15px; border-radius:13px; max-width:300px; }
+  .chat-row:not(.user) .bubble{ background:var(--card-tint); color:var(--ink); border-top-left-radius:4px; }
+  .chat-row.user .bubble{ background:var(--ink); color:var(--paper); border-top-right-radius:4px; }
+
+  .vitals-strip{ display:flex; gap:1px; margin-top:6px; background:var(--line); border-radius:10px; overflow:hidden; border:1px solid var(--line); }
+  .vital{ flex:1; background:var(--card); padding:13px 14px; }
+  .vital .v-label{ font-family:var(--mono); font-size:9.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:5px;}
+  .vital .v-value{ font-size:15px; color:var(--pine); font-weight:700; font-family:var(--sans); }
+  .vital .v-flag{ font-family:var(--mono); font-size:9.5px; color:var(--clay-deep); display:block; margin-top:2px; }
+
+  .intake-input{ display:flex; gap:10px; margin-top:18px; padding-top:16px; border-top:1px solid var(--line); }
+  .intake-input .field{ flex:1; font-size:13.5px; color:var(--ink); background:var(--card-tint); border:1px solid var(--line); border-radius:9px; padding:11px 14px; outline:none; }
+  .send-dot{ width:38px; height:38px; border-radius:9px; background:var(--clay); flex:none; display:flex; align-items:center; justify-content:center; color:#241208; font-size:16px; border:none; cursor:pointer; }
+
+  .pulse-seam{ position:relative; z-index:1; height:90px; margin-top:-90px; }
+  .pulse-seam svg{ width:100%; height:100%; }
+  .pulse-path{ fill:none; stroke:var(--clay); stroke-width:2; opacity:0.85; stroke-linecap:round; }
+
+  /* ================= TRUST STRIP ================= */
+  .trust-strip{ background:var(--void-soft); border-bottom:1px solid var(--line-dark); position:relative; z-index:2; }
+  .trust-strip .wrap{ display:flex; justify-content:space-between; align-items:center; padding:20px 40px; flex-wrap:wrap; gap:18px; }
+  .trust-item{ font-family:var(--mono); font-size:12px; color:var(--mist); display:flex; align-items:center; gap:9px; }
+  .trust-item .tick{ color:var(--gold); font-weight:600; }
+
+  /* ================= SECTION SHELL ================= */
+  section{ padding:110px 0; position:relative; }
+  .section-head{ max-width:640px; margin-bottom:60px; }
+  .section-head h2{ font-family:var(--serif); font-weight:600; font-size:clamp(30px, 3.2vw, 42px); line-height:1.14; color:var(--ink); margin:16px 0 18px; letter-spacing:-0.01em; }
+  .section-head p{ font-size:17px; color:var(--ink-soft); line-height:1.65; }
+
+  /* ================= WHY / CASE FILE ================= */
+  .why{ background:var(--card); border-bottom:1px solid var(--line); }
+  .case-grid{ display:grid; grid-template-columns:0.85fr 1.15fr; gap:0; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+  .case-left{ background:var(--void); color:#fff; padding:48px 40px; position:relative; }
+  .case-left::before{
+    content:""; position:absolute; inset:0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.07) 1px, transparent 1.6px);
+    background-size: 22px 22px;
+  }
+  .case-left-inner{ position:relative; z-index:1; }
+  .case-left .quote-mark{ font-family:var(--serif); font-size:56px; color:var(--gold); line-height:0.5; margin-bottom:14px; display:block; }
+  .case-left p{ font-family:var(--serif); font-size:23px; line-height:1.42; margin-bottom:18px; }
+  .case-left .attrib{ font-family:var(--mono); font-size:11.5px; color:var(--mist-dim); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .case-right{ background:var(--paper); padding:8px; }
+  .case-row{ display:grid; grid-template-columns:1fr 1fr; }
+  .case-row + .case-row{ border-top:1px solid var(--line); }
+  .case-cell{ padding:22px 26px; font-size:14.5px; line-height:1.55; }
+  .case-row.head .case-cell{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.07em; text-transform:uppercase; padding:16px 26px; font-weight:500; }
+  .case-row.head .case-cell:first-child{ color:var(--clay-deep); }
+  .case-row.head .case-cell:last-child{ color:var(--pine); border-left:1px solid var(--line); }
+  .case-row:not(.head) .case-cell:first-child{ color:var(--ink-soft); }
+  .case-row:not(.head) .case-cell:last-child{ color:var(--ink); border-left:1px solid var(--line); font-weight:500; }
+
+  /* ================= TOOLS ================= */
+  .tools{ background:var(--paper); }
+  .tool-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
+  .tool-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:36px 30px; position:relative; overflow:hidden;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .tool-card:hover{ transform:translateY(-4px); box-shadow:0 30px 50px -25px rgba(15,27,25,0.25); }
+  .tool-card .ring{
+    position:absolute; top:-40px; right:-40px;
+    width:140px; height:140px; border-radius:50%;
+    border:1px solid var(--line); opacity:0.7;
+  }
+  .tool-card .ring::after{ content:""; position:absolute; inset:18px; border-radius:50%; border:1px solid var(--line); }
+  .tool-index{ font-family:var(--mono); font-size:12px; color:var(--mist-dim); margin-bottom:26px; display:flex; align-items:center; gap:8px; }
+  .tool-index .bar{ width:24px; height:1px; background:var(--clay); display:inline-block; }
+  .tool-card h3{ font-family:var(--serif); font-size:22px; font-weight:600; margin-bottom:12px; color:var(--ink); position:relative; z-index:1; }
+  .tool-card p{ font-size:14.5px; color:var(--ink-soft); line-height:1.65; margin-bottom:22px; position:relative; z-index:1; }
+  .tool-card .tool-link{ font-family:var(--mono); font-size:12.5px; color:var(--pine); font-weight:500; display:inline-flex; align-items:center; gap:6px; position:relative; z-index:1; }
+  .tool-card:hover .tool-link{ color:var(--clay-deep); }
+
+  /* ================= PHYSICIANS ================= */
+  .physicians{ background:var(--void); color:#fff; border-bottom:1px solid var(--line-dark); position:relative; }
+  .physicians::before{
+    content:""; position:absolute; inset:0; z-index:0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.07) 1px, transparent 1.6px);
+    background-size: 30px 30px;
+  }
+  .physicians .wrap{ position:relative; z-index:1; }
+  .physicians .section-head h2{ color:#fff; }
+  .physicians .section-head p{ color:var(--mist); }
+
+  .phys-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--line-dark); border:1px solid var(--line-dark); border-radius:var(--radius); overflow:hidden; }
+  .phys-card{ background:var(--void-soft); padding:28px 24px; transition:background .2s ease; display: flex; flex-direction: column; }
+  .phys-card:hover{ background:#1C2D27; }
+  .phys-avatar{ width:48px; height:48px; border-radius:12px; background:linear-gradient(135deg, var(--pine-light), var(--pine)); margin-bottom:18px; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:17px; font-weight:600; }
+  .phys-card h4{ font-size:15.5px; font-weight:600; margin-bottom:3px; }
+  .phys-card .spec{ font-family:var(--mono); font-size:11px; color:var(--gold); margin-bottom:14px; display:block; }
+  .phys-card .verified{ font-family:var(--mono); font-size:10.5px; color:var(--mist-dim); display:flex; align-items:center; gap:6px; }
+  .phys-card .verified .tick{ color:var(--mist); }
+
+  /* ================= PROCESS ================= */
+  .process{ background:var(--card); }
+  .process-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:0; position:relative; }
+  .process-grid::before{ content:""; position:absolute; top:23px; left:5%; right:5%; height:1px; background:var(--line); z-index:0; }
+  .process-step{ position:relative; z-index:1; padding-right:24px; }
+  .process-num{
+    width:46px; height:46px; border-radius:50%; background:var(--paper); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:14px; color:var(--pine); font-weight:500;
+    margin-bottom:22px;
+  }
+  .process-step h4{ font-family:var(--serif); font-size:18px; font-weight:600; margin-bottom:8px; }
+  .process-step p{ font-size:14px; color:var(--ink-soft); line-height:1.6; }
+
+  /* ================= CTA ================= */
+  .cta{ background:var(--void); color:#fff; text-align:center; position:relative; overflow:hidden; }
+  .cta::before{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(ellipse 700px 400px at 50% 0%, rgba(212,130,74,0.18), transparent 65%);
+  }
+  .cta-inner{ max-width:580px; margin:0 auto; position:relative; z-index:1; }
+  .cta h2{ font-family:var(--serif); font-size:clamp(28px,3.4vw,40px); font-weight:600; margin:18px 0 16px; letter-spacing:-0.01em; }
+  .cta p{ color:var(--mist); font-size:16.5px; margin-bottom:34px; }
+  .cta-actions{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+  /* ================= FOOTER ================= */
+  footer{ background:var(--void-soft); color:var(--mist); padding:70px 0 32px; border-top:1px solid var(--line-dark); }
+  .foot-top{ display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:48px; padding-bottom:48px; border-bottom:1px solid var(--line-dark); }
+  .foot-brand{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-size:19px; color:#fff; margin-bottom:14px; }
+  .foot-top > div:first-child p{ font-size:14px; line-height:1.65; max-width:300px; color:var(--mist-dim); }
+  .foot-col h5{ font-family:var(--mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--mist-dim); margin-bottom:18px; }
+  .foot-col a, .foot-col .line{ display:block; font-size:14px; margin-bottom:12px; color:var(--mist); }
+  .foot-col a:hover{ color:#fff; }
+  .foot-bottom{ display:flex; justify-content:space-between; align-items:center; padding-top:28px; flex-wrap:wrap; gap:12px; font-size:12.5px; color:var(--mist-dim); }
+  .foot-bottom .disclaimer{ font-family:var(--mono); font-size:11px; }
+
+  /* ================= FLOAT BUTTON ================= */
+  .float-consult{
+    position:fixed; bottom:28px; right:28px; z-index:70;
+    background:var(--clay); color:#241208; border-radius:30px;
+    padding:15px 22px 15px 18px; display:flex; align-items:center; gap:10px;
+    font-size:14px; font-weight:700; box-shadow:0 18px 36px -12px rgba(212,130,74,0.55);
+    cursor:pointer; border:none;
+  }
+  .float-consult .dot2{ width:8px; height:8px; border-radius:50%; background:#241208; animation:pulse 2.2s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.4; transform:scale(0.7); } }
+
+  /* ================= MOTION SYSTEM ================= */
+  .load-in{
+    opacity:0;
+    transform:translateY(18px);
+    animation:loadIn .8s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  .load-in.d1{ animation-delay:.05s; }
+  .load-in.d2{ animation-delay:.18s; }
+  .load-in.d3{ animation-delay:.31s; }
+  .load-in.d4{ animation-delay:.44s; }
+  .load-in.d5{ animation-delay:.57s; }
+  @keyframes loadIn{ to{ opacity:1; transform:translateY(0); } }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+  .reveal-stagger > *{ opacity:0; transform:translateY(24px); transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1); }
+  .reveal-stagger.in-view > *:nth-child(1){ transition-delay:0s; }
+  .reveal-stagger.in-view > *:nth-child(2){ transition-delay:.1s; }
+  .reveal-stagger.in-view > *:nth-child(3){ transition-delay:.2s; }
+  .reveal-stagger.in-view > *:nth-child(4){ transition-delay:.3s; }
+  .reveal-stagger.in-view > *{ opacity:1; transform:translateY(0); }
+
+  .btn-primary{ position:relative; isolation:isolate; }
+  .btn-primary::after{
+    content:""; position:absolute; inset:0; z-index:-1;
+    background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%);
+    transform:translateX(-120%);
+    transition:transform .6s ease;
+  }
+  .btn-primary:hover::after{ transform:translateX(120%); }
+
+  .tool-card .ring{ transition:transform .6s ease; }
+  .tool-card:hover .ring{ transform:rotate(35deg); }
+
+  nav.links a{ position:relative; padding-bottom:4px; }
+  nav.links a::after{
+    content:""; position:absolute; left:0; bottom:0; width:0; height:1px;
+    background:var(--gold); transition:width .25s ease;
+  }
+  nav.links a:hover::after{ width:100%; }
+
+  .typing-cursor{
+    display:inline-block; width:2px; height:14px; background:var(--ink);
+    animation:blink 0.9s step-end infinite; vertical-align:-2px; margin-left:1px;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .v-value.counting{ color:var(--pine); }
+
+  /* ================= PROGRESS RAIL ================= */
+  .progress-rail{
+    position:fixed; right:26px; top:50%; transform:translateY(-50%);
+    z-index:55; display:flex; flex-direction:column; gap:14px;
+  }
+  .rail-dot{
+    width:9px; height:9px; border-radius:50%;
+    background:rgba(15,27,25,0.18);
+    border:none; cursor:pointer; padding:0;
+    transition:background .25s ease, transform .25s ease;
+    position:relative;
+  }
+  .rail-dot::before{
+    content:attr(data-label);
+    position:absolute; right:20px; top:50%; transform:translateY(-50%);
+    font-family:var(--mono); font-size:11px; color:var(--ink);
+    background:var(--card); padding:5px 10px; border-radius:6px;
+    border:1px solid var(--line);
+    white-space:nowrap; opacity:0; pointer-events:none;
+    transition:opacity .2s ease;
+  }
+  .rail-dot:hover::before{ opacity:1; }
+  .rail-dot.active{ background:var(--clay); transform:scale(1.3); }
+  @media (max-width: 980px){ .progress-rail{ display:none; } }
+
+  /* ================= MODAL / POPUP ================= */
+  .modal-backdrop{
+    position:fixed; inset:0; z-index:90;
+    background:rgba(15,27,25,0.55);
+    backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+    opacity:0; visibility:hidden;
+    transition:opacity .25s ease, visibility .25s ease;
+  }
+  .modal-backdrop.open{ opacity:1; visibility:visible; }
+  .modal-box{
+    background:var(--card); border-radius:18px;
+    max-width:520px; width:100%; max-height:85vh; overflow-y:auto;
+    box-shadow:0 50px 100px -30px rgba(15,27,25,0.5);
+    transform:translateY(20px) scale(0.97); opacity:0;
+    transition:transform .35s cubic-bezier(.16,1,.3,1), opacity .35s ease;
+  }
+  .modal-backdrop.open .modal-box{ transform:translateY(0) scale(1); opacity:1; }
+  .modal-head{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    padding:26px 28px 0;
+  }
+  .modal-head .modal-eyebrow{ font-family:var(--mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--clay-deep); }
+  .modal-head h3{ font-family:var(--serif); font-size:25px; font-weight:600; margin-top:8px; color:var(--ink); }
+  .modal-close{
+    width:32px; height:32px; border-radius:9px; border:1px solid var(--line);
+    background:var(--card-tint); color:var(--ink-soft); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:16px;
+    flex:none; transition:background .2s ease, color .2s ease;
+  }
+  .modal-close:hover{ background:var(--ink); color:#fff; }
+  .modal-body{ padding:20px 28px 28px; }
+  .modal-body p{ font-size:15px; color:var(--ink-soft); line-height:1.65; margin-bottom:18px; }
+  .modal-demo{
+    background:var(--card-tint); border:1px solid var(--line); border-radius:12px;
+    padding:18px; margin-bottom:18px;
+  }
+  .modal-demo .mini-row{ display:flex; justify-content:space-between; font-size:13.5px; padding:8px 0; border-bottom:1px dashed var(--line); }
+  .modal-demo .mini-row:last-child{ border-bottom:none; }
+  .modal-demo .mini-row .k{ color:var(--ink-soft); }
+  .modal-demo .mini-row .v{ font-family:var(--mono); font-weight:600; color:var(--pine); }
+  .modal-actions{ display:flex; gap:12px; flex-wrap:wrap; }
+
+  /* toast */
+  .toast{
+    position:fixed; bottom:30px; left:50%;
+    transform:translate(-50%, 20px);
+    background:var(--ink); color:#fff;
+    padding:14px 22px; border-radius:12px;
+    font-size:14px; font-weight:500;
+    display:flex; align-items:center; gap:10px;
+    box-shadow:0 20px 40px -15px rgba(15,27,25,0.5);
+    z-index:95; opacity:0; pointer-events:none;
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .toast.show{ opacity:1; transform:translate(-50%, 0); }
+  .toast .toast-dot{ width:7px; height:7px; border-radius:50%; background:var(--gold); flex:none; }
+
+  /* float menu */
+  .float-wrap{ position:fixed; bottom:28px; right:28px; z-index:80; display:flex; flex-direction:column; align-items:flex-end; gap:12px; }
+  .float-menu{
+    display:flex; flex-direction:column; gap:8px;
+    opacity:0; transform:translateY(10px) scale(0.95);
+    pointer-events:none; transition:opacity .2s ease, transform .2s ease;
+  }
+  .float-menu.open{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+  .float-menu-item{
+    background:var(--card); border:1px solid var(--line); border-radius:11px;
+    padding:11px 16px; font-size:13.5px; font-weight:500; color:var(--ink);
+    box-shadow:0 14px 28px -12px rgba(15,27,25,0.3);
+    cursor:pointer; display:flex; align-items:center; gap:10px;
+    transition:background .2s ease, transform .15s ease;
+  }
+  .float-menu-item:hover{ background:var(--card-tint); transform:translateX(-3px); }
+  .float-menu-item .fmi-dot{ width:6px; height:6px; border-radius:50%; background:var(--pine); flex:none; }
+
+  .float-consult{ transition:transform .2s ease; }
+  .plus-icon{ transition:transform .25s ease; font-size:18px; line-height:1; }
+  .float-consult.spin .plus-icon{ transform:rotate(45deg); }
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 980px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .case-grid{ grid-template-columns:1fr; }
+    .case-row.head .case-cell:last-child, .case-row:not(.head) .case-cell:last-child{ border-left:none; border-top:1px solid var(--line); }
+    .case-row{ grid-template-columns:1fr; }
+    .tool-grid{ grid-template-columns:1fr; }
+    .phys-grid{ grid-template-columns:1fr 1fr; }
+    .process-grid{ grid-template-columns:1fr 1fr; gap:36px; }
+    .process-grid::before{ display:none; }
+    .foot-top{ grid-template-columns:1fr; gap:32px; }
+    nav.links{ display:none; }
+    .menu-toggle{ display:flex; }
+    .hero-stats{ grid-template-columns:1fr; gap:20px; }
+    .stat{ border-left:none; padding-left:0; border-top:1px solid var(--line-dark); padding-top:20px; }
+    .stat:first-child{ border-top:none; padding-top:0; }
+  }
+
+  @media (max-width: 600px){
+    .wrap{ padding:0 22px; }
+    .hero-top{ padding:80px 0 48px; }
+    .trust-strip .wrap{ padding:18px 22px; }
+    section{ padding:72px 0; }
+    .phys-grid{ grid-template-columns:1fr; }
+    .process-grid{ grid-template-columns:1fr; }
+    .case-left{ padding:36px 26px; }
+    .case-cell{ padding:18px 22px; font-size:13.5px; }
+    .float-consult span.label-text{ display:none; }
+    .float-consult{ padding:15px; border-radius:50%; }
+  }
+
+</style>
 </head>
 <body>
-    <header>
-        <a href="index.html" class="logo-box">
-            <img src="assets/logo (2).png" class="logo-img" alt="Curelith Logo">
-            <span class="brand">CURELITH</span>
-        </a>
-        <nav>
-            <a href="index.html" class="active">Home</a>
-            <a href="about.html">About</a>
-            <a href="#tools">Tools</a>
-            <a href="#doctors">Physicians</a>
-        </nav>
-        <div style="width: 140px;"></div> <!-- Spacer -->
-    </header>
 
-    <section id="home" class="hero">
-        <div class="container">
-            <h1>Healthcare Clarity <br><span>Powered by Empathy</span></h1>
-            <p>A calm, clinical intelligence system designed to reduce health anxiety and support your journey to wellness.</p>
-            <div class="search-container">
-                <input type="text" id="mainSearch" placeholder="Search by Speciality or Physician name..." onkeyup="handleSearch(this.value)" onkeypress="if(event.key === 'Enter') { handleSearch(this.value); scrollToDoctors(); }">
-                <button class="btn btn-primary" onclick="handleSearch(document.getElementById('mainSearch').value); scrollToDoctors();">
-                    <i data-lucide="search"></i> Search
-                </button>
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 140 50 A 64 64 0 1 0 140 150" fill="none" stroke="#6C8884" stroke-width="26" stroke-linecap="round"/>
+          <path d="M 128 100 L 138 100 L 144 86 L 152 116 L 158 100 L 168 100" fill="none" stroke="#D4824A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Curelith
+    </a>
+    <nav class="links">
+      <a href="#why">Why Curelith</a>
+      <a href="#tools">Tools</a>
+      <a href="#doctors">Physicians</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="medical-locker.html" class="btn btn-ghost-dark btn-sm">Patient portal</a>
+      <a href="#consult" class="btn btn-primary btn-sm">Start a consult</a>
+    </div>
+    <button class="menu-toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="top" style="padding:0;">
+    <div class="hero-top">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow on-dark load-in d1">A calmer first step</span>
+          <h1 class="load-in d2">Healthcare clarity,<br>without the <span class="accent">panic.</span></h1>
+          <p class="lede load-in d3">Curelith reads your symptoms, labs, and skin concerns the way a steady clinician would — slowly, in plain language, with no alarming detours through worst-case search results.</p>
+          <div class="hero-actions load-in d4">
+            <a href="#consult" class="btn btn-primary" id="heroConsultBtn">Start a consult →</a>
+            <a href="#why" class="btn btn-ghost-dark">Why we built this</a>
+          </div>
+
+          <div class="hero-stats load-in d5">
+            <div class="stat">
+              <div class="num"><span>40K+</span></div>
+              <span class="label">Consults reviewed calmly</span>
             </div>
+            <div class="stat">
+              <div class="num">120+</div>
+              <span class="label">Licensed physicians</span>
+            </div>
+            <div class="stat">
+              <div class="num">2 min</div>
+              <span class="label">Avg. time to clarity</span>
+            </div>
+          </div>
         </div>
-    </section>
 
-    <section id="about" class="why-section">
-        <div class="container">
-            <div class="why-card">
-                <h2>Why Curelith Exists</h2>
-                <p>Anxiety often stems from confusion. Traditional health searches can amplify fear through alarming, non-contextual information.</p>
-                <p>Curelith serves as your first point of clinical contact—providing calm, understandable guidance before uncertainty turns into panic.</p>
-                <a href="about.html" class="btn btn-secondary" style="margin-top: 1rem;">Learn Our Story</a>
+        <!-- Interactive Intake Card -->
+        <div class="intake-card load-in d3" id="consult">
+          <div class="intake-head">
+            <span class="label">Consultation note · draft</span>
+            <span class="status"><span class="dot"></span>Curelith listening</span>
+          </div>
+          <div class="intake-body">
+            <div id="chatHistory" style="max-height: 240px; overflow-y: auto; margin-bottom: 12px; padding-right: 4px;">
+              <div class="chat-row user">
+                <div class="avatar user">You</div>
+                <div class="bubble">My fasting glucose came back at 108. Is that bad?</div>
+              </div>
+              <div class="chat-row">
+                <div class="avatar ai">C</div>
+                <div class="bubble" id="typedBubble"></div>
+              </div>
             </div>
+
+            <div class="vitals-strip" id="heroVitalsStrip" style="margin-bottom: 12px;">
+              <div class="vital">
+                <span class="v-label">Fasting glucose</span>
+                <span class="v-value" id="vitalGlucose">—</span>
+                <span class="v-flag">slightly elevated</span>
+              </div>
+              <div class="vital">
+                <span class="v-label">Reference range</span>
+                <span class="v-value">70–99</span>
+                <span class="v-flag">normal</span>
+              </div>
+              <div class="vital">
+                <span class="v-label">Suggested step</span>
+                <span class="v-value">Recheck + A1c</span>
+                <span class="v-flag">non‑urgent</span>
+              </div>
+            </div>
+
+            <div class="intake-input">
+              <input type="text" id="chatInput" class="field" placeholder="Describe what you're noticing..." onkeypress="if(event.key==='Enter')sendChatMessage()">
+              <button onclick="sendChatMessage()" class="send-dot" style="outline: none;">→</button>
+            </div>
+          </div>
         </div>
-    </section>
-
-    <section id="tools" class="section-padding">
-        <div class="container">
-            <div style="text-align: center; margin-bottom: 3rem;">
-                <h2>Clinical Intelligence Tools</h2>
-                <p>Advanced diagnostic support at your fingertips.</p>
-            </div>
-            <div class="features-grid">
-                <div class="card feature-card" onclick="window.location.href='lab-analyzer.html'" style="cursor:pointer;">
-                    <i data-lucide="flask-conical"></i>
-                    <h3>Lab Report Analyzer</h3>
-                    <p>Neural decryption of complex clinical results into plain language.</p>
-                </div>
-                <div class="card feature-card" onclick="window.location.href='image-analyzer.html'" style="cursor:pointer;">
-                    <i data-lucide="camera"></i>
-                    <h3>Derm-Image Analysis</h3>
-                    <p>Clinical synthesis for dermatological and skin-related observations.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="doctors" class="section-padding" style="background: #FAF9F4;">
-        <div class="container">
-            <div style="text-align: center; margin-bottom: 3rem;">
-                <h2>Our Physician Network</h2>
-                <p>Certified providers ready to support your health journey.</p>
-            </div>
-            <div class="doctors-grid" id="publicDoctorList">
-                <!-- Populated by JS -->
-            </div>
-        </div>
-    </section>
-
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h2 style="color: white; letter-spacing: 2px;">CURELITH</h2>
-                    <p style="color: #AFC7BC; margin-top: 1.5rem;">The intersection of clinical intelligence and human responsibility.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>PLATFORM</h4>
-                    <a href="#home">Back to Top</a>
-                    <a href="about.html">About Us</a>
-                    <a href="medical-locker.html">Patient Portal</a>
-                    <a href="admin-login.html">Administration</a>
-                    <a href="terms.html">Terms & Conditions</a>
-                    <a href="privacy.html">Privacy Policy</a>
-                </div>
-                <div class="footer-col">
-                    <h4>SUPPORT</h4>
-                    <p style="color: #AFC7BC;">curelith.ai@gmail.com</p>
-                    <p style="color: #AFC7BC;">Tamil Nadu, India</p>
-                </div>
-            </div>
-            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; opacity: 0.6; text-align: center;">
-                © 2025 Curelith Intelligence. Not a replacement for professional medical advice.
-            </div>
-        </div>
-    </footer>
-
-    <div class="chat-toggle" onclick="toggleChat()">
-        <i data-lucide="sparkles"></i>
+      </div>
     </div>
 
-    <div class="chat-widget" id="curelithChat">
-        <div class="chat-header">
-            <span style="font-weight: 700;">Curelith AI</span>
-            <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer;"><i data-lucide="x"></i></button>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="msg msg-ai">Greetings. I am Curelith AI. How can I assist your health journey today?</div>
-        </div>
-        <div style="padding: 1.2rem; display: flex; gap: 10px; border-top: 1px solid #eee;">
-            <input type="text" id="chatInput" placeholder="Ask anything..." style="flex: 1; padding: 0.8rem; border: 1px solid #ddd; border-radius: 12px; outline: none;" onkeypress="if(event.key==='Enter')sendChatMessage()">
-            <button onclick="sendChatMessage()" style="background: var(--primary); color: white; border: none; padding: 0 1.2rem; border-radius: 12px; cursor: pointer;"><i data-lucide="send"></i></button>
-        </div>
+    <div class="pulse-seam" aria-hidden="true">
+      <svg viewBox="0 0 1400 90" preserveAspectRatio="none">
+        <path class="pulse-path" d="M -50 60 L 380 60 L 410 12 L 440 80 L 465 60 L 1450 60" />
+      </svg>
     </div>
+  </section>
 
-    <script>
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
-        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
-        let allDoctors = [];
+  <!-- TRUST STRIP -->
+  <div class="trust-strip">
+    <div class="wrap">
+      <div class="trust-item"><span class="tick">✓</span> Physician‑reviewed guidance pathways</div>
+      <div class="trust-item"><span class="tick">✓</span> Encrypted patient locker</div>
+      <div class="trust-item"><span class="tick">✓</span> No data sold, ever</div>
+      <div class="trust-item"><span class="tick">✓</span> Built with clinicians in Tamil Nadu, India</div>
+    </div>
+  </div>
 
-        function initIcons() { try { lucide.createIcons(); } catch(e) {} }
+  <!-- WHY / CASE FILE -->
+  <section class="why" id="why">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Why Curelith exists</span>
+        <h2>Anxiety rarely comes from the diagnosis. It comes from the wait beforehand.</h2>
+        <p>Most symptom searches are written to capture attention, not to inform you. Curelith was built to do the opposite — less noise, more clarity, before uncertainty turns into panic.</p>
+      </div>
 
-        async function loadPublicDoctors() {
-            try {
-                const res = await fetch(`${API_BASE}/doctor/public/doctors`);
-                allDoctors = await res.json();
-                renderDoctors(allDoctors);
-            } catch (err) { console.error("Network offline or API error."); }
+      <div class="case-grid reveal">
+        <div class="case-left">
+          <div class="case-left-inner">
+            <span class="quote-mark">"</span>
+            <p>Healthcare information should guide people gently, not overwhelm them with complexity.</p>
+            <span class="attrib">— Curelith design principle, no. 1</span>
+          </div>
+        </div>
+        <div class="case-right">
+          <div class="case-row head">
+            <div class="case-cell">A typical search</div>
+            <div class="case-cell">A Curelith consult</div>
+          </div>
+          <div class="case-row">
+            <div class="case-cell">Leads with the rarest, scariest possibility</div>
+            <div class="case-cell">Leads with the most likely explanation first</div>
+          </div>
+          <div class="case-row">
+            <div class="case-cell">Lists conditions with no context for your case</div>
+            <div class="case-cell">Weighs your actual numbers against reference ranges</div>
+          </div>
+          <div class="case-row">
+            <div class="case-cell">Ends in twelve open browser tabs</div>
+            <div class="case-cell">Ends in a clear next step, or "this can wait"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section class="tools" id="tools">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Clinical intelligence tools</span>
+        <h2>Two ways to bring Curelith into a moment of worry</h2>
+        <p>Each tool translates raw clinical data back into language a person — not a physician — can act on calmly. Tap a card to see it in action.</p>
+      </div>
+
+      <div class="tool-grid reveal-stagger">
+        <div class="tool-card" data-modal="modal-lab" tabindex="0" role="button" aria-haspopup="dialog">
+          <div class="ring" aria-hidden="true"></div>
+          <div class="tool-index"><span class="bar"></span>01</div>
+          <h3>Lab Report Analyzer</h3>
+          <p>Upload a PDF or photo of your results. Curelith flags what's out of range, explains why it matters, and tells you plainly what doesn't need attention yet.</p>
+          <span class="tool-link">See it in action →</span>
+        </div>
+        <div class="tool-card" data-modal="modal-derm" tabindex="0" role="button" aria-haspopup="dialog">
+          <div class="ring" aria-hidden="true"></div>
+          <div class="tool-index"><span class="bar"></span>02</div>
+          <h3>Derm‑Image Analysis</h3>
+          <p>Photograph a mark, rash, or change in your skin. Curelith compares it against clinical patterns and tells you whether it warrants a same‑week visit or a watch‑and‑see.</p>
+          <span class="tool-link">See it in action →</span>
+        </div>
+        <div class="tool-card" data-modal="modal-symptom" tabindex="0" role="button" aria-haspopup="dialog">
+          <div class="ring" aria-hidden="true"></div>
+          <div class="tool-index"><span class="bar"></span>03</div>
+          <h3>Symptom Conversation</h3>
+          <p>Describe what you're feeling in your own words. Curelith asks the follow‑up questions a calm GP would ask, before suggesting whether to wait, watch, or book a visit.</p>
+          <span class="tool-link">See it in action →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">How a consult actually runs</span>
+        <h2>Four steps, no detours</h2>
+        <p>The same sequence every time — so there's never a guess about what happens next.</p>
+      </div>
+      <div class="process-grid reveal-stagger">
+        <div class="process-step">
+          <div class="process-num">01</div>
+          <h4>Describe or upload</h4>
+          <p>A symptom in your own words, a lab PDF, or a photo of a skin concern.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-num">02</div>
+          <h4>Curelith reads context</h4>
+          <p>Your numbers are weighed against reference ranges, not generic worst cases.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-num">03</div>
+          <h4>You get a plain answer</h4>
+          <p>What it likely means, what to watch, and what genuinely needs a doctor.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-num">04</div>
+          <h4>A physician reviews it</h4>
+          <p>If it's not urgent, the note waits in your locker. If it is, you're connected directly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHYSICIANS -->
+  <section class="physicians" id="doctors">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow on-dark">Our physician network</span>
+        <h2>Every pathway Curelith uses is reviewed by a licensed doctor</h2>
+        <p>Curelith never replaces a physician. It decides, calmly, when it's time to bring one in — and connects you to one who has reviewed the exact guidance you just read.</p>
+        
+        <!-- Search bar added above grid -->
+        <div class="physician-search" style="margin-top: 2rem; max-width: 480px;">
+          <input type="text" id="physSearch" placeholder="Search by speciality or doctor name..." style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--line-dark); border-radius: 9px; padding: 12px 16px; color: #fff; font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;" onkeyup="handleSearch(this.value)">
+        </div>
+      </div>
+
+      <div class="phys-grid reveal-stagger" id="publicDoctorList">
+        <!-- Dynamic Cards Load Here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="wrap cta-inner reveal">
+      <span class="eyebrow on-dark">Start when you're ready</span>
+      <h2>Your first question doesn't need to be your scariest one.</h2>
+      <p>Bring Curelith whatever is on your mind — a result, a symptom, a photo. It will meet you exactly where you are.</p>
+      <div class="cta-actions">
+        <a href="#consult" class="btn btn-primary">Start a consult →</a>
+        <a href="about.html" class="btn btn-ghost-dark">Read our story</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 140 50 A 64 64 0 1 0 140 150" fill="none" stroke="#6C8884" stroke-width="26" stroke-linecap="round"/>
+              <path d="M 128 100 L 138 100 L 144 86 L 152 116 L 158 100 L 168 100" fill="none" stroke="#D4824A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Curelith
+        </div>
+        <p>The intersection of clinical intelligence and human responsibility. Built in Tamil Nadu, India.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Platform</h5>
+        <a href="index.html">Home</a>
+        <a href="about.html">About us</a>
+        <a href="medical-locker.html">Patient portal</a>
+        <a href="admin-login.html">Administration</a>
+        <a href="terms.html">Terms &amp; conditions</a>
+        <a href="privacy.html">Privacy policy</a>
+      </div>
+      <div class="foot-col">
+        <h5>Support</h5>
+        <span class="line">curelith.ai@gmail.com</span>
+        <span class="line">Tamil Nadu, India</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Curelith Intelligence</span>
+      <span class="disclaimer">Not a replacement for professional medical advice.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- PROGRESS RAIL -->
+<nav class="progress-rail" aria-label="Page sections">
+  <button class="rail-dot active" data-section="top" data-label="Top"></button>
+  <button class="rail-dot" data-section="why" data-label="Why Curelith"></button>
+  <button class="rail-dot" data-section="tools" data-label="Tools"></button>
+  <button class="rail-dot" data-section="doctors" data-label="Physicians"></button>
+  <button class="rail-dot" data-section="consult" data-label="Consult"></button>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toastMsg">Consult started — Curelith is listening.</span></div>
+
+<!-- MODALS -->
+<div class="modal-backdrop" id="modal-lab" role="dialog" aria-modal="true" aria-labelledby="modal-lab-title">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <span class="modal-eyebrow">Tool 01</span>
+        <h3 id="modal-lab-title">Lab Report Analyzer</h3>
+      </div>
+      <button class="modal-close" data-close aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Upload any PDF or photo of a lab report. Curelith reads every value, compares it to the lab's own reference range, and explains the ones that matter — in the order they matter.</p>
+      <div class="modal-demo">
+        <div class="mini-row"><span class="k">LDL Cholesterol</span><span class="v">142 mg/dL · high</span></div>
+        <div class="mini-row"><span class="k">HDL Cholesterol</span><span class="v">58 mg/dL · normal</span></div>
+        <div class="mini-row"><span class="k">TSH</span><span class="v">2.1 mIU/L · normal</span></div>
+        <div class="mini-row"><span class="k">Vitamin D</span><span class="v">19 ng/mL · low</span></div>
+      </div>
+      <p style="margin-bottom:0;">Curelith would lead with the two flagged values, explain what each means in one plain sentence, and tell you which one is worth mentioning at your next visit versus addressing with diet today.</p>
+      <div class="modal-actions" style="margin-top: 20px;">
+        <a href="lab-analyzer.html" class="btn btn-primary">Try with my own report →</a>
+        <button class="btn btn-ghost" data-close>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-derm" role="dialog" aria-modal="true" aria-labelledby="modal-derm-title">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <span class="modal-eyebrow">Tool 02</span>
+        <h3 id="modal-derm-title">Derm‑Image Analysis</h3>
+      </div>
+      <button class="modal-close" data-close aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Photograph a mark, mole, or rash. Curelith looks at border, color, and shape patterns and tells you plainly whether this is a "watch it" or a "see someone this week."</p>
+      <div class="modal-demo">
+        <div class="mini-row"><span class="k">Border regularity</span><span class="v">Even</span></div>
+        <div class="mini-row"><span class="k">Color consistency</span><span class="v">Even</span></div>
+        <div class="mini-row"><span class="k">Change since last photo</span><span class="v">None detected</span></div>
+        <div class="mini-row"><span class="k">Recommendation</span><span class="v">Watch, recheck in 60 days</span></div>
+      </div>
+      <p style="margin-bottom:0;">No image leaves your device without your say — and nothing here ever stands in for a dermatologist's exam, especially for anything changing quickly.</p>
+      <div class="modal-actions" style="margin-top: 20px;">
+        <a href="image-analyzer.html" class="btn btn-primary">Analyze a photo →</a>
+        <button class="btn btn-ghost" data-close>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-symptom" role="dialog" aria-modal="true" aria-labelledby="modal-symptom-title">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <span class="modal-eyebrow">Tool 03</span>
+        <h3 id="modal-symptom-title">Symptom Conversation</h3>
+      </div>
+      <button class="modal-close" data-close aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Describe what you're noticing in your own words. Curelith asks the two or three follow‑ups a calm GP would ask before forming an opinion — not twelve, not zero.</p>
+      <div class="modal-demo">
+        <div class="mini-row"><span class="k">You said</span><span class="v">Dull headache, 2 days</span></div>
+        <div class="mini-row"><span class="k">Curelith asked</span><span class="v">Worse lying down? Vision changes?</span></div>
+        <div class="mini-row"><span class="k">Your answers</span><span class="v">No to both</span></div>
+        <div class="mini-row"><span class="k">Guidance</span><span class="v">Likely tension — try rest + hydration</span></div>
+      </div>
+      <p style="margin-bottom:0;">If any answer pointed to something urgent, Curelith would say so immediately and connect you to a physician — no waiting for the rest of the conversation.</p>
+      <div class="modal-actions" style="margin-top: 20px;">
+        <a href="#consult" class="btn btn-primary" data-close>Start describing it →</a>
+        <button class="btn btn-ghost" data-close>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="float-wrap">
+  <div class="float-menu" id="floatMenu">
+    <button class="float-menu-item" data-modal="modal-lab"><span class="fmi-dot"></span>Analyze a lab report</button>
+    <button class="float-menu-item" data-modal="modal-derm"><span class="fmi-dot"></span>Analyze a skin concern</button>
+    <button class="float-menu-item" id="scrollConsultBtn"><span class="fmi-dot"></span>Talk through a symptom</button>
+  </div>
+  <button class="float-consult" id="floatBtn">
+    <span class="dot2" aria-hidden="true"></span>
+    <span class="label-text">Talk to Curelith</span>
+    <span class="plus-icon">＋</span>
+  </button>
+</div>
+
+<script>
+  /* ---------- API and dynamic data ---------- */
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+  const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+  let allDoctors = [];
+
+  async function loadPublicDoctors() {
+      try {
+          const res = await fetch(`${API_BASE}/doctor/public/doctors`);
+          allDoctors = await res.json();
+          renderDoctors(allDoctors);
+      } catch (err) { console.error("Network offline or API error."); }
+  }
+
+  function renderDoctors(docs) {
+      const list = document.getElementById('publicDoctorList');
+      list.innerHTML = '';
+      if(!docs.length) { 
+          list.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding: 2rem; color: var(--mist-dim); font-family: var(--mono); font-size: 13px;">No physicians found in this node.</p>';
+          return; 
+      }
+      docs.forEach(doc => {
+          const card = document.createElement('div');
+          card.className = 'phys-card';
+          
+          // Generate initials
+          const initials = doc.name.replace(/Dr\.\s+/g, "").split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
+          
+          card.innerHTML = `
+              <div class="phys-avatar">${initials}</div>
+              <h4>${doc.name}</h4>
+              <span class="spec">${doc.speciality}</span>
+              <p style="font-size: 12.5px; color: var(--mist-dim); margin-bottom: 16px; font-family: var(--mono);">${doc.location}</p>
+              <div class="verified" style="margin-bottom: 16px;"><span class="tick">✓</span> Licensed Practitioner</div>
+              <button class="btn btn-primary btn-sm" onclick="book('${doc.name}')" style="width:100%; justify-content:center; padding: 10px; font-size: 12.5px; border-radius: 8px;">
+                  Book Appointment
+              </button>
+          `;
+          list.appendChild(card);
+      });
+  }
+
+  function handleSearch(q) {
+      const f = allDoctors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.speciality.toLowerCase().includes(q.toLowerCase()));
+      renderDoctors(f);
+  }
+
+  function book(name) {
+      const msg = encodeURIComponent(`Hello, I'd like to book an appointment with ${name} via Curelith.`);
+      window.open(`https://wa.me/919042556225?text=${msg}`, '_blank');
+  }
+
+  /* ---------- scroll reveal ---------- */
+  const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target); }
+    });
+  }, { threshold:0.15, rootMargin:'0px 0px -60px 0px' });
+  revealEls.forEach(el=>io.observe(el));
+
+  /* ---------- typed AI response in hero card ---------- */
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function typeText(el, text, speed, scrollContainer = null){
+    return new Promise(resolve=>{
+      if(prefersReducedMotion){ el.textContent = text; resolve(); return; }
+      let i = 0;
+      el.textContent = '';
+      const cursor = document.createElement('span');
+      cursor.className = 'typing-cursor';
+      el.appendChild(cursor);
+      const tick = ()=>{
+        if(i < text.length){
+          cursor.insertAdjacentText('beforebegin', text[i]);
+          i++;
+          if (scrollContainer) {
+            scrollContainer.scrollTop = scrollContainer.scrollHeight;
+          }
+          setTimeout(tick, speed);
+        } else {
+          cursor.remove();
+          resolve();
         }
+      };
+      tick();
+    });
+  }
 
-        function renderDoctors(docs) {
-            const list = document.getElementById('publicDoctorList');
-            list.innerHTML = '';
-            if(!docs.length) { 
-                const emptyMsg = document.createElement('p');
-                emptyMsg.style.gridColumn = '1/-1';
-                emptyMsg.style.textAlign = 'center';
-                emptyMsg.textContent = 'No physicians found in this node.';
-                list.appendChild(emptyMsg);
-                return; 
-            }
-            docs.forEach(doc => {
-                const tr = document.createElement('div');
-                tr.className = 'doc-card';
-                
-                const title = document.createElement('h3');
-                title.style.margin = '0';
-                title.style.color = 'var(--primary)';
-                title.textContent = doc.name;
-                
-                const spec = document.createElement('p');
-                spec.style.color = 'var(--accent)';
-                spec.style.fontWeight = '600';
-                spec.style.marginBottom = '5px';
-                spec.textContent = doc.speciality;
-                
-                const loc = document.createElement('p');
-                loc.style.color = 'var(--text-dim)';
-                loc.style.fontSize = '0.9rem';
-                loc.textContent = doc.location;
-                
-                const btnContainer = document.createElement('div');
-                btnContainer.style.marginTop = '1.5rem';
-                btnContainer.style.display = 'flex';
-                btnContainer.style.gap = '10px';
-                
-                const bookBtn = document.createElement('button');
-                bookBtn.className = 'btn btn-secondary';
-                bookBtn.style.flex = '1';
-                bookBtn.style.fontSize = '0.8rem';
-                bookBtn.textContent = 'Book Appointment';
-                bookBtn.addEventListener('click', () => book(doc.name));
-                
-                btnContainer.appendChild(bookBtn);
-                
-                tr.appendChild(title);
-                tr.appendChild(spec);
-                tr.appendChild(loc);
-                tr.appendChild(btnContainer);
-                
-                list.appendChild(tr);
-            });
-            initIcons();
-        }
+  function countUp(el, end, suffix, duration){
+    if(prefersReducedMotion){ el.textContent = end + suffix; el.classList.add('counting'); return; }
+    const start = performance.now();
+    el.classList.add('counting');
+    function frame(now){
+      const p = Math.min((now - start) / duration, 1);
+      const val = Math.round(p * end);
+      el.textContent = val + suffix;
+      if(p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
 
-        function handleSearch(q) {
-            const f = allDoctors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.speciality.toLowerCase().includes(q.toLowerCase()));
-            renderDoctors(f);
-        }
+  let heroAnimated = false;
+  function runHeroDemo(){
+    if(heroAnimated) return;
+    heroAnimated = true;
+    const bubble = document.getElementById('typedBubble');
+    const glucose = document.getElementById('vitalGlucose');
+    setTimeout(()=>{
+      typeText(bubble, "108 mg/dL sits just inside \u201Cprediabetes\u201D range, not diabetes \u2014 and one reading isn't a diagnosis. Here's what it means.", 14)
+        .then(()=>{ countUp(glucose, 108, ' mg/dL', 900); });
+    }, 750);
+  }
 
-        function scrollToDoctors() {
-            const el = document.getElementById('doctors');
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
+  // Live Chat function
+  async function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if(!msg) return;
+    
+    const historyContainer = document.getElementById('chatHistory');
+    
+    // User message
+    const uRow = document.createElement('div');
+    uRow.className = "chat-row user";
+    uRow.innerHTML = `
+      <div class="avatar user">You</div>
+      <div class="bubble">${msg}</div>
+    `;
+    historyContainer.appendChild(uRow);
+    input.value = '';
+    historyContainer.scrollTop = historyContainer.scrollHeight;
+    
+    // AI message placeholder
+    const aiRow = document.createElement('div');
+    aiRow.className = "chat-row";
+    const aiBubble = document.createElement('div');
+    aiBubble.className = "bubble";
+    aiBubble.textContent = "...";
+    aiRow.appendChild(aiBubble);
+    const aiAvatar = document.createElement('div');
+    aiAvatar.className = "avatar ai";
+    aiAvatar.textContent = "C";
+    aiRow.insertBefore(aiAvatar, aiBubble);
+    historyContainer.appendChild(aiRow);
+    historyContainer.scrollTop = historyContainer.scrollHeight;
+    
+    try {
+      const res = await fetch(`${API_BASE}/ai/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+      const data = await res.json();
+      const reply = data.reply || "Error: System response invalid.";
+      
+      // Type out response and scroll container dynamically
+      aiBubble.textContent = "";
+      await typeText(aiBubble, reply, 12, historyContainer);
+    } catch(e) {
+      aiBubble.textContent = "Connection lost. Please check your network.";
+    }
+    historyContainer.scrollTop = historyContainer.scrollHeight;
+  }
 
-        function toggleChat() {
-            const c = document.getElementById('curelithChat');
-            c.style.display = c.style.display === 'flex' ? 'none' : 'flex';
-        }
+  // kick off shortly after load (hero is above the fold)
+  window.addEventListener('load', () => {
+    setTimeout(runHeroDemo, 300);
+    loadPublicDoctors();
+  });
 
-        async function sendChatMessage() {
-            const input = document.getElementById('chatInput');
-            const msg = input.value.trim();
-            if(!msg) return;
-            const container = document.getElementById('chatMessages');
-            const uDiv = document.createElement('div');
-            uDiv.className = "msg msg-user";
-            uDiv.innerText = msg;
-            container.appendChild(uDiv);
-            input.value = '';
-            
-            const aiDiv = document.createElement('div');
-            aiDiv.className = "msg msg-ai";
-            aiDiv.innerText = "...";
-            container.appendChild(aiDiv);
-            container.scrollTop = container.scrollHeight;
+  /* ---------- modals ---------- */
+  function openModal(id){
+    const m = document.getElementById(id);
+    if(!m) return;
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAllModals(){
+    document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('[data-modal]').forEach(trigger=>{
+    trigger.addEventListener('click', (e)=>{
+      e.preventDefault();
+      openModal(trigger.getAttribute('data-modal'));
+      document.getElementById('floatMenu')?.classList.remove('open');
+      document.getElementById('floatBtn')?.classList.remove('spin');
+    });
+    trigger.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); trigger.click(); }
+    });
+  });
+  document.querySelectorAll('[data-close]').forEach(btn=> btn.addEventListener('click', closeAllModals));
+  document.querySelectorAll('.modal-backdrop').forEach(backdrop=>{
+    backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) closeAllModals(); });
+  });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeAllModals(); });
 
-            try {
-                const res = await fetch(`${API_BASE}/ai/chat`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg })
-                });
-                const data = await res.json();
-                aiDiv.innerText = data.reply || "Error: System response invalid.";
-            } catch (e) { aiDiv.innerText = "Connection lost. Please check your network."; }
-            container.scrollTop = container.scrollHeight;
-        }
+  /* ---------- toast ---------- */
+  function showToast(msg){
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=> toast.classList.remove('show'), 3200);
+  }
+  document.getElementById('heroConsultBtn')?.addEventListener('click', ()=>{
+    setTimeout(()=> showToast('Consult started — Curelith is listening.'), 500);
+  });
 
-        function book(name) {
-            const msg = encodeURIComponent(`Hello, I'd like to book an appointment with ${name} via Curelith.`);
-            window.open(`https://wa.me/919042556225?text=${msg}`, '_blank');
-        }
+  /* ---------- float menu ---------- */
+  const floatBtn = document.getElementById('floatBtn');
+  const floatMenu = document.getElementById('floatMenu');
+  floatBtn.addEventListener('click', ()=>{
+    floatMenu.classList.toggle('open');
+    floatBtn.classList.toggle('spin');
+  });
+  document.getElementById('scrollConsultBtn').addEventListener('click', ()=>{
+    floatMenu.classList.remove('open');
+    floatBtn.classList.remove('spin');
+    document.getElementById('consult').scrollIntoView({behavior:'smooth', block:'center'});
+  });
+  document.addEventListener('click', (e)=>{
+    if(!e.target.closest('.float-wrap')){
+      floatMenu.classList.remove('open');
+      floatBtn.classList.remove('spin');
+    }
+  });
 
-        document.addEventListener('DOMContentLoaded', () => { loadPublicDoctors(); initIcons(); });
-    </script>
+  /* ---------- progress rail ---------- */
+  const sectionIds = ['top','why','tools','doctors','consult'];
+  const railDots = document.querySelectorAll('.rail-dot');
+  const sectionEls = sectionIds.map(id=> document.getElementById(id)).filter(Boolean);
+
+  railDots.forEach(dot=>{
+    dot.addEventListener('click', ()=>{
+      const target = document.getElementById(dot.getAttribute('data-section'));
+      target?.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  const railObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const id = entry.target.id;
+        railDots.forEach(d=> d.classList.toggle('active', d.getAttribute('data-section') === id));
+      }
+    });
+  }, { threshold:0.4 });
+  sectionEls.forEach(el=> railObserver.observe(el));
+</script>
+
 </body>
 </html>
