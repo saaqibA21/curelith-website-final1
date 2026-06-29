@@ -4,27 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Curelith – Privacy Policy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="assets/logo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
   <!-- HEADER -->
-  <header class="glass-header">
-    <a href="index.html" class="logo-box" style="text-decoration: none;">
-      <img src="assets/logo.png" class="logo" alt="Curelith Logo"/>
-      <span class="brand">CURELITH</span>
-    </a>
-
-    <nav class="nav">
-      <a href="index.html#home">Home</a>
-      <a href="index.html#about">About</a>
-      <a href="index.html#demo">Demo</a>
-      <a href="index.html#contact">Contact</a>
-      <a href="signup.html" class="signup-btn">Signup</a>
-    </nav>
+  <header>
+    <div class="wrap nav">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+        Curelith
+      </a>
+      <nav class="links">
+        <a href="index.html#why">Why Curelith</a>
+        <a href="index.html#tools">Tools</a>
+        <a href="index.html#doctors">Physicians</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="medical-locker.html" class="btn btn-ghost-dark btn-sm">Patient portal</a>
+        <a href="index.html#consult" class="btn btn-primary btn-sm">Start a consult</a>
+      </div>
+    </div>
   </header>
 
   <!-- PRIVACY CONTENT -->
@@ -35,12 +41,12 @@
       <p>Last updated: June 2026</p>
 
       <h2>1. Introduction</h2>
-      <p>
+      <p class="content-p">
         At <strong>Curelith</strong>, founded by Mohammed Saaqib, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, store, and share information when you visit or interact with the Curelith website, our AI assistant, demo interfaces, WhatsApp bot, or medical locker services.
       </p>
 
       <h2>2. Information We Collect</h2>
-      <p>
+      <p class="content-p">
         We collect information to provide and improve our services:
       </p>
       <ul>
@@ -51,7 +57,7 @@
       </ul>
 
       <h2>3. How We Use Your Information</h2>
-      <p>
+      <p class="content-p">
         We process your data strictly to deliver platform functionality, including:
       </p>
       <ul>
@@ -62,20 +68,20 @@
       </ul>
 
       <h2>4. Data Sharing and Third Parties</h2>
-      <p>
+      <p class="content-p">
         We value your trust. We do **not** sell, lease, or rent your personal health data to advertisers or third parties.
       </p>
-      <p>
+      <p class="content-p">
         We may share anonymized text queries or documents with safe subprocessors (such as the OpenAI API) to perform structured clinical interpretation.
       </p>
 
       <h2>5. Security of Your Data</h2>
-      <p>
+      <p class="content-p">
         We implement robust security controls (including backend authorization checks, HTTPS encryption, and session token validation) to prevent unauthorized access, disclosure, modification, or destruction of your medical records.
       </p>
 
       <h2>6. Your Rights and Choices</h2>
-      <p>
+      <p class="content-p">
         You have complete control over your locker:
       </p>
       <ul>
@@ -84,29 +90,50 @@
       </ul>
 
       <h2>7. Underage Users & Children's Privacy</h2>
-      <p>
+      <p class="content-p">
         Curelith is intended for use by individuals who are at least 18 years of age. We do not knowingly collect personal information from children under 18. If you are under 18, you may only use this platform under the supervision of a parent or legal guardian. If we discover that we have inadvertently collected personal data from a child under 18 without verified parental consent, we will delete that information immediately.
       </p>
 
       <h2>8. Contact Us</h2>
-      <p>
+      <p class="content-p">
         For inquiries regarding this Privacy Policy or your data:
-        <br>
-        📧 Email: <a href="mailto:saaqinindia@gmail.com">saaqinindia@gmail.com</a>
+        <br><br>
+        📧 Email: <a href="mailto:saaqinindia@gmail.com" style="color: var(--clay-deep); font-weight: 600;">saaqinindia@gmail.com</a>
       </p>
 
     </div>
   </section>
 
   <!-- FOOTER -->
-  <footer id="contact">
-    <p>© 2026 Curelith.</p>
-    <div class="footer-links">
-      <a href="mailto:saaqinindia@gmail.com">📧 Email</a>
-      <a href="https://www.instagram.com/curelith.ai" target="_blank">📸 Instagram</a>
-      <a href="https://www.linkedin.com/company/curelith" target="_blank">🔗 LinkedIn</a>
-      <a href="terms.html">🌐 Terms</a>
-      <a href="privacy.html" style="font-weight:600;">🛡️ Privacy</a>
+  <footer>
+    <div class="wrap">
+      <div class="foot-top">
+        <div>
+          <div class="foot-brand">
+            <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+            Curelith
+          </div>
+          <p>The intersection of clinical intelligence and human responsibility. Built in Tamil Nadu, India.</p>
+        </div>
+        <div class="foot-col">
+          <h5>Platform</h5>
+          <a href="index.html">Home</a>
+          <a href="about.html">About us</a>
+          <a href="medical-locker.html">Patient portal</a>
+          <a href="admin-login.html">Administration</a>
+          <a href="terms.html">Terms &amp; conditions</a>
+          <a href="privacy.html">Privacy policy</a>
+        </div>
+        <div class="foot-col">
+          <h5>Support</h5>
+          <span class="line">curelith.ai@gmail.com</span>
+          <span class="line">Tamil Nadu, India</span>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Curelith Intelligence</span>
+        <span class="disclaimer">Not a replacement for professional medical advice.</span>
+      </div>
     </div>
   </footer>
 

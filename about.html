@@ -4,102 +4,197 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Curelith | Calm Medical Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <style>
+        .hero-about {
+            background: var(--void);
+            color: #fff;
+            padding: 120px 0 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-about::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 1.6px);
+            background-size: 26px 26px;
+        }
+        .hero-about h1 {
+            font-family: var(--serif);
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        .hero-about h1 span {
+            color: var(--gold);
+            font-style: italic;
+        }
+        .hero-about p.sub {
+            font-size: 18.5px;
+            color: var(--mist);
+            max-width: 550px;
+            margin-top: 16px;
+            line-height: 1.6;
+        }
+        .grid-mission {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: stretch;
+            margin-top: 40px;
+        }
+        .values-card {
+            background: var(--void-soft);
+            color: #fff;
+            border: 1px solid var(--line-dark);
+        }
+        .values-card h3 {
+            font-family: var(--serif);
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 24px;
+        }
+        .values-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            margin-bottom: 16px;
+            color: var(--mist);
+        }
+        .values-list i {
+            color: var(--gold);
+            flex: none;
+        }
+        @media (max-width: 768px) {
+            .grid-mission { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <a href="index.html" class="logo-box">
-            <img src="assets/logo (2).png" class="logo-img" alt="Curelith Logo">
-            <span class="brand">CURELITH</span>
-        </a>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="about.html" class="active">About</a>
-            <a href="index.html#tools">Tools</a>
-            <a href="index.html#doctors">Physicians</a>
-        </nav>
-        <div style="width: 140px;"></div>
-    </header>
 
-    <main>
-        <section class="hero" style="padding: 8rem 0 4rem;">
-            <div class="container">
-                <h1>About <span style="color: var(--accent);">Curelith</span></h1>
-                <p>A calm, responsible clinical intelligence system designed for clarity and empathy.</p>
-            </div>
-        </section>
+<header>
+  <div class="wrap nav">
+    <a href="index.html" class="brand">
+      <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+      Curelith
+    </a>
+    <nav class="links">
+      <a href="index.html#why">Why Curelith</a>
+      <a href="index.html#tools">Tools</a>
+      <a href="index.html#doctors">Physicians</a>
+      <a href="about.html" style="color: #fff;">About</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="medical-locker.html" class="btn btn-ghost-dark btn-sm">Patient portal</a>
+      <a href="index.html#consult" class="btn btn-primary btn-sm">Start a consult</a>
+    </div>
+  </div>
+</header>
 
-        <section class="section-padding">
-            <div class="container">
-                <div class="card" style="max-width: 800px; margin: 0 auto;">
-                    <h2>Why We Exist</h2>
-                    <p>Many people—especially elders—experience profound anxiety when a health concern begins. Online searches often amplify this fear through complex, alarming, and non-contextual information.</p>
-                    <p>Curelith was built to bridge this gap. We provide a first point of contact that is calm, understandable, and deeply responsible.</p>
-                </div>
-            </div>
-        </section>
+<main>
+    <!-- HERO -->
+    <section class="hero-about">
+        <div class="wrap">
+            <span class="eyebrow on-dark">Our Story</span>
+            <h1>About <span>Curelith</span></h1>
+            <p class="sub">A calm, responsible clinical intelligence system designed for clarity, data sovereignty, and patient empathy.</p>
+        </div>
+    </section>
 
-        <section class="section-padding" style="background: #FAF9F4;">
-            <div class="container">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
-                    <div>
-                        <h2>Our Mission</h2>
-                        <p>To build responsible AI tools that reduce fear, improve understanding, and support informed healthcare decisions—without replacing the essential role of medical professionals.</p>
-                    </div>
-                    <div class="card" style="background: var(--primary); color: white;">
-                        <h3 style="color: white;">Our Core Values</h3>
-                        <ul style="list-style: none; padding: 0;">
-                            <li style="margin-bottom: 1rem;"><i data-lucide="check-circle" style="display:inline; width:18px; margin-right:10px;"></i> Clinical Responsibility</li>
-                            <li style="margin-bottom: 1rem;"><i data-lucide="check-circle" style="display:inline; width:18px; margin-right:10px;"></i> Patient Empathy</li>
-                            <li style="margin-bottom: 1rem;"><i data-lucide="check-circle" style="display:inline; width:18px; margin-right:10px;"></i> Data Sovereignty</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <!-- WHY WE EXIST -->
+    <section style="padding: 90px 0; background: var(--card); border-bottom: 1px solid var(--line);">
+        <div class="wrap" style="max-width: 800px;">
+            <span class="eyebrow">The Origin</span>
+            <h2 style="font-family: var(--serif); font-size: 32px; font-weight: 600; margin: 12px 0 16px 0; color: var(--void);">Why We Exist</h2>
+            <p style="font-size: 16px; line-height: 1.7; color: var(--ink); margin-bottom: 18px;">
+                Many people—especially elders—experience profound anxiety when a health concern begins. Online searches often amplify this fear through complex, alarming, and non-contextual information.
+            </p>
+            <p style="font-size: 16px; line-height: 1.7; color: var(--ink);">
+                Curelith was built to bridge this gap. We provide a first point of contact that is calm, understandable, and deeply responsible.
+            </p>
+        </div>
+    </section>
 
-        <section class="section-padding">
-            <div class="container" style="max-width: 800px; text-align: center;">
-                <h2>The Problem We Solve</h2>
-                <p>The issue today is not a lack of medical data. It is the lack of <strong>clarity</strong>. Healthcare information should guide people gently, not overwhelm them with complexity.</p>
-                <div style="margin-top: 4rem;">
-                    <h3>Our Vision</h3>
-                    <p>Curelith is built with a deep sense of responsibility. Every design and wording choice is made to ensure that healthcare information is accessible, clear, and reassuring.</p>
-                    <a href="founder.html" class="btn btn-primary" style="margin-top: 1rem;">Meet the Founder</a>
+    <!-- MISSION & VALUES -->
+    <section style="padding: 90px 0; background: var(--paper); border-bottom: 1px solid var(--line);">
+        <div class="wrap">
+            <div class="grid-mission">
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                    <span class="eyebrow">Our Mission</span>
+                    <h2 style="font-family: var(--serif); font-size: 32px; font-weight: 600; margin: 12px 0 16px 0; color: var(--void);">Responsible Decryption</h2>
+                    <p style="font-size: 16px; line-height: 1.7; color: var(--ink-soft);">
+                        To build responsible AI tools that reduce fear, improve understanding, and support informed healthcare decisions—without replacing the essential role of medical professionals.
+                    </p>
                 </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h2 style="color: white; letter-spacing: 2px;">CURELITH</h2>
-                    <p style="color: #AFC7BC; margin-top: 1.5rem;">Clinical intelligence for a calmer world.</p>
+                <div class="card values-card">
+                    <h3>Our Core Values</h3>
+                    <ul class="values-list" style="list-style:none;">
+                        <li><i data-lucide="check-circle-2" style="width: 18px; height: 18px;"></i> Clinical Responsibility</li>
+                        <li><i data-lucide="check-circle-2" style="width: 18px; height: 18px;"></i> Patient Empathy</li>
+                        <li><i data-lucide="check-circle-2" style="width: 18px; height: 18px;"></i> Data Sovereignty</li>
+                    </ul>
                 </div>
-                <div class="footer-col">
-                    <h4>PLATFORM</h4>
-                    <a href="index.html">Home</a>
-                    <a href="medical-locker.html">Patient Portal</a>
-                    <a href="admin-login.html">Administration</a>
-                </div>
-                <div class="footer-col">
-                    <h4>CONTACT</h4>
-                    <p style="color: #AFC7BC;">curelith.ai@gmail.com</p>
-                    <p style="color: #AFC7BC;">Tamil Nadu, India</p>
-                </div>
-            </div>
-            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; opacity: 0.6; text-align: center;">
-                © 2025 Curelith Intelligence.
             </div>
         </div>
-    </footer>
+    </section>
 
-    <script>
-        lucide.createIcons();
-    </script>
+    <!-- THE PROBLEM -->
+    <section style="padding: 90px 0; background: var(--card); text-align: center;">
+        <div class="wrap" style="max-width: 800px;">
+            <span class="eyebrow" style="justify-content:center;">The Shift</span>
+            <h2 style="font-family: var(--serif); font-size: 32px; font-weight: 600; margin: 12px 0 16px 0; color: var(--void);">The Problem We Solve</h2>
+            <p style="font-size: 16.5px; line-height: 1.7; color: var(--ink); margin-bottom: 30px;">
+                The issue today is not a lack of medical data. It is the lack of <strong>clarity</strong>. Healthcare information should guide people gently, not overwhelm them with complexity.
+            </p>
+            <div style="border-top: 1px solid var(--line); padding-top: 40px; margin-top: 40px;">
+                <h3 style="font-family: var(--serif); font-size: 22px; color: var(--void); margin-bottom: 12px;">Our Vision</h3>
+                <p style="font-size: 15.5px; color: var(--ink-soft); line-height: 1.65; margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Curelith is built with a deep sense of responsibility. Every design and wording choice is made to ensure that healthcare information is accessible, clear, and reassuring.
+                </p>
+                <a href="founder.html" class="btn btn-primary">Meet the Founder →</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">
+          <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+          Curelith
+        </div>
+        <p>The intersection of clinical intelligence and human responsibility. Built in Tamil Nadu, India.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Platform</h5>
+        <a href="index.html">Home</a>
+        <a href="about.html">About us</a>
+        <a href="medical-locker.html">Patient portal</a>
+        <a href="admin-login.html">Administration</a>
+        <a href="terms.html">Terms &amp; conditions</a>
+        <a href="privacy.html">Privacy policy</a>
+      </div>
+      <div class="foot-col">
+        <h5>Support</h5>
+        <span class="line">curelith.ai@gmail.com</span>
+        <span class="line">Tamil Nadu, India</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Curelith Intelligence</span>
+      <span class="disclaimer">Not a replacement for professional medical advice.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>
