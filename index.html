@@ -675,32 +675,32 @@
   <section class="tools" id="tools">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">Clinical intelligence tools</span>
-        <h2>Two ways to bring Curelith into a moment of worry</h2>
-        <p>Each tool translates raw clinical data back into language a person — not a physician — can act on calmly. Tap a card to see it in action.</p>
+        <span class="eyebrow">WhatsApp Health Assistant</span>
+        <h2>Access Curelith's Full Suite on WhatsApp</h2>
+        <p>No downloads, apps, or separate logins. You can access Curelith's entire suite of clinical analysis tools directly in WhatsApp by sending text, PDFs, or photos.</p>
       </div>
 
       <div class="tool-grid reveal-stagger">
-        <div class="tool-card" data-modal="modal-lab" tabindex="0" role="button" aria-haspopup="dialog">
+        <div class="tool-card" tabindex="0">
           <div class="ring" aria-hidden="true"></div>
           <div class="tool-index"><span class="bar"></span>01</div>
-          <h3>Lab Report Analyzer</h3>
-          <p>Upload a PDF or photo of your results. Curelith flags what's out of range, explains why it matters, and tells you plainly what doesn't need attention yet.</p>
-          <span class="tool-link">See it in action →</span>
+          <h3>Lab PDF Decrypter</h3>
+          <p>Simply forward your lab reports or PDF documents to our WhatsApp chat. Curelith instantly parses the files, checks reference ranges, and highlights what you need to know in plain language.</p>
+          <a href="https://wa.me/919042556225" class="tool-link" target="_blank">Try on WhatsApp →</a>
         </div>
-        <div class="tool-card" data-modal="modal-derm" tabindex="0" role="button" aria-haspopup="dialog">
+        <div class="tool-card" tabindex="0">
           <div class="ring" aria-hidden="true"></div>
           <div class="tool-index"><span class="bar"></span>02</div>
-          <h3>Derm‑Image Analysis</h3>
-          <p>Photograph a mark, rash, or change in your skin. Curelith compares it against clinical patterns and tells you whether it warrants a same‑week visit or a watch‑and‑see.</p>
-          <span class="tool-link">See it in action →</span>
+          <h3>Skin Image Analysis</h3>
+          <p>Snap a photo of a rash, mark, or skin concern and send it in the chat. Curelith compares the visual patterns against clinical databases on the spot to guide your next steps.</p>
+          <a href="https://wa.me/919042556225" class="tool-link" target="_blank">Try on WhatsApp →</a>
         </div>
-        <div class="tool-card" data-modal="modal-symptom" tabindex="0" role="button" aria-haspopup="dialog">
+        <div class="tool-card" tabindex="0">
           <div class="ring" aria-hidden="true"></div>
           <div class="tool-index"><span class="bar"></span>03</div>
           <h3>Symptom Conversation</h3>
-          <p>Describe what you're feeling in your own words. Curelith asks the follow‑up questions a calm GP would ask, before suggesting whether to wait, watch, or book a visit.</p>
-          <span class="tool-link">See it in action →</span>
+          <p>Describe how you're feeling in your own words. Chat with Curelith naturally just like messaging a family doctor, and receive structured, calm health insights.</p>
+          <a href="https://wa.me/919042556225" class="tool-link" target="_blank">Try on WhatsApp →</a>
         </div>
       </div>
     </div>
@@ -818,84 +818,7 @@
 <!-- TOAST -->
 <div class="toast" id="toast"><span class="toast-dot"></span><span id="toastMsg">Consult started — Curelith is listening.</span></div>
 
-<!-- MODALS -->
-<div class="modal-backdrop" id="modal-lab" role="dialog" aria-modal="true" aria-labelledby="modal-lab-title">
-  <div class="modal-box">
-    <div class="modal-head">
-      <div>
-        <span class="modal-eyebrow">Tool 01</span>
-        <h3 id="modal-lab-title">Lab Report Analyzer</h3>
-      </div>
-      <button class="modal-close" data-close aria-label="Close">✕</button>
-    </div>
-    <div class="modal-body">
-      <p>Upload any PDF or photo of a lab report. Curelith reads every value, compares it to the lab's own reference range, and explains the ones that matter — in the order they matter.</p>
-      <div class="modal-demo">
-        <div class="mini-row"><span class="k">LDL Cholesterol</span><span class="v">142 mg/dL · high</span></div>
-        <div class="mini-row"><span class="k">HDL Cholesterol</span><span class="v">58 mg/dL · normal</span></div>
-        <div class="mini-row"><span class="k">TSH</span><span class="v">2.1 mIU/L · normal</span></div>
-        <div class="mini-row"><span class="k">Vitamin D</span><span class="v">19 ng/mL · low</span></div>
-      </div>
-      <p style="margin-bottom:0;">Curelith would lead with the two flagged values, explain what each means in one plain sentence, and tell you which one is worth mentioning at your next visit versus addressing with diet today.</p>
-      <div class="modal-actions" style="margin-top: 20px;">
-        <a href="lab-analyzer.html" class="btn btn-primary">Try with my own report →</a>
-        <button class="btn btn-ghost" data-close>Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="modal-backdrop" id="modal-derm" role="dialog" aria-modal="true" aria-labelledby="modal-derm-title">
-  <div class="modal-box">
-    <div class="modal-head">
-      <div>
-        <span class="modal-eyebrow">Tool 02</span>
-        <h3 id="modal-derm-title">Derm‑Image Analysis</h3>
-      </div>
-      <button class="modal-close" data-close aria-label="Close">✕</button>
-    </div>
-    <div class="modal-body">
-      <p>Photograph a mark, mole, or rash. Curelith looks at border, color, and shape patterns and tells you plainly whether this is a "watch it" or a "see someone this week."</p>
-      <div class="modal-demo">
-        <div class="mini-row"><span class="k">Border regularity</span><span class="v">Even</span></div>
-        <div class="mini-row"><span class="k">Color consistency</span><span class="v">Even</span></div>
-        <div class="mini-row"><span class="k">Change since last photo</span><span class="v">None detected</span></div>
-        <div class="mini-row"><span class="k">Recommendation</span><span class="v">Watch, recheck in 60 days</span></div>
-      </div>
-      <p style="margin-bottom:0;">No image leaves your device without your say — and nothing here ever stands in for a dermatologist's exam, especially for anything changing quickly.</p>
-      <div class="modal-actions" style="margin-top: 20px;">
-        <a href="image-analyzer.html" class="btn btn-primary">Analyze a photo →</a>
-        <button class="btn btn-ghost" data-close>Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="modal-symptom" role="dialog" aria-modal="true" aria-labelledby="modal-symptom-title">
-  <div class="modal-box">
-    <div class="modal-head">
-      <div>
-        <span class="modal-eyebrow">Tool 03</span>
-        <h3 id="modal-symptom-title">Symptom Conversation</h3>
-      </div>
-      <button class="modal-close" data-close aria-label="Close">✕</button>
-    </div>
-    <div class="modal-body">
-      <p>Describe what you're noticing in your own words. Curelith asks the two or three follow‑ups a calm GP would ask before forming an opinion — not twelve, not zero.</p>
-      <div class="modal-demo">
-        <div class="mini-row"><span class="k">You said</span><span class="v">Dull headache, 2 days</span></div>
-        <div class="mini-row"><span class="k">Curelith asked</span><span class="v">Worse lying down? Vision changes?</span></div>
-        <div class="mini-row"><span class="k">Your answers</span><span class="v">No to both</span></div>
-        <div class="mini-row"><span class="k">Guidance</span><span class="v">Likely tension — try rest + hydration</span></div>
-      </div>
-      <p style="margin-bottom:0;">If any answer pointed to something urgent, Curelith would say so immediately and connect you to a physician — no waiting for the rest of the conversation.</p>
-      <div class="modal-actions" style="margin-top: 20px;">
-        <a href="#consult" class="btn btn-primary" data-close>Start describing it →</a>
-        <button class="btn btn-ghost" data-close>Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="float-wrap">
   <div class="float-menu" id="floatMenu">
