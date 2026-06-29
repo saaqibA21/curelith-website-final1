@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Dashboard | Curelith</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
     <style>
         :root {
-            --cl-primary: #1B3A36;
-            --cl-accent: #4C7F6D;
-            --cl-bg: #F3EEE4;
+            --cl-primary: #1E423D;
+            --cl-accent: #D4824A;
+            --cl-bg: #F5F3ED;
             --cl-card: #FFFFFF;
-            --cl-text: #1B3A36;
-            --cl-text-dim: #4F5D57;
-            --cl-border: #DDD6C4;
+            --cl-text: #14201D;
+            --cl-text-dim: #4D5C57;
+            --cl-border: #DCD7C8;
+            --serif: "Fraunces", Georgia, serif;
+            --sans: "Inter", sans-serif;
         }
 
         * {
@@ -27,7 +31,7 @@
         body {
             background-color: var(--cl-bg);
             color: var(--cl-text);
-            font-family: 'Outfit', sans-serif;
+            font-family: var(--sans);
             min-height: 100vh;
             padding: 2rem;
             display: flex;
@@ -57,6 +61,13 @@
 
         .logo-img {
             height: 45px;
+        }
+
+        .brand {
+            font-family: var(--serif);
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: var(--cl-primary);
         }
 
         .profile-pic-container {

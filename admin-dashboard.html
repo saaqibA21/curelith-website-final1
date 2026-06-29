@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curelith | Admin Command Node</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
     <style>
         :root {
-            --admin-primary: #1B3A36;
-            --admin-accent: #4C7F6D;
-            --admin-bg: #F3EEE4;
+            --admin-primary: #1E423D;
+            --admin-sidebar-bg: #0F1B19;
+            --admin-accent: #D4824A;
+            --admin-bg: #F5F3ED;
             --admin-card: #FFFFFF;
-            --admin-text: #1B3A36;
-            --admin-text-dim: #4F5D57;
+            --admin-text: #14201D;
+            --admin-text-dim: #4D5C57;
+            --serif: "Fraunces", Georgia, serif;
+            --sans: "Inter", sans-serif;
         }
 
         * { box-sizing: border-box; transition: all 0.2s ease; }
@@ -24,14 +29,14 @@
             margin: 0;
             display: flex;
             min-height: 100vh;
-            font-family: 'Outfit', sans-serif;
+            font-family: var(--sans);
             color: var(--admin-text);
         }
 
         /* Sidebar - Solid Calm Green */
         .sidebar {
             width: 280px;
-            background: var(--admin-primary);
+            background: var(--admin-sidebar-bg);
             padding: 2.5rem 1.5rem;
             display: flex;
             flex-direction: column;
@@ -40,13 +45,13 @@
         }
 
         .sidebar h2 {
-            font-size: 1.8rem;
+            font-family: var(--serif);
+            font-size: 1.5rem;
             margin-bottom: 3.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 11px;
         }
 
         .nav-item {
@@ -231,7 +236,7 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2><i data-lucide="shield-check"></i> Curelith</h2>
+        <h2><img src="assets/logo.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Curelith Logo"> Curelith</h2>
         <div class="nav-item active" onclick="showView('overview')"><i data-lucide="layout-dashboard"></i> Overview</div>
         <div class="nav-item" onclick="showView('doctors')"><i data-lucide="users"></i> Doctors</div>
         <div class="nav-item" onclick="showView('activity')"><i data-lucide="activity"></i> Activity Logs</div>

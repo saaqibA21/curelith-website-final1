@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curelith | Clinical Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --cl-primary: #1B3A36;
-            --cl-accent: #4C7F6D;
-            --cl-bg: #F3EEE4;
+            --cl-primary: #1E423D;
+            --cl-sidebar-bg: #0F1B19;
+            --cl-accent: #D4824A;
+            --cl-bg: #F5F3ED;
             --cl-card: #FFFFFF;
-            --cl-text: #1B3A36;
-            --cl-text-dim: #4F5D57;
+            --cl-text: #14201D;
+            --cl-text-dim: #4D5C57;
+            --serif: "Fraunces", Georgia, serif;
+            --sans: "Inter", sans-serif;
         }
 
         * { box-sizing: border-box; transition: all 0.2s ease; }
@@ -24,14 +29,14 @@
             margin: 0;
             display: flex;
             min-height: 100vh;
-            font-family: 'Outfit', sans-serif;
+            font-family: var(--sans);
             color: var(--cl-text);
         }
 
         /* Sidebar - Same as Admin for consistency */
         .sidebar {
             width: 280px;
-            background: var(--cl-primary);
+            background: var(--cl-sidebar-bg);
             padding: 2.5rem 1.5rem;
             display: flex;
             flex-direction: column;
@@ -40,11 +45,11 @@
         }
 
         .sidebar h2 {
-            font-size: 1.8rem;
+            font-family: var(--serif);
+            font-size: 1.5rem;
             margin-bottom: 3.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            display: flex; align-items: center; gap: 12px;
+            font-weight: 600;
+            display: flex; align-items: center; gap: 11px;
         }
 
         .nav-item {
@@ -146,7 +151,7 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2><i data-lucide="activity"></i> Curelith</h2>
+        <h2><img src="assets/logo.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Curelith Logo"> Curelith</h2>
         
         <!-- Location Switcher Dropdown -->
         <div id="locationSwitcherContainer" style="display: none; margin-bottom: 2rem; padding: 0 0.5rem;">
