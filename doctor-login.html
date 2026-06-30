@@ -164,7 +164,7 @@
                     localStorage.setItem('doctor_name', data.doctor.name);
                     localStorage.setItem('doctor_id', data.doctor.id);
                     localStorage.setItem('doctor_password', pass);
-                    window.location.href = 'doctor-dashboard.html';
+                    window.location.replace('doctor-dashboard.html');
                 } else {
                     err.innerText = "Invalid credentials.";
                     err.style.display = 'block';

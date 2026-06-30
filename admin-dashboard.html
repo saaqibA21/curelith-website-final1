@@ -632,8 +632,26 @@
     </div>
 
     <script>
-        const adminPass = localStorage.getItem('admin_pass');
-        if (!adminPass) window.location.href = 'admin-login.html';
+        // Prevent back-button access via history/bfcache
+        function checkAuth() {
+            const adminPass = localStorage.getItem('admin_pass');
+            if (!adminPass) {
+                window.location.replace('admin-login.html');
+                return false;
+            }
+            return adminPass;
+        }
+
+        const adminPass = checkAuth();
+        if (!adminPass) {
+            throw new Error("Unauthorized redirecting...");
+        }
+
+        window.addEventListener('pageshow', function(event) {
+            if (!localStorage.getItem('admin_pass')) {
+                window.location.replace('admin-login.html');
+            }
+        });
 
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
@@ -922,7 +940,7 @@
             renderDoctors(f);
         }
 
-        function logout() { localStorage.clear(); window.location.href = 'admin-login.html'; }
+        function logout() { localStorage.clear(); window.location.replace('admin-login.html'); }
 
         // --- INSTAGRAM CRM CONTROLLERS ---
         let allIgLeads = [];

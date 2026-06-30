@@ -131,7 +131,7 @@
         document.getElementById('adminForm').addEventListener('submit', (e) => {
             e.preventDefault();
             localStorage.setItem('admin_pass', document.getElementById('adminPass').value);
-            window.location.href = 'admin-dashboard.html';
+            window.location.replace('admin-dashboard.html');
         });
 
         // Toggle password visibility

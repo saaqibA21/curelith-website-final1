@@ -389,12 +389,31 @@
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
 
-        const patientPhone = localStorage.getItem('patient_phone');
-        const patientToken = localStorage.getItem('patient_token');
-
-        if (!patientPhone) {
-            window.location.href = 'patient-login.html';
+        // Prevent back-button access via history/bfcache
+        function checkAuth() {
+            const patientPhone = localStorage.getItem('patient_phone');
+            const patientToken = localStorage.getItem('patient_token');
+            if (!patientPhone || !patientToken) {
+                window.location.replace('patient-login.html');
+                return false;
+            }
+            return { patientPhone, patientToken };
         }
+
+        const auth = checkAuth();
+        if (!auth) {
+            // Stop execution if not authenticated
+            throw new Error("Unauthorized redirecting...");
+        }
+
+        const patientPhone = auth.patientPhone;
+        const patientToken = auth.patientToken;
+
+        window.addEventListener('pageshow', function(event) {
+            if (!localStorage.getItem('patient_phone') || !localStorage.getItem('patient_token')) {
+                window.location.replace('patient-login.html');
+            }
+        });
 
         document.getElementById('userPhoneDisplay').innerText = patientPhone;
 
@@ -648,7 +667,8 @@
 
         function logout() {
             localStorage.removeItem('patient_phone');
-            window.location.href = 'patient-login.html';
+            localStorage.removeItem('patient_token');
+            window.location.replace('patient-login.html');
         }
 
         function initIcons() {

@@ -405,11 +405,32 @@
     </div>
 
     <script>
-        const docName = localStorage.getItem('doctor_name');
-        const docPass = localStorage.getItem('doctor_password');
-        const docId = localStorage.getItem('doctor_id');
+        // Prevent back-button access via history/bfcache
+        function checkAuth() {
+            const docName = localStorage.getItem('doctor_name');
+            const docPass = localStorage.getItem('doctor_password');
+            const docId = localStorage.getItem('doctor_id');
+            if (!docName || !docPass) {
+                window.location.replace('doctor-login.html');
+                return false;
+            }
+            return { docName, docPass, docId };
+        }
 
-        if (!docName || !docPass) window.location.href = 'doctor-login.html';
+        const auth = checkAuth();
+        if (!auth) {
+            throw new Error("Unauthorized redirecting...");
+        }
+
+        const docName = auth.docName;
+        const docPass = auth.docPass;
+        const docId = auth.docId;
+
+        window.addEventListener('pageshow', function(event) {
+            if (!localStorage.getItem('doctor_name') || !localStorage.getItem('doctor_password')) {
+                window.location.replace('doctor-login.html');
+            }
+        });
 
         // Set doctor name instantly on page load
         if (docName) {
@@ -1260,7 +1281,7 @@
             if (e.key === 'Escape') closeModal();
         });
 
-        function logout() { localStorage.clear(); window.location.href = 'doctor-login.html'; }
+        function logout() { localStorage.clear(); window.location.replace('doctor-login.html'); }
 
         document.addEventListener('DOMContentLoaded', () => { showView('appointments'); loadSettings(); initIcons(); });
     </script>

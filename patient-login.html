@@ -173,7 +173,7 @@
                 if (data.status === 'success') {
                     localStorage.setItem('patient_phone', data.phone);
                     localStorage.setItem('patient_token', data.token);
-                    window.location.href = 'patient-dashboard.html';
+                    window.location.replace('patient-dashboard.html');
                 } else {
                     err.innerText = data.error || "Invalid verification code.";
                     err.style.display = 'block';
