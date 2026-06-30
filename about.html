@@ -85,13 +85,22 @@
     <nav class="links">
       <a href="index.html#why">Why Curelith</a>
       <a href="index.html#tools">Tools</a>
-      <a href="index.html#doctors">Physicians</a>
-      <a href="about.html" style="color: #fff;">About</a>
+      <a href="doctors.html">Physicians</a>
+      <a href="about.html">About</a>
     </nav>
     <div class="nav-actions">
       <a href="medical-locker.html" class="btn btn-ghost-dark btn-sm">Patient portal</a>
       <a href="index.html#consult" class="btn btn-primary btn-sm">Start a consult</a>
     </div>
+    <button class="menu-toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html#why">Why Curelith</a>
+    <a href="index.html#tools">Tools</a>
+    <a href="doctors.html">Physicians</a>
+    <a href="about.html">About</a>
+    <a href="medical-locker.html" class="btn btn-ghost-dark btn-sm" style="justify-content: center; margin-top: 10px;">Patient portal</a>
+    <a href="index.html#consult" class="btn btn-primary btn-sm" style="justify-content: center;">Start a consult</a>
   </div>
 </header>
 
@@ -195,6 +204,20 @@
 
 <script>
     lucide.createIcons();
+</script>
+<script>
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileNav = document.getElementById('mobileNav');
+  if (menuToggle && mobileNav) {
+    menuToggle.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+    });
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+      });
+    });
+  }
 </script>
 </body>
 </html>

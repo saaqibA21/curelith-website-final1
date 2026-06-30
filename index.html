@@ -137,8 +137,6 @@
   nav.links a{ font-size:14.5px; font-weight:500; color:var(--mist); transition:color .15s ease; }
   nav.links a:hover{ color:#fff; }
   .nav-actions{ display:flex; align-items:center; gap:14px; }
-  .menu-toggle{ display:none; background:none; border:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
-  .menu-toggle span{ width:22px; height:2px; background:#fff; display:block; }
 
   /* ================= HERO ================= */
   .hero{
@@ -512,8 +510,7 @@
     .process-grid{ grid-template-columns:1fr 1fr; gap:36px; }
     .process-grid::before{ display:none; }
     .foot-top{ grid-template-columns:1fr; gap:32px; }
-    nav.links{ display:none; }
-    .menu-toggle{ display:flex; }
+    nav.links, .nav-actions{ display:none !important; }
     .hero-stats{ grid-template-columns:1fr; gap:20px; }
     .stat{ border-left:none; padding-left:0; border-top:1px solid var(--line-dark); padding-top:20px; }
     .stat:first-child{ border-top:none; padding-top:0; }
@@ -545,7 +542,7 @@
     <nav class="links">
       <a href="#why">Why Curelith</a>
       <a href="#tools">Tools</a>
-      <a href="#doctors">Physicians</a>
+      <a href="doctors.html">Physicians</a>
       <a href="about.html">About</a>
     </nav>
     <div class="nav-actions">
@@ -553,6 +550,14 @@
       <a href="#consult" class="btn btn-primary btn-sm">Start a consult</a>
     </div>
     <button class="menu-toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#why">Why Curelith</a>
+    <a href="#tools">Tools</a>
+    <a href="doctors.html">Physicians</a>
+    <a href="about.html">About</a>
+    <a href="medical-locker.html" class="btn btn-ghost-dark btn-sm" style="justify-content: center; margin-top: 10px;">Patient portal</a>
+    <a href="#consult" class="btn btn-primary btn-sm" style="justify-content: center;">Start a consult</a>
   </div>
 </header>
 
@@ -742,19 +747,16 @@
   <!-- PHYSICIANS -->
   <section class="physicians" id="doctors">
     <div class="wrap">
-      <div class="section-head reveal">
+      <div class="section-head reveal" style="text-align: center; max-width: 720px; margin: 0 auto;">
         <span class="eyebrow on-dark">Our physician network</span>
         <h2>Every pathway Curelith uses is reviewed by a licensed doctor</h2>
         <p>Curelith never replaces a physician. It decides, calmly, when it's time to bring one in — and connects you to one who has reviewed the exact guidance you just read.</p>
-        
-        <!-- Search bar added above grid -->
-        <div class="physician-search" style="margin-top: 2rem; max-width: 480px;">
-          <input type="text" id="physSearch" placeholder="Search by speciality or doctor name..." style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--line-dark); border-radius: 9px; padding: 12px 16px; color: #fff; font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;" onkeyup="handleSearch(this.value)">
+        <div style="margin-top: 2.5rem;">
+          <a href="doctors.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+            Find a Verified Physician
+            <span style="font-size: 15px;">→</span>
+          </a>
         </div>
-      </div>
-
-      <div class="phys-grid reveal-stagger" id="publicDoctorList">
-        <!-- Dynamic Cards Load Here -->
       </div>
     </div>
   </section>
@@ -835,48 +837,6 @@
   /* ---------- API and dynamic data ---------- */
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
   const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
-  let allDoctors = [];
-
-  async function loadPublicDoctors() {
-      try {
-          const res = await fetch(`${API_BASE}/doctor/public/doctors`);
-          allDoctors = await res.json();
-          renderDoctors(allDoctors);
-      } catch (err) { console.error("Network offline or API error."); }
-  }
-
-  function renderDoctors(docs) {
-      const list = document.getElementById('publicDoctorList');
-      list.innerHTML = '';
-      if(!docs.length) { 
-          list.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding: 2rem; color: var(--mist-dim); font-family: var(--mono); font-size: 13px;">No physicians found in this node.</p>';
-          return; 
-      }
-      docs.forEach(doc => {
-          const card = document.createElement('div');
-          card.className = 'phys-card';
-          
-          // Generate initials
-          const initials = doc.name.replace(/Dr\.\s+/g, "").split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
-          
-          card.innerHTML = `
-              <div class="phys-avatar">${initials}</div>
-              <h4>${doc.name}</h4>
-              <span class="spec">${doc.speciality}</span>
-              <p style="font-size: 12.5px; color: var(--mist-dim); margin-bottom: 16px; font-family: var(--mono);">${doc.location}</p>
-              <div class="verified" style="margin-bottom: 16px;"><span class="tick">✓</span> Licensed Practitioner</div>
-              <button class="btn btn-primary btn-sm" onclick="book('${doc.name}')" style="width:100%; justify-content:center; padding: 10px; font-size: 12.5px; border-radius: 8px;">
-                  Book Appointment
-              </button>
-          `;
-          list.appendChild(card);
-      });
-  }
-
-  function handleSearch(q) {
-      const f = allDoctors.filter(d => d.name.toLowerCase().includes(q.toLowerCase()) || d.speciality.toLowerCase().includes(q.toLowerCase()));
-      renderDoctors(f);
-  }
 
   function book(name) {
       const msg = encodeURIComponent(`Hello, I'd like to book an appointment with ${name} via Curelith.`);
@@ -999,7 +959,6 @@
   // kick off shortly after load (hero is above the fold)
   window.addEventListener('load', () => {
     setTimeout(runHeroDemo, 300);
-    loadPublicDoctors();
   });
 
   /* ---------- modals ---------- */
@@ -1081,6 +1040,20 @@
     });
   }, { threshold:0.4 });
   sectionEls.forEach(el=> railObserver.observe(el));
+
+  /* ---------- mobile menu ---------- */
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileNav = document.getElementById('mobileNav');
+  if (menuToggle && mobileNav) {
+    menuToggle.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+    });
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+      });
+    });
+  }
 </script>
 
 </body>
