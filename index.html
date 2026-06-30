@@ -875,7 +875,7 @@
 
 <script>
   /* ---------- API and dynamic data ---------- */
-  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
 
   function book(name) {
