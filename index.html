@@ -338,7 +338,7 @@
 
   /* ================= FLOAT BUTTON ================= */
   .float-consult{
-    position:fixed; bottom:28px; right:28px; z-index:70;
+    position:relative; z-index:10;
     background:var(--clay); color:#241208; border-radius:30px;
     padding:15px 22px 15px 18px; display:flex; align-items:center; gap:10px;
     font-size:14px; font-weight:700; box-shadow:0 18px 36px -12px rgba(212,130,74,0.55);
@@ -346,6 +346,44 @@
   }
   .float-consult .dot2{ width:8px; height:8px; border-radius:50%; background:#241208; animation:pulse 2.2s ease-in-out infinite; }
   @keyframes pulse{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.4; transform:scale(0.7); } }
+
+  /* Mobile Navigation Drawer & Toggles */
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+  }
+  .menu-toggle span {
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    display: block;
+  }
+
+  .mobile-nav {
+    display: none;
+    flex-direction: column;
+    background: var(--void-soft);
+    border-top: 1px solid var(--line-dark);
+    padding: 24px 40px;
+    gap: 16px;
+  }
+  .mobile-nav.open {
+    display: flex;
+  }
+  .mobile-nav a {
+    color: var(--mist);
+    font-size: 16px;
+    font-weight: 500;
+    padding: 4px 0;
+  }
+  .mobile-nav a:hover {
+    color: #fff;
+  }
 
   /* ================= MOTION SYSTEM ================= */
   .load-in{
@@ -511,6 +549,8 @@
     .process-grid::before{ display:none; }
     .foot-top{ grid-template-columns:1fr; gap:32px; }
     nav.links, .nav-actions{ display:none !important; }
+    .menu-toggle{ display:flex; }
+    .mobile-nav{ padding:24px 22px; }
     .hero-stats{ grid-template-columns:1fr; gap:20px; }
     .stat{ border-left:none; padding-left:0; border-top:1px solid var(--line-dark); padding-top:20px; }
     .stat:first-child{ border-top:none; padding-top:0; }
