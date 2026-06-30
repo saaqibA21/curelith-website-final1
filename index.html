@@ -639,19 +639,19 @@
 
             <div class="vitals-strip" id="heroVitalsStrip" style="margin-bottom: 12px;">
               <div class="vital">
-                <span class="v-label">Fasting glucose</span>
+                <span class="v-label" id="vitalLabel">Fasting glucose</span>
                 <span class="v-value" id="vitalGlucose">—</span>
-                <span class="v-flag">slightly elevated</span>
+                <span class="v-flag" id="vitalFlag">slightly elevated</span>
               </div>
               <div class="vital">
                 <span class="v-label">Reference range</span>
-                <span class="v-value">70–99</span>
-                <span class="v-flag">normal</span>
+                <span class="v-value" id="vitalRefRange">70–99</span>
+                <span class="v-flag" id="vitalRefFlag">normal</span>
               </div>
               <div class="vital">
                 <span class="v-label">Suggested step</span>
-                <span class="v-value">Recheck + A1c</span>
-                <span class="v-flag">non‑urgent</span>
+                <span class="v-value" id="vitalSuggestedStep">Recheck + A1c</span>
+                <span class="v-flag" id="vitalSuggestedFlag">non‑urgent</span>
               </div>
             </div>
 
@@ -987,6 +987,37 @@
       const data = await res.json();
       const reply = data.reply || "Error: System response invalid.";
       
+      // Update Vitals Strip dynamically
+      if (data.vital_label) {
+          document.getElementById('vitalLabel').textContent = data.vital_label;
+      }
+      if (data.vital_value) {
+          const valEl = document.getElementById('vitalGlucose');
+          const numericMatch = data.vital_value.match(/^(\d+)(.*)$/);
+          if (numericMatch) {
+              const val = parseInt(numericMatch[1]);
+              const suffix = numericMatch[2] || '';
+              countUp(valEl, val, suffix, 800);
+          } else {
+              valEl.textContent = data.vital_value;
+          }
+      }
+      if (data.vital_flag) {
+          document.getElementById('vitalFlag').textContent = data.vital_flag;
+      }
+      if (data.ref_range) {
+          document.getElementById('vitalRefRange').textContent = data.ref_range;
+      }
+      if (data.ref_flag) {
+          document.getElementById('vitalRefFlag').textContent = data.ref_flag;
+      }
+      if (data.suggested_step) {
+          document.getElementById('vitalSuggestedStep').textContent = data.suggested_step;
+      }
+      if (data.suggested_flag) {
+          document.getElementById('vitalSuggestedFlag').textContent = data.suggested_flag;
+      }
+
       // Type out response and scroll container dynamically
       aiBubble.textContent = "";
       await typeText(aiBubble, reply, 12, historyContainer);
