@@ -439,7 +439,7 @@
             document.getElementById('docInit').innerText = docName[0].toUpperCase();
         }
 
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
         const headers = { 'X-Doctor-Name': docName, 'X-Doctor-Password': docPass };
 
@@ -725,9 +725,16 @@
                 if (app.status === 'completed') {
                     paidCount++;
                     const type = app.consultation_type ? app.consultation_type.toLowerCase() : '';
-                    if (type === 'virtual') totalRevenue += feeVirtual;
-                    else if (type === 'physical' || type === 'clinic_visit') totalRevenue += feePhysical;
-                    else if (type === 'home_care') totalRevenue += feeHomeCare;
+                    
+                    // Look up the specific doctor profile for this appointment to get exact fees
+                    const profile = activeProfiles.find(p => p.id === app.doctor_id);
+                    const fV = profile ? (profile.fee_virtual !== undefined ? profile.fee_virtual : 300) : feeVirtual;
+                    const fP = profile ? (profile.fee_physical !== undefined ? profile.fee_physical : 300) : feePhysical;
+                    const fH = profile ? (profile.fee_home_care !== undefined ? profile.fee_home_care : 500) : feeHomeCare;
+                    
+                    if (type === 'virtual') totalRevenue += fV;
+                    else if (type === 'physical' || type === 'clinic_visit') totalRevenue += fP;
+                    else if (type === 'home_care') totalRevenue += fH;
                 }
             });
 
@@ -1004,7 +1011,7 @@
             if(docId) fetch(`${API_BASE}/doctor/log-view`, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ doctor_id: docId, patient_phone: phone }) }).catch(e => {});
             
             try {
-                const res = await fetch(`${API_BASE}/locker/list/${phone}`);
+                const res = await fetch(`${API_BASE}/locker/list/${phone}`, { headers });
                 currentLockerData = await res.json();
                 renderLockerGrid(false); // Start in main locker view
             } catch (e) {}
