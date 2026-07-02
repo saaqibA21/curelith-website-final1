@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hospitals in Chennai | Curelith Directory</title>
+<meta name="description" content="Search and discover top-rated multi-speciality and government hospitals in Chennai. View contact numbers, specialities, locations, and real photos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .directory-hero {
+    background: var(--void);
+    color: #fff;
+    padding: 120px 0 80px 0;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .directory-hero::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 1.6px);
+    background-size: 26px 26px;
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+    mask-image: linear-gradient(to bottom, black, transparent);
+  }
+  .directory-hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 600;
+    margin-top: 12px;
+  }
+  .directory-hero h1 span {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .directory-hero p.sub {
+    font-size: 17.5px;
+    color: var(--mist);
+    max-width: 580px;
+    margin: 16px auto 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Search & Filter Section */
+  .search-section {
+    padding: 50px 0 80px 0;
+    background: var(--paper);
+  }
+  .search-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+  }
+  .search-box-wrapper {
+    width: 100%;
+    position: relative;
+  }
+  .search-box-wrapper input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-family: var(--sans);
+    font-size: 15.5px;
+    color: var(--ink);
+    outline: none;
+    box-shadow: 0 10px 25px -5px rgba(15,27,25,0.05);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-box-wrapper input:focus {
+    border-color: var(--pine-light);
+    box-shadow: 0 10px 30px -5px rgba(15,27,25,0.08);
+  }
+
+  /* Filtering Pills */
+  .filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pill {
+    background: transparent;
+    border: 1px solid var(--line);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pill:hover {
+    border-color: var(--pine);
+    color: var(--ink);
+  }
+  .pill.active {
+    background: var(--pine);
+    border-color: var(--pine);
+    color: #fff;
+  }
+
+  /* Grid Layout */
+  .hosp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 20px;
+  }
+
+  .hosp-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(15, 27, 25, 0.02);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .hosp-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(15, 27, 25, 0.06);
+  }
+  
+  .hosp-img-wrapper {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+  }
+  .hosp-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  .hosp-card:hover .hosp-img {
+    transform: scale(1.04);
+  }
+  
+  .hosp-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(15, 27, 25, 0.85);
+    backdrop-filter: blur(4px);
+    color: var(--gold);
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .hosp-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .hosp-content h3 {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--void);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .hosp-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .hosp-rating .stars {
+    color: #F5A623;
+    font-weight: bold;
+  }
+  
+  .hosp-specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .spec-tag {
+    background: #EFEFEF;
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-family: var(--sans);
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-transform: capitalize;
+  }
+  
+  .hosp-loc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 24px;
+    margin-top: auto;
+  }
+  .hosp-loc svg {
+    flex-shrink: 0;
+  }
+
+  /* Details Modal */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 27, 25, 0.7);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    animation: fadeIn 0.25s ease forwards;
+  }
+  .modal-container {
+    background: var(--card);
+    border-radius: var(--radius);
+    max-width: 680px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(15, 27, 25, 0.06);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--void);
+    transition: background 0.2s;
+    z-index: 10;
+  }
+  .modal-close:hover {
+    background: rgba(15, 27, 25, 0.12);
+  }
+  .modal-img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+  }
+  .modal-body {
+    padding: 36px;
+  }
+  .modal-body h2 {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--void);
+    margin-bottom: 8px;
+  }
+  .modal-badge-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .modal-desc {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 24px 0;
+  }
+  .detail-item h5 {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--clay-deep);
+    margin-bottom: 4px;
+  }
+  .detail-item p {
+    font-size: 14.5px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+  }
+  .modal-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @media (max-width: 980px) {
+    .hosp-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .hosp-grid { grid-template-columns: 1fr; }
+    .details-grid { grid-template-columns: 1fr; }
+    .modal-body { padding: 24px; }
+    .modal-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="index.html" class="brand">
+      <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+      Curelith
+    </a>
+    <nav class="links">
+      <a href="index.html#why">Why Curelith</a>
+      <a href="index.html#tools">Tools</a>
+      <a href="doctors.html">Physicians</a>
+      <a href="hospitals.html">Hospitals</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="patient-login.html" class="btn btn-ghost-dark btn-sm">Patient portal</a>
+      <a href="index.html#consult" class="btn btn-primary btn-sm">Start a consult</a>
+    </div>
+    <button class="menu-toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html#why">Why Curelith</a>
+    <a href="index.html#tools">Tools</a>
+    <a href="doctors.html">Physicians</a>
+    <a href="hospitals.html">Hospitals</a>
+    <a href="about.html">About</a>
+    <a href="patient-login.html" class="btn btn-ghost-dark btn-sm" style="justify-content: center; margin-top: 10px;">Patient portal</a>
+    <a href="index.html#consult" class="btn btn-primary btn-sm" style="justify-content: center;">Start a consult</a>
+  </div>
+</header>
+
+<section class="directory-hero">
+  <div class="wrap">
+    <span class="eyebrow on-dark">Hospital Directory</span>
+    <h1>Chennai <span>Hospitals</span></h1>
+    <p class="sub">Discover and search trusted healthcare facilities, multi-speciality centers, and top government hospitals in Chennai.</p>
+  </div>
+</section>
+
+<section class="search-section">
+  <div class="wrap">
+    
+    <div class="search-controls">
+      <div class="search-box-wrapper">
+        <input type="text" id="searchInput" placeholder="Search hospitals by name, speciality, or location..." aria-label="Search hospitals">
+      </div>
+      
+      <div class="filter-pills" id="filterPills">
+        <button class="pill active" data-filter="all">All Specialties</button>
+        <button class="pill" data-filter="cardiology">Cardiology</button>
+        <button class="pill" data-filter="oncology">Oncology</button>
+        <button class="pill" data-filter="orthopedics">Orthopedics</button>
+        <button class="pill" data-filter="transplants">Transplants</button>
+        <button class="pill" data-filter="gastroenterology">Gastroenterology</button>
+      </div>
+    </div>
+    
+    <div class="hosp-grid" id="hospGrid">
+      <!-- Dynamic Hospital Cards Rendered Here -->
+    </div>
+    
+  </div>
+</section>
+
+<!-- Details Modal -->
+<div class="modal" id="detailsModal">
+  <div class="modal-container">
+    <button class="modal-close" id="modalClose" aria-label="Close details">&times;</button>
+    <img src="" alt="" class="modal-img" id="modalImg">
+    <div class="modal-body">
+      <h2 id="modalName">Hospital Name</h2>
+      <div class="modal-badge-row">
+        <span class="stars" id="modalRatingStars">★★★★★</span>
+        <span id="modalRatingText">(4.8 • 120 reviews)</span>
+      </div>
+      
+      <p class="modal-desc" id="modalDesc">Detailed description of the hospital.</p>
+      
+      <div class="details-grid">
+        <div class="detail-item">
+          <h5>Primary Location</h5>
+          <p id="modalLoc">Location Address</p>
+        </div>
+        <div class="detail-item">
+          <h5>Phone Number</h5>
+          <p id="modalPhone">Contact Number</p>
+        </div>
+        <div class="detail-item">
+          <h5>Clinical Specialties</h5>
+          <p id="modalSpecs">List of specialties</p>
+        </div>
+        <div class="detail-item">
+          <h5>Emergency Services</h5>
+          <p id="modalEmergency">24/7 Available</p>
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <a href="tel:+914428290200" class="btn btn-primary" id="modalCallBtn">Call Hospital</a>
+        <a href="index.html#consult" class="btn btn-ghost">Book Appointment</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">
+          <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+          Curelith
+        </div>
+        <p>The intersection of clinical intelligence and human responsibility. Built in Tamil Nadu, India.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Platform</h5>
+        <a href="index.html">Home</a>
+        <a href="about.html">About us</a>
+        <a href="patient-login.html">Patient portal</a>
+        <a href="admin-login.html">Administration</a>
+        <a href="terms.html">Terms &amp; conditions</a>
+        <a href="privacy.html">Privacy policy</a>
+      </div>
+      <div class="foot-col">
+        <h5>Support</h5>
+        <span class="line">curelith.ai@gmail.com</span>
+        <span class="line">Tamil Nadu, India</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Curelith Intelligence</span>
+      <span class="disclaimer">Not a replacement for professional medical advice.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile Nav Toggle
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileNav = document.getElementById('mobileNav');
+  if (menuToggle && mobileNav) {
+    menuToggle.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+    });
+  }
+
+  // Hospital Data
+  const hospitals = [
+    {
+      id: 1,
+      name: "Apollo Hospital, Greams Road",
+      image: "assets/apollo.jpg",
+      rating: 4.8,
+      reviews: 4200,
+      location: "Greams Road, Chennai",
+      address: "21, Greams Lane, Off Greams Road, Chennai - 600006",
+      phone: "+91 44 2829 0200",
+      specs: ["cardiology", "oncology", "neurology", "nephrology", "gastroenterology"],
+      emergency: "24/7 Available (Level 1 Trauma Center)",
+      desc: "One of the most respected hospitals globally, Apollo Greams Road specializes in advanced cardiology, oncology, organ transplants, and complex neurosurgeries, backed by world-class specialists.",
+      badge: "Top Rated"
+    },
+    {
+      id: 2,
+      name: "Adyar Cancer Institute",
+      image: "assets/cancer_institute.jpg",
+      rating: 4.9,
+      reviews: 3500,
+      location: "Adyar, Chennai",
+      address: "38, Sardar Patel Rd, Adyar, Chennai - 600036",
+      phone: "+91 44 2235 0131",
+      specs: ["oncology", "radiology", "pediatrics"],
+      emergency: "Oncology Emergency Services Available",
+      desc: "Founded in 1954, the Cancer Institute (WIA) is a non-profit, world-renowned comprehensive center dedicated exclusively to advanced cancer treatment, clinical trials, and research.",
+      badge: "Research Center"
+    },
+    {
+      id: 3,
+      name: "MIOT International",
+      image: "assets/miot.jpg",
+      rating: 4.6,
+      reviews: 2800,
+      location: "Manapakkam, Chennai",
+      address: "4/112, Mount Poonamallee Rd, Manapakkam, Chennai - 600089",
+      phone: "+91 44 4200 2288",
+      specs: ["orthopedics", "traumatology", "nephrology", "cardiology"],
+      emergency: "24/7 Available (Specialized Trauma Center)",
+      desc: "MIOT (Madras Institute of Orthopaedics and Traumatology) International is celebrated for leading orthopedics, joint reconstruction, cardiac care, and multi-organ transplant procedures.",
+      badge: "Trauma Care"
+    },
+    {
+      id: 4,
+      name: "Vadapalani Vijaya Hospital",
+      image: "assets/vijaya.jpg",
+      rating: 4.5,
+      reviews: 1900,
+      location: "Vadapalani, Chennai",
+      address: "180, NSK Salai, Vadapalani, Chennai - 600026",
+      phone: "+91 44 2480 3000",
+      specs: ["pediatrics", "gynecology", "orthopedics", "general surgery"],
+      emergency: "24/7 Emergency & Maternity Services",
+      desc: "Vijaya Hospital is a historical, trusted healthcare provider offering highly reliable multi-speciality services with a strong focus on affordable family care and excellent obstetrics.",
+      badge: "Maternity & Kids"
+    },
+    {
+      id: 5,
+      name: "Rajiv Gandhi Govt General Hospital",
+      image: "assets/rajiv_gandhi.jpg",
+      rating: 4.4,
+      reviews: 8200,
+      location: "Park Town, Chennai",
+      address: "E.V.R. Road, Park Town, Opp. Central Railway Station, Chennai - 600003",
+      phone: "+91 44 2530 5000",
+      specs: ["emergency care", "neurology", "cardiothoracic surgery", "general medicine"],
+      emergency: "24/7 Available (State Emergency Facility)",
+      desc: "Established in 1664, this landmark public teaching hospital is one of the largest in India, offering comprehensive, top-tier clinical care across all specialities to the public.",
+      badge: "Government"
+    },
+    {
+      id: 6,
+      name: "Omanthurar Government Super Speciality Hospital",
+      image: "assets/omanthurar.jpg",
+      rating: 4.7,
+      reviews: 3100,
+      location: "Government Estate, Chennai",
+      address: "Walajah Road, Government Estate, Chennai - 600002",
+      phone: "+91 44 2566 6000",
+      specs: ["cardiology", "neurology", "oncology", "transplants"],
+      emergency: "24/7 Available (Super Speciality Center)",
+      desc: "A flagship state-run multi-super speciality hospital providing premium clinical treatments, advanced diagnostics, and surgical infrastructure at highly affordable rates.",
+      badge: "Government"
+    },
+    {
+      id: 7,
+      name: "GEM Hospital, Perungudi",
+      image: "assets/gem.jpg",
+      rating: 4.6,
+      reviews: 1400,
+      location: "Perungudi, Chennai",
+      address: "227, MGR Salai, Kandancavadi, Perungudi, Chennai - 600096",
+      phone: "+91 44 6121 2121",
+      specs: ["gastroenterology", "laparoscopic surgery", "transplants"],
+      emergency: "24/7 Gastroenterology Emergency Services",
+      desc: "GEM Hospital is India's leading super-speciality facility dedicated entirely to Gastroenterology and Advanced Laparoscopic/Robotic surgeries, offering highly precise clinical care.",
+      badge: "Gastro Speciality"
+    }
+  ];
+
+  let activeFilter = 'all';
+  let searchQuery = '';
+
+  const searchInput = document.getElementById('searchInput');
+  const filterPills = document.getElementById('filterPills');
+  const hospGrid = document.getElementById('hospGrid');
+  const detailsModal = document.getElementById('detailsModal');
+  const modalClose = document.getElementById('modalClose');
+
+  // Render Cards
+  function renderHospitals() {
+    hospGrid.innerHTML = '';
+    const filtered = hospitals.filter(h => {
+      // Search Match
+      const matchesSearch = h.name.toLowerCase().includes(searchQuery) ||
+                            h.location.toLowerCase().includes(searchQuery) ||
+                            h.specs.some(s => s.toLowerCase().includes(searchQuery));
+      // Category Match
+      const matchesFilter = activeFilter === 'all' || 
+                            (activeFilter === 'transplants' && h.specs.includes('transplants')) ||
+                            h.specs.includes(activeFilter);
+
+      return matchesSearch && matchesFilter;
+    });
+
+    if (filtered.length === 0) {
+      hospGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-soft); font-family: var(--mono); font-size: 14.5px;">No hospitals match your search criteria.</div>`;
+      return;
+    }
+
+    filtered.forEach(h => {
+      const card = document.createElement('div');
+      card.className = 'hosp-card';
+      card.innerHTML = `
+        <div class="hosp-img-wrapper">
+          <img src="${h.image}" alt="${h.name}" class="hosp-img">
+          ${h.badge ? `<span class="hosp-badge">${h.badge}</span>` : ''}
+        </div>
+        <div class="hosp-content">
+          <h3>${h.name}</h3>
+          <div class="hosp-rating">
+            <span class="stars">${"★".repeat(Math.round(h.rating))}${"☆".repeat(5 - Math.round(h.rating))}</span>
+            <span>${h.rating} (${h.reviews.toLocaleString()} reviews)</span>
+          </div>
+          <div class="hosp-specs">
+            ${h.specs.slice(0, 3).map(s => `<span class="spec-tag">${s}</span>`).join('')}
+            ${h.specs.length > 3 ? `<span class="spec-tag">+${h.specs.length - 3} more</span>` : ''}
+          </div>
+          <div class="hosp-loc">
+            <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 9C8.10457 9 9 8.10457 9 7C9 5.89543 8.10457 5 7 5C5.89543 5 5 5.89543 5 7C5 8.10457 5.89543 9 7 9Z" stroke="#4D5C57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7 17C10.5 13 13 10.1636 13 7C13 3.68629 10.3137 1 7 1C3.68629 1 1 3.68629 1 7C1 10.1636 3.5 13 7 17Z" stroke="#4D5C57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>${h.location}</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="width: 100%; justify-content: center; margin-top: auto;" onclick="openDetails(${h.id})">Inspect Details</button>
+        </div>
+      `;
+      hospGrid.appendChild(card);
+    });
+  }
+
+  // Open Details Modal
+  window.openDetails = function(id) {
+    const h = hospitals.find(x => x.id === id);
+    if (!h) return;
+
+    document.getElementById('modalImg').src = h.image;
+    document.getElementById('modalImg').alt = h.name;
+    document.getElementById('modalName').innerText = h.name;
+    document.getElementById('modalRatingStars').innerText = "★".repeat(Math.round(h.rating)) + "☆".repeat(5 - Math.round(h.rating));
+    document.getElementById('modalRatingText').innerText = `(${h.rating} • ${h.reviews.toLocaleString()} reviews)`;
+    document.getElementById('modalDesc').innerText = h.desc;
+    document.getElementById('modalLoc').innerText = h.address;
+    document.getElementById('modalPhone').innerText = h.phone;
+    document.getElementById('modalSpecs').innerText = h.specs.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ');
+    document.getElementById('modalEmergency').innerText = h.emergency;
+    
+    document.getElementById('modalCallBtn').href = `tel:${h.phone.replace(/\s+/g, '')}`;
+
+    detailsModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Lock background scroll
+  };
+
+  // Close Modal
+  function closeModal() {
+    detailsModal.style.display = 'none';
+    document.body.style.overflow = ''; // Unlock background scroll
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  window.addEventListener('click', (e) => {
+    if (e.target === detailsModal) closeModal();
+  });
+
+  // Search Event
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    renderHospitals();
+  });
+
+  // Filter Pills Event
+  filterPills.addEventListener('click', (e) => {
+    if (e.target.classList.contains('pill')) {
+      filterPills.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      e.target.classList.add('active');
+      activeFilter = e.target.getAttribute('data-filter');
+      renderHospitals();
+    }
+  });
+
+  // Initial Render
+  renderHospitals();
+</script>
+</body>
+</html>
