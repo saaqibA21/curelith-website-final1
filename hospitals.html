@@ -4,7 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hospitals in Chennai | Curelith Directory</title>
-<meta name="description" content="Search and discover top-rated multi-speciality and government hospitals in Chennai. View contact numbers, specialities, locations, and real photos.">
+<meta name="description" content="Discover, search, and filter 36 top-rated government and private multi-speciality hospitals in Chennai. View contact phone numbers, beds, and real photos.">
+<meta name="keywords" content="Chennai Hospitals, Chennai Healthcare Directory, Hospitals in Chennai, Apollo Chennai, Stanley Hospital, Kilpauk Medical, Government Hospitals Chennai">
+<meta name="author" content="Curelith Intelligence">
+
+<!-- Geo Meta Tags for Chennai, Tamil Nadu -->
+<meta name="geo.region" content="IN-TN">
+<meta name="geo.placename" content="Chennai">
+<meta name="geo.position" content="13.0827;80.2707">
+<meta name="ICBM" content="13.0827, 80.2707">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hospitals in Chennai | Curelith Directory">
+<meta property="og:description" content="Search and filter through 36 major hospitals in Chennai. View locations, contact details, specialty services, and progressive real building exterior photos.">
+<meta property="og:image" content="https://www.curelith.com/assets/hero-banner.png">
+<meta property="og:url" content="https://www.curelith.com/hospitals.html">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hospitals in Chennai | Curelith Directory">
+<meta name="twitter:description" content="Search and filter through 36 major hospitals in Chennai. View locations, contact details, specialty services, and progressive real building exterior photos.">
+<meta name="twitter:image" content="https://www.curelith.com/assets/hero-banner.png">
+
+<!-- JSON-LD Structured Data / Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MedicalWebPage",
+  "name": "Hospitals in Chennai | Curelith Directory",
+  "url": "https://www.curelith.com/hospitals.html",
+  "description": "Discover, search, and filter 36 top-rated government and private multi-speciality hospitals in Chennai. View contact phone numbers, beds, and real photos.",
+  "about": {
+    "@type": "MedicalOrganization",
+    "name": "Curelith Intelligence"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1117,6 +1153,182 @@
 
   // Initial Render
   renderHospitals();
+</script>
+
+<!-- Floating Curelith AI Triage Assistant Widget -->
+<div id="curelithTriageWidget" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; font-family: var(--sans);">
+  <!-- Trigger Button -->
+  <button id="triageTrigger" aria-label="Open Curelith AI Triage Assistant" style="background: var(--pine); border: 1px solid var(--gold); width: 60px; height: 60px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(15,27,25,0.3); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="#E8C77B"/>
+    </svg>
+    <span style="position: absolute; top: -2px; right: -2px; width: 12px; height: 12px; background: #2ecc87; border-radius: 50%; border: 2px solid #fff;"></span>
+  </button>
+
+  <!-- Chat Window -->
+  <div id="triageWindow" style="display: none; width: 360px; height: 500px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 15px 40px rgba(15,27,25,0.15); flex-direction: column; overflow: hidden; position: absolute; bottom: 80px; right: 0; animation: triageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
+    <!-- Chat Header -->
+    <div style="background: var(--void); color: #fff; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line-dark);">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="position: relative; width: 36px; height: 36px; background: rgba(232, 199, 123, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="#E8C77B"/>
+          </svg>
+          <span style="position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; background: #2ecc87; border-radius: 50%; border: 1px solid #fff;"></span>
+        </div>
+        <div>
+          <h4 style="font-size: 14.5px; font-weight: 600; line-height: 1.2;">Curelith AI Triage</h4>
+          <span style="font-size: 11px; color: var(--mist);">Clinical Triaging Assistant</span>
+        </div>
+      </div>
+      <button id="triageClose" style="background: transparent; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.7; padding: 4px;">&times;</button>
+    </div>
+
+    <!-- Chat Messages -->
+    <div id="triageMessages" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: var(--paper);">
+      <!-- Initial Message -->
+      <div style="display: flex; flex-direction: column; gap: 6px; max-width: 85%;">
+        <span style="font-size: 11px; color: var(--ink-soft); font-weight: 500; margin-left: 12px;">Curelith AI</span>
+        <div style="background: var(--card); border: 1px solid var(--line); padding: 12px 16px; border-radius: 4px 16px 16px 16px; font-size: 13.5px; line-height: 1.5; color: var(--ink);">
+          Hello! I am your Curelith AI Triaging assistant. Select a symptom below to run a clinical triage simulation and find the right care.
+        </div>
+      </div>
+
+      <!-- Quick Options -->
+      <div id="triageOptions" style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="triage-opt" data-symptom="reflux" style="background: var(--card); border: 1px solid var(--pine); border-radius: 20px; padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--pine); text-align: left; cursor: pointer; transition: all 0.2s;">Mild chest burn / acid reflux</button>
+        <button class="triage-opt" data-symptom="fever" style="background: var(--card); border: 1px solid var(--pine); border-radius: 20px; padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--pine); text-align: left; cursor: pointer; transition: all 0.2s;">High child fever (101°F)</button>
+        <button class="triage-opt" data-symptom="eye" style="background: var(--card); border: 1px solid var(--pine); border-radius: 20px; padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--pine); text-align: left; cursor: pointer; transition: all 0.2s;">Red itchy eye with watering</button>
+        <button class="triage-opt" data-symptom="cardiac" style="background: var(--card); border: 1px solid var(--pine); border-radius: 20px; padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--pine); text-align: left; cursor: pointer; transition: all 0.2s;">Squeezing chest pain & sweating</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes triageSlideIn {
+    from { transform: translateY(30px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  .triage-opt:hover {
+    background: var(--pine) !important;
+    color: #fff !important;
+    border-color: var(--pine) !important;
+  }
+</style>
+
+<script>
+  const triageTrigger = document.getElementById('triageTrigger');
+  const triageWindow = document.getElementById('triageWindow');
+  const triageClose = document.getElementById('triageClose');
+  const triageMessages = document.getElementById('triageMessages');
+
+  triageTrigger.addEventListener('click', () => {
+    const isHidden = triageWindow.style.display === 'none';
+    triageWindow.style.display = isHidden ? 'flex' : 'none';
+    if (isHidden) {
+      triageTrigger.style.transform = 'scale(0.9) rotate(45deg)';
+    } else {
+      triageTrigger.style.transform = 'scale(1) rotate(0deg)';
+    }
+  });
+
+  triageClose.addEventListener('click', () => {
+    triageWindow.style.display = 'none';
+    triageTrigger.style.transform = 'scale(1) rotate(0deg)';
+  });
+
+  const responses = {
+    reflux: {
+      user: "Mild chest burn / acid reflux",
+      ai: `<strong>Curelith AI Triage Result: Low Urgency (Gastro Reflux)</strong><br><br>
+           <strong>Clinical Advice:</strong> Drink cold milk or sit upright. Avoid emergency rooms to reduce crowding.<br><br>
+           <strong>Recommended Facility:</strong> We suggest consulting a gastroenterologist. You can visit <strong>GEM Hospital, Perungudi</strong> (4.6 rating) or <strong>Vijaya Hospital</strong>.`
+    },
+    fever: {
+      user: "High child fever (101°F)",
+      ai: `<strong>Curelith AI Triage Result: Moderate Urgency (Pediatric Fever)</strong><br><br>
+           <strong>Clinical Advice:</strong> Keep the child hydrated and administer pediatric paracetamol as directed by age. Monitor temperature.<br><br>
+           <strong>Recommended Facility:</strong> We recommend visiting a pediatric specialty center. You can proceed to <strong>Kanchi Kamakoti Childs Trust Hospital (KKCTH)</strong> in Nungambakkam.`
+    },
+    eye: {
+      user: "Red itchy eye with watering",
+      ai: `<strong>Curelith AI Triage Result: Low Urgency (Conjunctival Rash)</strong><br><br>
+           <strong>Clinical Advice:</strong> Avoid rubbing the eye. Wash with clean water. Apply cool compress if swollen.<br><br>
+           <strong>Recommended Facility:</strong> We recommend visiting an eye clinic. You can proceed to <strong>Sankara Nethralaya</strong> (4.8 rating) or <strong>Vasan Eye Care, T. Nagar</strong>.`
+    },
+    cardiac: {
+      user: "Squeezing chest pain & sweating",
+      ai: `<strong>Curelith AI Triage Result: Critical Urgency (Cardiac Alert)</strong><br><br>
+           <strong>Clinical Advice:</strong> Stop all physical activity immediately. Sit down. Do not drive yourself.<br><br>
+           <strong>Recommended Facility:</strong> Proceed immediately to an emergency room. The nearest Level 1 Trauma Center is <strong>Apollo Hospital, Greams Road</strong>. Call their emergency department at +91 44 2829 0200.`
+    }
+  };
+
+  triageMessages.addEventListener('click', (e) => {
+    const btn = e.target.closest('.triage-opt');
+    if (!btn) return;
+    const symptom = btn.getAttribute('data-symptom');
+    const resp = responses[symptom];
+    if (!resp) return;
+
+    // Append User Message
+    const userMsg = document.createElement('div');
+    userMsg.style.cssText = 'display: flex; flex-direction: column; align-items: flex-end; gap: 4px; max-width: 85%; margin-left: auto;';
+    userMsg.innerHTML = `
+      <span style="font-size: 11px; color: var(--ink-soft); font-weight: 500; margin-right: 12px;">You</span>
+      <div style="background: var(--pine); color: #fff; padding: 12px 16px; border-radius: 16px 4px 16px 16px; font-size: 13.5px; line-height: 1.5;">
+        ${resp.user}
+      </div>
+    `;
+    triageMessages.appendChild(userMsg);
+    
+    const optionsContainer = document.getElementById('triageOptions');
+    if(optionsContainer) optionsContainer.style.display = 'none';
+
+    // Scroll down
+    triageMessages.scrollTop = triageMessages.scrollHeight;
+
+    // Simulate AI thinking and reply
+    const thinking = document.createElement('div');
+    thinking.style.cssText = 'display: flex; flex-direction: column; gap: 6px; max-width: 85%;';
+    thinking.innerHTML = `
+      <span style="font-size: 11px; color: var(--ink-soft); font-weight: 500; margin-left: 12px;">Curelith AI</span>
+      <div style="background: var(--card); border: 1px solid var(--line); padding: 12px 16px; border-radius: 4px 16px 16px 16px; font-size: 13.5px; line-height: 1.5; color: var(--ink);">
+        Analyzing symptoms...
+      </div>
+    `;
+    triageMessages.appendChild(thinking);
+    triageMessages.scrollTop = triageMessages.scrollHeight;
+
+    setTimeout(() => {
+      thinking.innerHTML = `
+        <span style="font-size: 11px; color: var(--ink-soft); font-weight: 500; margin-left: 12px;">Curelith AI</span>
+        <div style="background: var(--card); border: 1px solid var(--line); padding: 12px 16px; border-radius: 4px 16px 16px 16px; font-size: 13.5px; line-height: 1.5; color: var(--ink);">
+          ${resp.ai}
+          <button onclick="resetTriage()" style="background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 6px 12px; font-size: 11.5px; font-weight: 600; color: var(--pine); margin-top: 12px; cursor: pointer; width: 100%; text-align: center;">Triage Another Symptom</button>
+        </div>
+      `;
+      triageMessages.scrollTop = triageMessages.scrollHeight;
+    }, 1200);
+  });
+
+  window.resetTriage = function() {
+    triageMessages.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 6px; max-width: 85%;">
+        <span style="font-size: 11px; color: var(--ink-soft); font-weight: 500; margin-left: 12px;">Curelith AI</span>
+        <div style="background: var(--card); border: 1px solid var(--line); padding: 12px 16px; border-radius: 4px 16px 16px 16px; font-size: 13.5px; line-height: 1.5; color: var(--ink);">
+          Hello! I am your Curelith AI Triaging assistant. Select a symptom below to run a clinical triage simulation and find the right care.
+        </div>
+      </div>
+      <div id="triageOptions" style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="triage-opt" data-symptom="reflux" style="background: var(--card); border: 1px solid var(--pine); border-radius: 20px; padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--pine); text-align: left; cursor: pointer; transition: all 0.2s;">Mild chest burn / acid reflux</button>
+        <button class="triage-opt" data-symptom="fever" style="background: var(--card); border: 1px solid var(--pine); border-radius: 20px; padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--pine); text-align: left; cursor: pointer; transition: all 0.2s;">High child fever (101°F)</button>
+        <button class="triage-opt" data-symptom="eye" style="background: var(--card); border: 1px solid var(--pine); border-radius: 20px; padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--pine); text-align: left; cursor: pointer; transition: all 0.2s;">Red itchy eye with watering</button>
+        <button class="triage-opt" data-symptom="cardiac" style="background: var(--card); border: 1px solid var(--pine); border-radius: 20px; padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--pine); text-align: left; cursor: pointer; transition: all 0.2s;">Squeezing chest pain & sweating</button>
+      </div>
+    `;
+  }
 </script>
 </body>
 </html>
