@@ -1,0 +1,25 @@
+# Curelith
+
+> Curelith is an AI-powered healthcare triaging, care routing, and patient communication platform designed to reduce hospital emergency department crowding in Chennai, Tamil Nadu.
+
+## Overview
+Curelith serves as the "calmer first step in healthcare." By integrating a clinical triage logic engine, Curelith guides patients with low-urgency symptoms to appropriate outpatient care (such as local clinics and general practitioners) while ensuring high-urgency symptoms are routed immediately to major Level 1 Trauma Centers in Chennai.
+
+## Key Features
+- **AI Triage System**: Triages patient symptoms (e.g., chest pain, pediatric fever, eye redness) and provides clinical urgency classifications (Critical, Moderate, Low) along with care-routing instructions.
+- **Chennai Hospital Search Directory**: A directory of 36 major hospitals in Chennai, detailing their specialty departments, emergency availability, contact numbers, bed capacity, and real location data.
+- **Medical Locker**: Secure clinical record management allowing patients to store and share digital medical histories with physicians.
+- **Physician Portal**: Search and connection index for licensed medical practitioners and specialists across Chennai zones.
+
+## Primary Target Geography
+- **City**: Chennai
+- **State**: Tamil Nadu
+- **Country**: India
+- **Coordinates**: 13.0827° N, 80.2707° E
+
+## Key Directory Pages
+- [Homepage](https://www.curelith.com/index.html): Platform mission, product benefits, and consult initiation.
+- [Hospital Directory](https://www.curelith.com/hospitals.html): Filterable and searchable index of 36 major public and private hospitals in Chennai.
+- [Physician Directory](https://www.curelith.com/doctors.html): Index of doctors, qualifications, and specialties.
+- [About Us](https://www.curelith.com/about.html): Details on Curelith's mission to address outpatient crowding.
+- [Founder Profile](https://www.curelith.com/founder.html): Story and background of Saaqib, founder of Curelith.
