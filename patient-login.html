@@ -75,10 +75,24 @@
     <div class="login-card">
         <img src="assets/logo.png" style="height: 60px; margin-bottom: 2rem;" alt="Curelith">
         <h1>Patient Portal</h1>
-        <p id="portalDesc">Sign in securely using WhatsApp verification.</p>
+        <p id="portalDesc">Please agree to our terms and conditions to proceed.</p>
         
-        <!-- Step 1: Phone Form -->
-        <form id="phoneForm">
+        <!-- Step 0: Terms and Conditions Agreement Form -->
+        <form id="termsForm">
+            <p style="text-align: left; font-size: 0.95rem; line-height: 1.5; color: #4F5D57; margin-bottom: 2rem; margin-top: 0;">
+                To access your secure medical locker, you must review and agree to our Terms & Conditions and Privacy Policy.
+            </p>
+            <div class="checkbox-group" style="text-align: left; margin-bottom: 2rem; display: flex; align-items: flex-start; gap: 10px;">
+                <input type="checkbox" id="agreeCheckbox" style="width: auto; margin-top: 4px; cursor: pointer;">
+                <label for="agreeCheckbox" style="font-size: 0.9rem; color: #1B3A36; line-height: 1.4; cursor: pointer; user-select: none;">
+                    I agree to the <a href="terms.html" target="_blank" style="color: #4C7F6D; font-weight: 700; text-decoration: underline;">Terms & Conditions</a> and <a href="privacy.html" target="_blank" style="color: #4C7F6D; font-weight: 700; text-decoration: underline;">Privacy Policy</a>.
+                </label>
+            </div>
+            <button type="submit" id="agreeBtn" disabled>Agree & Continue</button>
+        </form>
+
+        <!-- Step 1: Phone Form (Hidden Initially) -->
+        <form id="phoneForm" style="display: none;">
             <div class="input-group">
                 <label>WhatsApp Phone Number</label>
                 <input type="tel" id="patientPhone" placeholder="e.g. +91 9876543210" required>
@@ -111,6 +125,26 @@
 
         let userPhoneNumber = "";
         let countdownTimer;
+
+        // Step 0: Terms and Conditions Validation
+        const agreeCheckbox = document.getElementById('agreeCheckbox');
+        const agreeBtn = document.getElementById('agreeBtn');
+        const termsForm = document.getElementById('termsForm');
+        const phoneForm = document.getElementById('phoneForm');
+        const portalDesc = document.getElementById('portalDesc');
+
+        agreeCheckbox.addEventListener('change', () => {
+            agreeBtn.disabled = !agreeCheckbox.checked;
+        });
+
+        termsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (agreeCheckbox.checked) {
+                termsForm.style.display = 'none';
+                phoneForm.style.display = 'block';
+                portalDesc.innerText = "Sign in securely using WhatsApp verification.";
+            }
+        });
 
         // Step 1: Send OTP
         document.getElementById('phoneForm').addEventListener('submit', async (e) => {
