@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinic Dashboard — Curelith</title>
+  <meta name="description" content="Clinic admin dashboard — manage all doctors and appointments for your clinic on Curelith." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080c1a;
+      --surface: rgba(255,255,255,0.04);
+      --surface-hover: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.08);
+      --text: #f1f5f9;
+      --text-muted: rgba(255,255,255,0.45);
+      --accent: #6366f1;
+      --accent-glow: rgba(99,102,241,0.35);
+      --green: #10b981;
+      --green-glow: rgba(16,185,129,0.3);
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --sidebar-w: 240px;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: rgba(255,255,255,0.03);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; height: 100vh;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .sidebar-logo-text { font-size: 16px; font-weight: 700; }
+    .sidebar-clinic-name {
+      padding: 16px 20px 12px;
+      font-size: 11px; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .sidebar-nav { flex: 1; padding: 4px 12px; overflow-y: auto; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 12px; border-radius: 10px;
+      font-size: 14px; font-weight: 500; color: var(--text-muted);
+      cursor: pointer; transition: all 0.2s; margin-bottom: 2px;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: var(--surface-hover); color: var(--text); }
+    .nav-item.active { background: rgba(99,102,241,0.15); color: var(--accent); }
+    .nav-item svg { flex-shrink: 0; }
+    .nav-badge {
+      margin-left: auto; background: var(--accent);
+      color: #fff; font-size: 10px; font-weight: 700;
+      border-radius: 20px; padding: 1px 7px; min-width: 20px; text-align: center;
+    }
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .signout-btn {
+      width: 100%; display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px; border-radius: 10px;
+      background: none; border: 1px solid var(--border);
+      color: var(--text-muted); font-family: inherit;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .signout-btn:hover { border-color: rgba(239,68,68,0.4); color: #f87171; }
+
+    /* ── Main ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1; min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(8,12,26,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px; display: flex; align-items: center; gap: 16px;
+    }
+    .topbar-title { font-size: 18px; font-weight: 700; }
+    .topbar-subtitle { font-size: 13px; color: var(--text-muted); margin-left: 4px; }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .pill {
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      border: 1px solid rgba(16,185,129,0.35);
+      background: rgba(16,185,129,0.1); color: var(--green);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .pill::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+
+    .content { padding: 32px; flex: 1; }
+
+    /* ── Stats Cards ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px; margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px 24px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--card-color, var(--accent));
+      opacity: 0.7;
+    }
+    .stat-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+    .stat-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+    .stat-value { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+    .stat-sub { font-size: 12px; color: var(--text-muted); }
+    .stat-icon {
+      position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+      font-size: 28px; opacity: 0.2;
+    }
+
+    /* ── Section header ── */
+    .section-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+    }
+    .section-title { font-size: 17px; font-weight: 700; }
+    .section-count {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2px 10px;
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+    }
+    .section-actions { margin-left: auto; display: flex; gap: 10px; }
+
+    /* ── Doctor Cards ── */
+    .doctors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px; margin-bottom: 36px;
+    }
+    .doctor-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .doctor-card:hover { border-color: rgba(99,102,241,0.4); transform: translateY(-2px); }
+    .doctor-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 12px;
+      border: 2px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+    .doctor-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .doctor-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .doctor-spec { font-size: 12px; color: var(--accent); margin-bottom: 10px; font-weight: 500; }
+    .doctor-meta { display: flex; gap: 12px; justify-content: center; }
+    .doctor-meta-item { font-size: 11px; color: var(--text-muted); }
+    .doctor-meta-item strong { display: block; font-size: 16px; font-weight: 700; color: var(--text); }
+    .doc-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 12px; padding: 4px 10px;
+      border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .doc-status.active { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+    .doc-status.inactive { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+
+    /* ── Appointments Table ── */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .table-filters {
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    }
+    .filter-select, .filter-input {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text); font-family: inherit; font-size: 13px;
+      padding: 7px 12px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .filter-select:focus, .filter-input:focus { border-color: rgba(99,102,241,0.5); }
+    .filter-select option { background: #1e2340; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 12px 16px; text-align: left;
+      font-size: 11px; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface-hover); }
+    td { padding: 14px 16px; font-size: 13px; }
+    td.phone { font-family: monospace; color: #a5b4fc; }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+    .status-badge.confirmed { background: rgba(99,102,241,0.12); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25); }
+    .status-badge.completed { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+    .consult-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 500;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text-muted);
+    }
+    .empty-state {
+      text-align: center; padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      padding: 8px 16px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      border: none; color: #fff; font-family: inherit;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
+    .btn-outline {
+      padding: 8px 14px; border-radius: 8px;
+      background: none; border: 1px solid var(--border);
+      color: var(--text-muted); font-family: inherit;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+
+    /* ── Loading ── */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+      background-size: 400% 100%; animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer { 0%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+    /* ── Page visibility ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 600px) {
+      .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">🏥</div>
+    <span class="sidebar-logo-text">Curelith</span>
+  </div>
+  <div class="sidebar-clinic-name" id="sidebarClinicName">Loading clinic…</div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+      Dashboard
+    </a>
+    <a class="nav-item" data-page="doctors" onclick="showPage('doctors',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Doctors
+      <span class="nav-badge" id="doctorBadge">0</span>
+    </a>
+    <a class="nav-item" data-page="appointments" onclick="showPage('appointments',this)">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      Appointments
+      <span class="nav-badge" id="apptBadge">0</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="signout-btn" onclick="signOut()">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+      </svg>
+      Sign Out
+    </button>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+  <header class="topbar">
+    <div>
+      <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      <span class="topbar-subtitle" id="topbarClinic"></span>
+    </div>
+    <div class="topbar-right">
+      <div class="pill" id="connectionPill">Connected</div>
+      <button class="btn-outline" onclick="refreshAll()">↻ Refresh</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ──── PAGE: Dashboard ──── -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card" style="--card-color:#6366f1">
+          <div class="stat-label">Total Doctors</div>
+          <div class="stat-value" id="statDoctors">—</div>
+          <div class="stat-sub">Active in this clinic</div>
+          <div class="stat-icon">👨‍⚕️</div>
+        </div>
+        <div class="stat-card" style="--card-color:#10b981">
+          <div class="stat-label">Today's Appointments</div>
+          <div class="stat-value" id="statToday">—</div>
+          <div class="stat-sub">Across all doctors</div>
+          <div class="stat-icon">📅</div>
+        </div>
+        <div class="stat-card" style="--card-color:#f59e0b">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" id="statPending">—</div>
+          <div class="stat-sub">Awaiting completion</div>
+          <div class="stat-icon">⏳</div>
+        </div>
+        <div class="stat-card" style="--card-color:#8b5cf6">
+          <div class="stat-label">Completed</div>
+          <div class="stat-value" id="statCompleted">—</div>
+          <div class="stat-sub">Total consultations done</div>
+          <div class="stat-icon">✅</div>
+        </div>
+      </div>
+
+      <!-- Recent appointments on dashboard -->
+      <div class="section-header">
+        <h2 class="section-title">Recent Appointments</h2>
+        <span class="section-count" id="recentCount">Loading…</span>
+        <div class="section-actions">
+          <button class="btn-primary" onclick="showPage('appointments', document.querySelector('[data-page=appointments]'))">View All →</button>
+        </div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Doctor</th>
+              <th>Speciality</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="recentApptBody">
+            <tr><td colspan="6"><div class="empty-state"><div class="icon">⏳</div><p>Loading recent appointments…</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ──── PAGE: Doctors ──── -->
+    <div class="page" id="page-doctors">
+      <div class="section-header">
+        <h2 class="section-title">Clinic Doctors</h2>
+        <span class="section-count" id="doctorsCount">Loading…</span>
+      </div>
+      <div class="doctors-grid" id="doctorsGrid">
+        <div class="doctor-card skeleton" style="height:200px"></div>
+        <div class="doctor-card skeleton" style="height:200px"></div>
+        <div class="doctor-card skeleton" style="height:200px"></div>
+      </div>
+    </div>
+
+    <!-- ──── PAGE: Appointments ──── -->
+    <div class="page" id="page-appointments">
+      <div class="section-header">
+        <h2 class="section-title">All Appointments</h2>
+        <span class="section-count" id="apptCount">Loading…</span>
+      </div>
+      <div class="table-card">
+        <div class="table-filters">
+          <select class="filter-select" id="filterDoctor" onchange="applyFilters()">
+            <option value="">All Doctors</option>
+          </select>
+          <select class="filter-select" id="filterStatus" onchange="applyFilters()">
+            <option value="">All Status</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+          </select>
+          <input class="filter-input" type="text" id="filterSearch" placeholder="Search patient phone…" oninput="applyFilters()" />
+          <button class="btn-outline" onclick="clearFilters()">Clear Filters</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Patient</th>
+              <th>Doctor</th>
+              <th>Speciality</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="apptBody">
+            <tr><td colspan="7"><div class="empty-state"><div class="icon">⏳</div><p>Loading appointments…</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+const API_BASE = 'https://api.curelith.com';
+
+let clinicId = localStorage.getItem('clinic_id');
+let clinicPassword = localStorage.getItem('clinic_password');
+let clinicName = localStorage.getItem('clinic_name');
+
+// Guard auth
+if (!clinicId || !clinicPassword) {
+  window.location.href = 'clinic-login.html';
+}
+
+// Set UI
+document.getElementById('sidebarClinicName').textContent = clinicName || 'Clinic';
+document.getElementById('topbarClinic').textContent = `· ${localStorage.getItem('clinic_location') || ''}`;
+
+// Headers
+const headers = () => ({
+  'X-Clinic-Id': clinicId,
+  'X-Clinic-Password': clinicPassword
+});
+
+// State
+let allDoctors = [];
+let allAppointments = [];
+
+// ── Page navigation ──
+function showPage(pageId, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('topbarTitle').textContent =
+    { dashboard: 'Dashboard', doctors: 'Doctors', appointments: 'Appointments' }[pageId] || pageId;
+}
+
+// ── Data loading ──
+async function loadStats() {
+  try {
+    const res = await fetch(`${API_BASE}/doctor/clinic/stats`, { headers: headers() });
+    if (!res.ok) return;
+    const { stats } = await res.json();
+    document.getElementById('statDoctors').textContent = stats.total_doctors;
+    document.getElementById('statToday').textContent = stats.today_appointments;
+    document.getElementById('statPending').textContent = stats.pending_appointments;
+    document.getElementById('statCompleted').textContent = stats.completed_appointments;
+    document.getElementById('doctorBadge').textContent = stats.total_doctors;
+    document.getElementById('apptBadge').textContent = stats.total_appointments;
+  } catch(e) { console.error('Stats error', e); }
+}
+
+async function loadDoctors() {
+  try {
+    const res = await fetch(`${API_BASE}/doctor/clinic/doctors`, { headers: headers() });
+    if (!res.ok) { handleAuthError(res); return; }
+    const { doctors } = await res.json();
+    allDoctors = doctors;
+    renderDoctors(doctors);
+    populateDoctorFilter(doctors);
+    document.getElementById('doctorsCount').textContent = `${doctors.length} doctors`;
+    document.getElementById('doctorBadge').textContent = doctors.length;
+  } catch(e) { console.error('Doctors error', e); }
+}
+
+async function loadAppointments() {
+  try {
+    const res = await fetch(`${API_BASE}/doctor/clinic/appointments`, { headers: headers() });
+    if (!res.ok) { handleAuthError(res); return; }
+    const { appointments } = await res.json();
+    allAppointments = appointments;
+    renderAppointments(appointments);
+    renderRecentAppointments(appointments.slice(0, 8));
+    document.getElementById('apptCount').textContent = `${appointments.length} total`;
+    document.getElementById('recentCount').textContent = `Showing last ${Math.min(8, appointments.length)}`;
+    document.getElementById('apptBadge').textContent = appointments.length;
+  } catch(e) { console.error('Appointments error', e); }
+}
+
+// ── Render Doctors ──
+function renderDoctors(doctors) {
+  const grid = document.getElementById('doctorsGrid');
+  if (!doctors.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state"><div class="icon">👨‍⚕️</div><p>No doctors assigned to this clinic yet.</p></div></div>`;
+    return;
+  }
+  grid.innerHTML = doctors.map(d => {
+    const initials = d.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const bookings = d.booking_count || 0;
+    const views = d.view_count || 0;
+    const avatarHtml = d.profile_pic
+      ? `<img src="${getS3Url(d.profile_pic)}" alt="${d.name}" />`
+      : initials;
+    return `
+      <div class="doctor-card">
+        <div class="doctor-avatar">${avatarHtml}</div>
+        <div class="doctor-name">${escHtml(d.name)}</div>
+        <div class="doctor-spec">${escHtml(d.speciality)}</div>
+        <div class="doctor-meta">
+          <div class="doctor-meta-item"><strong>${bookings}</strong>Bookings</div>
+          <div class="doctor-meta-item"><strong>${views}</strong>Views</div>
+        </div>
+        <div class="doc-status ${d.is_active ? 'active' : 'inactive'}">
+          ${d.is_active ? '● Active' : '● Inactive'}
+        </div>
+        ${d.availability ? `<div style="margin-top:8px;font-size:11px;color:var(--text-muted)">${escHtml(d.availability)}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+// ── Render Appointments Table ──
+function renderAppointments(appointments) {
+  const tbody = document.getElementById('apptBody');
+  if (!appointments.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon">📅</div><p>No appointments found.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = appointments.map((a, i) => `
+    <tr>
+      <td style="color:var(--text-muted);font-size:12px">${i + 1}</td>
+      <td class="phone">${maskPhone(a.patient_phone)}</td>
+      <td>${escHtml(a.doctor_name || '—')}</td>
+      <td style="color:var(--text-muted)">${escHtml(a.speciality || '—')}</td>
+      <td><span class="consult-badge">${consultIcon(a.consultation_type)} ${escHtml(a.consultation_type || '—')}</span></td>
+      <td><span class="status-badge ${a.status}">${a.status}</span></td>
+      <td style="color:var(--text-muted);font-size:12px">${formatDate(a.created_at)}</td>
+    </tr>`).join('');
+}
+
+function renderRecentAppointments(appointments) {
+  const tbody = document.getElementById('recentApptBody');
+  if (!appointments.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="icon">📅</div><p>No appointments yet.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = appointments.map(a => `
+    <tr>
+      <td class="phone">${maskPhone(a.patient_phone)}</td>
+      <td>${escHtml(a.doctor_name || '—')}</td>
+      <td style="color:var(--text-muted)">${escHtml(a.speciality || '—')}</td>
+      <td><span class="consult-badge">${consultIcon(a.consultation_type)} ${escHtml(a.consultation_type || '—')}</span></td>
+      <td><span class="status-badge ${a.status}">${a.status}</span></td>
+      <td style="color:var(--text-muted);font-size:12px">${formatDate(a.created_at)}</td>
+    </tr>`).join('');
+}
+
+// ── Filters ──
+function populateDoctorFilter(doctors) {
+  const sel = document.getElementById('filterDoctor');
+  sel.innerHTML = '<option value="">All Doctors</option>' +
+    doctors.map(d => `<option value="${d.id}">${escHtml(d.name)}</option>`).join('');
+}
+
+function applyFilters() {
+  const doctorId = document.getElementById('filterDoctor').value;
+  const status   = document.getElementById('filterStatus').value;
+  const search   = document.getElementById('filterSearch').value.toLowerCase().trim();
+  let filtered = allAppointments;
+  if (doctorId) filtered = filtered.filter(a => String(a.doctor_id) === doctorId);
+  if (status)   filtered = filtered.filter(a => a.status === status);
+  if (search)   filtered = filtered.filter(a => (a.patient_phone||'').toLowerCase().includes(search));
+  renderAppointments(filtered);
+  document.getElementById('apptCount').textContent = `${filtered.length} of ${allAppointments.length}`;
+}
+
+function clearFilters() {
+  document.getElementById('filterDoctor').value = '';
+  document.getElementById('filterStatus').value = '';
+  document.getElementById('filterSearch').value = '';
+  applyFilters();
+}
+
+// ── Helpers ──
+function maskPhone(phone) {
+  if (!phone) return '—';
+  // Show first 3 and last 2 digits, mask middle
+  if (phone.length > 6) return phone.slice(0,3) + '****' + phone.slice(-2);
+  return phone;
+}
+
+function formatDate(dt) {
+  if (!dt) return '—';
+  try {
+    const d = new Date(dt);
+    return d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) +
+           ' ' + d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  } catch { return dt; }
+}
+
+function consultIcon(type) {
+  const icons = { virtual:'💻', physical:'🏥', home_care:'🏠' };
+  return icons[type] || '📋';
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function getS3Url(path) {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  return `https://curelith-locker-storage.s3.amazonaws.com/${path}`;
+}
+
+function handleAuthError(res) {
+  if (res.status === 401) {
+    alert('Session expired. Please log in again.');
+    signOut();
+  }
+}
+
+function signOut() {
+  ['clinic_id','clinic_password','clinic_name','clinic_location'].forEach(k => localStorage.removeItem(k));
+  window.location.href = 'clinic-login.html';
+}
+
+async function refreshAll() {
+  await Promise.all([loadStats(), loadDoctors(), loadAppointments()]);
+}
+
+// ── Init ──
+refreshAll();
+</script>
+</body>
+</html>
