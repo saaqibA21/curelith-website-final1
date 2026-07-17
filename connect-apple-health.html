@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect Apple Health | Curelith</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1B3A36;
+            --accent: #4C7F6D;
+            --bg: #F3EEE4;
+            --card-bg: #FFFFFF;
+            --text-main: #1B3A36;
+            --text-dim: #4F5D57;
+            --border: #DDD6C4;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 2rem 1rem;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 3rem 2.5rem;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(27, 58, 54, 0.05);
+            width: 100%;
+            max-width: 550px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            margin-bottom: 2.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .step-card {
+            background: #FAF9F4;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            position: relative;
+        }
+
+        .step-num {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .step-desc {
+            color: var(--text-dim);
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .phone-display {
+            background: #EAE6DA;
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: inline-block;
+            font-family: monospace;
+            font-weight: 700;
+            margin-top: 10px;
+            color: var(--primary);
+            border: 1px dashed var(--border);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 1.1rem 2rem;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(27, 58, 54, 0.1);
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(27, 58, 54, 0.15);
+        }
+
+        .disclaimer {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 2rem;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🍎</div>
+        <h1>Apple Health Integration</h1>
+        <p class="subtitle">Sync your steps, heart rate, and calories from Apple Health to your Curelith WhatsApp Coach using a simple built-in iOS Shortcut.</p>
+
+        <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-title">Get your Sync Phone Number</div>
+            <div class="step-desc">
+                Make sure you configure the Shortcut with this exact phone number:
+                <br>
+                <div class="phone-display" id="phoneNumber">919876543210</div>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-title">Install the iOS Shortcut</div>
+            <div class="step-desc">
+                Download the official Curelith Sync shortcut to your iPhone:
+                <br><br>
+                <a href="https://www.icloud.com/shortcuts/7d23d8c1c4f54d19ab46ec1d15c9a405" class="btn" target="_blank">
+                    Add to Shortcuts
+                </a>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-title">Automate it Daily</div>
+            <div class="step-desc">
+                To sync in the background automatically:
+                <ol style="margin-top: 8px; padding-left: 20px;">
+                    <li>Open <b>Shortcuts App</b> on iPhone.</li>
+                    <li>Go to <b>Automation</b> tab → click <b>+</b> (New Automation).</li>
+                    <li>Choose <b>Time of Day</b> (e.g. 9:00 PM).</li>
+                    <li>Select <b>Run Immediately</b>.</li>
+                    <li>Search for and select <b>Curelith Apple Health Sync</b>.</li>
+                </ol>
+            </div>
+        </div>
+
+        <p class="disclaimer">🔒 <b>Privacy First:</b> Your Apple Health data is transmitted securely and directly to Curelith API. We only collect basic stats (steps, heart rate, active energy) for coaching purposes. No medical records are accessed.</p>
+    </div>
+
+    <script>
+        // Extract phone number from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const phone = urlParams.get('phone');
+        if (phone) {
+            document.getElementById('phoneNumber').textContent = phone.replace(/[^0-9]/g, '');
+        }
+    </script>
+</body>
+</html>
