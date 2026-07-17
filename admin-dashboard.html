@@ -712,7 +712,10 @@
         // Prevent back-button access via history/bfcache
         function checkAuth() {
             const adminPass = localStorage.getItem('admin_pass');
-            if (!adminPass) {
+            const adminExpiry = localStorage.getItem('admin_expiry');
+            if (!adminPass || !adminExpiry || Date.now() > parseInt(adminExpiry)) {
+                localStorage.removeItem('admin_pass');
+                localStorage.removeItem('admin_expiry');
                 window.location.replace('admin-login.html');
                 return false;
             }
@@ -725,7 +728,8 @@
         }
 
         window.addEventListener('pageshow', function(event) {
-            if (!localStorage.getItem('admin_pass')) {
+            const adminExpiry = localStorage.getItem('admin_expiry');
+            if (!localStorage.getItem('admin_pass') || !adminExpiry || Date.now() > parseInt(adminExpiry)) {
                 window.location.replace('admin-login.html');
             }
         });

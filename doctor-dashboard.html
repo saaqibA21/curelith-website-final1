@@ -410,7 +410,9 @@
             const docName = localStorage.getItem('doctor_name');
             const docPass = localStorage.getItem('doctor_password');
             const docId = localStorage.getItem('doctor_id');
-            if (!docName || !docPass) {
+            const docExpiry = localStorage.getItem('doctor_expiry');
+            if (!docName || !docPass || !docExpiry || Date.now() > parseInt(docExpiry)) {
+                ['doctor_name','doctor_password','doctor_id','doctor_expiry'].forEach(k => localStorage.removeItem(k));
                 window.location.replace('doctor-login.html');
                 return false;
             }
@@ -427,7 +429,8 @@
         const docId = auth.docId;
 
         window.addEventListener('pageshow', function(event) {
-            if (!localStorage.getItem('doctor_name') || !localStorage.getItem('doctor_password')) {
+            const docExpiry = localStorage.getItem('doctor_expiry');
+            if (!localStorage.getItem('doctor_name') || !localStorage.getItem('doctor_password') || !docExpiry || Date.now() > parseInt(docExpiry)) {
                 window.location.replace('doctor-login.html');
             }
         });

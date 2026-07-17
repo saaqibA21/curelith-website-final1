@@ -128,9 +128,20 @@
     </div>
 
     <script>
+        // Auto-redirect if session is active
+        const adminPassVal = localStorage.getItem('admin_pass');
+        const adminExpiry = localStorage.getItem('admin_expiry');
+        if (adminPassVal && adminExpiry && Date.now() < parseInt(adminExpiry)) {
+            window.location.replace('admin-dashboard.html');
+        } else {
+            localStorage.removeItem('admin_pass');
+            localStorage.removeItem('admin_expiry');
+        }
+
         document.getElementById('adminForm').addEventListener('submit', (e) => {
             e.preventDefault();
             localStorage.setItem('admin_pass', document.getElementById('adminPass').value);
+            localStorage.setItem('admin_expiry', Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
             window.location.replace('admin-dashboard.html');
         });
 

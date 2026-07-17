@@ -263,6 +263,17 @@
          </svg>`;
   });
 
+  // Auto-redirect if session is active
+  const clinicIdVal = localStorage.getItem('clinic_id');
+  const clinicPwVal = localStorage.getItem('clinic_password');
+  const clinicExpiry = localStorage.getItem('clinic_expiry');
+  if (clinicIdVal && clinicPwVal && clinicExpiry && Date.now() < parseInt(clinicExpiry)) {
+    window.location.href = 'clinic-dashboard.html';
+  } else {
+    // Clear old session info if expired
+    ['clinic_id','clinic_password','clinic_name','clinic_location','clinic_expiry'].forEach(k => localStorage.removeItem(k));
+  }
+
   // Form submit
   const form = document.getElementById('loginForm');
   const btn = document.getElementById('loginBtn');
@@ -295,6 +306,7 @@
         localStorage.setItem('clinic_password', password);
         localStorage.setItem('clinic_name', data.clinic.name);
         localStorage.setItem('clinic_location', data.clinic.location);
+        localStorage.setItem('clinic_expiry', (Date.now() + 7 * 24 * 60 * 60 * 1000).toString()); // 7 days
         window.location.href = 'clinic-dashboard.html';
       } else {
         showError(data.error || 'Invalid credentials. Please try again.');

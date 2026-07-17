@@ -455,9 +455,11 @@ const API_BASE = 'https://api.curelith.com';
 let clinicId = localStorage.getItem('clinic_id');
 let clinicPassword = localStorage.getItem('clinic_password');
 let clinicName = localStorage.getItem('clinic_name');
+let clinicExpiry = localStorage.getItem('clinic_expiry');
 
 // Guard auth
-if (!clinicId || !clinicPassword) {
+if (!clinicId || !clinicPassword || !clinicExpiry || Date.now() > parseInt(clinicExpiry)) {
+  ['clinic_id','clinic_password','clinic_name','clinic_location','clinic_expiry'].forEach(k => localStorage.removeItem(k));
   window.location.href = 'clinic-login.html';
 }
 

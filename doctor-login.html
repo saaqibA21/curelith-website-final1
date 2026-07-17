@@ -143,6 +143,17 @@
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
 
+        // Auto-redirect if session is active
+        const doctorNameVal = localStorage.getItem('doctor_name');
+        const doctorPassVal = localStorage.getItem('doctor_password');
+        const doctorExpiry = localStorage.getItem('doctor_expiry');
+        if (doctorNameVal && doctorPassVal && doctorExpiry && Date.now() < parseInt(doctorExpiry)) {
+            window.location.replace('doctor-dashboard.html');
+        } else {
+            // Clear old session info if expired
+            ['doctor_name','doctor_password','doctor_id','doctor_expiry'].forEach(k => localStorage.removeItem(k));
+        }
+
         document.getElementById('docForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('docName').value;
@@ -164,6 +175,7 @@
                     localStorage.setItem('doctor_name', data.doctor.name);
                     localStorage.setItem('doctor_id', data.doctor.id);
                     localStorage.setItem('doctor_password', pass);
+                    localStorage.setItem('doctor_expiry', (Date.now() + 7 * 24 * 60 * 60 * 1000).toString()); // 7 days
                     window.location.replace('doctor-dashboard.html');
                 } else {
                     err.innerText = "Invalid credentials.";
