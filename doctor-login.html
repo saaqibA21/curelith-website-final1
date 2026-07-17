@@ -175,7 +175,7 @@
                     localStorage.setItem('doctor_name', data.doctor.name);
                     localStorage.setItem('doctor_id', data.doctor.id);
                     localStorage.setItem('doctor_password', pass);
-                    localStorage.setItem('doctor_expiry', (Date.now() + 7 * 24 * 60 * 60 * 1000).toString()); // 7 days
+                    localStorage.setItem('doctor_expiry', (Date.now() + 24 * 60 * 60 * 1000).toString()); // 24 hours
                     window.location.replace('doctor-dashboard.html');
                 } else {
                     err.innerText = "Invalid credentials.";

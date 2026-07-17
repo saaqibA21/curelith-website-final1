@@ -306,7 +306,7 @@
         localStorage.setItem('clinic_password', password);
         localStorage.setItem('clinic_name', data.clinic.name);
         localStorage.setItem('clinic_location', data.clinic.location);
-        localStorage.setItem('clinic_expiry', (Date.now() + 7 * 24 * 60 * 60 * 1000).toString()); // 7 days
+        localStorage.setItem('clinic_expiry', (Date.now() + 24 * 60 * 60 * 1000).toString()); // 24 hours
         window.location.href = 'clinic-dashboard.html';
       } else {
         showError(data.error || 'Invalid credentials. Please try again.');

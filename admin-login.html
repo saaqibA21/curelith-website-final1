@@ -141,7 +141,7 @@
         document.getElementById('adminForm').addEventListener('submit', (e) => {
             e.preventDefault();
             localStorage.setItem('admin_pass', document.getElementById('adminPass').value);
-            localStorage.setItem('admin_expiry', Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+            localStorage.setItem('admin_expiry', Date.now() + 24 * 60 * 60 * 1000); // 24 hours
             window.location.replace('admin-dashboard.html');
         });
 
