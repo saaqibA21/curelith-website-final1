@@ -239,10 +239,10 @@
         <h2><img src="assets/logo.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Curelith Logo"> Curelith</h2>
         <div class="nav-item active" onclick="showView('overview')"><i data-lucide="layout-dashboard"></i> Overview</div>
         <div class="nav-item" onclick="showView('doctors')"><i data-lucide="users"></i> Doctors</div>
+        <div class="nav-item" onclick="showView('clinics')"><i data-lucide="building"></i> Clinics</div>
         <div class="nav-item" onclick="showView('activity')"><i data-lucide="activity"></i> Activity Logs</div>
         <div class="nav-item" onclick="showView('instagram')"><i data-lucide="instagram"></i> Instagram CRM</div>
-        
-        <div style="margin-top: auto;">
+        <div style="margin-top: auto; padding-top: 2rem;">
             <div class="nav-item" onclick="logout()"><i data-lucide="log-out"></i> Logout</div>
         </div>
     </div>
@@ -323,6 +323,32 @@
                         </tr>
                     </thead>
                     <tbody id="doctorsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="view-clinics" style="display: none;">
+            <div class="white-panel">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Clinics Directory</h2>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <button class="btn-action" style="background: var(--admin-primary); color: white; border-color: var(--admin-primary); font-weight: 700; border-radius: 12px; height: 45px; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="openClinicModal()">
+                            <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i> Add Clinic
+                        </button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CLINIC NAME</th>
+                            <th>CLINIC ID</th>
+                            <th>LOCATION</th>
+                            <th>PHONE</th>
+                            <th>EMAIL</th>
+                            <th>DOCTORS COUNT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clinicsList"></tbody>
                 </table>
             </div>
         </div>
@@ -631,6 +657,57 @@
         </div>
     </div>
 
+    <!-- Modal for Adding Clinics -->
+    <div class="modal" id="addClinicModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 style="margin: 0; color: var(--admin-primary);">Add New Clinic</h2>
+                    <p style="color: var(--admin-text-dim); margin-top: 5px;">Create a new clinic portal login and assign doctors</p>
+                </div>
+                <button onclick="closeClinicModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <form id="addClinicForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Clinic Name</label>
+                        <input type="text" id="addClinicName" placeholder="e.g. Apollo Clinic Ambattur" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Clinic ID (Username)</label>
+                        <input type="text" id="addClinicId" placeholder="e.g. CLINIC-APOLLO-001" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="addClinicPassword" placeholder="Minimum 6 characters" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="addClinicLoc" placeholder="e.g. Ambattur" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="addClinicPhone" placeholder="e.g. 919876543210">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="addClinicEmail" placeholder="e.g. contact@clinic.com">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <label style="font-weight: 700; color: var(--admin-primary); display: block; margin-bottom: 1rem;">Assign Doctors</label>
+                    <div id="clinicDocsCheckboxList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; max-height: 200px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 10px; border: 1px solid rgba(0,0,0,0.05);">
+                        <!-- Doctor checkboxes will be injected here -->
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-action" style="width: 100%; margin-top: 2rem; padding: 1.1rem; background: var(--admin-primary); color: white; font-weight: 700; border-radius: 15px;">Create Clinic Login</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Prevent back-button access via history/bfcache
         function checkAuth() {
@@ -665,6 +742,7 @@
         function showView(view) {
             document.getElementById('view-overview').style.display = view === 'overview' ? 'block' : 'none';
             document.getElementById('view-doctors').style.display = view === 'doctors' ? 'block' : 'none';
+            document.getElementById('view-clinics').style.display = view === 'clinics' ? 'block' : 'none';
             document.getElementById('view-activity').style.display = view === 'activity' ? 'block' : 'none';
             document.getElementById('view-instagram').style.display = view === 'instagram' ? 'block' : 'none';
             
@@ -678,6 +756,7 @@
                 loadLeaderboard();
             }
             if (view === 'doctors') loadDoctors();
+            if (view === 'clinics') loadClinics();
             if (view === 'activity') loadActivityLogs();
             if (view === 'instagram') loadInstagramLeads();
         }
@@ -1215,16 +1294,120 @@
             } catch (err) { alert("Connection error."); }
         });
 
+        async function loadClinics() {
+            try {
+                const res = await fetch(`${API_BASE}/doctor/admin/clinics`, { headers });
+                const clinics = await res.json();
+                renderClinics(clinics);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderClinics(clinics) {
+            const list = document.getElementById('clinicsList');
+            list.innerHTML = '';
+            
+            if (clinics.length === 0) {
+                list.innerHTML = '<tr><td colspan="6" style="color: var(--admin-text-dim); text-align: center; padding: 2rem;">No clinics created yet.</td></tr>';
+                return;
+            }
+            
+            clinics.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${c.name}</td>
+                    <td style="font-family: monospace; font-weight: bold; color: var(--admin-accent);">${c.clinic_id}</td>
+                    <td>${c.location}</td>
+                    <td>${c.phone || '-'}</td>
+                    <td>${c.email || '-'}</td>
+                    <td style="font-weight: 700;">${c.doctor_count} doctors</td>
+                `;
+                list.appendChild(tr);
+            });
+            initIcons();
+        }
+
+        async function populateDoctorsCheckboxes() {
+            try {
+                if (allDoctors.length === 0) {
+                    const res = await fetch(`${API_BASE}/doctor/admin/doctors`, { headers });
+                    allDoctors = await res.json();
+                }
+                const container = document.getElementById('clinicDocsCheckboxList');
+                container.innerHTML = '';
+                
+                if (allDoctors.length === 0) {
+                    container.innerHTML = '<p style="color: var(--admin-text-dim); font-size: 0.85rem;">No doctors registered yet.</p>';
+                    return;
+                }
+                
+                allDoctors.forEach(doc => {
+                    const label = document.createElement('label');
+                    label.style = "display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--admin-primary); cursor: pointer; user-select: none; margin-bottom: 5px;";
+                    label.innerHTML = `
+                        <input type="checkbox" name="clinic_doc_ids" value="${doc.id}" style="width: 16px; height: 16px; accent-color: var(--admin-accent);">
+                        <span>${doc.name} (${doc.speciality})</span>
+                    `;
+                    container.appendChild(label);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        function openClinicModal() {
+            document.getElementById('addClinicModal').style.display = 'flex';
+            populateDoctorsCheckboxes();
+        }
+
+        function closeClinicModal() {
+            document.getElementById('addClinicModal').style.display = 'none';
+            document.getElementById('addClinicForm').reset();
+        }
+
+        document.getElementById('addClinicForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('addClinicName').value.trim();
+            const clinic_id = document.getElementById('addClinicId').value.trim().toUpperCase();
+            const password = document.getElementById('addClinicPassword').value;
+            const location = document.getElementById('addClinicLoc').value.trim();
+            const phone = document.getElementById('addClinicPhone').value.trim();
+            const email = document.getElementById('addClinicEmail').value.trim();
+            
+            const doctor_ids = [];
+            document.querySelectorAll('input[name="clinic_doc_ids"]:checked').forEach(cb => {
+                doctor_ids.push(parseInt(cb.value));
+            });
+            
+            try {
+                const res = await fetch(`${API_BASE}/doctor/admin/clinic/add`, {
+                    method: 'POST',
+                    headers: { ...headers, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, clinic_id, password, location, phone, email, doctor_ids })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    alert("Clinic successfully created!");
+                    closeClinicModal();
+                    loadClinics();
+                } else {
+                    alert("Error: " + (data.error || "Failed to create clinic"));
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Failed to create clinic.");
+            }
+        });
+
         // Close modals when clicking on the backdrop overlay
         window.addEventListener('click', (e) => {
             const editModal = document.getElementById('editDocModal');
             const addModal = document.getElementById('addDocModal');
             const igModal = document.getElementById('igLeadModal');
             const igApiModal = document.getElementById('igApiSettingsModal');
+            const clinicModal = document.getElementById('addClinicModal');
             if (e.target === editModal) closeModal();
             if (e.target === addModal) closeAddModal();
             if (e.target === igModal) closeIgLeadModal();
             if (e.target === igApiModal) closeIgApiSettingsModal();
+            if (e.target === clinicModal) closeClinicModal();
         });
 
         document.addEventListener('DOMContentLoaded', () => { showView('overview'); initIcons(); });
