@@ -3,287 +3,315 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Join Curelith – Your Hospital Health Partner</title>
-  <meta name="description" content="Scan & join Curelith to connect with your hospital's doctors on WhatsApp. Free. Instant.">
-  <link rel="shortcut icon" href="favicon.ico">
+  <title>Join Curelith Partner Hospital</title>
+  <meta name="description" content="Connect with your hospital's verified doctors and diagnostic scan centres directly on WhatsApp with Curelith.">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:       #050D1A;
-      --surface:  rgba(255,255,255,0.05);
-      --border:   rgba(255,255,255,0.10);
-      --teal:     #00D4AA;
-      --teal-dim: rgba(0,212,170,0.12);
-      --text:     #F0F4FF;
-      --muted:    rgba(240,244,255,0.55);
-    }
-
-    html, body {
-      min-height: 100vh;
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-      overflow-x: hidden;
-    }
-
-    /* Ambient glow */
-    body::before {
-      content: '';
-      position: fixed;
-      top: -30vh;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80vw;
-      height: 80vw;
-      background: radial-gradient(ellipse, rgba(0,212,170,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .card {
+    .join-hero {
+      background: var(--void);
+      color: #fff;
+      padding: 100px 0 70px 0;
       position: relative;
-      z-index: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 40px 32px;
-      max-width: 420px;
-      width: 100%;
+      overflow: hidden;
       text-align: center;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,212,170,0.08);
-      animation: fadeUp 0.6s ease both;
+    }
+    .join-hero::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 1.6px);
+      background-size: 26px 26px;
+      -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+      mask-image: linear-gradient(to bottom, black, transparent);
+    }
+    .join-hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4.5vw, 52px);
+      font-weight: 600;
+      margin-top: 12px;
+      line-height: 1.25;
+    }
+    .join-hero h1 span {
+      color: var(--gold);
+      font-style: italic;
+    }
+    .join-hero p.sub {
+      font-size: 17px;
+      color: var(--mist);
+      max-width: 560px;
+      margin: 14px auto 0 auto;
+      line-height: 1.6;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* CARD CONTAINER */
+    .join-section {
+      padding: 60px 0 100px 0;
+      background: var(--paper);
     }
-
-    /* LOADING STATE */
-    .loading-state { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-    .spinner {
-      width: 44px; height: 44px;
-      border: 3px solid rgba(0,212,170,0.2);
-      border-top-color: var(--teal);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    .partner-card-wrapper {
+      max-width: 520px;
+      margin: 0 auto;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* HOSPITAL CONTENT */
-    .hospital-logo {
-      width: 80px; height: 80px;
+    .partner-card {
+      background: var(--card);
+      border: 1px solid var(--line);
       border-radius: 20px;
-      background: var(--teal-dim);
-      border: 2px solid rgba(0,212,170,0.3);
-      margin: 0 auto 16px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 36px;
+      padding: 44px 36px;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(15, 27, 25, 0.06);
+      position: relative;
     }
-    .hospital-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }
 
-    .partner-badge {
+    .hospital-avatar {
+      width: 84px; height: 84px;
+      border-radius: 20px;
+      background: var(--paper);
+      border: 2px solid var(--line);
+      margin: 0 auto 20px auto;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 38px;
+      overflow: hidden;
+    }
+    .hospital-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .partner-tag {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pine);
+      background: rgba(30, 66, 61, 0.08);
+      border: 1px solid rgba(30, 66, 61, 0.18);
+      padding: 4px 14px;
+      border-radius: 100px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: var(--teal-dim);
-      border: 1px solid rgba(0,212,170,0.25);
-      border-radius: 100px;
-      padding: 4px 12px;
-      font-size: 11px;
       font-weight: 600;
-      color: var(--teal);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
       margin-bottom: 16px;
     }
 
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 8px;
-      background: linear-gradient(135deg, #fff 0%, var(--teal) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .partner-card h2 {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--void);
+      margin-bottom: 10px;
+    }
+    .partner-card p.desc {
+      font-size: 15px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      margin-bottom: 28px;
     }
 
-    .subtitle {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
-
-    /* FEATURES */
-    .features {
+    /* FEATURES LIST */
+    .feature-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-bottom: 28px;
+      gap: 12px;
+      margin-bottom: 32px;
       text-align: left;
     }
     .feature-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 0.88rem;
-      color: var(--muted);
+      gap: 12px;
+      font-size: 14.5px;
+      color: var(--ink);
     }
     .feature-icon {
-      width: 28px; height: 28px;
-      background: var(--teal-dim);
+      width: 32px; height: 32px;
       border-radius: 8px;
+      background: rgba(30, 66, 61, 0.08);
+      color: var(--pine);
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
+      font-size: 15px;
       flex-shrink: 0;
+      font-weight: bold;
     }
 
-    /* CTA BUTTON */
-    .cta-btn {
+    .cta-whatsapp {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
       width: 100%;
-      padding: 16px 24px;
+      padding: 16px 28px;
       background: #25D366;
       color: #fff;
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
+      font-family: var(--sans);
+      font-size: 16px;
       font-weight: 700;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
+      border-radius: 12px;
       text-decoration: none;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+      box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.4);
     }
-    .cta-btn:hover {
+    .cta-whatsapp:hover {
       background: #20BA5A;
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(37,211,102,0.45);
-    }
-    .cta-btn:active { transform: translateY(0); }
-    .wa-icon { font-size: 20px; }
-
-    /* DIVIDER */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 20px 0;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
+      box-shadow: 0 14px 30px -5px rgba(37, 211, 102, 0.5);
     }
 
-    .info-row {
-      font-size: 0.82rem;
-      color: var(--muted);
+    .card-footer-note {
+      margin-top: 20px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--mist-dim);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
     }
 
-    /* FOOTER */
-    .footer {
-      margin-top: 24px;
-      font-size: 0.78rem;
-      color: rgba(240,244,255,0.3);
-      text-align: center;
+    /* LOADING & ERROR */
+    .state-box { padding: 40px 20px; text-align: center; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(30,66,61,0.15);
+      border-top-color: var(--pine);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px auto;
     }
-    .footer a { color: var(--teal); text-decoration: none; }
-
-    /* ERROR STATE */
-    .error-state { color: #FF6B6B; }
-    .error-state h2 { font-size: 1.2rem; margin-bottom: 8px; }
-
-    /* HIDDEN */
+    @keyframes spin { to { transform: rotate(360deg); } }
     .hidden { display: none !important; }
-
-    @media (max-width: 400px) {
-      .card { padding: 28px 20px; border-radius: 20px; }
-      h1 { font-size: 1.35rem; }
-    }
   </style>
 </head>
 <body>
 
-<div class="card" id="card">
-  <!-- LOADING STATE -->
-  <div class="loading-state" id="loadingState">
-    <div class="spinner"></div>
-    <p style="color: var(--muted); font-size: 0.9rem;">Loading your hospital portal…</p>
+<header>
+  <div class="wrap nav">
+    <a href="index.html" class="brand">
+      <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+      Curelith
+    </a>
+    <nav class="links">
+      <a href="index.html#why">Why Curelith</a>
+      <a href="index.html#tools">Tools</a>
+      <a href="doctors.html">Physicians</a>
+      <a href="hospitals.html">Hospitals</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="patient-login.html" class="btn btn-ghost-dark btn-sm">Patient portal</a>
+      <a href="hospital-portal.html" class="btn btn-primary btn-sm">Hospital portal</a>
+    </div>
+    <button class="menu-toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html#why">Why Curelith</a>
+    <a href="index.html#tools">Tools</a>
+    <a href="doctors.html">Physicians</a>
+    <a href="hospitals.html">Hospitals</a>
+    <a href="about.html">About</a>
+    <a href="patient-login.html" class="btn btn-ghost-dark btn-sm" style="justify-content: center; margin-top: 10px;">Patient portal</a>
+    <a href="hospital-portal.html" class="btn btn-primary btn-sm" style="justify-content: center;">Hospital portal</a>
+  </div>
+</header>
 
-  <!-- HOSPITAL CONTENT (hidden until loaded) -->
-  <div id="hospitalContent" class="hidden">
-    <div class="hospital-logo" id="logoBox">🏥</div>
-    <div class="partner-badge">✅ Verified Partner</div>
-    <h1 id="hospitalName">Hospital Name</h1>
-    <p class="subtitle" id="hospitalSubtitle">
-      Connect to <strong>Curelith</strong> to access your hospital's doctors, scans, and health services — instantly on WhatsApp.
-    </p>
-    <div class="features">
-      <div class="feature-item">
-        <div class="feature-icon">🩺</div>
-        <span>Book <strong id="featureHospital">hospital</strong> doctors directly on WhatsApp</span>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🔬</div>
-        <span>Get scan & blood test results explained by AI</span>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">💬</div>
-        <span>Tamil, Tanglish, Hindi, English — all supported</span>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🆓</div>
-        <span>Completely free — no app download needed</span>
+<section class="join-hero">
+  <div class="wrap">
+    <div class="eyebrow on-dark">Hospital Partner Network</div>
+    <h1 id="heroTitle">Connect with <span>Your Hospital</span></h1>
+    <p class="sub" id="heroSub">Access your hospital's specialists, diagnostic scans, and clinical reports — directly on WhatsApp.</p>
+  </div>
+</section>
+
+<section class="join-section">
+  <div class="wrap">
+    <div class="partner-card-wrapper">
+      <div class="partner-card">
+        
+        <!-- LOADING -->
+        <div id="loadingState" class="state-box">
+          <div class="spinner"></div>
+          <p style="color: var(--ink-soft); font-size: 14.5px;">Loading partner details...</p>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div id="hospitalContent" class="hidden">
+          <div class="hospital-avatar" id="logoBox">🏥</div>
+          <div class="partner-tag">✓ Preferred Health Partner</div>
+          <h2 id="hospitalName">Hospital Name</h2>
+          <p class="desc" id="hospitalSubtitle">
+            Connect to <strong>Curelith</strong> to access <strong>Orthomed Hospital</strong> doctors, diagnostic scans, and medical advice on WhatsApp.
+          </p>
+
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">🩺</div>
+              <span>Book <strong id="featureHospital">hospital</strong> doctors directly on WhatsApp</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔬</div>
+              <span>Schedule MRI, CT, X-Ray & Blood Tests with priority slots</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">💬</div>
+              <span>Tamil, Tanglish, Hindi & English supported</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🆓</div>
+              <span>100% Free for patients — no app download needed</span>
+            </div>
+          </div>
+
+          <a class="cta-whatsapp" id="waLink" href="#" target="_blank" rel="noopener">
+            <span style="font-size: 20px;">💬</span>
+            Chat with Your Doctor Now →
+          </a>
+
+          <div class="card-footer-note">
+            🔒 Private, secure & encrypted health assistant
+          </div>
+        </div>
+
+        <!-- ERROR STATE -->
+        <div id="errorState" class="hidden state-box">
+          <div style="font-size: 44px; margin-bottom: 12px;">🔍</div>
+          <h3 style="font-family: var(--serif); font-size: 20px; color: var(--void); margin-bottom: 8px;">Hospital Not Found</h3>
+          <p style="color: var(--ink-soft); font-size: 14px; margin-bottom: 20px;">This QR code may be invalid or expired. Please scan again or contact your hospital.</p>
+          <a href="index.html" class="btn btn-ghost btn-sm">← Back to Curelith Home</a>
+        </div>
+
       </div>
     </div>
-
-    <a class="cta-btn" id="waLink" href="#" target="_blank" rel="noopener">
-      <span class="wa-icon">💬</span>
-      Chat with Your Doctor Now →
-    </a>
-
-    <div class="divider">your health, your choice</div>
-
-    <p class="info-row">
-      🔒 Your data is private & secure
-    </p>
   </div>
+</section>
 
-  <!-- ERROR STATE (hidden until error) -->
-  <div id="errorState" class="hidden error-state">
-    <div style="font-size: 48px; margin-bottom: 12px;">🔍</div>
-    <h2>Hospital Not Found</h2>
-    <p style="color: var(--muted); font-size: 0.9rem;">This QR code may be invalid or expired. Please scan again or contact your hospital.</p>
-    <br>
-    <a href="https://curelith.com" style="color: var(--teal); font-size: 0.9rem;">← Go to Curelith</a>
+<footer>
+  <div class="wrap foot-top">
+    <div>
+      <div class="foot-brand">
+        <img src="assets/logo.png" style="width:28px; height:28px;" alt="Curelith">
+        Curelith
+      </div>
+      <p>AI-first clinical intelligence navigating patients safely from symptoms to certified specialist care.</p>
+    </div>
+    <div class="foot-col">
+      <h5>Network</h5>
+      <a href="doctors.html">Physicians</a>
+      <a href="hospitals.html">Partner Hospitals</a>
+      <a href="hospital-portal.html">Hospital Admin Portal</a>
+    </div>
+    <div class="foot-col">
+      <h5>Legal & Contact</h5>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <div class="line">Support: support@curelith.com</div>
+    </div>
   </div>
-</div>
-
-<div class="footer">
-  Powered by <a href="https://curelith.com" target="_blank">Curelith</a> &mdash; AI Health on WhatsApp 🩺
-</div>
+  <div class="wrap foot-bottom">
+    <div>© 2026 Curelith Intelligence. All rights reserved.</div>
+    <div class="disclaimer">Not for medical emergencies. In an emergency, visit a hospital immediately.</div>
+  </div>
+</footer>
 
 <script>
   const API = 'https://api.curelith.com/hospital';
@@ -313,17 +341,18 @@
 
       // Populate content
       document.getElementById('hospitalName').textContent = h.name;
+      document.getElementById('heroTitle').innerHTML = `Connect with <span>${h.name}</span>`;
       document.getElementById('hospitalSubtitle').innerHTML =
-        `Connect to <strong>Curelith</strong> to access <strong>${h.name}</strong> doctors, scans, and health services — instantly on WhatsApp.`;
+        `Connect to <strong>Curelith</strong> to access <strong>${h.name}</strong> specialists, diagnostic scans, and health services — instantly on WhatsApp.`;
       document.getElementById('featureHospital').textContent = h.name;
-      document.title = `${h.name} × Curelith — Join Now`;
+      document.title = `${h.name} × Curelith — Join Partner Network`;
 
       // Logo
       if (h.logo_url) {
         document.getElementById('logoBox').innerHTML = `<img src="${h.logo_url}" alt="${h.name} logo">`;
       }
 
-      // WhatsApp link (unique, clear sentence for each hospital)
+      // Unique WhatsApp pre-filled text
       const waText = `Hi Curelith, connect me to ${h.name} (${h.ref_code.toUpperCase()})`;
       document.getElementById('waLink').href = `https://wa.me/919042556225?text=${encodeURIComponent(waText)}`;
 
@@ -341,7 +370,15 @@
     document.getElementById('errorState').classList.remove('hidden');
   }
 
-  // Kick off
+  // Mobile menu toggle
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileNav = document.getElementById('mobileNav');
+  if (menuToggle && mobileNav) {
+    menuToggle.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+    });
+  }
+
   loadHospital();
 </script>
 </body>
