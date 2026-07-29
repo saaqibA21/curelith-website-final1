@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curelith Hospital Partner Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0A0F1E;
+            --primary-accent: #00D4AA;
+            --text-main: #FFFFFF;
+            --text-muted: #8A9BB3;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --danger: #FF4D4D;
+            --success: #00D4AA;
+            --warning: #FFB84D;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glassmorphism utils */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary-accent);
+            color: #000;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #00e5b8;
+            box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger { background: rgba(255, 77, 77, 0.1); color: var(--danger); border-color: rgba(255, 77, 77, 0.3); }
+        .btn-danger:hover { background: rgba(255, 77, 77, 0.2); }
+
+        /* Inputs */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2);
+        }
+
+        /* Layout */
+        #app {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Login Screen */
+        #login-screen {
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: radial-gradient(circle at top right, rgba(0, 212, 170, 0.1), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(0, 212, 170, 0.05), transparent 40%);
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--card-bg);
+            border: 1px solid var(--primary-accent);
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 0 20px rgba(0, 212, 170, 0.2);
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Dashboard Layout */
+        .sidebar {
+            width: 260px;
+            background: rgba(10, 15, 30, 0.95);
+            border-right: 1px solid var(--card-border);
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 24px;
+        }
+
+        .nav-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary-accent);
+            background: rgba(0, 212, 170, 0.05);
+            border-left-color: var(--primary-accent);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            height: 70px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            background: rgba(10, 15, 30, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        /* Tabs */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Grid */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 16px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-success { background: rgba(0, 212, 170, 0.1); color: var(--success); }
+        .badge-warning { background: rgba(255, 184, 77, 0.1); color: var(--warning); }
+        .badge-pending { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 500px;
+            transform: scale(0.9);
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 300px;
+            width: 100%;
+            margin-top: 24px;
+            position: relative;
+        }
+
+        /* QR Code section */
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .qr-image {
+            width: 250px;
+            height: 250px;
+            background: #fff;
+            padding: 16px;
+            border-radius: 16px;
+            margin: 24px 0;
+            box-shadow: 0 0 30px rgba(0, 212, 170, 0.15);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                height: 100vh;
+                transition: var(--transition);
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <!-- SCREEN 1: Login -->
+    <div id="login-screen" class="screen active">
+        <div class="glass-card login-box">
+            <div class="login-logo">🏥</div>
+            <h2>Hospital Partner Portal</h2>
+            <p style="margin-bottom: 24px;">Sign in to manage your hospital</p>
+            
+            <form id="login-form">
+                <div class="form-group" style="text-align: left;">
+                    <label for="ref_code">Hospital Code</label>
+                    <input type="text" id="ref_code" class="form-control" required placeholder="e.g. HOSP123">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;" id="login-btn">
+                    Login
+                </button>
+                <div id="login-error" class="error-msg">Invalid credentials. Please try again.</div>
+            </form>
+        </div>
+        <div class="footer">Powered by Curelith</div>
+    </div>
+
+    <!-- SCREEN 2: Dashboard -->
+    <div id="dashboard-screen" class="screen" style="flex-direction: row;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="font-size: 1.5rem; color: var(--primary-accent);">🏥</div>
+                    <h3 style="margin:0; font-size: 1.1rem;">Curelith</h3>
+                </div>
+            </div>
+            
+            <nav>
+                <div class="nav-item active" data-target="tab-overview">📊 Overview</div>
+                <div class="nav-item" data-target="tab-doctors">👨‍⚕️ My Doctors</div>
+                <div class="nav-item" data-target="tab-scans">🩻 Scans & Services</div>
+                <div class="nav-item" data-target="tab-appointments">📅 Appointments</div>
+                <div class="nav-item" data-target="tab-qr">📱 QR Code</div>
+                <div class="nav-item" data-target="tab-analytics">📈 Analytics</div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 500; display: flex; align-items: center; gap: 10px;">
+                    <span id="hospital-name-display">Orthomed Hospital</span>
+                </div>
+                <button class="btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="content-area">
+                
+                <!-- Tab: Overview -->
+                <div id="tab-overview" class="tab-content active">
+                    <div class="grid-4">
+                        <div class="glass-card stat-card">
+                            <span class="stat-label">Total Patients</span>
+                            <span class="stat-value" id="stat-patients">--</span>
+                        </div>
+                        <div class="glass-card stat-card">
+                            <span class="stat-label">QR Scans</span>
+                            <span class="stat-value" id="stat-scans">--</span>
+                        </div>
+                        <div class="glass-card stat-card">
+                            <span class="stat-label">Total Bookings</span>
+                            <span class="stat-value" id="stat-bookings">--</span>
+                        </div>
+                        <div class="glass-card stat-card">
+                            <span class="stat-label">Pending</span>
+                            <span class="stat-value" style="color: var(--warning);" id="stat-pending">--</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+                        <div class="glass-card">
+                            <h3>Weekly Patients</h3>
+                            <div class="chart-container">
+                                <canvas id="overview-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-card">
+                            <h3>Recent Bookings</h3>
+                            <div class="table-container" style="margin-top: 16px;">
+                                <table>
+                                    <tbody id="recent-bookings-body">
+                                        <!-- Populated via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: My Doctors -->
+                <div id="tab-doctors" class="tab-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2>My Doctors</h2>
+                        <button class="btn btn-primary" onclick="openModal('doctor-modal')">+ Add Doctor</button>
+                    </div>
+                    <div class="glass-card table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Specialization</th>
+                                    <th>Available Days</th>
+                                    <th>Fee</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="doctors-tbody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab: Scans & Services -->
+                <div id="tab-scans" class="tab-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2>Scans & Services</h2>
+                        <button class="btn btn-primary" onclick="openModal('scan-modal')">+ Add Scan</button>
+                    </div>
+                    <div class="glass-card table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Scan Name</th>
+                                    <th>Price</th>
+                                    <th>Home Collection</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scans-tbody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab: Appointments -->
+                <div id="tab-appointments" class="tab-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2>Appointments</h2>
+                        <select class="form-control" style="width: 200px; background: var(--card-bg);" id="appt-filter" onchange="filterAppointments()">
+                            <option value="all">All Appointments</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="glass-card table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patient Phone</th>
+                                    <th>Service/Scan</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointments-tbody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab: QR Code -->
+                <div id="tab-qr" class="tab-content">
+                    <div class="glass-card qr-section">
+                        <h2>Your Hospital QR Code</h2>
+                        <p>Print this QR and place it at your reception desk.</p>
+                        <div class="qr-image" id="qr-image-container">
+                            <!-- Image injected via JS -->
+                        </div>
+                        <a id="wa-link" href="#" target="_blank" style="color: var(--primary-accent); margin-bottom: 24px; text-decoration: none;">WhatsApp Link</a>
+                        <button class="btn btn-primary" onclick="downloadQR()">Download PNG</button>
+                    </div>
+                </div>
+
+                <!-- Tab: Analytics -->
+                <div id="tab-analytics" class="tab-content">
+                    <div class="glass-card">
+                        <h2>Patient Growth Analytics</h2>
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="analytics-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div class="modal-overlay" id="doctor-modal">
+    <div class="glass-card modal">
+        <div class="modal-header">
+            <h3>Add / Edit Doctor</h3>
+            <button class="close-btn" onclick="closeModal('doctor-modal')">×</button>
+        </div>
+        <form id="doctor-form" onsubmit="handleDoctorSubmit(event)">
+            <input type="hidden" id="doc_id">
+            <div class="form-group">
+                <label>Doctor Name</label>
+                <input type="text" id="doc_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Specialization</label>
+                <input type="text" id="doc_spec" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Available Days (e.g. Mon-Fri)</label>
+                <input type="text" id="doc_days" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Consultation Fee</label>
+                <input type="number" id="doc_fee" class="form-control" required>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="doc_active" checked>
+                <label style="margin: 0;">Active</label>
+            </div>
+            <div style="text-align: right; margin-top: 24px;">
+                <button type="button" class="btn" onclick="closeModal('doctor-modal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Doctor</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="scan-modal">
+    <div class="glass-card modal">
+        <div class="modal-header">
+            <h3>Add Scan / Service</h3>
+            <button class="close-btn" onclick="closeModal('scan-modal')">×</button>
+        </div>
+        <form id="scan-form" onsubmit="handleScanSubmit(event)">
+            <div class="form-group">
+                <label>Category (e.g. MRI, Blood Test)</label>
+                <input type="text" id="scan_cat" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Scan/Service Name</label>
+                <input type="text" id="scan_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input type="number" id="scan_price" class="form-control" required>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="scan_home">
+                <label style="margin: 0;">Home Collection Available</label>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="scan_active" checked>
+                <label style="margin: 0;">Active</label>
+            </div>
+            <div style="text-align: right; margin-top: 24px;">
+                <button type="button" class="btn" onclick="closeModal('scan-modal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Scan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'https://api.curelith.com/hospital';
+    let currentToken = localStorage.getItem('hospital_token');
+
+    // DOM Elements
+    const loginScreen = document.getElementById('login-screen');
+    const dashboardScreen = document.getElementById('dashboard-screen');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const loginBtn = document.getElementById('login-btn');
+
+    // Initialize App
+    function init() {
+        if (currentToken) {
+            showDashboard();
+        } else {
+            showLogin();
+        }
+
+        // Setup Tabs
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                
+                e.target.classList.add('active');
+                const targetId = e.target.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+                
+                // Redraw charts if needed
+                if(targetId === 'tab-overview') drawBarChart();
+                if(targetId === 'tab-analytics') drawLineChart();
+            });
+        });
+    }
+
+    // Screens logic
+    function showLogin() {
+        loginScreen.classList.add('active');
+        dashboardScreen.classList.remove('active');
+    }
+
+    function showDashboard() {
+        loginScreen.classList.remove('active');
+        dashboardScreen.classList.add('active');
+        
+        // Load initial data concurrently (mocking API calls due to lack of real backend)
+        loadDashboard();
+        loadDoctors();
+        loadScans();
+        loadAppointments();
+        loadQR();
+    }
+
+    // Auth
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const ref_code = document.getElementById('ref_code').value;
+        const password = document.getElementById('password').value;
+        
+        loginBtn.innerHTML = 'Logging in...';
+        loginBtn.disabled = true;
+        loginError.style.display = 'none';
+
+        try {
+            // Mock API Call (Replace with real fetch)
+            /*
+            const res = await fetch(`${API_BASE}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ref_code, password })
+            });
+            const data = await res.json();
+            */
+            
+            // Simulating successful login for demonstration
+            setTimeout(() => {
+                const dummyToken = 'dummy_token_123';
+                localStorage.setItem('hospital_token', dummyToken);
+                currentToken = dummyToken;
+                showDashboard();
+                loginBtn.innerHTML = 'Login';
+                loginBtn.disabled = false;
+            }, 1000);
+            
+        } catch (err) {
+            loginError.style.display = 'block';
+            loginBtn.innerHTML = 'Login';
+            loginBtn.disabled = false;
+        }
+    });
+
+    function logout() {
+        localStorage.removeItem('hospital_token');
+        currentToken = null;
+        showLogin();
+    }
+
+    // API Helpers
+    async function apiFetch(endpoint, options = {}) {
+        const headers = {
+            'Content-Type': 'application/json',
+            'X-Hospital-Token': currentToken,
+            ...(options.headers || {})
+        };
+        
+        // In a real scenario:
+        // const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+        // return res.json();
+
+        // For demo, returning mock data based on endpoint
+        return new Promise(resolve => {
+            setTimeout(() => {
+                if(endpoint === '/dashboard') {
+                    resolve({ total_patients: 1240, qr_scans: 3500, total_bookings: 850, pending: 24, hospital_name: 'Orthomed Hospital Chennai' });
+                } else if(endpoint === '/doctors') {
+                    resolve([{ id: 1, name: 'Dr. Sarah Jones', spec: 'Orthopedics', days: 'Mon-Wed-Fri', fee: 1000, active: true }]);
+                } else if(endpoint === '/scans') {
+                    resolve([{ id: 1, category: 'MRI', name: 'MRI Brain', price: 6500, home: false, active: true }]);
+                } else if(endpoint === '/appointments') {
+                    resolve([
+                        { id: 1, phone: '+91 9876543210', service: 'MRI Brain', date: '2026-07-30', status: 'pending' },
+                        { id: 2, phone: '+91 8765432109', service: 'Consultation - Dr. Sarah', date: '2026-07-29', status: 'confirmed' }
+                    ]);
+                } else if(endpoint === '/qr') {
+                    resolve({ qr_base64: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', wa_link: 'https://wa.me/1234567890' });
+                } else {
+                    resolve({ success: true });
+                }
+            }, 500);
+        });
+    }
+
+    // Load Data Functions
+    async function loadDashboard() {
+        const data = await apiFetch('/dashboard');
+        document.getElementById('stat-patients').textContent = data.total_patients;
+        document.getElementById('stat-scans').textContent = data.qr_scans;
+        document.getElementById('stat-bookings').textContent = data.total_bookings;
+        document.getElementById('stat-pending').textContent = data.pending;
+        document.getElementById('hospital-name-display').textContent = data.hospital_name || 'Hospital Dashboard';
+
+        // Draw simple canvas charts
+        setTimeout(() => {
+            drawBarChart();
+            drawLineChart();
+        }, 100);
+        
+        // Mock recent bookings
+        const tbody = document.getElementById('recent-bookings-body');
+        tbody.innerHTML = `
+            <tr><td>Patient #452</td><td><span class="badge badge-warning">Pending</span></td></tr>
+            <tr><td>Patient #451</td><td><span class="badge badge-success">Completed</span></td></tr>
+            <tr><td>Patient #450</td><td><span class="badge badge-success">Completed</span></td></tr>
+            <tr><td>Patient #449</td><td><span class="badge badge-pending">Confirmed</span></td></tr>
+        `;
+    }
+
+    let currentDoctors = [];
+    async function loadDoctors() {
+        currentDoctors = await apiFetch('/doctors');
+        renderDoctors();
+    }
+
+    function renderDoctors() {
+        const tbody = document.getElementById('doctors-tbody');
+        tbody.innerHTML = currentDoctors.map(doc => `
+            <tr>
+                <td>${doc.name}</td>
+                <td>${doc.spec}</td>
+                <td>${doc.days}</td>
+                <td>₹${doc.fee}</td>
+                <td><span class="badge ${doc.active ? 'badge-success' : 'badge-pending'}">${doc.active ? 'Active' : 'Inactive'}</span></td>
+                <td>
+                    <button class="btn" style="padding: 4px 8px; font-size: 0.8rem;" onclick="editDoctor(${doc.id})">Edit</button>
+                    <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="deleteDoctor(${doc.id})">Delete</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    let currentScans = [];
+    async function loadScans() {
+        currentScans = await apiFetch('/scans');
+        renderScans();
+    }
+
+    function renderScans() {
+        const tbody = document.getElementById('scans-tbody');
+        tbody.innerHTML = currentScans.map(scan => `
+            <tr>
+                <td>${scan.category}</td>
+                <td>${scan.name}</td>
+                <td>₹${scan.price}</td>
+                <td>${scan.home ? 'Yes' : 'No'}</td>
+                <td><span class="badge ${scan.active ? 'badge-success' : 'badge-pending'}">${scan.active ? 'Active' : 'Inactive'}</span></td>
+                <td>
+                    <button class="btn" style="padding: 4px 8px; font-size: 0.8rem;">Edit</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    let currentAppts = [];
+    async function loadAppointments() {
+        currentAppts = await apiFetch('/appointments');
+        filterAppointments();
+    }
+
+    function filterAppointments() {
+        const filter = document.getElementById('appt-filter').value;
+        const tbody = document.getElementById('appointments-tbody');
+        
+        const filtered = filter === 'all' ? currentAppts : currentAppts.filter(a => a.status === filter);
+        
+        tbody.innerHTML = filtered.map(appt => {
+            let badgeClass = 'badge-pending';
+            if(appt.status === 'confirmed') badgeClass = 'badge-success';
+            if(appt.status === 'completed') badgeClass = 'badge-pending';
+            if(appt.status === 'pending') badgeClass = 'badge-warning';
+
+            return `
+            <tr>
+                <td>${appt.phone}</td>
+                <td>${appt.service}</td>
+                <td>${appt.date}</td>
+                <td><span class="badge ${badgeClass}">${appt.status.toUpperCase()}</span></td>
+                <td>
+                    ${appt.status === 'pending' ? `<button class="btn btn-primary" style="padding: 4px 8px; font-size: 0.8rem;">Confirm</button>` : ''}
+                    ${appt.status === 'confirmed' ? `<button class="btn btn-success" style="padding: 4px 8px; font-size: 0.8rem;">Complete</button>` : ''}
+                </td>
+            </tr>
+            `;
+        }).join('');
+    }
+
+    async function loadQR() {
+        const data = await apiFetch('/qr');
+        document.getElementById('qr-image-container').innerHTML = `<img src="${data.qr_base64}" style="width:100%; height:100%; object-fit:contain;" alt="QR Code">`;
+        document.getElementById('wa-link').href = data.wa_link;
+    }
+
+    function downloadQR() {
+        const img = document.querySelector('#qr-image-container img');
+        if(!img) return;
+        const a = document.createElement('a');
+        a.href = img.src;
+        a.download = 'Hospital_QR.png';
+        a.click();
+    }
+
+    // Modals
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+    
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    // Handlers
+    async function handleDoctorSubmit(e) {
+        e.preventDefault();
+        const id = document.getElementById('doc_id').value;
+        const data = {
+            name: document.getElementById('doc_name').value,
+            spec: document.getElementById('doc_spec').value,
+            days: document.getElementById('doc_days').value,
+            fee: document.getElementById('doc_fee').value,
+            active: document.getElementById('doc_active').checked
+        };
+        
+        if (id) {
+            await apiFetch(`/doctors/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+        } else {
+            await apiFetch('/doctors', { method: 'POST', body: JSON.stringify(data) });
+            data.id = Date.now(); // mock id
+            currentDoctors.push(data);
+        }
+        
+        renderDoctors();
+        closeModal('doctor-modal');
+        e.target.reset();
+    }
+
+    function editDoctor(id) {
+        const doc = currentDoctors.find(d => d.id === id);
+        if(!doc) return;
+        document.getElementById('doc_id').value = doc.id;
+        document.getElementById('doc_name').value = doc.name;
+        document.getElementById('doc_spec').value = doc.spec;
+        document.getElementById('doc_days').value = doc.days;
+        document.getElementById('doc_fee').value = doc.fee;
+        document.getElementById('doc_active').checked = doc.active;
+        openModal('doctor-modal');
+    }
+
+    async function deleteDoctor(id) {
+        if(confirm('Delete this doctor?')) {
+            await apiFetch(`/doctors/${id}`, { method: 'DELETE' });
+            currentDoctors = currentDoctors.filter(d => d.id !== id);
+            renderDoctors();
+        }
+    }
+
+    async function handleScanSubmit(e) {
+        e.preventDefault();
+        const data = {
+            category: document.getElementById('scan_cat').value,
+            name: document.getElementById('scan_name').value,
+            price: document.getElementById('scan_price').value,
+            home: document.getElementById('scan_home').checked,
+            active: document.getElementById('scan_active').checked
+        };
+        await apiFetch('/scans', { method: 'POST', body: JSON.stringify(data) });
+        data.id = Date.now();
+        currentScans.push(data);
+        renderScans();
+        closeModal('scan-modal');
+        e.target.reset();
+    }
+
+    // Chart Drawing (Pure Canvas)
+    function drawBarChart() {
+        const canvas = document.getElementById('overview-chart');
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        
+        const rect = canvas.parentNode.getBoundingClientRect();
+        if(rect.width === 0) return; // Prevent drawing if hidden
+        
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+
+        const w = rect.width;
+        const h = rect.height;
+        
+        const data = [40, 60, 45, 80, 50, 90, 70]; // Mock weekly data
+        const max = 100;
+        
+        ctx.clearRect(0, 0, w, h);
+        
+        const barWidth = w / data.length * 0.5;
+        const spacing = w / data.length;
+        
+        data.forEach((val, i) => {
+            const barHeight = (val / max) * (h - 20);
+            const x = i * spacing + (spacing - barWidth) / 2;
+            const y = h - barHeight;
+            
+            // gradient
+            const grad = ctx.createLinearGradient(0, y, 0, h);
+            grad.addColorStop(0, '#00D4AA');
+            grad.addColorStop(1, 'rgba(0, 212, 170, 0.2)');
+            
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.roundRect(x, y, barWidth, barHeight, [4, 4, 0, 0]);
+            ctx.fill();
+        });
+    }
+
+    function drawLineChart() {
+        const canvas = document.getElementById('analytics-chart');
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        
+        const rect = canvas.parentNode.getBoundingClientRect();
+        if(rect.width === 0) return;
+        
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+
+        const w = rect.width;
+        const h = rect.height;
+        
+        const data = [120, 150, 140, 180, 200, 190, 250]; // Mock trend data
+        const max = 300;
+        
+        ctx.clearRect(0, 0, w, h);
+        
+        const spacing = w / (data.length - 1);
+        
+        ctx.beginPath();
+        ctx.moveTo(0, h - (data[0] / max) * (h - 20));
+        
+        data.forEach((val, i) => {
+            const x = i * spacing;
+            const y = h - (val / max) * (h - 20);
+            ctx.lineTo(x, y);
+        });
+        
+        ctx.strokeStyle = '#00D4AA';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        
+        // Add subtle fill area
+        ctx.lineTo(w, h);
+        ctx.lineTo(0, h);
+        ctx.closePath();
+        
+        const grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, 'rgba(0, 212, 170, 0.3)');
+        grad.addColorStop(1, 'rgba(0, 212, 170, 0)');
+        ctx.fillStyle = grad;
+        ctx.fill();
+    }
+
+    window.addEventListener('resize', () => {
+        if(dashboardScreen.classList.contains('active')) {
+            drawBarChart();
+            drawLineChart();
+        }
+    });
+
+    // Run init
+    init();
+
+</script>
+
+</body>
+</html>

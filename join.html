@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Curelith – Your Hospital Health Partner</title>
+  <meta name="description" content="Scan & join Curelith to connect with your hospital's doctors on WhatsApp. Free. Instant.">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #050D1A;
+      --surface:  rgba(255,255,255,0.05);
+      --border:   rgba(255,255,255,0.10);
+      --teal:     #00D4AA;
+      --teal-dim: rgba(0,212,170,0.12);
+      --text:     #F0F4FF;
+      --muted:    rgba(240,244,255,0.55);
+    }
+
+    html, body {
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      overflow-x: hidden;
+    }
+
+    /* Ambient glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80vw;
+      height: 80vw;
+      background: radial-gradient(ellipse, rgba(0,212,170,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 32px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,212,170,0.08);
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* LOADING STATE */
+    .loading-state { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .spinner {
+      width: 44px; height: 44px;
+      border: 3px solid rgba(0,212,170,0.2);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* HOSPITAL CONTENT */
+    .hospital-logo {
+      width: 80px; height: 80px;
+      border-radius: 20px;
+      background: var(--teal-dim);
+      border: 2px solid rgba(0,212,170,0.3);
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+    }
+    .hospital-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }
+
+    .partner-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--teal-dim);
+      border: 1px solid rgba(0,212,170,0.25);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 0%, var(--teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* FEATURES */
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .feature-icon {
+      width: 28px; height: 28px;
+      background: var(--teal-dim);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* CTA BUTTON */
+    .cta-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px 24px;
+      background: #25D366;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+    }
+    .cta-btn:hover {
+      background: #20BA5A;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(37,211,102,0.45);
+    }
+    .cta-btn:active { transform: translateY(0); }
+    .wa-icon { font-size: 20px; }
+
+    /* DIVIDER */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .info-row {
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 24px;
+      font-size: 0.78rem;
+      color: rgba(240,244,255,0.3);
+      text-align: center;
+    }
+    .footer a { color: var(--teal); text-decoration: none; }
+
+    /* ERROR STATE */
+    .error-state { color: #FF6B6B; }
+    .error-state h2 { font-size: 1.2rem; margin-bottom: 8px; }
+
+    /* HIDDEN */
+    .hidden { display: none !important; }
+
+    @media (max-width: 400px) {
+      .card { padding: 28px 20px; border-radius: 20px; }
+      h1 { font-size: 1.35rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" id="card">
+  <!-- LOADING STATE -->
+  <div class="loading-state" id="loadingState">
+    <div class="spinner"></div>
+    <p style="color: var(--muted); font-size: 0.9rem;">Loading your hospital portal…</p>
+  </div>
+
+  <!-- HOSPITAL CONTENT (hidden until loaded) -->
+  <div id="hospitalContent" class="hidden">
+    <div class="hospital-logo" id="logoBox">🏥</div>
+    <div class="partner-badge">✅ Verified Partner</div>
+    <h1 id="hospitalName">Hospital Name</h1>
+    <p class="subtitle" id="hospitalSubtitle">
+      Connect to <strong>Curelith</strong> to access your hospital's doctors, scans, and health services — instantly on WhatsApp.
+    </p>
+    <div class="features">
+      <div class="feature-item">
+        <div class="feature-icon">🩺</div>
+        <span>Book <strong id="featureHospital">hospital</strong> doctors directly on WhatsApp</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔬</div>
+        <span>Get scan & blood test results explained by AI</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💬</div>
+        <span>Tamil, Tanglish, Hindi, English — all supported</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🆓</div>
+        <span>Completely free — no app download needed</span>
+      </div>
+    </div>
+
+    <a class="cta-btn" id="waLink" href="#" target="_blank" rel="noopener">
+      <span class="wa-icon">💬</span>
+      Chat with Your Doctor Now →
+    </a>
+
+    <div class="divider">your health, your choice</div>
+
+    <p class="info-row">
+      🔒 Your data is private & secure
+    </p>
+  </div>
+
+  <!-- ERROR STATE (hidden until error) -->
+  <div id="errorState" class="hidden error-state">
+    <div style="font-size: 48px; margin-bottom: 12px;">🔍</div>
+    <h2>Hospital Not Found</h2>
+    <p style="color: var(--muted); font-size: 0.9rem;">This QR code may be invalid or expired. Please scan again or contact your hospital.</p>
+    <br>
+    <a href="https://curelith.com" style="color: var(--teal); font-size: 0.9rem;">← Go to Curelith</a>
+  </div>
+</div>
+
+<div class="footer">
+  Powered by <a href="https://curelith.com" target="_blank">Curelith</a> &mdash; AI Health on WhatsApp 🩺
+</div>
+
+<script>
+  const API = 'https://api.curelith.com/hospital';
+
+  function getRef() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('ref') || '';
+  }
+
+  async function loadHospital() {
+    const ref = getRef();
+    if (!ref) {
+      showError();
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/join/${encodeURIComponent(ref)}`);
+      const data = await res.json();
+
+      if (!data.success || !data.hospital) {
+        showError();
+        return;
+      }
+
+      const h = data.hospital;
+
+      // Populate content
+      document.getElementById('hospitalName').textContent = h.name;
+      document.getElementById('hospitalSubtitle').innerHTML =
+        `Connect to <strong>Curelith</strong> to access <strong>${h.name}</strong> doctors, scans, and health services — instantly on WhatsApp.`;
+      document.getElementById('featureHospital').textContent = h.name;
+      document.title = `${h.name} × Curelith — Join Now`;
+
+      // Logo
+      if (h.logo_url) {
+        document.getElementById('logoBox').innerHTML = `<img src="${h.logo_url}" alt="${h.name} logo">`;
+      }
+
+      // WhatsApp link (unique, clear sentence for each hospital)
+      const waText = `Hi Curelith, connect me to ${h.name} (${h.ref_code.toUpperCase()})`;
+      document.getElementById('waLink').href = `https://wa.me/919042556225?text=${encodeURIComponent(waText)}`;
+
+      // Show content
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('hospitalContent').classList.remove('hidden');
+
+    } catch (err) {
+      showError();
+    }
+  }
+
+  function showError() {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('errorState').classList.remove('hidden');
+  }
+
+  // Kick off
+  loadHospital();
+</script>
+</body>
+</html>
