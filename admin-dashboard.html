@@ -240,6 +240,7 @@
         <div class="nav-item active" onclick="showView('overview')"><i data-lucide="layout-dashboard"></i> Overview</div>
         <div class="nav-item" onclick="showView('doctors')"><i data-lucide="users"></i> Doctors</div>
         <div class="nav-item" onclick="showView('clinics')"><i data-lucide="building"></i> Clinics</div>
+        <div class="nav-item" onclick="showView('hospitals')"><i data-lucide="building-2"></i> Partner Hospitals</div>
         <div class="nav-item" onclick="showView('activity')"><i data-lucide="activity"></i> Activity Logs</div>
         <div class="nav-item" onclick="showView('instagram')"><i data-lucide="instagram"></i> Instagram CRM</div>
         <div style="margin-top: auto; padding-top: 2rem;">
@@ -432,6 +433,51 @@
                     </thead>
                     <tbody id="igList">
                         <!-- Outreach leads injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- View: Partner Hospitals -->
+        <div id="view-hospitals" style="display: none;">
+            <div class="stats-grid" style="margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <h3>PARTNER HOSPITALS</h3>
+                    <div class="value" id="statHospTotal">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Registered Partner Hospitals</div>
+                </div>
+                <div class="stat-card">
+                    <h3>ACTIVE PARTNERS</h3>
+                    <div class="value" id="statHospActive" style="color: #10b981;">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Live & QR-Enabled</div>
+                </div>
+            </div>
+
+            <div class="white-panel">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <h2>Partner Hospital Network & Portal Logins</h2>
+                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                        <input type="text" class="search-box" id="hospSearch" placeholder="Search by name or code..." onkeyup="filterHospitals()">
+                        <button class="btn-action" style="background: var(--admin-primary); color: white; border-color: var(--admin-primary); font-weight: 700; border-radius: 12px; height: 45px; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="openAddHospModal()">
+                            <i data-lucide="plus" style="width: 18px; height: 18px;"></i> Add Partner Hospital
+                        </button>
+                    </div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>HOSPITAL NAME</th>
+                            <th>REFERRAL CODE (ID)</th>
+                            <th>CITY / LOCATION</th>
+                            <th>PHONE</th>
+                            <th>PORTAL URL</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hospList">
+                        <!-- Partner Hospitals injected here -->
                     </tbody>
                 </table>
             </div>
@@ -708,6 +754,96 @@
         </div>
     </div>
 
+    <!-- Modal for Editing Hospital Credentials -->
+    <div class="modal" id="editHospModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 style="margin: 0; color: var(--admin-primary);">Edit Hospital Credentials</h2>
+                    <p style="color: var(--admin-text-dim); margin-top: 5px;">Change hospital login code, password & contact info</p>
+                </div>
+                <button onclick="closeEditHospModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <form id="editHospForm" onsubmit="handleSaveEditHospital(event)">
+                <input type="hidden" id="editHospId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Hospital Name</label>
+                        <input type="text" id="editHospName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Referral Code (Login ID)</label>
+                        <input type="text" id="editHospRefCode" placeholder="e.g. orthomed" required>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password (leave blank to keep current)</label>
+                        <input type="text" id="editHospPass" placeholder="Enter new password to change">
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="editHospCity">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="editHospPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Active Status</label>
+                        <select id="editHospActive">
+                            <option value="1">Active / Live</option>
+                            <option value="0">Inactive / Suspended</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%; margin-top: 2rem; padding: 1.1rem; background: var(--admin-primary); color: white; font-weight: 700; border-radius: 15px;">Update Hospital Credentials</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Partner Hospital -->
+    <div class="modal" id="addHospModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 style="margin: 0; color: var(--admin-primary);">Add Partner Hospital</h2>
+                    <p style="color: var(--admin-text-dim); margin-top: 5px;">Register new hospital partner for QR referrals & portal login</p>
+                </div>
+                <button onclick="closeAddHospModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <form id="addHospForm" onsubmit="handleSaveAddHospital(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Hospital Name</label>
+                        <input type="text" id="addHospName" placeholder="e.g. Orthomed Hospital" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Referral Code (Login ID)</label>
+                        <input type="text" id="addHospRefCode" placeholder="e.g. orthomed" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Login Password</label>
+                        <input type="text" id="addHospPass" placeholder="e.g. Orthomed@2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="addHospCity" placeholder="e.g. Chennai" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" id="addHospAddress" placeholder="e.g. Anna Nagar, Chennai">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="addHospPhone" placeholder="e.g. +919876543210">
+                    </div>
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%; margin-top: 2rem; padding: 1.1rem; background: var(--admin-primary); color: white; font-weight: 700; border-radius: 15px;">Create Partner Hospital</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Prevent back-button access via history/bfcache
         function checkAuth() {
@@ -721,6 +857,173 @@
             }
             return adminPass;
         }
+
+        const adminPass = checkAuth();
+        window.addEventListener('pageshow', (e) => {
+            if (e.persisted) {
+                checkAuth();
+            }
+        });
+
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+        const headers = { 'X-Admin-Password': adminPass };
+
+        let allDoctors = [];
+        let allActivity = [];
+        let allHospitals = [];
+
+        function initIcons() { try { lucide.createIcons(); } catch(e) {} }
+
+        async function loadHospitals() {
+            try {
+                const res = await fetch(`${API_BASE}/hospital/admin/all`, { headers });
+                const data = await res.json();
+                if (data.success) {
+                    allHospitals = data.hospitals;
+                    renderHospitals(allHospitals);
+                }
+            } catch (err) { console.error('Error loading hospitals:', err); }
+        }
+
+        function renderHospitals(list) {
+            document.getElementById('statHospTotal').innerText = list.length;
+            document.getElementById('statHospActive').innerText = list.filter(h => h.is_active).length;
+
+            const tbody = document.getElementById('hospList');
+            tbody.innerHTML = '';
+
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--admin-text-dim);">No partner hospitals found.</td></tr>';
+                return;
+            }
+
+            list.forEach(h => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${h.name}</strong></td>
+                    <td><code style="background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px;">${h.ref_code}</code></td>
+                    <td>${h.city || 'N/A'}</td>
+                    <td>${h.phone || 'N/A'}</td>
+                    <td><a href="https://www.curelith.com/hospital-portal.html" target="_blank" style="color: var(--admin-accent); font-weight: 600;">Open Portal ↗</a></td>
+                    <td><span class="ig-status ${h.is_active ? 'ig-status-replied' : 'ig-status-not_contacted'}">${h.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td>
+                        <button class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; background: var(--admin-primary); color: white; border-radius: 8px; cursor: pointer;" onclick="openEditHospModal(${h.id})">
+                            <i data-lucide="key" style="width: 14px; height: 14px; inline-block;"></i> Edit Credentials
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            initIcons();
+        }
+
+        function filterHospitals() {
+            const query = document.getElementById('hospSearch').value.toLowerCase();
+            const filtered = allHospitals.filter(h => 
+                h.name.toLowerCase().includes(query) || h.ref_code.toLowerCase().includes(query)
+            );
+            renderHospitals(filtered);
+        }
+
+        function openEditHospModal(id) {
+            const h = allHospitals.find(x => x.id === id);
+            if (!h) return;
+            document.getElementById('editHospId').value = h.id;
+            document.getElementById('editHospName').value = h.name;
+            document.getElementById('editHospRefCode').value = h.ref_code;
+            document.getElementById('editHospPass').value = '';
+            document.getElementById('editHospCity').value = h.city || '';
+            document.getElementById('editHospPhone').value = h.phone || '';
+            document.getElementById('editHospActive').value = h.is_active ? '1' : '0';
+            document.getElementById('editHospModal').style.display = 'flex';
+        }
+
+        function closeEditHospModal() {
+            document.getElementById('editHospModal').style.display = 'none';
+        }
+
+        async function handleSaveEditHospital(e) {
+            e.preventDefault();
+            const payload = {
+                id: parseInt(document.getElementById('editHospId').value),
+                name: document.getElementById('editHospName').value.trim(),
+                ref_code: document.getElementById('editHospRefCode').value.trim(),
+                password: document.getElementById('editHospPass').value.trim() || undefined,
+                city: document.getElementById('editHospCity').value.trim(),
+                phone: document.getElementById('editHospPhone').value.trim(),
+                is_active: document.getElementById('editHospActive').value === '1'
+            };
+            try {
+                const res = await fetch(`${API_BASE}/hospital/admin/update`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeEditHospModal();
+                    loadHospitals();
+                } else {
+                    alert(data.error || 'Failed to update hospital credentials');
+                }
+            } catch (err) { alert('Error updating hospital'); }
+        }
+
+        function openAddHospModal() {
+            document.getElementById('addHospForm').reset();
+            document.getElementById('addHospModal').style.display = 'flex';
+        }
+
+        function closeAddHospModal() {
+            document.getElementById('addHospModal').style.display = 'none';
+        }
+
+        async function handleSaveAddHospital(e) {
+            e.preventDefault();
+            const payload = {
+                admin_secret: adminPass,
+                name: document.getElementById('addHospName').value.trim(),
+                ref_code: document.getElementById('addHospRefCode').value.trim(),
+                password: document.getElementById('addHospPass').value.trim(),
+                city: document.getElementById('addHospCity').value.trim(),
+                address: document.getElementById('addHospAddress').value.trim(),
+                phone: document.getElementById('addHospPhone').value.trim()
+            };
+            try {
+                const res = await fetch(`${API_BASE}/hospital/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeAddHospModal();
+                    loadHospitals();
+                } else {
+                    alert(data.error || 'Failed to create hospital');
+                }
+            } catch (err) { alert('Error creating hospital'); }
+        }
+
+        // Close modals when clicking on the backdrop overlay
+        window.addEventListener('click', (e) => {
+            const editModal = document.getElementById('editDocModal');
+            const addModal = document.getElementById('addDocModal');
+            const igModal = document.getElementById('igLeadModal');
+            const igApiModal = document.getElementById('igApiSettingsModal');
+            const clinicModal = document.getElementById('addClinicModal');
+            const editHospModal = document.getElementById('editHospModal');
+            const addHospModal = document.getElementById('addHospModal');
+            if (e.target === editModal) closeModal();
+            if (e.target === addModal) closeAddModal();
+            if (e.target === igModal) closeIgLeadModal();
+            if (e.target === igApiModal) closeIgApiSettingsModal();
+            if (e.target === clinicModal) closeClinicModal();
+            if (e.target === editHospModal) closeEditHospModal();
+            if (e.target === addHospModal) closeAddHospModal();
+        });
+
 
         const adminPass = checkAuth();
         if (!adminPass) {
@@ -747,6 +1050,7 @@
             document.getElementById('view-overview').style.display = view === 'overview' ? 'block' : 'none';
             document.getElementById('view-doctors').style.display = view === 'doctors' ? 'block' : 'none';
             document.getElementById('view-clinics').style.display = view === 'clinics' ? 'block' : 'none';
+            document.getElementById('view-hospitals').style.display = view === 'hospitals' ? 'block' : 'none';
             document.getElementById('view-activity').style.display = view === 'activity' ? 'block' : 'none';
             document.getElementById('view-instagram').style.display = view === 'instagram' ? 'block' : 'none';
             
@@ -761,6 +1065,7 @@
             }
             if (view === 'doctors') loadDoctors();
             if (view === 'clinics') loadClinics();
+            if (view === 'hospitals') loadHospitals();
             if (view === 'activity') loadActivityLogs();
             if (view === 'instagram') loadInstagramLeads();
         }
