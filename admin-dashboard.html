@@ -1024,28 +1024,6 @@
             if (e.target === addHospModal) closeAddHospModal();
         });
 
-
-        const adminPass = checkAuth();
-        if (!adminPass) {
-            throw new Error("Unauthorized redirecting...");
-        }
-
-        window.addEventListener('pageshow', function(event) {
-            const adminExpiry = localStorage.getItem('admin_expiry');
-            if (!localStorage.getItem('admin_pass') || !adminExpiry || Date.now() > parseInt(adminExpiry)) {
-                window.location.replace('admin-login.html');
-            }
-        });
-
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
-        const headers = { 'X-Admin-Password': adminPass };
-
-        let allDoctors = [];
-        let allActivity = [];
-
-        function initIcons() { try { lucide.createIcons(); } catch(e) {} }
-
         function showView(view) {
             document.getElementById('view-overview').style.display = view === 'overview' ? 'block' : 'none';
             document.getElementById('view-doctors').style.display = view === 'doctors' ? 'block' : 'none';
