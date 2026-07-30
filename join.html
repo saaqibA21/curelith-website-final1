@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
   <style>
     .join-hero {
@@ -59,22 +60,23 @@
     .partner-card {
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 44px 36px;
       text-align: center;
-      box-shadow: 0 16px 40px rgba(15, 27, 25, 0.06);
+      box-shadow: 0 16px 40px rgba(15, 27, 25, 0.05);
       position: relative;
     }
 
     .hospital-avatar {
-      width: 84px; height: 84px;
-      border-radius: 20px;
+      width: 88px; height: 88px;
+      border-radius: 22px;
       background: var(--paper);
-      border: 2px solid var(--line);
+      border: 1.5px solid var(--line);
       margin: 0 auto 20px auto;
       display: flex; align-items: center; justify-content: center;
-      font-size: 38px;
+      color: var(--pine);
       overflow: hidden;
+      box-shadow: 0 8px 20px rgba(30, 66, 61, 0.06);
     }
     .hospital-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -84,55 +86,55 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--pine);
-      background: rgba(30, 66, 61, 0.08);
-      border: 1px solid rgba(30, 66, 61, 0.18);
-      padding: 4px 14px;
+      background: #EBF2EF;
+      border: 1px solid #C4D9D2;
+      padding: 6px 16px;
       border-radius: 100px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       font-weight: 600;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .partner-card h2 {
       font-family: var(--serif);
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 600;
       color: var(--void);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .partner-card p.desc {
       font-size: 15px;
       color: var(--ink-soft);
       line-height: 1.6;
-      margin-bottom: 28px;
+      margin-bottom: 30px;
     }
 
     /* FEATURES LIST */
     .feature-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-bottom: 32px;
+      gap: 14px;
+      margin-bottom: 36px;
       text-align: left;
     }
     .feature-item {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       font-size: 14.5px;
       color: var(--ink);
+      line-height: 1.4;
     }
     .feature-icon {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      background: rgba(30, 66, 61, 0.08);
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: #EBF2EF;
+      border: 1px solid #C4D9D2;
       color: var(--pine);
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px;
       flex-shrink: 0;
-      font-weight: bold;
     }
 
     .cta-whatsapp {
@@ -142,24 +144,25 @@
       gap: 10px;
       width: 100%;
       padding: 16px 28px;
-      background: #25D366;
+      background: var(--pine);
       color: #fff;
       font-family: var(--sans);
       font-size: 16px;
       font-weight: 700;
-      border-radius: 12px;
+      border-radius: 14px;
       text-decoration: none;
       transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
-      box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.4);
+      box-shadow: 0 10px 24px -5px rgba(30, 66, 61, 0.4);
+      border: 1px solid rgba(255,255,255,0.1);
     }
     .cta-whatsapp:hover {
-      background: #20BA5A;
+      background: var(--pine-light);
       transform: translateY(-2px);
-      box-shadow: 0 14px 30px -5px rgba(37, 211, 102, 0.5);
+      box-shadow: 0 14px 30px -5px rgba(30, 66, 61, 0.5);
     }
 
     .card-footer-note {
-      margin-top: 20px;
+      margin-top: 22px;
       font-family: var(--mono);
       font-size: 12px;
       color: var(--mist-dim);
@@ -236,47 +239,62 @@
 
         <!-- MAIN CONTENT -->
         <div id="hospitalContent" class="hidden">
-          <div class="hospital-avatar" id="logoBox">🏥</div>
-          <div class="partner-tag">✓ Preferred Health Partner</div>
+          <div class="hospital-avatar" id="logoBox">
+            <i data-lucide="building-2" style="width: 44px; height: 44px; stroke-width: 1.6;"></i>
+          </div>
+          <div class="partner-tag">
+            <i data-lucide="check-circle-2" style="width: 14px; height: 14px;"></i> Preferred Health Partner
+          </div>
           <h2 id="hospitalName">Hospital Name</h2>
           <p class="desc" id="hospitalSubtitle">
-            Connect to <strong>Curelith</strong> to access <strong>Orthomed Hospital</strong> doctors, diagnostic scans, and medical advice on WhatsApp.
+            Connect to <strong>Curelith</strong> to access <strong>Orthomed Hospital</strong> specialists, diagnostic scans, and medical advice on WhatsApp.
           </p>
 
           <div class="feature-list">
             <div class="feature-item">
-              <div class="feature-icon">🩺</div>
+              <div class="feature-icon">
+                <i data-lucide="stethoscope" style="width: 18px; height: 18px;"></i>
+              </div>
               <span>Book <strong id="featureHospital">hospital</strong> doctors directly on WhatsApp</span>
             </div>
             <div class="feature-item">
-              <div class="feature-icon">🔬</div>
+              <div class="feature-icon">
+                <i data-lucide="activity" style="width: 18px; height: 18px;"></i>
+              </div>
               <span>Schedule MRI, CT, X-Ray & Blood Tests with priority slots</span>
             </div>
             <div class="feature-item">
-              <div class="feature-icon">💬</div>
+              <div class="feature-icon">
+                <i data-lucide="message-square" style="width: 18px; height: 18px;"></i>
+              </div>
               <span>Tamil, Tanglish, Hindi & English supported</span>
             </div>
             <div class="feature-item">
-              <div class="feature-icon">🆓</div>
+              <div class="feature-icon">
+                <i data-lucide="shield-check" style="width: 18px; height: 18px;"></i>
+              </div>
               <span>100% Free for patients — no app download needed</span>
             </div>
           </div>
 
           <a class="cta-whatsapp" id="waLink" href="#" target="_blank" rel="noopener">
-            <span style="font-size: 20px;">💬</span>
+            <i data-lucide="message-circle" style="width: 20px; height: 20px;"></i>
             Chat with Your Doctor Now →
           </a>
 
           <div class="card-footer-note">
-            🔒 Private, secure & encrypted health assistant
+            <i data-lucide="lock" style="width: 13px; height: 13px;"></i>
+            Private, secure & encrypted health assistant
           </div>
         </div>
 
         <!-- ERROR STATE -->
         <div id="errorState" class="hidden state-box">
-          <div style="font-size: 44px; margin-bottom: 12px;">🔍</div>
-          <h3 style="font-family: var(--serif); font-size: 20px; color: var(--void); margin-bottom: 8px;">Hospital Not Found</h3>
-          <p style="color: var(--ink-soft); font-size: 14px; margin-bottom: 20px;">This QR code may be invalid or expired. Please scan again or contact your hospital.</p>
+          <div style="margin-bottom: 16px; color: var(--clay);">
+            <i data-lucide="search-x" style="width: 48px; height: 48px;"></i>
+          </div>
+          <h3 style="font-family: var(--serif); font-size: 22px; color: var(--void); margin-bottom: 8px;">Hospital Not Found</h3>
+          <p style="color: var(--ink-soft); font-size: 14.5px; margin-bottom: 24px;">This QR code may be invalid or expired. Please scan again or contact your hospital.</p>
           <a href="index.html" class="btn btn-ghost btn-sm">← Back to Curelith Home</a>
         </div>
 
@@ -315,6 +333,10 @@
 
 <script>
   const API = 'https://api.curelith.com/hospital';
+
+  function initIcons() {
+    try { lucide.createIcons(); } catch(e) {}
+  }
 
   function getRef() {
     const params = new URLSearchParams(window.location.search);
@@ -359,6 +381,7 @@
       // Show content
       document.getElementById('loadingState').classList.add('hidden');
       document.getElementById('hospitalContent').classList.remove('hidden');
+      initIcons();
 
     } catch (err) {
       showError();
@@ -368,6 +391,7 @@
   function showError() {
     document.getElementById('loadingState').classList.add('hidden');
     document.getElementById('errorState').classList.remove('hidden');
+    initIcons();
   }
 
   // Mobile menu toggle
@@ -379,7 +403,9 @@
     });
   }
 
-  loadHospital();
+  document.addEventListener('DOMContentLoaded', () => {
+    loadHospital();
+  });
 </script>
 </body>
 </html>
