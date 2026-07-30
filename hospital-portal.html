@@ -477,8 +477,8 @@
       <div id="tabAppointments" class="hidden">
         <div class="dash-header">
           <div class="dash-title">
-            <h2>All Appointments</h2>
-            <p>View and manage all patient appointment bookings</p>
+            <h2>All Appointments & Scan Requests</h2>
+            <p>View, manage, and confirm all patient scan bookings in real-time</p>
           </div>
         </div>
 
@@ -487,13 +487,14 @@
             <thead>
               <tr>
                 <th>Patient Phone</th>
-                <th>Scan / Service</th>
+                <th>Requested Scan / Service</th>
                 <th>Booking Date</th>
                 <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody id="appointmentsTable">
-              <tr><td colspan="4" style="text-align:center; color: var(--ink-soft);">Loading appointments...</td></tr>
+              <tr><td colspan="5" style="text-align:center; color: var(--ink-soft);">Loading appointments...</td></tr>
             </tbody>
           </table>
         </div>
@@ -739,17 +740,41 @@
     const data = await res.json();
     const table = document.getElementById('appointmentsTable');
     if (data.appointments && data.appointments.length) {
-      table.innerHTML = data.appointments.map(a => `
-        <tr>
-          <td>${a.user_phone}</td>
-          <td>${a.scan_name}</td>
-          <td>${a.created_at ? a.created_at.slice(0,10) : 'Today'}</td>
-          <td><span class="badge badge-${a.status === 'confirmed' ? 'success' : 'pending'}">${a.status}</span></td>
-        </tr>
-      `).join('');
+      table.innerHTML = data.appointments.map(a => {
+        let actionBtn = '';
+        if (a.status === 'pending') {
+          actionBtn = `<button class="btn btn-primary btn-sm" style="padding: 4px 12px; font-size: 12px;" onclick="updateAppointmentStatus(${a.id}, 'confirmed')">✓ Confirm Slot</button>`;
+        } else if (a.status === 'confirmed') {
+          actionBtn = `<button class="btn btn-ghost btn-sm" style="padding: 4px 12px; font-size: 12px;" onclick="updateAppointmentStatus(${a.id}, 'completed')">Mark Completed</button>`;
+        } else {
+          actionBtn = `<span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft);">✓ Completed</span>`;
+        }
+
+        return `
+          <tr>
+            <td><strong>${a.user_phone}</strong></td>
+            <td>${a.scan_name}</td>
+            <td>${a.created_at ? a.created_at.slice(0,10) : 'Today'}</td>
+            <td><span class="badge badge-${a.status === 'confirmed' ? 'success' : 'pending'}">${a.status}</span></td>
+            <td>${actionBtn}</td>
+          </tr>
+        `;
+      }).join('');
     } else {
-      table.innerHTML = '<tr><td colspan="4" style="text-align:center;">No appointments found</td></tr>';
+      table.innerHTML = '<tr><td colspan="5" style="text-align:center;">No appointment or scan requests found</td></tr>';
     }
+  }
+
+  async function updateAppointmentStatus(id, newStatus) {
+    try {
+      await fetch(`${API}/appointments/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': token },
+        body: JSON.stringify({ status: newStatus })
+      });
+      loadAppointments();
+      loadDashboardData();
+    } catch(e) {}
   }
 
   async function loadQR() {
