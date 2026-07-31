@@ -14,56 +14,56 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* PAGE & DARK DASHBOARD LAYOUT */
-    body { background: #070B14; color: #E2E8F0; font-family: 'Inter', sans-serif; }
+    /* PAGE LAYOUT */
+    body { background: var(--paper); color: var(--ink); }
 
     /* LOGIN CONTAINER */
     .portal-hero {
-      background: radial-gradient(circle at 50% 0%, #0F172A 0%, #070B14 100%);
+      background: var(--void);
       color: #fff;
-      padding: 90px 0 60px 0;
+      padding: 100px 0 80px 0;
       position: relative;
       overflow: hidden;
       text-align: center;
     }
     .portal-hero::before {
       content: ""; position: absolute; inset: 0;
-      background-image: radial-gradient(circle at 1px 1px, rgba(0,212,170,0.12) 1px, transparent 1.6px);
-      background-size: 28px 28px;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 1.6px);
+      background-size: 26px 26px;
+      -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+      mask-image: linear-gradient(to bottom, black, transparent);
     }
     .portal-hero h1 {
       font-family: var(--serif);
       font-size: clamp(32px, 4.5vw, 50px);
       font-weight: 600;
       margin-top: 12px;
-      color: #FFFFFF;
     }
-    .portal-hero h1 span { color: #00D4AA; font-style: italic; }
+    .portal-hero h1 span { color: var(--gold); font-style: italic; }
 
     .login-section {
-      padding: 50px 0 100px 0;
-      background: #070B14;
+      padding: 60px 0 100px 0;
+      background: var(--paper);
     }
     .login-card {
       max-width: 440px;
       margin: 0 auto;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 24px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
       padding: 40px 36px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 212, 170, 0.05);
-      backdrop-filter: blur(20px);
+      box-shadow: 0 16px 40px rgba(15, 27, 25, 0.06);
     }
     .login-card h3 {
       font-family: var(--serif);
-      font-size: 24px;
-      color: #FFFFFF;
+      font-size: 22px;
+      color: var(--void);
       margin-bottom: 6px;
       text-align: center;
     }
     .login-card p.sub {
       font-size: 14px;
-      color: #94A3B8;
+      color: var(--ink-soft);
       text-align: center;
       margin-bottom: 28px;
     }
@@ -77,107 +77,100 @@
       font-size: 11.5px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #00D4AA;
+      color: var(--ink-soft);
       margin-bottom: 8px;
-      font-weight: 600;
     }
     .form-control {
       width: 100%;
-      background: rgba(7, 11, 20, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
       padding: 14px 16px;
       font-family: var(--sans);
       font-size: 14.5px;
-      color: #FFFFFF;
+      color: var(--ink);
       outline: none;
-      transition: all 0.2s;
+      transition: border-color 0.2s;
     }
     .form-control:focus {
-      border-color: #00D4AA;
-      box-shadow: 0 0 15px rgba(0, 212, 170, 0.25);
+      border-color: var(--pine);
     }
     .login-btn {
       width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #00D4AA 0%, #059669 100%);
-      color: #070B14;
+      padding: 15px;
+      background: var(--clay);
+      color: #241208;
       font-family: var(--sans);
       font-weight: 700;
       font-size: 15px;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(0, 212, 170, 0.3);
-      transition: all 0.2s;
+      box-shadow: 0 10px 24px -10px rgba(212, 130, 74, 0.55);
+      transition: background 0.2s, transform 0.15s;
     }
     .login-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(0, 212, 170, 0.45);
+      background: var(--clay-deep);
+      transform: translateY(-1px);
     }
 
     /* DASHBOARD LAYOUT */
     .dashboard-container {
       display: flex;
       min-height: calc(100vh - 80px);
-      background: #070B14;
     }
     .sidebar {
-      width: 270px;
-      background: #0B132B;
+      width: 260px;
+      background: var(--void);
       color: #fff;
-      padding: 36px 20px;
+      padding: 30px 20px;
       flex-shrink: 0;
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 1px solid var(--line-dark);
     }
     .sidebar-brand {
       font-family: var(--mono);
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #00D4AA;
-      margin-bottom: 28px;
+      color: var(--gold);
+      margin-bottom: 24px;
       padding-left: 12px;
-      font-weight: 700;
     }
     .sidebar-nav {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
     .nav-btn {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 13px 18px;
-      border-radius: 14px;
-      color: #94A3B8;
-      font-size: 14.5px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: var(--mist);
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
-      border: 1px solid transparent;
+      border: none;
       background: transparent;
       width: 100%;
       text-align: left;
     }
     .nav-btn:hover {
-      background: rgba(255,255,255,0.05);
-      color: #FFF;
-      transform: translateX(4px);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
     }
     .nav-btn.active {
-      background: linear-gradient(135deg, rgba(0,212,170,0.15) 0%, rgba(5,150,105,0.1) 100%);
-      color: #00D4AA;
-      border-color: rgba(0, 212, 170, 0.3);
-      font-weight: 700;
-      box-shadow: 0 4px 20px rgba(0, 212, 170, 0.1);
+      background: var(--pine);
+      color: #fff;
+      font-weight: 600;
     }
 
     .main-content {
       flex: 1;
       padding: 40px;
-      background: #070B14;
+      background: var(--paper);
       overflow-y: auto;
     }
     .dash-header {
@@ -186,17 +179,16 @@
       justify-content: space-between;
       margin-bottom: 32px;
       padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--line);
     }
     .dash-title h2 {
       font-family: var(--serif);
-      font-size: 30px;
-      color: #FFFFFF;
+      font-size: 28px;
+      color: var(--void);
     }
     .dash-title p {
       font-size: 14px;
-      color: #94A3B8;
-      margin-top: 4px;
+      color: var(--ink-soft);
     }
 
     /* STATS GRID */
@@ -207,42 +199,35 @@
       margin-bottom: 36px;
     }
     .stat-card {
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
       padding: 24px 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(16px);
-      transition: transform 0.2s, border-color 0.2s;
-    }
-    .stat-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(0, 212, 170, 0.3);
+      box-shadow: 0 10px 25px rgba(15, 27, 25, 0.02);
     }
     .stat-label {
       font-family: var(--mono);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #94A3B8;
+      color: var(--ink-soft);
       margin-bottom: 8px;
     }
     .stat-val {
       font-family: var(--serif);
-      font-size: 36px;
-      font-weight: 700;
-      color: #00D4AA;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--pine);
     }
 
     /* DATA TABLES */
     .table-card {
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
       padding: 28px 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 25px rgba(15, 27, 25, 0.02);
       margin-bottom: 32px;
-      backdrop-filter: blur(16px);
     }
     .table-header {
       display: flex;
@@ -252,8 +237,8 @@
     }
     .table-header h3 {
       font-family: var(--serif);
-      font-size: 22px;
-      color: #FFFFFF;
+      font-size: 20px;
+      color: var(--void);
     }
     table {
       width: 100%;
@@ -265,161 +250,263 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #94A3B8;
+      color: var(--ink-soft);
       text-align: left;
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(7, 11, 20, 0.5);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
     }
     td {
-      padding: 18px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      color: #E2E8F0;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
     }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(255,255,255,0.02); }
 
     .badge {
       font-family: var(--mono);
       font-size: 11px;
-      padding: 4px 12px;
+      padding: 4px 10px;
       border-radius: 100px;
-      font-weight: 600;
+      font-weight: 500;
       display: inline-block;
     }
-    .badge-success { background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .badge-pending { background: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-success { background: rgba(30,66,61,0.1); color: var(--pine); }
+    .badge-pending { background: rgba(212,130,74,0.15); color: var(--clay-deep); }
 
     /* MODAL */
     .modal {
       position: fixed; inset: 0;
-      background: rgba(7, 11, 20, 0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(15,27,25,0.6);
+      backdrop-filter: blur(4px);
       display: flex; align-items: center; justify-content: center;
       z-index: 200;
     }
     .modal-card {
-      background: #0F172A;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 24px;
-      padding: 40px 32px;
-      width: 100%; max-width: 500px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-      color: #FFF;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 36px 30px;
+      width: 100%; max-width: 480px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
     }
     .hidden { display: none !important; }
 
-    .btn {
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #00D4AA 0%, #059669 100%);
-      color: #070B14;
-      box-shadow: 0 4px 15px rgba(0, 212, 170, 0.25);
-    }
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
-    }
-    .btn-ghost {
-      background: rgba(255, 255, 255, 0.05);
-      color: #E2E8F0;
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-    .btn-ghost:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #FFF;
-    }
-
     @media (max-width: 980px) {
       .dashboard-container { flex-direction: column; }
-      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--line-dark); }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
       .main-content { padding: 24px 18px; }
     }
-  </style>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+  }
+
+  /* FULLSCREEN APP SHELL */
+  #loginView {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--void);
+    position: relative;
+    overflow: hidden;
+  }
+  #loginView::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 1.6px);
+    background-size: 26px 26px;
+  }
+  .app-login-box {
+    width: 100%;
+    max-width: 420px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 44px 36px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+    text-align: center;
+  }
+  .app-login-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--void);
+    margin-bottom: 24px;
+  }
+
+  /* APP DASHBOARD SHELL */
+  #dashboardView {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    overflow: hidden;
+  }
+  .app-sidebar {
+    width: 260px;
+    background: var(--void);
+    color: #fff;
+    padding: 28px 18px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    border-right: 1px solid var(--line-dark);
+  }
+  .app-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: #FFF;
+    margin-bottom: 32px;
+    padding-left: 8px;
+  }
+  .app-sidebar-brand span {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    display: block;
+    margin-top: 2px;
+  }
+  .app-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: var(--mist);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+  }
+  .nav-btn:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+  }
+  .nav-btn.active {
+    background: var(--pine);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .app-sidebar-footer {
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .app-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .app-topbar {
+    height: 70px;
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    padding: 0 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .app-content {
+    flex: 1;
+    padding: 36px;
+    overflow-y: auto;
+  }
+</style>
 </head>
 <body>
 
-<header>
-  <div class="wrap nav">
-    <a href="index.html" class="brand">
-      <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
-      Curelith
-    </a>
-    <nav class="links">
-      <a href="index.html#why">Why Curelith</a>
-      <a href="index.html#tools">Tools</a>
-      <a href="doctors.html">Physicians</a>
-      <a href="hospitals.html">Hospitals</a>
-    </nav>
-    <div class="nav-actions">
-      <div id="hospitalNameHeader" style="font-family: var(--mono); font-size: 13px; color: var(--gold); font-weight: 500;" class="hidden">🏥 Partner Hospital</div>
-      <button id="logoutBtn" class="btn btn-ghost-dark btn-sm hidden" onclick="logout()">Logout</button>
-    </div>
-  </div>
-</header>
-
-<!-- LOGIN SECTION -->
+<!-- STANDALONE APP LOGIN SCREEN -->
 <div id="loginView">
-  <section class="portal-hero">
-    <div class="wrap">
-      <div class="eyebrow on-dark">Partner Admin Network</div>
-      <h1>Hospital Partner <span>Portal</span></h1>
-      <p class="sub">Manage your doctors, diagnostic scan packages, appointments, and QR code referrals on Curelith.</p>
+  <div class="app-login-box">
+    <div class="app-login-logo">
+      <img src="assets/logo.png" style="width:32px; height:32px;" alt="Curelith">
+      Hospital Partner Console
     </div>
-  </section>
+    <p style="font-size: 13.5px; color: var(--ink-soft); margin-bottom: 28px;">Sign in to manage your hospital's doctors, diagnostic scan packages, and patient referrals.</p>
 
-  <section class="login-section">
-    <div class="wrap">
-      <div class="login-card">
-        <h3>Partner Login</h3>
-        <p class="sub">Enter your hospital reference code and password</p>
+    <div id="loginError" style="color: #c93b2b; font-size: 13.5px; margin-bottom: 16px; text-align: center;" class="hidden"></div>
 
-        <div id="loginError" style="color: #c93b2b; font-size: 13.5px; margin-bottom: 16px; text-align: center;" class="hidden"></div>
-
-        <form onsubmit="handleLogin(event)">
-          <div class="form-group">
-            <label>Hospital Code (ref_code)</label>
-            <input type="text" id="refCodeInput" class="form-control" placeholder="e.g. orthomed" required>
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="passwordInput" class="form-control" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="login-btn">Log In to Portal →</button>
-        </form>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Hospital Code (ref_code)</label>
+        <input type="text" id="refCodeInput" class="form-control" placeholder="e.g. orthomed" required>
       </div>
-    </div>
-  </section>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="passwordInput" class="form-control" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="login-btn">Sign In to Dashboard →</button>
+    </form>
+  </div>
 </div>
 
-<!-- DASHBOARD VIEW -->
+<!-- STANDALONE APP DASHBOARD CONSOLE -->
 <div id="dashboardView" class="hidden">
-  <div class="dashboard-container">
-    <div class="sidebar">
-      <div class="sidebar-brand">Hospital Admin</div>
-      <div class="sidebar-nav">
-        <button class="nav-btn active" onclick="switchTab('overview')"><i data-lucide="layout-dashboard" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> Overview</button>
-        <button class="nav-btn" onclick="switchTab('doctors')"><i data-lucide="user-check" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> My Doctors</button>
-        <button class="nav-btn" onclick="switchTab('scans')"><i data-lucide="activity" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> Scans & Services</button>
-        <button class="nav-btn" onclick="switchTab('appointments')"><i data-lucide="calendar" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> Appointments</button>
-        <button class="nav-btn" onclick="switchTab('qr')"><i data-lucide="qr-code" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> QR Referral Code</button>
+  <div class="app-sidebar">
+    <div class="app-sidebar-brand">
+      <img src="assets/logo.png" style="width:28px; height:28px;" alt="Curelith">
+      <div>
+        Curelith
+        <span>Partner Console</span>
       </div>
     </div>
 
-    <div class="main-content">
+    <div class="app-nav-list">
+      <button class="nav-btn active" onclick="switchTab('overview')"><i data-lucide="layout-dashboard" style="width:16px; height:16px;"></i> Overview</button>
+      <button class="nav-btn" onclick="switchTab('doctors')"><i data-lucide="user-check" style="width:16px; height:16px;"></i> My Doctors</button>
+      <button class="nav-btn" onclick="switchTab('scans')"><i data-lucide="activity" style="width:16px; height:16px;"></i> Scans & Services</button>
+      <button class="nav-btn" onclick="switchTab('appointments')"><i data-lucide="calendar" style="width:16px; height:16px;"></i> Appointments</button>
+      <button class="nav-btn" onclick="switchTab('qr')"><i data-lucide="qr-code" style="width:16px; height:16px;"></i> QR Referral Code</button>
+    </div>
+
+    <div class="app-sidebar-footer">
+      <button class="nav-btn" onclick="logout()"><i data-lucide="log-out" style="width:16px; height:16px;"></i> Sign Out</button>
+    </div>
+  </div>
+
+  <div class="app-main">
+    <div class="app-topbar">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <h3 id="dashHospName" style="font-family: var(--serif); font-size: 20px; margin: 0; color: var(--void);">Orthomed Hospital</h3>
+        <span class="badge badge-success">✓ Partner Verified</span>
+      </div>
+      <div id="hospitalNameHeader" style="font-family: var(--mono); font-size: 13px; color: var(--pine); font-weight: 600;">🏥 Partner Portal</div>
+    </div>
+
+    <div class="app-content">
       
       <!-- OVERVIEW TAB -->
       <div id="tabOverview">
@@ -631,33 +718,7 @@
   </div>
 </div>
 
-<footer>
-  <div class="wrap foot-top">
-    <div>
-      <div class="foot-brand">
-        <img src="assets/logo.png" style="width:28px; height:28px;" alt="Curelith">
-        Curelith
-      </div>
-      <p>AI-first clinical intelligence navigating patients safely from symptoms to certified specialist care.</p>
-    </div>
-    <div class="foot-col">
-      <h5>Network</h5>
-      <a href="doctors.html">Physicians</a>
-      <a href="hospitals.html">Partner Hospitals</a>
-      <a href="hospital-portal.html">Hospital Admin Portal</a>
-    </div>
-    <div class="foot-col">
-      <h5>Legal & Contact</h5>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
-      <div class="line">Support: support@curelith.com</div>
-    </div>
-  </div>
-  <div class="wrap foot-bottom">
-    <div>© 2026 Curelith Intelligence. All rights reserved.</div>
-    <div class="disclaimer">Not for medical emergencies. In an emergency, visit a hospital immediately.</div>
-  </div>
-</footer>
+
 
 <script>
   const API = 'https://api.curelith.com/hospital';
@@ -698,10 +759,13 @@
   function showDashboard(hospital) {
     document.getElementById('loginView').classList.add('hidden');
     document.getElementById('dashboardView').classList.remove('hidden');
-    document.getElementById('hospitalNameHeader').textContent = `🏥 ${hospital.name}`;
-    document.getElementById('hospitalNameHeader').classList.remove('hidden');
-    document.getElementById('logoutBtn').classList.remove('hidden');
-    document.getElementById('dashHospName').textContent = hospital.name;
+    const hHeader = document.getElementById('hospitalNameHeader');
+    if (hHeader) {
+      hHeader.textContent = `🏥 ${hospital.name}`;
+      hHeader.classList.remove('hidden');
+    }
+    const dashName = document.getElementById('dashHospName');
+    if (dashName) dashName.textContent = hospital.name;
     try { lucide.createIcons(); } catch(e) {}
     loadDashboardData();
   }
