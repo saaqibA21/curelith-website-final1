@@ -993,7 +993,7 @@
             try {
                 const res = await fetch(`${API_BASE}/hospital/register`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', ...headers },
                     body: JSON.stringify(payload)
                 });
                 const data = await res.json();
