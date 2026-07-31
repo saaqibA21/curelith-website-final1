@@ -399,43 +399,43 @@
     <div id="screenProfile" class="profile-screen hidden">
       
       <!-- HERO AVATAR HEADER CARD -->
-      <div style="background: linear-gradient(135deg, #1E423D, #0F1B19); color: #FFF; border-radius: 20px; padding: 24px 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(15,27,25,0.12); position: relative; overflow: hidden;">
-        <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(232,199,123,0.2); border: 2px solid #E8C77B; color: #E8C77B; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin: 0 auto 10px auto;" id="profileAvatar">
-          👤
+      <div style="background: #1E423D; color: #FFFFFF; border-radius: 18px; padding: 24px 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(30,66,61,0.12);">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.3); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; margin: 0 auto 10px auto;" id="profileAvatar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
         <h3 id="displayProfName" style="font-family: var(--serif); font-size: 20px; margin: 0 0 4px 0;">Patient Health Profile</h3>
-        <span style="font-size: 11.5px; background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 100px; color: var(--gold); font-weight: 600;">🟢 Curelith Verified Health Passport</span>
+        <span style="font-size: 11px; background: rgba(255,255,255,0.12); padding: 3px 12px; border-radius: 100px; color: #E2DFD2; font-weight: 600; letter-spacing: 0.04em;">Curelith Medical Passport</span>
       </div>
 
       <form onsubmit="handleSaveProfile(event)">
         
         <!-- CARD 1: PERSONAL DETAILS -->
-        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
-          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0 0 14px 0; display: flex; align-items: center; gap: 6px;">
-            👤 Personal Identification
+        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 14px;">
+          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0 0 14px 0;">
+            Personal Identification
           </h4>
           
           <div class="form-group">
             <label>Full Name</label>
-            <input type="text" id="profName" class="form-control" placeholder="e.g. Ramesh Kumar" oninput="updateProfileAvatarName(this.value)">
+            <input type="text" id="profName" class="form-control" placeholder="Ramesh Kumar" oninput="updateProfileAvatarName(this.value)">
           </div>
 
           <div class="form-group" style="margin-bottom: 0;">
-            <label>WhatsApp Phone Number</label>
+            <label>WhatsApp Mobile Number</label>
             <div style="position: relative;">
-              <input type="text" id="profPhone" class="form-control" readonly style="background: rgba(0,0,0,0.03); padding-right: 90px;">
-              <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #15803D; background: #DCFCE7; padding: 2px 8px; border-radius: 100px; font-weight: 700;">Verified ✓</span>
+              <input type="text" id="profPhone" class="form-control" readonly style="background: #F8F6F0; padding-right: 90px;">
+              <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--pine); background: #EBF2EF; padding: 3px 8px; border-radius: 100px; font-weight: 600;">Verified</span>
             </div>
           </div>
         </div>
 
         <!-- CARD 2: BIOMETRIC VITALS -->
-        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
-          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0 0 14px 0; display: flex; align-items: center; gap: 6px;">
-            🩺 Biometric & Clinical Vitals
+        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 14px;">
+          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0 0 14px 0;">
+            Biometric & Clinical Vitals
           </h4>
 
-          <div style="display: flex; gap: 12px; margin-bottom: 14px;">
+          <div style="display: flex; gap: 12px; margin-bottom: 12px;">
             <div class="form-group" style="flex: 1; margin: 0;">
               <label>Age (Years)</label>
               <input type="number" id="profAge" class="form-control" placeholder="32">
@@ -469,54 +469,54 @@
         </div>
 
         <!-- CARD 3: MEDICAL HISTORY & ALLERGIES -->
-        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
-          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--clay-deep); margin: 0 0 14px 0; display: flex; align-items: center; gap: 6px;">
-            🛡️ Medical Alerts & Conditions
+        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 14px;">
+          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0 0 14px 0;">
+            Medical History & Conditions
           </h4>
 
           <div class="form-group">
-            <label>Known Allergies (Food / Medication)</label>
-            <input type="text" id="profAllergies" class="form-control" placeholder="e.g. Penicillin, Dust, Peanuts">
+            <label>Known Allergies</label>
+            <input type="text" id="profAllergies" class="form-control" placeholder="e.g. Penicillin, Dust">
           </div>
 
           <div class="form-group" style="margin-bottom: 0;">
             <label>Chronic Medical Conditions</label>
-            <input type="text" id="profConditions" class="form-control" placeholder="e.g. Diabetes Type 2, Hypertension, Asthma">
+            <input type="text" id="profConditions" class="form-control" placeholder="e.g. Diabetes, Hypertension">
           </div>
         </div>
 
         <!-- CARD 4: SMARTWATCH & GOOGLE FIT SYNC -->
-        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-            <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0; display: flex; align-items: center; gap: 6px;">
-              ⌚ Smartwatch & Vitals Sync
+        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0;">
+              Smartwatch Sync
             </h4>
-            <span id="smartwatchBadge" style="font-size: 10.5px; padding: 3px 10px; border-radius: 100px; background: #E2DFD2; color: var(--ink-soft); font-weight: 700;">Not Connected</span>
+            <span id="smartwatchBadge" style="font-size: 10.5px; padding: 3px 10px; border-radius: 100px; background: #EBF2EF; color: var(--pine); font-weight: 600;">Not Connected</span>
           </div>
 
-          <p style="font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 14px;">
-            Enter your Google Account email to sync your step count, heart rate, and daily activity metrics directly with Curelith AI.
+          <p style="font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 12px;">
+            Connect your Google account to sync steps, heart rate, and vitals automatically with Curelith AI.
           </p>
 
           <div class="form-group" style="margin-bottom: 12px;">
             <label>Google Account Email</label>
-            <input type="email" id="profGoogleEmail" class="form-control" placeholder="e.g. your.email@gmail.com">
+            <input type="email" id="profGoogleEmail" class="form-control" placeholder="your.email@gmail.com">
           </div>
 
-          <button type="button" class="btn btn-ghost btn-sm" style="width: 100%; justify-content: center; color: var(--pine); border-color: var(--pine); font-weight: 700; border-radius: 12px; padding: 11px;" onclick="connectGoogleFit()">
-            ⌚ Connect Google Fit / Smartwatch
+          <button type="button" class="btn btn-ghost btn-sm" style="width: 100%; justify-content: center; color: var(--pine); border-color: var(--pine); font-weight: 600; border-radius: 10px; padding: 10px;" onclick="connectGoogleFit()">
+            Connect Google Fit / Smartwatch
           </button>
         </div>
 
         <!-- ACTION BUTTON -->
-        <button type="submit" class="btn btn-primary btn-sm" id="saveProfBtn" style="width: 100%; justify-content: center; padding: 14px; font-size: 14.5px; font-weight: 700; border-radius: 100px; box-shadow: 0 4px 16px rgba(212,130,74,0.35);">
-          💾 Save Profile & Sync Vitals
+        <button type="submit" class="btn btn-primary btn-sm" id="saveProfBtn" style="width: 100%; justify-content: center; padding: 13px; font-size: 14px; font-weight: 600; background: #1E423D; color: #FFFFFF; border-radius: 10px; border: none; box-shadow: 0 4px 14px rgba(30,66,61,0.25);">
+          Save Profile & Vitals
         </button>
       </form>
 
-      <div style="margin-top: 24px; padding: 18px; background: rgba(212,130,74,0.08); border: 1px solid rgba(212,130,74,0.2); border-radius: 18px; text-align: center;">
-        <p style="font-size: 13px; color: var(--ink-soft); margin-bottom: 10px;">Need to switch accounts or log out?</p>
-        <button type="button" class="btn btn-ghost btn-sm" style="color: var(--clay-deep); border-color: rgba(212,130,74,0.4); width: 100%; justify-content: center; border-radius: 100px;" onclick="handleLogout()">Sign Out of Account</button>
+      <div style="margin-top: 20px; padding: 16px; background: #F8F6F0; border: 1px solid var(--line); border-radius: 16px; text-align: center;">
+        <p style="font-size: 12.5px; color: var(--ink-soft); margin-bottom: 10px;">Signed in as verified patient</p>
+        <button type="button" class="btn btn-ghost btn-sm" style="color: var(--ink-soft); border-color: var(--line); width: 100%; justify-content: center; border-radius: 100px; font-size: 12.5px;" onclick="handleLogout()">Sign Out</button>
       </div>
     </div>
 
@@ -768,9 +768,15 @@
         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
         if (audioBlob.size < 100) return;
 
+        const userAudioUrl = URL.createObjectURL(audioBlob);
         const box = document.getElementById('chatBox');
-        box.innerHTML += `<div class="msg-bubble msg-user">🎙️ [Voice Note Sent]</div>`;
-        box.innerHTML += `<div class="msg-bubble msg-assistant" id="voiceProcessingMsg">🎧 Listening & generating AI response...</div>`;
+        box.innerHTML += `
+          <div class="msg-bubble msg-user" style="padding: 10px 14px;">
+            <div style="font-size: 13px; font-weight: 500; margin-bottom: 6px;">Voice note sent</div>
+            <audio controls style="width: 100%; max-width: 230px; height: 34px; border-radius: 8px;"><source src="${userAudioUrl}" type="audio/webm">Your browser does not support audio replay.</audio>
+          </div>
+        `;
+        box.innerHTML += `<div class="msg-bubble msg-assistant" id="voiceProcessingMsg">Listening & processing AI response...</div>`;
         box.scrollTop = box.scrollHeight;
 
         const formData = new FormData();
@@ -790,17 +796,17 @@
             let replyHtml = escapeHtml(data.reply);
             if (data.audio_url) {
               const fullAudioUrl = data.audio_url.startsWith('http') ? data.audio_url : `${API_BASE}${data.audio_url}`;
-              replyHtml += `<br><br><audio controls autoplay style="width: 100%; margin-top: 8px; border-radius: 20px;"><source src="${fullAudioUrl}" type="audio/mpeg">Your browser does not support audio playback.</audio>`;
+              replyHtml += `<br><br><audio controls style="width: 100%; margin-top: 8px; border-radius: 12px; height: 36px;"><source src="${fullAudioUrl}" type="audio/mpeg">Your browser does not support audio playback.</audio>`;
             }
             box.innerHTML += `<div class="msg-bubble msg-assistant">${replyHtml}</div>`;
             box.scrollTop = box.scrollHeight;
           } else {
-            box.innerHTML += `<div class="msg-bubble msg-assistant">⚠ ${escapeHtml(data.error || 'Voice error')}</div>`;
+            box.innerHTML += `<div class="msg-bubble msg-assistant">Unable to process voice message. Please try again.</div>`;
           }
         } catch(e) {
           const tempMsg = document.getElementById('voiceProcessingMsg');
           if (tempMsg) tempMsg.remove();
-          box.innerHTML += `<div class="msg-bubble msg-assistant">⚠ Voice processing error. Please try again.</div>`;
+          box.innerHTML += `<div class="msg-bubble msg-assistant">Voice processing error. Please try again.</div>`;
         }
       };
 
