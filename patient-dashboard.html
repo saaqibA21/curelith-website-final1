@@ -913,18 +913,31 @@
         }
         box.innerHTML = data.files.map(f => {
           const fileUrl = f.file_url ? `${API_BASE}${f.file_url}` : `${API_BASE}/static/uploads/${encodeURIComponent(f.file_name)}`;
-          return `
-          <div class="file-card">
-            <div class="file-card-left">
-              <div class="file-icon-box">
-                <i data-lucide="file-text" style="width: 20px; height: 20px;"></i>
-              </div>
-              <div>
-                <div style="font-weight: 600; font-size: 15px; color: var(--void);">${escapeHtml(f.file_name)}</div>
-                <div style="font-size: 12px; color: var(--ink-soft); font-family: var(--mono);">${f.category || 'Lab Report'} • ${f.created_at ? f.created_at.slice(0,10) : 'Recent'}</div>
-              </div>
+          const isImage = /\.(jpg|jpeg|png|webp|gif)$/i.test(f.file_name || '') || /\.(jpg|jpeg|png|webp|gif)$/i.test(f.file_url || '');
+
+          const imagePreview = isImage ? `
+            <div style="margin-top: 10px; border-radius: 8px; overflow: hidden; background: #f0eee6; border: 1px solid var(--line); text-align: center;">
+              <a href="${fileUrl}" target="_blank">
+                <img src="${fileUrl}" style="max-width: 100%; max-height: 240px; object-fit: contain; display: block; margin: 0 auto;" alt="${escapeHtml(f.file_name)}">
+              </a>
             </div>
-            <a class="btn btn-ghost btn-sm" style="padding: 6px 12px; font-size: 12px;" href="${fileUrl}" target="_blank">View →</a>
+          ` : '';
+
+          return `
+          <div class="file-card" style="flex-direction: column; align-items: stretch;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div class="file-card-left">
+                <div class="file-icon-box">
+                  <i data-lucide="${isImage ? 'image' : 'file-text'}" style="width: 20px; height: 20px;"></i>
+                </div>
+                <div>
+                  <div style="font-weight: 600; font-size: 15px; color: var(--void);">${escapeHtml(f.file_name)}</div>
+                  <div style="font-size: 12px; color: var(--ink-soft); font-family: var(--mono);">${f.category || 'Scan Image'} • ${f.created_at ? f.created_at.slice(0,10) : 'Recent'}</div>
+                </div>
+              </div>
+              <a class="btn btn-ghost btn-sm" style="padding: 6px 12px; font-size: 12px;" href="${fileUrl}" target="_blank">Full View →</a>
+            </div>
+            ${imagePreview}
           </div>
         `;
         }).join('');
@@ -945,8 +958,14 @@
     const file = e.target.files[0];
     if (!file) return;
 
+    const localImgUrl = URL.createObjectURL(file);
     const box = document.getElementById('chatBox');
-    box.innerHTML += `<div class="msg-bubble msg-user">📷 [Attached Scan Image: ${escapeHtml(file.name)}]</div>`;
+    box.innerHTML += `
+      <div class="msg-bubble msg-user">
+        <div>📷 <strong>${escapeHtml(file.name)}</strong></div>
+        <img src="${localImgUrl}" style="max-width: 100%; max-height: 220px; border-radius: 10px; margin-top: 8px; display: block; border: 1px solid rgba(255,255,255,0.2);" alt="Uploaded scan">
+      </div>
+    `;
     box.innerHTML += `<div class="msg-bubble msg-assistant" id="imgAnalyzingMsg">🔬 Analyzing scan image findings with AI Vision...</div>`;
     box.scrollTop = box.scrollHeight;
 
