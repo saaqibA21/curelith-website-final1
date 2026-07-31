@@ -437,10 +437,11 @@
                 <th>Available Days</th>
                 <th>Consult Fee</th>
                 <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody id="doctorsTable">
-              <tr><td colspan="5" style="text-align:center; color: var(--ink-soft);">Loading doctors...</td></tr>
+              <tr><td colspan="6" style="text-align:center; color: var(--ink-soft);">Loading doctors...</td></tr>
             </tbody>
           </table>
         </div>
@@ -453,7 +454,7 @@
             <h2>Scans & Diagnostic Services</h2>
             <p>Manage MRI, CT, X-Ray, and Blood test offerings & pricing</p>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openScanModal()">+ Add Scan</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddDoctorModal ? openAddScanModal() : openScanModal()">+ Add Scan</button>
         </div>
 
         <div class="table-card">
@@ -465,10 +466,11 @@
                 <th>Price</th>
                 <th>Home Collection</th>
                 <th>Turnaround</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody id="scansTable">
-              <tr><td colspan="5" style="text-align:center; color: var(--ink-soft);">Loading scans...</td></tr>
+              <tr><td colspan="6" style="text-align:center; color: var(--ink-soft);">Loading scans...</td></tr>
             </tbody>
           </table>
         </div>
@@ -523,11 +525,11 @@
   </div>
 </div>
 
-<!-- ADD DOCTOR MODAL -->
+<!-- ADD / EDIT DOCTOR MODAL -->
 <div id="doctorModal" class="modal hidden">
   <div class="modal-card">
-    <h3 style="font-family: var(--serif); font-size: 22px; margin-bottom: 16px;">Add Doctor</h3>
-    <form onsubmit="handleAddDoctor(event)">
+    <h3 style="font-family: var(--serif); font-size: 22px; margin-bottom: 16px;" id="doctorModalTitle">Add Doctor</h3>
+    <form onsubmit="handleSaveDoctor(event)">
       <div class="form-group">
         <label>Doctor Name</label>
         <input type="text" id="docName" class="form-control" placeholder="Dr. Rajesh Kumar" required>
@@ -542,17 +544,17 @@
       </div>
       <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
         <button type="button" class="btn btn-ghost btn-sm" onclick="closeDoctorModal()">Cancel</button>
-        <button type="submit" class="btn btn-primary btn-sm">Save Doctor</button>
+        <button type="submit" class="btn btn-primary btn-sm" id="saveDoctorBtn">Save Doctor</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- ADD SCAN MODAL -->
+<!-- ADD / EDIT SCAN MODAL -->
 <div id="scanModal" class="modal hidden">
   <div class="modal-card">
-    <h3 style="font-family: var(--serif); font-size: 22px; margin-bottom: 16px;">Add Scan / Service</h3>
-    <form onsubmit="handleAddScan(event)">
+    <h3 style="font-family: var(--serif); font-size: 22px; margin-bottom: 16px;" id="scanModalTitle">Add Scan / Service</h3>
+    <form onsubmit="handleSaveScan(event)">
       <div class="form-group">
         <label>Category</label>
         <select id="scanCategory" class="form-control">
@@ -572,7 +574,7 @@
       </div>
       <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
         <button type="button" class="btn btn-ghost btn-sm" onclick="closeScanModal()">Cancel</button>
-        <button type="submit" class="btn btn-primary btn-sm">Save Scan</button>
+        <button type="submit" class="btn btn-primary btn-sm" id="saveScanBtn">Save Scan</button>
       </div>
     </form>
   </div>
@@ -609,6 +611,10 @@
 <script>
   const API = 'https://api.curelith.com/hospital';
   let token = localStorage.getItem('hospital_token') || '';
+  let editingDoctorId = null;
+  let editingScanId = null;
+  let loadedDoctors = [];
+  let loadedScans = [];
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -706,6 +712,7 @@
     const data = await res.json();
     const table = document.getElementById('doctorsTable');
     if (data.doctors && data.doctors.length) {
+      loadedDoctors = data.doctors;
       table.innerHTML = data.doctors.map(d => `
         <tr>
           <td><strong>Dr. ${d.doctor_name}</strong></td>
@@ -713,10 +720,15 @@
           <td>${d.available_days || 'Mon-Fri'}</td>
           <td>₹${d.consultation_fee}</td>
           <td><span class="badge badge-success">Active</span></td>
+          <td>
+            <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px;" onclick="openEditDoctorModal(${d.id})">Edit</button>
+            <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px; color: #b91c1c; border-color: #fca5a5; margin-left: 4px;" onclick="deleteDoctor(${d.id})">Delete</button>
+          </td>
         </tr>
       `).join('');
     } else {
-      table.innerHTML = '<tr><td colspan="5" style="text-align:center;">No doctors added yet</td></tr>';
+      loadedDoctors = [];
+      table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No doctors added yet</td></tr>';
     }
   }
 
@@ -725,6 +737,7 @@
     const data = await res.json();
     const table = document.getElementById('scansTable');
     if (data.scans && data.scans.length) {
+      loadedScans = data.scans;
       table.innerHTML = data.scans.map(s => `
         <tr>
           <td>${s.category}</td>
@@ -732,10 +745,15 @@
           <td>₹${s.price}</td>
           <td>${s.home_collection ? 'Yes' : 'No'}</td>
           <td>${s.turnaround_hours} hrs</td>
+          <td>
+            <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px;" onclick="openEditScanModal(${s.id})">Edit</button>
+            <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px; color: #b91c1c; border-color: #fca5a5; margin-left: 4px;" onclick="deleteScan(${s.id})">Delete</button>
+          </td>
         </tr>
       `).join('');
     } else {
-      table.innerHTML = '<tr><td colspan="5" style="text-align:center;">No scans added yet</td></tr>';
+      loadedScans = [];
+      table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No scans added yet</td></tr>';
     }
   }
 
@@ -791,20 +809,65 @@
     }
   }
 
-  function openDoctorModal() { document.getElementById('doctorModal').classList.remove('hidden'); }
+  function openAddDoctorModal() {
+    editingDoctorId = null;
+    document.getElementById('doctorModalTitle').textContent = 'Add Doctor';
+    document.getElementById('docName').value = '';
+    document.getElementById('docSpec').value = '';
+    document.getElementById('docFee').value = '';
+    document.getElementById('doctorModal').classList.remove('hidden');
+  }
+
+  function openEditDoctorModal(id) {
+    const d = loadedDoctors.find(x => x.id === id);
+    if (!d) return;
+    editingDoctorId = id;
+    document.getElementById('doctorModalTitle').textContent = 'Edit Doctor';
+    document.getElementById('docName').value = d.doctor_name || '';
+    document.getElementById('docSpec').value = d.specialization || '';
+    document.getElementById('docFee').value = d.consultation_fee || '';
+    document.getElementById('doctorModal').classList.remove('hidden');
+  }
+
   function closeDoctorModal() { document.getElementById('doctorModal').classList.add('hidden'); }
-  function openScanModal() { document.getElementById('scanModal').classList.remove('hidden'); }
+
+  function openAddScanModal() {
+    editingScanId = null;
+    document.getElementById('scanModalTitle').textContent = 'Add Scan / Service';
+    document.getElementById('scanCategory').value = 'Imaging';
+    document.getElementById('scanName').value = '';
+    document.getElementById('scanPrice').value = '';
+    document.getElementById('scanModal').classList.remove('hidden');
+  }
+
+  function openEditScanModal(id) {
+    const s = loadedScans.find(x => x.id === id);
+    if (!s) return;
+    editingScanId = id;
+    document.getElementById('scanModalTitle').textContent = 'Edit Scan / Service';
+    document.getElementById('scanCategory').value = s.category || 'Imaging';
+    document.getElementById('scanName').value = s.scan_name || '';
+    document.getElementById('scanPrice').value = s.price || '';
+    document.getElementById('scanModal').classList.remove('hidden');
+  }
+
   function closeScanModal() { document.getElementById('scanModal').classList.add('hidden'); }
 
-  async function handleAddDoctor(e) {
+  function openDoctorModal() { openAddDoctorModal(); }
+  function openScanModal() { openAddScanModal(); }
+
+  async function handleSaveDoctor(e) {
     e.preventDefault();
     const d = {
       doctor_name: document.getElementById('docName').value,
       specialization: document.getElementById('docSpec').value,
       consultation_fee: document.getElementById('docFee').value,
     };
-    await fetch(`${API}/doctors`, {
-      method: 'POST',
+    const method = editingDoctorId ? 'PUT' : 'POST';
+    const url = editingDoctorId ? `${API}/doctors/${editingDoctorId}` : `${API}/doctors`;
+    
+    await fetch(url, {
+      method: method,
       headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': token },
       body: JSON.stringify(d)
     });
@@ -812,15 +875,27 @@
     loadDoctors();
   }
 
-  async function handleAddScan(e) {
+  async function deleteDoctor(id) {
+    if (!confirm('Are you sure you want to remove this doctor profile?')) return;
+    await fetch(`${API}/doctors/${id}`, {
+      method: 'DELETE',
+      headers: { 'X-Hospital-Token': token }
+    });
+    loadDoctors();
+  }
+
+  async function handleSaveScan(e) {
     e.preventDefault();
     const s = {
       category: document.getElementById('scanCategory').value,
       scan_name: document.getElementById('scanName').value,
       price: document.getElementById('scanPrice').value,
     };
-    await fetch(`${API}/scans`, {
-      method: 'POST',
+    const method = editingScanId ? 'PUT' : 'POST';
+    const url = editingScanId ? `${API}/scans/${editingScanId}` : `${API}/scans`;
+
+    await fetch(url, {
+      method: method,
       headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': token },
       body: JSON.stringify(s)
     });
@@ -828,7 +903,17 @@
     loadScans();
   }
 
+  async function deleteScan(id) {
+    if (!confirm('Are you sure you want to remove this scan offering?')) return;
+    await fetch(`${API}/scans/${id}`, {
+      method: 'DELETE',
+      headers: { 'X-Hospital-Token': token }
+    });
+    loadScans();
+  }
+
   function capitalize(str) {
+    if (!str) return '';
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
