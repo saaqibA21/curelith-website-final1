@@ -269,6 +269,14 @@
   let currentMode = 'login';
   let userPhone = '';
 
+  document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('patient_token');
+    const phone = localStorage.getItem('patient_phone');
+    if (token && phone) {
+      window.location.replace('patient-dashboard.html');
+    }
+  });
+
   function setMode(mode) {
     currentMode = mode;
     hideError();
