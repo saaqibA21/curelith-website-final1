@@ -324,7 +324,17 @@
         </button>
         <input type="file" id="scanImageInput" accept="image/*,.pdf" style="display: none;" onchange="handleScanImageSelect(event)">
         
-        <input type="text" id="chatInput" class="chat-input" placeholder="Type symptoms or attach scan image..." required>
+        <button type="button" id="micBtn" onclick="toggleVoiceRecording()" title="Send Voice Message" style="background: transparent; border: none; color: var(--clay-deep); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <i data-lucide="mic" style="width: 22px; height: 22px;"></i>
+        </button>
+
+        <div id="recordingIndicator" class="hidden" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #D9381E; font-weight: 600; flex: 1;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: #D9381E; animation: pulse 1s infinite;"></span>
+          <span id="recTimer">Recording...</span>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="stopVoiceRecording()" style="padding: 2px 8px; font-size: 11px; color: #D9381E; border-color: #D9381E;">Stop & Send</button>
+        </div>
+
+        <input type="text" id="chatInput" class="chat-input" placeholder="Type symptoms or send voice note..." required>
         <button type="submit" class="chat-send-btn" id="sendBtn">
           <i data-lucide="arrow-up" style="width: 20px; height: 20px;"></i>
         </button>
@@ -400,7 +410,19 @@
           <input type="text" id="profConditions" class="form-control" placeholder="e.g. Diabetes, Hypertension">
         </div>
 
-        <button type="submit" class="btn btn-primary btn-sm" id="saveProfBtn" style="width: 100%; justify-content: center; margin-top: 10px;">Save Profile</button>
+        <div class="form-group" style="margin-top: 18px; padding: 14px; background: #F2F7F5; border: 1px solid var(--line); border-radius: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <label style="margin: 0; display: flex; align-items: center; gap: 6px; color: var(--pine);">
+              <i data-lucide="watch" style="width: 16px; height: 16px;"></i> Google Fit Smartwatch
+            </label>
+            <span id="smartwatchBadge" style="font-size: 11px; padding: 3px 8px; border-radius: 100px; background: #E2DFD2; color: var(--ink-soft); font-weight: 600;">Not Connected</span>
+          </div>
+          <p style="font-size: 12px; color: var(--ink-soft); margin-bottom: 10px;">Enter your Google Account email to sync your steps, heart rate, and health metrics directly with Curelith AI.</p>
+          <input type="email" id="profGoogleEmail" class="form-control" placeholder="your.email@gmail.com" style="margin-bottom: 10px;">
+          <button type="button" class="btn btn-ghost btn-sm" style="width: 100%; justify-content: center; color: var(--pine); border-color: var(--pine);" onclick="connectGoogleFit()">⌚ Connect Google Fit Smartwatch</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm" id="saveProfBtn" style="width: 100%; justify-content: center; margin-top: 14px;">Save Profile</button>
       </form>
 
       <div style="margin-top: 28px; padding: 20px; background: rgba(212,130,74,0.08); border: 1px solid rgba(212,130,74,0.2); border-radius: 16px; text-align: center;">
@@ -480,6 +502,24 @@
         document.getElementById('profWeight').value = p.weight || '';
         document.getElementById('profAllergies').value = p.allergies || '';
         document.getElementById('profConditions').value = p.chronic_conditions || '';
+        document.getElementById('profGoogleEmail').value = p.google_email || '';
+
+        if (p.name) {
+          localStorage.setItem('patient_name', p.name);
+        }
+
+        if (p.smartwatch) {
+          const badge = document.getElementById('smartwatchBadge');
+          if (p.smartwatch.google_fit) {
+            badge.textContent = '🟢 Google Fit Connected';
+            badge.style.background = '#D1E7DD';
+            badge.style.color = '#0F5132';
+          } else {
+            badge.textContent = 'Not Connected';
+            badge.style.background = '#E2DFD2';
+            badge.style.color = 'var(--ink-soft)';
+          }
+        }
 
         if (p.partner_hospital) {
           document.getElementById('hospBadge').classList.remove('hidden');
@@ -489,20 +529,32 @@
     } catch(e) {}
   }
 
+  function connectGoogleFit() {
+    const gEmail = document.getElementById('profGoogleEmail').value.trim();
+    if (gEmail) {
+      handleSaveProfile(new Event('submit'));
+    }
+    window.open(`${API_BASE}/fit/auth?phone=${encodeURIComponent(phone)}`, '_blank');
+  }
+
   async function handleSaveProfile(e) {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     const btn = document.getElementById('saveProfBtn');
     btn.disabled = true;
     btn.textContent = 'Saving...';
 
+    const nameVal = document.getElementById('profName').value;
+    if (nameVal) localStorage.setItem('patient_name', nameVal);
+
     const p = {
-      name: document.getElementById('profName').value,
+      name: nameVal,
       age: document.getElementById('profAge').value,
       blood_group: document.getElementById('profBlood').value,
       height: document.getElementById('profHeight').value,
       weight: document.getElementById('profWeight').value,
       allergies: document.getElementById('profAllergies').value,
       chronic_conditions: document.getElementById('profConditions').value,
+      google_email: document.getElementById('profGoogleEmail').value
     };
 
     try {
@@ -517,6 +569,93 @@
     } catch(e) {
       btn.disabled = false;
       btn.textContent = 'Save Profile';
+    }
+  }
+
+  /* ── VOICE RECORDING API ── */
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let recTimerInterval = null;
+
+  async function toggleVoiceRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      stopVoiceRecording();
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) audioChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        clearInterval(recTimerInterval);
+        document.getElementById('recordingIndicator').classList.add('hidden');
+        document.getElementById('chatInput').classList.remove('hidden');
+        document.getElementById('micBtn').style.color = 'var(--clay-deep)';
+
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        if (audioBlob.size < 100) return;
+
+        const box = document.getElementById('chatBox');
+        box.innerHTML += `<div class="msg-bubble msg-user">🎙️ [Voice Note Sent]</div>`;
+        box.innerHTML += `<div class="msg-bubble msg-assistant" id="voiceProcessingMsg">🎧 Listening & generating AI response...</div>`;
+        box.scrollTop = box.scrollHeight;
+
+        const formData = new FormData();
+        formData.append('file', audioBlob, 'recording.webm');
+
+        try {
+          const res = await fetch(`${API_BASE}/patient/chat/send-voice`, {
+            method: 'POST',
+            headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone },
+            body: formData
+          });
+          const data = await res.json();
+          const tempMsg = document.getElementById('voiceProcessingMsg');
+          if (tempMsg) tempMsg.remove();
+
+          if (data.success) {
+            let replyHtml = escapeHtml(data.reply);
+            if (data.audio_url) {
+              const fullAudioUrl = data.audio_url.startsWith('http') ? data.audio_url : `${API_BASE}${data.audio_url}`;
+              replyHtml += `<br><br><audio controls autoplay style="width: 100%; margin-top: 8px; border-radius: 20px;"><source src="${fullAudioUrl}" type="audio/mpeg">Your browser does not support audio playback.</audio>`;
+            }
+            box.innerHTML += `<div class="msg-bubble msg-assistant">${replyHtml}</div>`;
+            box.scrollTop = box.scrollHeight;
+          } else {
+            box.innerHTML += `<div class="msg-bubble msg-assistant">⚠ ${escapeHtml(data.error || 'Voice error')}</div>`;
+          }
+        } catch(e) {
+          const tempMsg = document.getElementById('voiceProcessingMsg');
+          if (tempMsg) tempMsg.remove();
+          box.innerHTML += `<div class="msg-bubble msg-assistant">⚠ Voice processing error. Please try again.</div>`;
+        }
+      };
+
+      mediaRecorder.start();
+      document.getElementById('chatInput').classList.add('hidden');
+      document.getElementById('recordingIndicator').classList.remove('hidden');
+      document.getElementById('micBtn').style.color = '#D9381E';
+
+      let seconds = 0;
+      recTimerInterval = setInterval(() => {
+        seconds++;
+        document.getElementById('recTimer').textContent = `Recording... 00:${seconds < 10 ? '0' + seconds : seconds}`;
+      }, 1000);
+    } catch(err) {
+      alert('Microphone access is required to send voice messages. Please allow mic permission.');
+    }
+  }
+
+  function stopVoiceRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
     }
   }
 
