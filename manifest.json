@@ -1,0 +1,22 @@
+{
+  "name": "Curelith Health App",
+  "short_name": "Curelith",
+  "description": "AI Clinical Health Assistant & Medical Locker",
+  "start_url": "/patient-dashboard.html",
+  "display": "standalone",
+  "background_color": "#0F1B19",
+  "theme_color": "#0F1B19",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
