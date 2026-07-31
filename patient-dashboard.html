@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patient Web Portal | Curelith</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Curelith Health App</title>
+  <meta name="theme-color" content="#0F1B19">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -11,121 +15,131 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
-  <link rel="stylesheet" href="style.css">
   <style>
-    body {
+    :root {
+      --void: #0F1B19;
+      --pine: #1E423D;
+      --pine-light: #2E5C54;
+      --clay: #D4824A;
+      --clay-deep: #B5642F;
+      --paper: #F5F3ED;
+      --card: #FFFFFF;
+      --line: #E2DFD2;
+      --ink: #14201D;
+      --ink-soft: #52635E;
+      --gold: #E8C77B;
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
       background-color: var(--paper);
       color: var(--void);
-      min-height: 100vh;
+      font-family: var(--sans);
+    }
+
+    /* APP WRAPPER */
+    .app-viewport {
       display: flex;
       flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      width: 100vw;
+      max-width: 540px;
+      margin: 0 auto;
+      background: var(--paper);
+      position: relative;
+      border-left: 1px solid rgba(0,0,0,0.05);
+      border-right: 1px solid rgba(0,0,0,0.05);
     }
-    
-    .portal-topbar {
+
+    /* COMPACT APP TOPBAR */
+    .app-header {
+      height: 56px;
       background: var(--void);
       color: #fff;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .portal-topbar-content {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      z-index: 100;
     }
-    .patient-tag-header {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--gold);
-      background: rgba(232, 199, 123, 0.1);
-      border: 1px solid rgba(232, 199, 123, 0.25);
-      padding: 4px 12px;
-      border-radius: 100px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* MAIN TAB CONTAINER */
-    .portal-main {
-      flex: 1;
-      padding: 30px 0 60px 0;
-    }
-
-    /* TAB NAV */
-    .portal-tabs-nav {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 30px;
-      border-bottom: 2px solid var(--line);
-      padding-bottom: 12px;
-    }
-    .tab-btn {
-      background: transparent;
-      border: none;
-      font-family: var(--sans);
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--ink-soft);
-      padding: 10px 20px;
-      border-radius: 12px;
-      cursor: pointer;
+    .app-brand {
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s ease;
-    }
-    .tab-btn:hover {
-      background: var(--card-tint);
-      color: var(--pine);
-    }
-    .tab-btn.active {
-      background: var(--pine);
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 600;
       color: #fff;
-      box-shadow: 0 4px 14px rgba(30, 66, 61, 0.25);
+      text-decoration: none;
+    }
+    .hosp-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gold);
+      background: rgba(232, 199, 123, 0.12);
+      border: 1px solid rgba(232, 199, 123, 0.3);
+      padding: 3px 10px;
+      border-radius: 100px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .logout-icon-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+    }
+
+    /* MAIN CONTENT SCREEN */
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
     }
 
     /* ── TAB 1: CHAT ── */
-    .chat-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      height: 620px;
+    .chat-screen {
       display: flex;
       flex-direction: column;
-      box-shadow: 0 16px 40px rgba(15,27,25,0.05);
-      overflow: hidden;
-    }
-    .chat-header {
-      padding: 18px 24px;
-      background: var(--paper);
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      height: 100%;
+      background: #F8F6F0;
     }
     .chat-messages {
       flex: 1;
-      padding: 24px;
       overflow-y: auto;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      background: #FAF9F5;
+      gap: 14px;
     }
     .msg-bubble {
-      max-width: 82%;
-      padding: 16px 20px;
+      max-width: 86%;
+      padding: 14px 16px;
       border-radius: 18px;
-      font-size: 14.5px;
-      line-height: 1.6;
-      position: relative;
+      font-size: 14px;
+      line-height: 1.55;
       white-space: pre-wrap;
+      word-break: break-word;
     }
     .msg-user {
       align-self: flex-end;
       background: var(--pine);
-      color: #fff;
+      color: #FFFFFF;
       border-bottom-right-radius: 4px;
+      box-shadow: 0 4px 12px rgba(30,66,61,0.15);
     }
     .msg-assistant {
       align-self: flex-start;
@@ -133,289 +147,284 @@
       border: 1px solid var(--line);
       color: var(--void);
       border-bottom-left-radius: 4px;
-      box-shadow: 0 4px 12px rgba(15,27,25,0.03);
+      box-shadow: 0 2px 8px rgba(15,27,25,0.04);
     }
-    .chat-input-bar {
-      padding: 16px 20px;
+    .chat-bar {
+      padding: 12px 14px;
       background: #FFFFFF;
       border-top: 1px solid var(--line);
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      flex-shrink: 0;
     }
     .chat-input {
       flex: 1;
-      padding: 14px 18px;
+      padding: 12px 16px;
       border: 1.5px solid var(--line);
-      border-radius: 14px;
+      border-radius: 20px;
       font-family: var(--sans);
-      font-size: 14.5px;
+      font-size: 14px;
       outline: none;
+      background: var(--paper);
     }
     .chat-input:focus { border-color: var(--pine); }
     .chat-send-btn {
-      padding: 14px 24px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
       background: var(--pine);
       color: #fff;
       border: none;
-      border-radius: 14px;
-      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
       cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(30,66,61,0.3);
     }
-    .chat-send-btn:hover { background: var(--pine-light); }
 
     /* ── TAB 2: LOCKER ── */
-    .locker-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
+    .locker-screen {
+      padding: 20px 16px;
+      height: 100%;
+      overflow-y: auto;
     }
     .file-card {
-      background: var(--card);
+      background: #FFFFFF;
       border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 8px 24px rgba(15,27,25,0.04);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: space-between;
+      box-shadow: 0 4px 14px rgba(15,27,25,0.03);
+    }
+    .file-card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .file-icon-box {
-      width: 44px; height: 44px;
+      width: 42px; height: 42px;
       border-radius: 12px;
       background: #EBF2EF;
       color: var(--pine);
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 14px;
-    }
-    .file-name {
-      font-family: var(--serif);
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--void);
-      margin-bottom: 6px;
-    }
-    .file-meta {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--ink-soft);
-      margin-bottom: 16px;
     }
 
     /* ── TAB 3: PROFILE ── */
-    .profile-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 36px;
-      box-shadow: 0 16px 40px rgba(15,27,25,0.05);
+    .profile-screen {
+      padding: 20px 16px;
+      height: 100%;
+      overflow-y: auto;
     }
-    .vitals-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-group label {
+      display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--ink-soft); margin-bottom: 5px;
     }
+    .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      font-family: var(--sans);
+      font-size: 14px;
+      outline: none;
+    }
+    .form-control:focus { border-color: var(--pine); }
+
+    /* FIXED NATIVE BOTTOM APP NAVIGATION BAR */
+    .app-navbar {
+      height: 64px;
+      background: #FFFFFF;
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-shrink: 0;
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(15,27,25,0.05);
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: transparent;
+      border: none;
+      color: var(--ink-soft);
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 0;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .nav-item.active {
+      color: var(--pine);
+    }
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      width: 28px;
+      height: 3px;
+      background: var(--pine);
+      border-radius: 0 0 4px 4px;
+    }
+    .nav-item svg { width: 22px; height: 22px; }
 
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<div class="portal-topbar">
-  <div class="wrap portal-topbar-content">
-    <a href="index.html" class="brand" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-      <img src="assets/logo.png" style="width: 26px; height: 26px;" alt="Curelith">
-      Curelith Portal
+<div class="app-viewport">
+  
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <a href="#" class="app-brand">
+      <img src="assets/logo.png" style="width: 24px; height: 24px;" alt="Curelith">
+      Curelith
     </a>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div id="partnerHospitalBadge" class="patient-tag-header hidden">
-        <i data-lucide="building-2" style="width: 14px; height: 14px;"></i> <span id="hospBadgeName">Orthomed Hospital</span>
-      </div>
-      <button class="btn btn-ghost-dark btn-sm" onclick="handleLogout()">Logout</button>
-    </div>
-  </div>
-</div>
 
-<!-- MAIN SECTION -->
-<section class="portal-main">
-  <div class="wrap">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="hosp-badge hidden" id="hospBadge">
+        <i data-lucide="building-2" style="width: 12px; height: 12px;"></i>
+        <span id="hospNameText">Orthomed</span>
+      </div>
+      <button class="logout-icon-btn" onclick="handleLogout()" title="Logout">
+        <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- APP CONTENT VIEW -->
+  <main class="app-content">
     
-    <!-- TABS NAV -->
-    <div class="portal-tabs-nav">
-      <button class="tab-btn active" id="tabNavChat" onclick="switchPortalTab('chat')">
-        <i data-lucide="message-square" style="width: 18px; height: 18px;"></i> AI Clinical Chat
-      </button>
-      <button class="tab-btn" id="tabNavLocker" onclick="switchPortalTab('locker')">
-        <i data-lucide="folder-heart" style="width: 18px; height: 18px;"></i> Medical Locker
-      </button>
-      <button class="tab-btn" id="tabNavProfile" onclick="switchPortalTab('profile')">
-        <i data-lucide="user" style="width: 18px; height: 18px;"></i> My Profile & Vitals
-      </button>
+    <!-- ── TAB 1: CHAT SCREEN ── -->
+    <div id="screenChat" class="chat-screen">
+      <div class="chat-messages" id="chatBox">
+        <div style="text-align: center; color: var(--ink-soft); margin: auto;">Loading your chat history...</div>
+      </div>
+
+      <form class="chat-bar" onsubmit="handleSendWebChat(event)">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Type symptoms or medical query..." required>
+        <button type="submit" class="chat-send-btn" id="sendBtn">
+          <i data-lucide="arrow-up" style="width: 20px; height: 20px;"></i>
+        </button>
+      </form>
     </div>
 
-    <!-- ──────────────── TAB 1: AI CLINICAL CHAT ──────────────── -->
-    <div id="portalTabChat">
-      <div class="chat-card">
-        <div class="chat-header">
-          <div>
-            <h3 style="font-family: var(--serif); font-size: 19px; color: var(--void);">Curelith AI Clinical Assistant</h3>
-            <p style="font-size: 13px; color: var(--ink-soft);">Synced live with your WhatsApp chat history</p>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="loadChatHistory()"><i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Refresh</button>
+    <!-- ── TAB 2: LOCKER SCREEN ── -->
+    <div id="screenLocker" class="locker-screen hidden">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <h2 style="font-family: var(--serif); font-size: 22px; color: var(--void);">Medical Locker</h2>
+        <button class="btn btn-primary btn-sm" style="padding: 6px 14px; font-size: 13px;" onclick="triggerFileUpload()">+ Upload</button>
+        <input type="file" id="lockerFileInput" style="display: none;" onchange="handleLockerUpload(event)">
+      </div>
+
+      <div id="lockerListBox">
+        <div style="text-align: center; padding: 40px; color: var(--ink-soft);">Loading medical documents...</div>
+      </div>
+    </div>
+
+    <!-- ── TAB 3: PROFILE SCREEN ── -->
+    <div id="screenProfile" class="profile-screen hidden">
+      <h2 style="font-family: var(--serif); font-size: 22px; color: var(--void); margin-bottom: 16px;">Profile & Vitals</h2>
+
+      <form onsubmit="handleSaveProfile(event)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="profName" class="form-control" placeholder="Ramesh Kumar">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="text" id="profPhone" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
         </div>
 
-        <div class="chat-messages" id="chatMessagesBox">
-          <div style="text-align: center; color: var(--ink-soft); margin: auto;">Loading chat history...</div>
+        <div style="display: flex; gap: 10px;">
+          <div class="form-group" style="flex: 1;">
+            <label>Age</label>
+            <input type="number" id="profAge" class="form-control" placeholder="32">
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label>Blood Group</label>
+            <select id="profBlood" class="form-control">
+              <option value="">Select</option>
+              <option value="O+">O+</option>
+              <option value="A+">A+</option>
+              <option value="B+">B+</option>
+              <option value="AB+">AB+</option>
+              <option value="O-">O-</option>
+              <option value="A-">A-</option>
+              <option value="B-">B-</option>
+              <option value="AB-">AB-</option>
+            </select>
+          </div>
         </div>
 
-        <form class="chat-input-bar" onsubmit="handleSendWebChat(event)">
-          <input type="text" id="webChatInput" class="chat-input" placeholder="Type your symptoms or health query..." required>
-          <button type="submit" class="chat-send-btn" id="sendBtn">
-            Send <i data-lucide="send" style="width: 16px; height: 16px;"></i>
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- ──────────────── TAB 2: MEDICAL LOCKER ──────────────── -->
-    <div id="portalTabLocker" class="hidden">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-        <div>
-          <h2 style="font-family: var(--serif); font-size: 26px; color: var(--void);">Medical Locker</h2>
-          <p style="font-size: 14.5px; color: var(--ink-soft);">Lab reports, prescriptions, and diagnostic scans uploaded via WhatsApp or Web App</p>
+        <div style="display: flex; gap: 10px;">
+          <div class="form-group" style="flex: 1;">
+            <label>Height (cm)</label>
+            <input type="text" id="profHeight" class="form-control" placeholder="172">
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label>Weight (kg)</label>
+            <input type="text" id="profWeight" class="form-control" placeholder="68">
+          </div>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="triggerFileUpload()">+ Upload Document</button>
-        <input type="file" id="lockerFileInput" style="display: none;" onchange="handleLockerFileUpload(event)">
-      </div>
 
-      <div class="locker-grid" id="lockerGridBox">
-        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-soft);">Loading medical locker files...</div>
-      </div>
-    </div>
-
-    <!-- ──────────────── TAB 3: PROFILE & VITALS ──────────────── -->
-    <div id="portalTabProfile" class="hidden">
-      <div class="profile-card">
-        <h2 style="font-family: var(--serif); font-size: 26px; color: var(--void); margin-bottom: 6px;">Patient Profile & Health Vitals</h2>
-        <p style="font-size: 14.5px; color: var(--ink-soft); margin-bottom: 28px;">Manage your health metrics, blood group, and connected partner hospital</p>
-
-        <form onsubmit="handleSaveProfile(event)">
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin-bottom: 24px;">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="profName" class="form-control" placeholder="Ramesh Kumar">
-            </div>
-            <div class="form-group">
-              <label>Mobile Number</label>
-              <input type="text" id="profPhone" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
-            </div>
-            <div class="form-group">
-              <label>Age</label>
-              <input type="number" id="profAge" class="form-control" placeholder="32">
-            </div>
-            <div class="form-group">
-              <label>Gender</label>
-              <select id="profGender" class="form-control">
-                <option value="">Select</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Blood Group</label>
-              <select id="profBlood" class="form-control">
-                <option value="">Select</option>
-                <option value="O+">O+</option>
-                <option value="A+">A+</option>
-                <option value="B+">B+</option>
-                <option value="AB+">AB+</option>
-                <option value="O-">O-</option>
-                <option value="A-">A-</option>
-                <option value="B-">B-</option>
-                <option value="AB-">AB-</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Height (cm)</label>
-              <input type="text" id="profHeight" class="form-control" placeholder="172">
-            </div>
-            <div class="form-group">
-              <label>Weight (kg)</label>
-              <input type="text" id="profWeight" class="form-control" placeholder="68">
-            </div>
-          </div>
-
-          <div class="form-group" style="margin-bottom: 18px;">
-            <label>Known Allergies</label>
-            <input type="text" id="profAllergies" class="form-control" placeholder="e.g. Penicillin, Dust, Peanuts">
-          </div>
-
-          <div class="form-group" style="margin-bottom: 28px;">
-            <label>Chronic Medical Conditions</label>
-            <input type="text" id="profConditions" class="form-control" placeholder="e.g. Hypertension, Diabetes Type 2">
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-sm" id="saveProfBtn">Save Health Profile →</button>
-        </form>
-
-        <hr style="margin: 36px 0; border: none; border-top: 1px solid var(--line);">
-
-        <!-- CONNECTED HOSPITAL CARD -->
-        <div id="hospCardBox" class="state-box" style="background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 24px;">
-          <h4 style="font-family: var(--serif); font-size: 19px; color: var(--void); margin-bottom: 8px;">Preferred Partner Hospital</h4>
-          <p style="font-size: 14px; color: var(--ink-soft);" id="hospDescText">Connected to <strong>Orthomed Hospital</strong> via QR referral.</p>
+        <div class="form-group">
+          <label>Known Allergies</label>
+          <input type="text" id="profAllergies" class="form-control" placeholder="e.g. Penicillin, Dust">
         </div>
-      </div>
+
+        <div class="form-group">
+          <label>Chronic Conditions</label>
+          <input type="text" id="profConditions" class="form-control" placeholder="e.g. Diabetes, Hypertension">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm" id="saveProfBtn" style="width: 100%; justify-content: center; margin-top: 10px;">Save Profile</button>
+      </form>
     </div>
 
-  </div>
-</section>
+  </main>
 
-<footer>
-  <div class="wrap foot-top">
-    <div>
-      <div class="foot-brand">
-        <img src="assets/logo.png" style="width:28px; height:28px;" alt="Curelith">
-        Curelith
-      </div>
-      <p>AI-first clinical intelligence navigating patients safely from symptoms to certified specialist care.</p>
-    </div>
-    <div class="foot-col">
-      <h5>Network</h5>
-      <a href="doctors.html">Physicians</a>
-      <a href="hospitals.html">Partner Hospitals</a>
-      <a href="hospital-portal.html">Hospital Admin Portal</a>
-    </div>
-    <div class="foot-col">
-      <h5>Legal & Contact</h5>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
-      <div class="line">Support: support@curelith.com</div>
-    </div>
-  </div>
-  <div class="wrap foot-bottom">
-    <div>© 2026 Curelith Intelligence. All rights reserved.</div>
-    <div class="disclaimer">Not for medical emergencies. In an emergency, visit a hospital immediately.</div>
-  </div>
-</footer>
+  <!-- FIXED NATIVE BOTTOM APP NAVBAR -->
+  <nav class="app-navbar">
+    <button class="nav-item active" id="navItemChat" onclick="switchAppTab('chat')">
+      <i data-lucide="message-square"></i>
+      <span>Chat</span>
+    </button>
+    <button class="nav-item" id="navItemLocker" onclick="switchAppTab('locker')">
+      <i data-lucide="folder-heart"></i>
+      <span>Locker</span>
+    </button>
+    <button class="nav-item" id="navItemProfile" onclick="switchAppTab('profile')">
+      <i data-lucide="user"></i>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+</div>
 
 <script>
   const API_BASE = 'https://api.curelith.com';
   let token = localStorage.getItem('patient_token') || '';
   let phone = localStorage.getItem('patient_phone') || '';
 
-  function init() {
+  function initApp() {
     if (!token && !phone) {
       window.location.href = 'patient-login.html';
       return;
     }
     try { lucide.createIcons(); } catch(e) {}
-    loadProfile();
+    loadProfileData();
     loadChatHistory();
     loadLockerFiles();
   }
@@ -427,21 +436,19 @@
     window.location.href = 'patient-login.html';
   }
 
-  function switchPortalTab(tab) {
+  function switchAppTab(tab) {
     ['chat', 'locker', 'profile'].forEach(t => {
-      document.getElementById(`portalTab${capitalize(t)}`).classList.add('hidden');
-      document.getElementById(`tabNav${capitalize(t)}`).classList.remove('active');
+      document.getElementById(`screen${capitalize(t)}`).classList.add('hidden');
+      document.getElementById(`navItem${capitalize(t)}`).classList.remove('active');
     });
-    document.getElementById(`portalTab${capitalize(tab)}`).classList.remove('hidden');
-    document.getElementById(`tabNav${capitalize(tab)}`).classList.add('active');
+    document.getElementById(`screen${capitalize(tab)}`).classList.remove('hidden');
+    document.getElementById(`navItem${capitalize(tab)}`).classList.add('active');
   }
 
-  function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
   /* ── PROFILE API ── */
-  async function loadProfile() {
+  async function loadProfileData() {
     try {
       const res = await fetch(`${API_BASE}/patient/profile`, {
         headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone }
@@ -452,7 +459,6 @@
         document.getElementById('profName').value = p.name || '';
         document.getElementById('profPhone').value = p.phone || phone;
         document.getElementById('profAge').value = p.age || '';
-        document.getElementById('profGender').value = p.gender || '';
         document.getElementById('profBlood').value = p.blood_group || '';
         document.getElementById('profHeight').value = p.height || '';
         document.getElementById('profWeight').value = p.weight || '';
@@ -460,9 +466,8 @@
         document.getElementById('profConditions').value = p.chronic_conditions || '';
 
         if (p.partner_hospital) {
-          document.getElementById('partnerHospitalBadge').classList.remove('hidden');
-          document.getElementById('hospBadgeName').textContent = p.partner_hospital.name;
-          document.getElementById('hospDescText').innerHTML = `Connected to <strong>${p.partner_hospital.name}</strong> (${p.partner_hospital.city}) via QR code referral.`;
+          document.getElementById('hospBadge').classList.remove('hidden');
+          document.getElementById('hospNameText').textContent = p.partner_hospital.name;
         }
       }
     } catch(e) {}
@@ -472,12 +477,11 @@
     e.preventDefault();
     const btn = document.getElementById('saveProfBtn');
     btn.disabled = true;
-    btn.textContent = 'Saving Profile...';
+    btn.textContent = 'Saving...';
 
     const p = {
       name: document.getElementById('profName').value,
       age: document.getElementById('profAge').value,
-      gender: document.getElementById('profGender').value,
       blood_group: document.getElementById('profBlood').value,
       height: document.getElementById('profHeight').value,
       weight: document.getElementById('profWeight').value,
@@ -492,17 +496,17 @@
         body: JSON.stringify(p)
       });
       btn.disabled = false;
-      btn.textContent = 'Save Health Profile →';
-      alert('Profile updated successfully!');
+      btn.textContent = 'Save Profile';
+      alert('Profile saved!');
     } catch(e) {
       btn.disabled = false;
-      btn.textContent = 'Save Health Profile →';
+      btn.textContent = 'Save Profile';
     }
   }
 
   /* ── UNIFIED CHAT API ── */
   async function loadChatHistory() {
-    const box = document.getElementById('chatMessagesBox');
+    const box = document.getElementById('chatBox');
     try {
       const res = await fetch(`${API_BASE}/patient/chat/history`, {
         headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone }
@@ -510,7 +514,7 @@
       const data = await res.json();
       if (data.success && data.messages) {
         if (!data.messages.length) {
-          box.innerHTML = `<div style="text-align: center; color: var(--ink-soft); margin: auto;">No past messages yet. Describe your symptoms to get started! 🩺</div>`;
+          box.innerHTML = `<div style="text-align: center; color: var(--ink-soft); margin: auto;">Describe your symptoms to start chatting with Curelith AI! 🩺</div>`;
           return;
         }
         box.innerHTML = data.messages.map(m => `
@@ -521,17 +525,17 @@
         box.scrollTop = box.scrollHeight;
       }
     } catch(e) {
-      box.innerHTML = `<div style="text-align: center; color: var(--ink-soft); margin: auto;">Unable to load chat history.</div>`;
+      box.innerHTML = `<div style="text-align: center; color: var(--ink-soft); margin: auto;">Unable to load chat.</div>`;
     }
   }
 
   async function handleSendWebChat(e) {
     e.preventDefault();
-    const input = document.getElementById('webChatInput');
+    const input = document.getElementById('chatInput');
     const msg = input.value.trim();
     if (!msg) return;
 
-    const box = document.getElementById('chatMessagesBox');
+    const box = document.getElementById('chatBox');
     box.innerHTML += `<div class="msg-bubble msg-user">${escapeHtml(msg)}</div>`;
     input.value = '';
     box.scrollTop = box.scrollHeight;
@@ -557,9 +561,9 @@
     }
   }
 
-  /* ── MEDICAL LOCKER API ── */
+  /* ── LOCKER API ── */
   async function loadLockerFiles() {
-    const box = document.getElementById('lockerGridBox');
+    const box = document.getElementById('lockerListBox');
     try {
       const res = await fetch(`${API_BASE}/patient/locker`, {
         headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone }
@@ -567,33 +571,33 @@
       const data = await res.json();
       if (data.success && data.files) {
         if (!data.files.length) {
-          box.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-soft);">No medical documents in your locker yet. Upload a report above or send via WhatsApp! 📄</div>`;
+          box.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--ink-soft);">No medical documents yet. Upload a report above! 📄</div>`;
           return;
         }
         box.innerHTML = data.files.map(f => `
           <div class="file-card">
-            <div>
+            <div class="file-card-left">
               <div class="file-icon-box">
-                <i data-lucide="file-text" style="width: 22px; height: 22px;"></i>
+                <i data-lucide="file-text" style="width: 20px; height: 20px;"></i>
               </div>
-              <div class="file-name">${escapeHtml(f.file_name)}</div>
-              <div class="file-meta">${f.category || 'Lab Report'} • ${f.created_at ? f.created_at.slice(0,10) : 'Recent'}</div>
+              <div>
+                <div style="font-weight: 600; font-size: 15px; color: var(--void);">${escapeHtml(f.file_name)}</div>
+                <div style="font-size: 12px; color: var(--ink-soft); font-family: var(--mono);">${f.category || 'Lab Report'} • ${f.created_at ? f.created_at.slice(0,10) : 'Recent'}</div>
+              </div>
             </div>
-            <a class="btn btn-ghost btn-sm" style="width: 100%; justify-content: center;" href="${API_BASE}/static/uploads/${encodeURIComponent(f.file_name)}" target="_blank">View / Download →</a>
+            <a class="btn btn-ghost btn-sm" style="padding: 6px 12px; font-size: 12px;" href="${API_BASE}/static/uploads/${encodeURIComponent(f.file_name)}" target="_blank">View →</a>
           </div>
         `).join('');
         try { lucide.createIcons(); } catch(e) {}
       }
     } catch(e) {
-      box.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-soft);">Unable to load medical locker.</div>`;
+      box.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--ink-soft);">Unable to load locker.</div>`;
     }
   }
 
-  function triggerFileUpload() {
-    document.getElementById('lockerFileInput').click();
-  }
+  function triggerFileUpload() { document.getElementById('lockerFileInput').click(); }
 
-  async function handleLockerFileUpload(e) {
+  async function handleLockerUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -607,17 +611,17 @@
         headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone },
         body: formData
       });
-      alert('Document uploaded to Medical Locker!');
+      alert('File uploaded!');
       loadLockerFiles();
     } catch(e) {}
   }
 
-  function escapeHtml(text) {
-    if (!text) return '';
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
 </html>
