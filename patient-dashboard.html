@@ -397,78 +397,126 @@
 
     <!-- ── TAB 3: PROFILE SCREEN ── -->
     <div id="screenProfile" class="profile-screen hidden">
-      <h2 style="font-family: var(--serif); font-size: 22px; color: var(--void); margin-bottom: 16px;">Profile & Vitals</h2>
+      
+      <!-- HERO AVATAR HEADER CARD -->
+      <div style="background: linear-gradient(135deg, #1E423D, #0F1B19); color: #FFF; border-radius: 20px; padding: 24px 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(15,27,25,0.12); position: relative; overflow: hidden;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(232,199,123,0.2); border: 2px solid #E8C77B; color: #E8C77B; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; margin: 0 auto 10px auto;" id="profileAvatar">
+          👤
+        </div>
+        <h3 id="displayProfName" style="font-family: var(--serif); font-size: 20px; margin: 0 0 4px 0;">Patient Health Profile</h3>
+        <span style="font-size: 11.5px; background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 100px; color: var(--gold); font-weight: 600;">🟢 Curelith Verified Health Passport</span>
+      </div>
 
       <form onsubmit="handleSaveProfile(event)">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="profName" class="form-control" placeholder="Ramesh Kumar">
-        </div>
-        <div class="form-group">
-          <label>Mobile Number</label>
-          <input type="text" id="profPhone" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
-        </div>
-
-        <div style="display: flex; gap: 10px;">
-          <div class="form-group" style="flex: 1;">
-            <label>Age</label>
-            <input type="number" id="profAge" class="form-control" placeholder="32">
+        
+        <!-- CARD 1: PERSONAL DETAILS -->
+        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0 0 14px 0; display: flex; align-items: center; gap: 6px;">
+            👤 Personal Identification
+          </h4>
+          
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="profName" class="form-control" placeholder="e.g. Ramesh Kumar" oninput="updateProfileAvatarName(this.value)">
           </div>
-          <div class="form-group" style="flex: 1;">
-            <label>Blood Group</label>
-            <select id="profBlood" class="form-control">
-              <option value="">Select</option>
-              <option value="O+">O+</option>
-              <option value="A+">A+</option>
-              <option value="B+">B+</option>
-              <option value="AB+">AB+</option>
-              <option value="O-">O-</option>
-              <option value="A-">A-</option>
-              <option value="B-">B-</option>
-              <option value="AB-">AB-</option>
-            </select>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>WhatsApp Phone Number</label>
+            <div style="position: relative;">
+              <input type="text" id="profPhone" class="form-control" readonly style="background: rgba(0,0,0,0.03); padding-right: 90px;">
+              <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #15803D; background: #DCFCE7; padding: 2px 8px; border-radius: 100px; font-weight: 700;">Verified ✓</span>
+            </div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 10px;">
-          <div class="form-group" style="flex: 1;">
-            <label>Height (cm)</label>
-            <input type="text" id="profHeight" class="form-control" placeholder="172">
+        <!-- CARD 2: BIOMETRIC VITALS -->
+        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0 0 14px 0; display: flex; align-items: center; gap: 6px;">
+            🩺 Biometric & Clinical Vitals
+          </h4>
+
+          <div style="display: flex; gap: 12px; margin-bottom: 14px;">
+            <div class="form-group" style="flex: 1; margin: 0;">
+              <label>Age (Years)</label>
+              <input type="number" id="profAge" class="form-control" placeholder="32">
+            </div>
+            <div class="form-group" style="flex: 1; margin: 0;">
+              <label>Blood Group</label>
+              <select id="profBlood" class="form-control">
+                <option value="">Select</option>
+                <option value="O+">O+</option>
+                <option value="A+">A+</option>
+                <option value="B+">B+</option>
+                <option value="AB+">AB+</option>
+                <option value="O-">O-</option>
+                <option value="A-">A-</option>
+                <option value="B-">B-</option>
+                <option value="AB-">AB-</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group" style="flex: 1;">
-            <label>Weight (kg)</label>
-            <input type="text" id="profWeight" class="form-control" placeholder="68">
+
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1; margin: 0;">
+              <label>Height (cm)</label>
+              <input type="text" id="profHeight" class="form-control" placeholder="172">
+            </div>
+            <div class="form-group" style="flex: 1; margin: 0;">
+              <label>Weight (kg)</label>
+              <input type="text" id="profWeight" class="form-control" placeholder="68">
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Known Allergies</label>
-          <input type="text" id="profAllergies" class="form-control" placeholder="e.g. Penicillin, Dust">
-        </div>
+        <!-- CARD 3: MEDICAL HISTORY & ALLERGIES -->
+        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--clay-deep); margin: 0 0 14px 0; display: flex; align-items: center; gap: 6px;">
+            🛡️ Medical Alerts & Conditions
+          </h4>
 
-        <div class="form-group">
-          <label>Chronic Conditions</label>
-          <input type="text" id="profConditions" class="form-control" placeholder="e.g. Diabetes, Hypertension">
-        </div>
-
-        <div class="form-group" style="margin-top: 18px; padding: 14px; background: #F2F7F5; border: 1px solid var(--line); border-radius: 14px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-            <label style="margin: 0; display: flex; align-items: center; gap: 6px; color: var(--pine);">
-              <i data-lucide="watch" style="width: 16px; height: 16px;"></i> Google Fit Smartwatch
-            </label>
-            <span id="smartwatchBadge" style="font-size: 11px; padding: 3px 8px; border-radius: 100px; background: #E2DFD2; color: var(--ink-soft); font-weight: 600;">Not Connected</span>
+          <div class="form-group">
+            <label>Known Allergies (Food / Medication)</label>
+            <input type="text" id="profAllergies" class="form-control" placeholder="e.g. Penicillin, Dust, Peanuts">
           </div>
-          <p style="font-size: 12px; color: var(--ink-soft); margin-bottom: 10px;">Enter your Google Account email to sync your steps, heart rate, and health metrics directly with Curelith AI.</p>
-          <input type="email" id="profGoogleEmail" class="form-control" placeholder="your.email@gmail.com" style="margin-bottom: 10px;">
-          <button type="button" class="btn btn-ghost btn-sm" style="width: 100%; justify-content: center; color: var(--pine); border-color: var(--pine);" onclick="connectGoogleFit()">⌚ Connect Google Fit Smartwatch</button>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Chronic Medical Conditions</label>
+            <input type="text" id="profConditions" class="form-control" placeholder="e.g. Diabetes Type 2, Hypertension, Asthma">
+          </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-sm" id="saveProfBtn" style="width: 100%; justify-content: center; margin-top: 14px;">Save Profile</button>
+        <!-- CARD 4: SMARTWATCH & GOOGLE FIT SYNC -->
+        <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0; display: flex; align-items: center; gap: 6px;">
+              ⌚ Smartwatch & Vitals Sync
+            </h4>
+            <span id="smartwatchBadge" style="font-size: 10.5px; padding: 3px 10px; border-radius: 100px; background: #E2DFD2; color: var(--ink-soft); font-weight: 700;">Not Connected</span>
+          </div>
+
+          <p style="font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 14px;">
+            Enter your Google Account email to sync your step count, heart rate, and daily activity metrics directly with Curelith AI.
+          </p>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label>Google Account Email</label>
+            <input type="email" id="profGoogleEmail" class="form-control" placeholder="e.g. your.email@gmail.com">
+          </div>
+
+          <button type="button" class="btn btn-ghost btn-sm" style="width: 100%; justify-content: center; color: var(--pine); border-color: var(--pine); font-weight: 700; border-radius: 12px; padding: 11px;" onclick="connectGoogleFit()">
+            ⌚ Connect Google Fit / Smartwatch
+          </button>
+        </div>
+
+        <!-- ACTION BUTTON -->
+        <button type="submit" class="btn btn-primary btn-sm" id="saveProfBtn" style="width: 100%; justify-content: center; padding: 14px; font-size: 14.5px; font-weight: 700; border-radius: 100px; box-shadow: 0 4px 16px rgba(212,130,74,0.35);">
+          💾 Save Profile & Sync Vitals
+        </button>
       </form>
 
-      <div style="margin-top: 28px; padding: 20px; background: rgba(212,130,74,0.08); border: 1px solid rgba(212,130,74,0.2); border-radius: 16px; text-align: center;">
-        <p style="font-size: 13.5px; color: var(--ink-soft); margin-bottom: 12px;">Need to switch accounts or sign out?</p>
-        <button type="button" class="btn btn-ghost btn-sm" style="color: var(--clay-deep); border-color: rgba(212,130,74,0.4); width: 100%; justify-content: center;" onclick="handleLogout()">Logout of Account</button>
+      <div style="margin-top: 24px; padding: 18px; background: rgba(212,130,74,0.08); border: 1px solid rgba(212,130,74,0.2); border-radius: 18px; text-align: center;">
+        <p style="font-size: 13px; color: var(--ink-soft); margin-bottom: 10px;">Need to switch accounts or log out?</p>
+        <button type="button" class="btn btn-ghost btn-sm" style="color: var(--clay-deep); border-color: rgba(212,130,74,0.4); width: 100%; justify-content: center; border-radius: 100px;" onclick="handleLogout()">Sign Out of Account</button>
       </div>
     </div>
 
@@ -588,6 +636,22 @@
   function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
   /* ── PROFILE API ── */
+  function updateProfileAvatarName(nameStr) {
+    const avatar = document.getElementById('profileAvatar');
+    const displayTitle = document.getElementById('displayProfName');
+    if (!nameStr || !nameStr.trim()) {
+      if (avatar) avatar.textContent = '👤';
+      if (displayTitle) displayTitle.textContent = 'Patient Health Profile';
+      return;
+    }
+    const clean = nameStr.trim();
+    if (displayTitle) displayTitle.textContent = clean;
+    const parts = clean.split(' ').filter(Boolean);
+    let initials = parts[0][0].toUpperCase();
+    if (parts.length > 1) initials += parts[1][0].toUpperCase();
+    if (avatar) avatar.textContent = initials;
+  }
+
   async function loadProfileData() {
     try {
       const res = await fetch(`${API_BASE}/patient/profile`, {
@@ -608,6 +672,7 @@
 
         if (p.name) {
           localStorage.setItem('patient_name', p.name);
+          updateProfileAvatarName(p.name);
         }
 
         if (p.smartwatch) {
