@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Clinical Portal | Curelith</title>
+  <meta name="description" content="Clinical workspace for doctors to manage appointments, review patient AI medical locker files, and write digital prescriptions.">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --void: #0B132B;
+      --navy-soft: #1C2541;
+      --mint: #00E6A8;
+      --mint-dark: #00B383;
+      --paper: #F4F7F6;
+      --card: #FFFFFF;
+      --line: #E2E8F0;
+      --ink: #0F172A;
+      --ink-soft: #64748B;
+      --gold: #F59E0B;
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
+    }
+
+    body { background: var(--paper); color: var(--ink); font-family: var(--sans); margin: 0; padding: 0; }
+
+    /* LOGIN SCREEN */
+    .portal-hero {
+      background: var(--void); color: #fff; padding: 80px 20px 60px 20px; text-align: center; position: relative;
+    }
+    .portal-hero h1 { font-family: var(--serif); font-size: clamp(30px, 4vw, 46px); margin-top: 10px; }
+    .portal-hero h1 span { color: var(--mint); font-style: italic; }
+
+    .login-card {
+      max-width: 420px; margin: -40px auto 60px auto; background: var(--card); border: 1px solid var(--line);
+      border-radius: 20px; padding: 36px 30px; box-shadow: 0 16px 40px rgba(11, 19, 43, 0.08); position: relative; z-index: 10;
+    }
+    .form-group { margin-bottom: 18px; text-align: left; }
+    .form-group label { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 12px 14px; background: #FFF; border: 1.5px solid var(--line); border-radius: 10px; font-family: var(--sans); font-size: 14px; outline: none; box-sizing: border-box; }
+    .form-control:focus { border-color: var(--mint-dark); }
+
+    /* TOP HEADER */
+    .doc-header {
+      background: var(--void); color: #fff; padding: 14px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .doc-brand { display: flex; align-items: center; gap: 10px; font-family: var(--serif); font-size: 18px; font-weight: 600; color: #fff; text-decoration: none; }
+    .doc-badge { background: rgba(0,230,168,0.12); color: var(--mint); border: 1px solid rgba(0,230,168,0.3); padding: 4px 12px; border-radius: 100px; font-size: 12px; font-family: var(--mono); }
+
+    /* LAYOUT & TABS */
+    .portal-body { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+    .tab-nav { display: flex; gap: 12px; border-bottom: 2px solid var(--line); margin-bottom: 24px; }
+    .tab-btn { background: transparent; border: none; padding: 12px 18px; font-family: var(--sans); font-weight: 600; font-size: 14px; color: var(--ink-soft); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+    .tab-btn.active { color: var(--mint-dark); border-bottom-color: var(--mint-dark); }
+
+    /* TABLES & CARDS */
+    .card-box { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+    .data-table th { padding: 12px 14px; border-bottom: 2px solid var(--line); font-family: var(--mono); font-size: 11px; text-transform: uppercase; color: var(--ink-soft); }
+    .data-table td { padding: 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+
+    .btn-mint { background: var(--mint-dark); color: #FFF; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-mint:hover { background: var(--void); }
+
+    .status-pill { padding: 4px 10px; border-radius: 100px; font-size: 11.5px; font-weight: 600; }
+    .status-upcoming { background: #E0F2FE; color: #0369A1; }
+    .status-completed { background: #DCFCE7; color: #15803D; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN VIEW -->
+<div id="viewLogin">
+  <div class="portal-hero">
+    <a href="index.html" style="color: var(--mint); text-decoration: none; font-size: 13px; font-family: var(--mono);">← Back to Curelith Home</a>
+    <h1>Doctor <span>Clinical Portal</span></h1>
+    <p style="color: rgba(255,255,255,0.7); max-width: 500px; margin: 8px auto 0 auto; font-size: 15px;">Access your daily patient queue, AI pre-consultation summaries, and send digital prescriptions.</p>
+  </div>
+
+  <div class="login-card">
+    <h3 style="font-family: var(--serif); font-size: 22px; margin-bottom: 6px; text-align: center;">Doctor Sign In</h3>
+    <p style="font-size: 13.5px; color: var(--ink-soft); text-align: center; margin-bottom: 24px;">Enter your doctor credentials or phone number</p>
+
+    <div id="loginErr" style="color: #DC2626; font-size: 13px; background: #FEE2E2; padding: 8px 12px; border-radius: 8px; margin-bottom: 16px; display: none;"></div>
+
+    <form onsubmit="handleDoctorLogin(event)">
+      <div class="form-group">
+        <label>Doctor Name / Phone / ID</label>
+        <input type="text" id="docLoginName" class="form-control" placeholder="e.g. Dr. Ramesh Kumar" required value="Dr. Ramesh Kumar">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="docLoginPass" class="form-control" placeholder="••••••••" required value="123456">
+      </div>
+      <button type="submit" class="btn-mint" style="width: 100%; justify-content: center; padding: 12px; font-size: 14px;">Sign In to Clinic Workspace →</button>
+    </form>
+  </div>
+</div>
+
+<!-- MAIN CLINICAL DASHBOARD VIEW -->
+<div id="viewDashboard" class="hidden">
+  <header class="doc-header">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="#" class="doc-brand">
+        <img src="assets/logo.png" style="width: 26px; height: 26px;" alt="Curelith">
+        Curelith MD
+      </a>
+      <span class="doc-badge" id="headerDocName">Dr. Specialist</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+        <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--mint);"></span>
+        <span>Available for Consultation</span>
+      </label>
+      <button onclick="handleDoctorLogout()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer;">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="portal-body">
+    
+    <div class="tab-nav">
+      <button class="tab-btn active" id="tabQueueBtn" onclick="switchTab('queue')">📋 Today's Patients</button>
+      <button class="tab-btn" id="tabLockerBtn" onclick="switchTab('locker')">📁 Patient Medical Locker & Scans</button>
+      <button class="tab-btn" id="tabPrescriptionBtn" onclick="switchTab('prescription')">💊 Write Prescription</button>
+      <button class="tab-btn" id="tabScheduleBtn" onclick="switchTab('schedule')">⚙️ Schedule & Fees</button>
+    </div>
+
+    <!-- TAB 1: TODAY'S QUEUE -->
+    <div id="tabQueue" class="card-box">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-family: var(--serif); font-size: 20px; margin-bottom: 4px;">Today's Patient Queue</h2>
+          <p style="font-size: 13px; color: var(--ink-soft); margin: 0;">Patients scheduled for consultation today</p>
+        </div>
+        <button class="btn-mint" onclick="loadDoctorAppointments()">🔄 Refresh Queue</button>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Patient Details</th>
+            <th>Type</th>
+            <th>Symptoms / Chief Complaint</th>
+            <th>Date / Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="queueTableBody">
+          <tr><td colspan="6" style="text-align: center; color: var(--ink-soft); padding: 30px;">Loading scheduled appointments...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TAB 2: MEDICAL LOCKER & SCANS -->
+    <div id="tabLocker" class="card-box hidden">
+      <h2 style="font-family: var(--serif); font-size: 20px; margin-bottom: 12px;">Patient Medical Locker Inspector</h2>
+      <p style="font-size: 13.5px; color: var(--ink-soft); margin-bottom: 20px;">Enter patient's mobile number to view their uploaded MRI, CT scan reports, and AI key findings.</p>
+
+      <div style="display: flex; gap: 12px; max-width: 480px; margin-bottom: 24px;">
+        <input type="text" id="lockerPhoneInput" class="form-control" placeholder="e.g. 918825822278">
+        <button class="btn-mint" onclick="searchPatientLocker()">Inspect Locker</button>
+      </div>
+
+      <div id="lockerResults">
+        <div style="text-align: center; color: var(--ink-soft); padding: 40px; border: 1.5px dashed var(--line); border-radius: 12px;">
+          Enter a patient phone number above to load their diagnostic scans and medical history.
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: WRITE PRESCRIPTION -->
+    <div id="tabPrescription" class="card-box hidden">
+      <h2 style="font-family: var(--serif); font-size: 20px; margin-bottom: 6px;">Write Digital Prescription</h2>
+      <p style="font-size: 13.5px; color: var(--ink-soft); margin-bottom: 20px;">Prescriptions are automatically generated and sent directly to the patient's WhatsApp & Medical Locker.</p>
+
+      <form onsubmit="handleSendPrescription(event)">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div class="form-group">
+            <label>Patient Mobile Number</label>
+            <input type="text" id="rxPatientPhone" class="form-control" placeholder="e.g. +919876543210" required>
+          </div>
+          <div class="form-group">
+            <label>Clinical Diagnosis</label>
+            <input type="text" id="rxDiagnosis" class="form-control" placeholder="e.g. Acute Osteoarthritis / Ligament Strain" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Prescribed Medications (Drug Name, Dosage, Frequency)</label>
+          <textarea id="rxMedicines" class="form-control" rows="4" placeholder="e.g.&#10;1. Tab. Paracetamol 650mg — 1-0-1 (After Meals) — 5 Days&#10;2. Gel Volini Topically — Apply 3 times daily" required></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div class="form-group">
+            <label>Clinical Advice & Precautions</label>
+            <input type="text" id="rxAdvice" class="form-control" placeholder="e.g. Knee brace support, Avoid heavy stairs">
+          </div>
+          <div class="form-group">
+            <label>Follow-up Date / Timeline</label>
+            <input type="text" id="rxFollowUp" class="form-control" placeholder="e.g. 7 Days / Next Monday">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-mint" id="rxSubmitBtn" style="padding: 12px 24px;">Generate & Dispatch Prescription →</button>
+      </form>
+    </div>
+
+    <!-- TAB 4: SCHEDULE & SETTINGS -->
+    <div id="tabSchedule" class="card-box hidden">
+      <h2 style="font-family: var(--serif); font-size: 20px; margin-bottom: 6px;">Schedule & Consultation Fees</h2>
+      <p style="font-size: 13.5px; color: var(--ink-soft); margin-bottom: 20px;">Manage your availability days, time windows, and virtual consultation fees.</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label>Available Consultation Days</label>
+          <input type="text" class="form-control" value="Monday - Saturday" readonly>
+        </div>
+        <div class="form-group">
+          <label>Available Time Window</label>
+          <input type="text" class="form-control" value="09:00 AM - 05:00 PM" readonly>
+        </div>
+        <div class="form-group">
+          <label>In-Clinic Consultation Fee (₹)</label>
+          <input type="text" class="form-control" value="₹500" readonly>
+        </div>
+        <div class="form-group">
+          <label>Hospital Affiliation</label>
+          <input type="text" class="form-control" value="Orthomed Hospital Chennai" readonly>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API_BASE = 'https://api.curelith.com';
+  let doctorToken = localStorage.getItem('doctor_token') || '';
+  let doctorName = localStorage.getItem('doctor_name') || 'Dr. Ramesh Kumar';
+  let doctorPass = localStorage.getItem('doctor_pass') || '123456';
+
+  function initDoctorPortal() {
+    if (doctorName && doctorPass) {
+      showDashboard();
+    }
+  }
+
+  async function handleDoctorLogin(e) {
+    e.preventDefault();
+    const name = document.getElementById('docLoginName').value.strip ? document.getElementById('docLoginName').value.strip() : document.getElementById('docLoginName').value;
+    const pass = document.getElementById('docLoginPass').value;
+
+    try {
+      const res = await fetch(`${API_BASE}/doctor/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ doctor_name: name, password: pass })
+      });
+      const data = await res.json();
+      if (data.success && data.doctor) {
+        localStorage.setItem('doctor_name', data.doctor.name);
+        localStorage.setItem('doctor_pass', pass);
+        doctorName = data.doctor.name;
+        doctorPass = pass;
+        showDashboard();
+      } else {
+        showLoginError(data.error || 'Invalid credentials');
+      }
+    } catch(err) {
+      showLoginError('Connection error. Please try again.');
+    }
+  }
+
+  function showLoginError(msg) {
+    const box = document.getElementById('loginErr');
+    box.textContent = msg;
+    box.style.display = 'block';
+  }
+
+  function showDashboard() {
+    document.getElementById('viewLogin').classList.add('hidden');
+    document.getElementById('viewDashboard').classList.remove('hidden');
+    document.getElementById('headerDocName').textContent = doctorName;
+    try { lucide.createIcons(); } catch(e) {}
+    loadDoctorAppointments();
+  }
+
+  function handleDoctorLogout() {
+    localStorage.removeItem('doctor_name');
+    localStorage.removeItem('doctor_pass');
+    location.reload();
+  }
+
+  function switchTab(tabKey) {
+    ['queue', 'locker', 'prescription', 'schedule'].forEach(t => {
+      document.getElementById(`tab${capitalize(t)}`).classList.add('hidden');
+      document.getElementById(`tab${capitalize(t)}Btn`).classList.remove('active');
+    });
+    document.getElementById(`tab${capitalize(tabKey)}`).classList.remove('hidden');
+    document.getElementById(`tab${capitalize(tabKey)}Btn`).classList.add('active');
+  }
+
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  async function loadDoctorAppointments() {
+    const tbody = document.getElementById('queueTableBody');
+    try {
+      const res = await fetch(`${API_BASE}/doctor/appointments`, {
+        headers: {
+          'X-Doctor-Name': doctorName,
+          'X-Doctor-Password': doctorPass
+        }
+      });
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        tbody.innerHTML = data.map(a => `
+          <tr>
+            <td>
+              <strong>${escapeHtml(a.patient_name || a.patient_phone || 'Patient')}</strong><br>
+              <span style="font-size: 12px; color: var(--ink-soft);">${escapeHtml(a.patient_phone || '')}</span>
+            </td>
+            <td><span class="status-pill status-upcoming">${escapeHtml(a.consultation_type || 'In Clinic')}</span></td>
+            <td>${escapeHtml(a.symptoms || a.scan_name || 'General Consultation')}</td>
+            <td>${a.created_at ? a.created_at.slice(0,10) : 'Today'}</td>
+            <td><span class="status-pill status-${a.status === 'completed' ? 'completed' : 'upcoming'}">${escapeHtml(a.status || 'Scheduled')}</span></td>
+            <td>
+              <button class="btn-mint" style="padding: 6px 12px; font-size: 12px;" onclick="openPrescriptionFor('${escapeHtml(a.patient_phone || '')}')">Write Rx →</button>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--ink-soft); padding: 30px;">No appointments found for today.</td></tr>';
+      }
+    } catch(e) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--ink-soft); padding: 30px;">Unable to load queue.</td></tr>';
+    }
+  }
+
+  function openPrescriptionFor(phone) {
+    document.getElementById('rxPatientPhone').value = phone;
+    switchTab('prescription');
+  }
+
+  async function handleSendPrescription(e) {
+    e.preventDefault();
+    const btn = document.getElementById('rxSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Dispatching Prescription...';
+
+    const pData = {
+      patient_phone: document.getElementById('rxPatientPhone').value,
+      diagnosis: document.getElementById('rxDiagnosis').value,
+      medicines: document.getElementById('rxMedicines').value,
+      advice: document.getElementById('rxAdvice').value,
+      follow_up: document.getElementById('rxFollowUp').value,
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/doctor/prescription`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pData)
+      });
+      const data = await res.json();
+      btn.disabled = false;
+      btn.textContent = 'Generate & Dispatch Prescription →';
+      if (data.success) {
+        alert('✅ Prescription sent directly to patient\'s WhatsApp & Medical Locker!');
+        document.getElementById('rxDiagnosis').value = '';
+        document.getElementById('rxMedicines').value = '';
+        switchTab('queue');
+      }
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = 'Generate & Dispatch Prescription →';
+      alert('Error sending prescription.');
+    }
+  }
+
+  async function searchPatientLocker() {
+    const phone = document.getElementById('lockerPhoneInput').value.trim();
+    if (!phone) return;
+    const box = document.getElementById('lockerResults');
+    box.innerHTML = '<div style="text-align: center; color: var(--ink-soft); padding: 30px;">Loading patient medical locker...</div>';
+
+    try {
+      const res = await fetch(`${API_BASE}/patient/locker`, {
+        headers: { 'X-Patient-Phone': phone }
+      });
+      const data = await res.json();
+      if (data.success && data.files && data.files.length > 0) {
+        box.innerHTML = data.files.map(f => `
+          <div style="background: #FFF; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong>${escapeHtml(f.file_name)}</strong><br>
+              <span style="font-size: 12px; color: var(--ink-soft);">${escapeHtml(f.category || 'Diagnostic File')} • ${f.created_at ? f.created_at.slice(0,10) : ''}</span>
+            </div>
+            <a href="${API_BASE}/static/uploads/${encodeURIComponent(f.file_name)}" target="_blank" class="btn-mint" style="padding: 6px 12px; font-size: 12px;">Open Report →</a>
+          </div>
+        `).join('');
+      } else {
+        box.innerHTML = '<div style="text-align: center; color: var(--ink-soft); padding: 30px;">No medical locker files found for this patient.</div>';
+      }
+    } catch(e) {
+      box.innerHTML = '<div style="text-align: center; color: var(--ink-soft); padding: 30px;">Unable to fetch locker files.</div>';
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  document.addEventListener('DOMContentLoaded', initDoctorPortal);
+</script>
+</body>
+</html>
