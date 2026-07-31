@@ -395,7 +395,22 @@
       </div>
     </div>
 
-    <!-- ── TAB 3: PROFILE SCREEN ── -->
+    <!-- ── TAB 3: APPOINTMENTS SCREEN ── -->
+    <div id="screenAppointments" class="profile-screen hidden">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <h2 style="font-family: var(--serif); font-size: 22px; color: var(--void);">My Appointments</h2>
+        <span style="font-family: var(--mono); font-size: 11px; color: var(--pine); background: #EBF2EF; padding: 4px 10px; border-radius: 100px; font-weight: 600;">Visit Recorder</span>
+      </div>
+      <p style="font-size: 13px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 18px;">
+        Confirmed doctor visits and scan bookings. Tap a confirmed visit below to record your consultation live when you're at the hospital! 🎙️
+      </p>
+
+      <div id="appointmentsListBox">
+        <div style="text-align: center; padding: 40px; color: var(--ink-soft);">Loading appointments...</div>
+      </div>
+    </div>
+
+    <!-- ── TAB 4: PROFILE SCREEN ── -->
     <div id="screenProfile" class="profile-screen hidden">
       
       <!-- HERO AVATAR HEADER CARD -->
@@ -405,6 +420,20 @@
         </div>
         <h3 id="displayProfName" style="font-family: var(--serif); font-size: 20px; margin: 0 0 4px 0;">Patient Health Profile</h3>
         <span style="font-size: 11px; background: rgba(255,255,255,0.12); padding: 3px 12px; border-radius: 100px; color: #E2DFD2; font-weight: 600; letter-spacing: 0.04em;">Curelith Medical Passport</span>
+      </div>
+
+      <!-- CARD 0: CONFIRMED APPOINTMENTS & RECORD VISITS -->
+      <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <h4 style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pine); margin: 0;">
+            Confirmed Appointments & Visit Recorder
+          </h4>
+          <button type="button" class="btn btn-ghost btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="switchAppTab('appointments')">View All →</button>
+        </div>
+
+        <div id="profileAppointmentsPreview">
+          <div style="text-align: center; color: var(--ink-soft); font-size: 13px; padding: 12px;">Loading confirmed appointments...</div>
+        </div>
       </div>
 
       <form onsubmit="handleSaveProfile(event)">
@@ -532,12 +561,86 @@
       <i data-lucide="folder-heart"></i>
       <span>Locker</span>
     </button>
+    <button class="nav-item" id="navItemAppointments" onclick="switchAppTab('appointments')">
+      <i data-lucide="calendar"></i>
+      <span>Appts</span>
+    </button>
     <button class="nav-item" id="navItemProfile" onclick="switchAppTab('profile')">
       <i data-lucide="user"></i>
       <span>Profile</span>
     </button>
   </nav>
 
+</div>
+
+<!-- DOCTOR VISIT CONSULTATION RECORDER MODAL -->
+<div id="recorderModal" class="hidden" style="position: fixed; inset: 0; background: rgba(15,27,25,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 16px;">
+  <div style="background: #FFFFFF; width: 100%; max-width: 480px; border-radius: 24px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; text-align: center;">
+    
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+      <span style="font-family: var(--mono); font-size: 11px; color: var(--pine); background: #EBF2EF; padding: 4px 12px; border-radius: 100px; font-weight: 600;">🎙️ Doctor Visit Recorder</span>
+      <button onclick="closeRecorderModal()" style="background: transparent; border: none; font-size: 20px; color: var(--ink-soft); cursor: pointer; padding: 4px;">✕</button>
+    </div>
+
+    <h3 id="recModalTitle" style="font-family: var(--serif); font-size: 20px; color: var(--void); margin-bottom: 4px;">Dr. Priya Sharma</h3>
+    <p id="recModalSubtitle" style="font-size: 12.5px; color: var(--ink-soft); margin-bottom: 20px;">Orthomed Hospital • Consultation Visit</p>
+
+    <!-- ACTIVE RECORDING VIEW -->
+    <div id="recorderActiveView">
+      <div id="recMicCircle" style="width: 84px; height: 84px; border-radius: 50%; background: #FDF2E9; border: 2px solid #D4824A; color: #B5642F; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; transition: all 0.3s;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#B5642F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+      </div>
+
+      <div id="recTimerText" style="font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--void); margin-bottom: 8px;">00:00</div>
+      <p id="recStatusPrompt" style="font-size: 13px; color: var(--ink-soft); margin-bottom: 22px; line-height: 1.4;">
+        Tap below when your doctor begins speaking. Curelith will record and organize your consultation guidance.
+      </p>
+
+      <button id="recStartBtn" onclick="startConsultationRecording()" style="width: 100%; background: #1E423D; color: #FFFFFF; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(30,66,61,0.25);">
+        🔴 Start Recording Consultation
+      </button>
+
+      <button id="recStopBtn" onclick="stopConsultationRecording()" class="hidden" style="width: 100%; background: #D9381E; color: #FFFFFF; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(217,56,30,0.25);">
+        ⏹ Stop & Save Visit Recording
+      </button>
+    </div>
+
+    <!-- PROCESSING SPINNER VIEW -->
+    <div id="recorderProcessingView" class="hidden" style="padding: 30px 10px;">
+      <div style="font-size: 28px; margin-bottom: 12px; animation: spin 1.5s linear infinite; display: inline-block;">⚙️</div>
+      <h4 style="font-family: var(--serif); font-size: 17px; color: var(--void); margin-bottom: 6px;">Transcribing Consultation...</h4>
+      <p style="font-size: 12.5px; color: var(--ink-soft);">AI is analyzing doctor advice and generating your prescription summary.</p>
+    </div>
+
+    <!-- COMPLETED RESULT VIEW (Transcribed & Summarized) -->
+    <div id="recorderResultView" class="hidden" style="text-align: left; margin-top: 16px;">
+      <div style="background: #EBF2EF; border: 1px solid rgba(30,66,61,0.2); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
+        <div style="font-weight: 700; font-size: 13px; color: var(--pine); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+          🔊 Consultation Audio Playback
+        </div>
+        <audio id="recAudioPlayer" controls style="width: 100%; height: 38px;"></audio>
+      </div>
+
+      <div style="background: #F8F6F0; border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
+        <div style="font-weight: 700; font-size: 13px; color: var(--void); margin-bottom: 6px;">💡 Doctor Advice & Prescription Summary</div>
+        <div id="recSummaryText" style="font-size: 13px; line-height: 1.5; color: var(--ink); white-space: pre-wrap;"></div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 16px;">
+        <div style="font-weight: 700; font-size: 13px; color: var(--void); margin-bottom: 6px;">📄 Full Verbatim Transcript</div>
+        <div id="recTranscriptText" style="font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); max-height: 140px; overflow-y: auto; white-space: pre-wrap;"></div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--pine); background: rgba(30,66,61,0.08); padding: 10px 12px; border-radius: 10px; text-align: center; font-weight: 600; margin-bottom: 14px;">
+        ✓ Saved automatically to your Curelith Medical Locker
+      </div>
+
+      <button onclick="closeRecorderModal()" style="width: 100%; background: #1E423D; color: #FFFFFF; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer;">
+        Done & Return to Appointments
+      </button>
+    </div>
+
+  </div>
 </div>
 
 <script>
@@ -614,6 +717,7 @@
     loadProfileData();
     loadChatHistory();
     loadLockerFiles();
+    loadAppointments();
   }
 
   function handleLogout() {
@@ -624,16 +728,212 @@
   }
 
   function switchAppTab(tab) {
-    ['chat', 'locker', 'profile'].forEach(t => {
-      document.getElementById(`screen${capitalize(t)}`).classList.add('hidden');
-      document.getElementById(`navItem${capitalize(t)}`).classList.remove('active');
+    ['chat', 'locker', 'appointments', 'profile'].forEach(t => {
+      const scr = document.getElementById(`screen${capitalize(t)}`);
+      const nav = document.getElementById(`navItem${capitalize(t)}`);
+      if (scr) scr.classList.add('hidden');
+      if (nav) nav.classList.remove('active');
     });
-    document.getElementById(`screen${capitalize(tab)}`).classList.remove('hidden');
-    document.getElementById(`navItem${capitalize(tab)}`).classList.add('active');
+    const targetScr = document.getElementById(`screen${capitalize(tab)}`);
+    const targetNav = document.getElementById(`navItem${capitalize(tab)}`);
+    if (targetScr) targetScr.classList.remove('hidden');
+    if (targetNav) targetNav.classList.add('active');
     try { lucide.createIcons(); } catch(e) {}
+
+    if (tab === 'appointments') loadAppointments();
+    if (tab === 'profile') loadAppointments();
   }
 
   function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  /* ── APPOINTMENTS & DOCTOR VISIT RECORDING API ── */
+  let activeRecApptId = null;
+  let recMediaRecorder = null;
+  let recAudioChunks = [];
+  let recTimerInterval = null;
+
+  async function loadAppointments() {
+    const listContainer = document.getElementById('appointmentsListBox');
+    const profileContainer = document.getElementById('profileAppointmentsPreview');
+    try {
+      const res = await fetch(`${API_BASE}/patient/appointments`, {
+        headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone }
+      });
+      const data = await res.json();
+      if (data.success && data.appointments) {
+        const appts = data.appointments;
+        
+        if (!appts.length) {
+          const emptyHtml = `<div style="text-align: center; padding: 30px; color: var(--ink-soft); font-size: 13.5px;">No appointments or scan bookings found. Book a slot via WhatsApp or Hospital Portal! 📅</div>`;
+          if (listContainer) listContainer.innerHTML = emptyHtml;
+          if (profileContainer) profileContainer.innerHTML = emptyHtml;
+          return;
+        }
+
+        // Render Appointments Screen List
+        const fullHtml = appts.map(a => {
+          const isConfirmed = a.status === 'confirmed';
+          const badgeClass = isConfirmed ? 'background: #EBF2EF; color: #1E423D;' : 'background: #FDF2E9; color: #B5642F;';
+          const statusText = isConfirmed ? '✓ Confirmed Slot' : '⏳ Pending Confirmation';
+
+          let recordingsHtml = '';
+          if (a.recordings && a.recordings.length) {
+            recordingsHtml = `
+              <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line);">
+                <div style="font-size: 11.5px; font-weight: 700; color: var(--pine); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Saved Visit Audio Recordings (${a.recordings.length})</div>
+                ${a.recordings.map(r => `
+                  <div style="background: #F8F6F0; border-radius: 10px; padding: 10px; margin-bottom: 8px; font-size: 12px;">
+                    <div style="font-weight: 600; color: var(--void); margin-bottom: 4px;">🎙️ Doctor Visit Audio Note</div>
+                    <audio controls src="${API_BASE}${r.audio_url}" style="width: 100%; height: 32px; margin-bottom: 6px;"></audio>
+                    ${r.summary ? `<div style="font-size: 12px; color: var(--ink); line-height: 1.4;">${r.summary}</div>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            `;
+          }
+
+          return `
+            <div style="background: #FFFFFF; border: 1.5px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(15,27,25,0.03);">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px;">
+                <div>
+                  <h4 style="font-size: 16px; font-weight: 700; color: var(--void); margin-bottom: 2px;">${escapeHtml(a.title)}</h4>
+                  <p style="font-size: 12.5px; color: var(--ink-soft);">${escapeHtml(a.hospital_name)} • ${a.date}</p>
+                </div>
+                <span style="font-size: 11px; padding: 3px 10px; border-radius: 100px; font-weight: 600; ${badgeClass}">
+                  ${statusText}
+                </span>
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button type="button" class="btn btn-primary btn-sm" style="flex: 1; justify-content: center; background: #1E423D; color: #FFFFFF; border-radius: 10px; padding: 10px; font-size: 13px; font-weight: 600;" onclick="openRecorderModal(${a.id}, '${escapeHtml(a.title)}', '${escapeHtml(a.hospital_name)}')">
+                  🎙️ Record Doctor Visit
+                </button>
+              </div>
+
+              ${recordingsHtml}
+            </div>
+          `;
+        }).join('');
+
+        if (listContainer) listContainer.innerHTML = fullHtml;
+
+        // Render Profile Preview List (First 2)
+        const previewHtml = appts.slice(0,2).map(a => `
+          <div style="background: #F8F6F0; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-weight: 700; font-size: 14px; color: var(--void);">${escapeHtml(a.title)}</div>
+              <div style="font-size: 11.5px; color: var(--ink-soft);">${escapeHtml(a.hospital_name)}</div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" style="padding: 6px 12px; font-size: 12px; background: #1E423D; color: #fff; border-radius: 8px;" onclick="openRecorderModal(${a.id}, '${escapeHtml(a.title)}', '${escapeHtml(a.hospital_name)}')">
+              🎙️ Record Visit
+            </button>
+          </div>
+        `).join('');
+
+        if (profileContainer) profileContainer.innerHTML = previewHtml;
+      }
+    } catch(e) {
+      if (listContainer) listContainer.innerHTML = `<div style="text-align: center; color: var(--ink-soft); padding: 20px;">Unable to load appointments.</div>`;
+    }
+  }
+
+  function openRecorderModal(apptId, title, hospName) {
+    activeRecApptId = apptId;
+    document.getElementById('recModalTitle').textContent = title || 'Doctor Consultation Visit';
+    document.getElementById('recModalSubtitle').textContent = `${hospName || 'Orthomed Hospital'} • Consultation Visit`;
+    
+    document.getElementById('recorderActiveView').classList.remove('hidden');
+    document.getElementById('recorderProcessingView').classList.add('hidden');
+    document.getElementById('recorderResultView').classList.add('hidden');
+
+    document.getElementById('recStartBtn').classList.remove('hidden');
+    document.getElementById('recStopBtn').classList.add('hidden');
+    document.getElementById('recTimerText').textContent = '00:00';
+
+    document.getElementById('recorderModal').classList.remove('hidden');
+  }
+
+  function closeRecorderModal() {
+    if (recMediaRecorder && recMediaRecorder.state === 'recording') {
+      recMediaRecorder.stop();
+      recMediaRecorder.stream.getTracks().forEach(t => t.stop());
+    }
+    if (recTimerInterval) clearInterval(recTimerInterval);
+    document.getElementById('recorderModal').classList.add('hidden');
+  }
+
+  async function startConsultationRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recMediaRecorder = new MediaRecorder(stream);
+      recAudioChunks = [];
+
+      recMediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recAudioChunks.push(e.data);
+      };
+
+      recMediaRecorder.onstop = async () => {
+        if (recTimerInterval) clearInterval(recTimerInterval);
+        const audioBlob = new Blob(recAudioChunks, { type: 'audio/webm' });
+        
+        document.getElementById('recorderActiveView').classList.add('hidden');
+        document.getElementById('recorderProcessingView').classList.remove('hidden');
+
+        const formData = new FormData();
+        formData.append('file', audioBlob, `visit_recording_${activeRecApptId}.webm`);
+
+        try {
+          const res = await fetch(`${API_BASE}/patient/appointments/${activeRecApptId}/save-recording`, {
+            method: 'POST',
+            headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone },
+            body: formData
+          });
+          const data = await res.json();
+          document.getElementById('recorderProcessingView').classList.add('hidden');
+
+          if (data.success) {
+            document.getElementById('recorderResultView').classList.remove('hidden');
+            document.getElementById('recAudioPlayer').src = `${API_BASE}${data.audio_url}`;
+            document.getElementById('recSummaryText').innerHTML = formatChatMessage(data.summary);
+            document.getElementById('recTranscriptText').textContent = data.transcription || 'No spoken text detected.';
+            loadAppointments();
+            loadLockerFiles();
+          } else {
+            alert('Error saving visit recording: ' + (data.error || 'Please try again.'));
+            closeRecorderModal();
+          }
+        } catch(err) {
+          document.getElementById('recorderProcessingView').classList.add('hidden');
+          alert('Network error saving visit recording. Please try again.');
+          closeRecorderModal();
+        }
+      };
+
+      recMediaRecorder.start();
+      document.getElementById('recStartBtn').classList.add('hidden');
+      document.getElementById('recStopBtn').classList.remove('hidden');
+      document.getElementById('recMicCircle').style.borderColor = '#D9381E';
+      document.getElementById('recMicCircle').style.background = '#FDF2E9';
+
+      let sec = 0;
+      recTimerInterval = setInterval(() => {
+        sec++;
+        const mins = Math.floor(sec / 60);
+        const secs = sec % 60;
+        document.getElementById('recTimerText').textContent = `${mins < 10 ? '0'+mins : mins}:${secs < 10 ? '0'+secs : secs}`;
+      }, 1000);
+
+    } catch(err) {
+      alert('Microphone permission is required to record your doctor consultation. Please allow microphone access.');
+    }
+  }
+
+  function stopConsultationRecording() {
+    if (recMediaRecorder && recMediaRecorder.state === 'recording') {
+      recMediaRecorder.stop();
+      recMediaRecorder.stream.getTracks().forEach(t => t.stop());
+    }
+  }
 
   /* ── PROFILE API ── */
   function updateProfileAvatarName(nameStr) {
