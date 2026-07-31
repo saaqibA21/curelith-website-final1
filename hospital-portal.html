@@ -306,6 +306,7 @@
     background: var(--paper);
     color: var(--ink);
     font-family: var(--sans);
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* FULLSCREEN APP SHELL */
@@ -318,6 +319,7 @@
     background: var(--void);
     position: relative;
     overflow: hidden;
+    padding: 16px;
   }
   #loginView::before {
     content: ""; position: absolute; inset: 0;
@@ -330,10 +332,11 @@
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 24px;
-    padding: 44px 36px;
+    padding: 40px 28px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
     z-index: 10;
     text-align: center;
+    box-sizing: border-box;
   }
   .app-login-logo {
     display: flex;
@@ -344,7 +347,7 @@
     font-size: 22px;
     font-weight: 700;
     color: var(--void);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   /* APP DASHBOARD SHELL */
@@ -355,10 +358,10 @@
     overflow: hidden;
   }
   .app-sidebar {
-    width: 260px;
+    width: 250px;
     background: var(--void);
     color: #fff;
-    padding: 28px 18px;
+    padding: 24px 16px;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -372,8 +375,8 @@
     font-size: 20px;
     font-weight: 700;
     color: #FFF;
-    margin-bottom: 32px;
-    padding-left: 8px;
+    margin-bottom: 28px;
+    padding-left: 6px;
   }
   .app-sidebar-brand span {
     font-family: var(--mono);
@@ -417,7 +420,7 @@
   }
 
   .app-sidebar-footer {
-    padding-top: 20px;
+    padding-top: 16px;
     border-top: 1px solid rgba(255,255,255,0.1);
   }
 
@@ -428,12 +431,13 @@
     height: 100vh;
     overflow: hidden;
     background: var(--paper);
+    width: 100%;
   }
   .app-topbar {
-    height: 70px;
+    height: 64px;
     background: var(--card);
     border-bottom: 1px solid var(--line);
-    padding: 0 36px;
+    padding: 0 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -441,8 +445,112 @@
   }
   .app-content {
     flex: 1;
-    padding: 36px;
+    padding: 28px 24px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* MOBILE BOTTOM APP NAVIGATION BAR */
+  .mobile-bottom-nav {
+    display: none;
+  }
+
+  /* RESPONSIVE MOBILE APP INTERFACE (< 768px PHONE SCREENS) */
+  @media (max-width: 768px) {
+    .app-sidebar {
+      display: none !important;
+    }
+    .app-topbar {
+      padding: 0 16px;
+      height: 58px;
+    }
+    .app-topbar h3 {
+      font-size: 16px !important;
+    }
+    .app-content {
+      padding: 16px 14px 80px 14px;
+    }
+    .dash-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+    }
+    .dash-title h2 {
+      font-size: 22px;
+    }
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+      margin-bottom: 20px !important;
+    }
+    .stat-card {
+      padding: 14px 12px;
+      border-radius: 14px;
+    }
+    .stat-label {
+      font-size: 10px;
+    }
+    .stat-val {
+      font-size: 24px;
+    }
+    .table-card {
+      padding: 16px 12px;
+      border-radius: 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 20px;
+    }
+    table {
+      min-width: 520px;
+    }
+    th, td {
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    /* MOBILE BOTTOM APP BAR */
+    .mobile-bottom-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      background: var(--void);
+      border-top: 1px solid var(--line-dark);
+      justify-content: space-around;
+      align-items: center;
+      z-index: 999;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+      padding: 0 4px;
+    }
+    .mobile-nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: var(--mist);
+      background: transparent;
+      border: none;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      flex: 1;
+    }
+    .mobile-nav-btn.active {
+      color: var(--gold);
+      background: rgba(255,255,255,0.08);
+      font-weight: 700;
+    }
+    .mobile-nav-btn i {
+      width: 18px;
+      height: 18px;
+    }
   }
 </style>
 </head>
@@ -455,7 +563,7 @@
       <img src="assets/logo.png" style="width:32px; height:32px;" alt="Curelith">
       Hospital Partner Console
     </div>
-    <p style="font-size: 13.5px; color: var(--ink-soft); margin-bottom: 28px;">Sign in to manage your hospital's doctors, diagnostic scan packages, and patient referrals.</p>
+    <p style="font-size: 13.5px; color: var(--ink-soft); margin-bottom: 24px;">Sign in to manage your hospital's doctors, diagnostic scan packages, and patient referrals.</p>
 
     <div id="loginError" style="color: #c93b2b; font-size: 13.5px; margin-bottom: 16px; text-align: center;" class="hidden"></div>
 
@@ -475,6 +583,7 @@
 
 <!-- STANDALONE APP DASHBOARD CONSOLE -->
 <div id="dashboardView" class="hidden">
+  <!-- DESKTOP / TABLET SIDEBAR -->
   <div class="app-sidebar">
     <div class="app-sidebar-brand">
       <img src="assets/logo.png" style="width:28px; height:28px;" alt="Curelith">
@@ -485,11 +594,11 @@
     </div>
 
     <div class="app-nav-list">
-      <button class="nav-btn active" onclick="switchTab('overview')"><i data-lucide="layout-dashboard" style="width:16px; height:16px;"></i> Overview</button>
-      <button class="nav-btn" onclick="switchTab('doctors')"><i data-lucide="user-check" style="width:16px; height:16px;"></i> My Doctors</button>
-      <button class="nav-btn" onclick="switchTab('scans')"><i data-lucide="activity" style="width:16px; height:16px;"></i> Scans & Services</button>
-      <button class="nav-btn" onclick="switchTab('appointments')"><i data-lucide="calendar" style="width:16px; height:16px;"></i> Appointments</button>
-      <button class="nav-btn" onclick="switchTab('qr')"><i data-lucide="qr-code" style="width:16px; height:16px;"></i> QR Referral Code</button>
+      <button class="nav-btn active" data-tab="overview" onclick="switchTab('overview')"><i data-lucide="layout-dashboard" style="width:16px; height:16px;"></i> Overview</button>
+      <button class="nav-btn" data-tab="doctors" onclick="switchTab('doctors')"><i data-lucide="user-check" style="width:16px; height:16px;"></i> My Doctors</button>
+      <button class="nav-btn" data-tab="scans" onclick="switchTab('scans')"><i data-lucide="activity" style="width:16px; height:16px;"></i> Scans & Services</button>
+      <button class="nav-btn" data-tab="appointments" onclick="switchTab('appointments')"><i data-lucide="calendar" style="width:16px; height:16px;"></i> Appointments</button>
+      <button class="nav-btn" data-tab="qr" onclick="switchTab('qr')"><i data-lucide="qr-code" style="width:16px; height:16px;"></i> QR Referral Code</button>
     </div>
 
     <div class="app-sidebar-footer">
@@ -497,13 +606,16 @@
     </div>
   </div>
 
+  <!-- MAIN APP CONTAINER -->
   <div class="app-main">
     <div class="app-topbar">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <h3 id="dashHospName" style="font-family: var(--serif); font-size: 20px; margin: 0; color: var(--void);">Orthomed Hospital</h3>
-        <span class="badge badge-success">✓ Partner Verified</span>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <h3 id="dashHospName" style="font-family: var(--serif); font-size: 18px; margin: 0; color: var(--void);">Orthomed Hospital</h3>
+        <span class="badge badge-success" style="font-size:10px;">✓ Partner Verified</span>
       </div>
-      <div id="hospitalNameHeader" style="font-family: var(--mono); font-size: 13px; color: var(--pine); font-weight: 600;">🏥 Partner Portal</div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()" style="padding: 5px 10px; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+        <i data-lucide="log-out" style="width:13px; height:13px;"></i> Logout
+      </button>
     </div>
 
     <div class="app-content">
@@ -661,6 +773,30 @@
 
     </div>
   </div>
+
+  <!-- MOBILE APP BOTTOM NAVIGATION BAR -->
+  <div class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" data-tab="overview" onclick="switchTab('overview')">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Overview</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="doctors" onclick="switchTab('doctors')">
+      <i data-lucide="user-check"></i>
+      <span>Doctors</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="scans" onclick="switchTab('scans')">
+      <i data-lucide="activity"></i>
+      <span>Scans</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="appointments" onclick="switchTab('appointments')">
+      <i data-lucide="calendar"></i>
+      <span>Appts</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="qr" onclick="switchTab('qr')">
+      <i data-lucide="qr-code"></i>
+      <span>QR Code</span>
+    </button>
+  </div>
 </div>
 
 <!-- ADD / EDIT DOCTOR MODAL -->
@@ -807,12 +943,15 @@
 
   function switchTab(tab) {
     ['overview', 'doctors', 'scans', 'appointments', 'qr'].forEach(t => {
-      document.getElementById(`tab${capitalize(t)}`).classList.add('hidden');
+      const el = document.getElementById(`tab${capitalize(t)}`);
+      if (el) el.classList.add('hidden');
     });
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-btn, .mobile-nav-btn').forEach(b => b.classList.remove('active'));
     
-    document.getElementById(`tab${capitalize(tab)}`).classList.remove('hidden');
-    event.target.classList.add('active');
+    const targetTab = document.getElementById(`tab${capitalize(tab)}`);
+    if (targetTab) targetTab.classList.remove('hidden');
+
+    document.querySelectorAll(`[data-tab="${tab}"]`).forEach(b => b.classList.add('active'));
 
     try { lucide.createIcons(); } catch(e) {}
 
