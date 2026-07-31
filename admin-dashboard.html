@@ -238,7 +238,8 @@
     <div class="sidebar">
         <h2><img src="assets/logo.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Curelith Logo"> Curelith</h2>
         <div class="nav-item active" onclick="showView('overview')"><i data-lucide="layout-dashboard"></i> Overview</div>
-        <div class="nav-item" onclick="showView('doctors')"><i data-lucide="users"></i> Doctors</div>
+        <div class="nav-item" onclick="showView('doctors')"><i data-lucide="stethoscope"></i> Doctors</div>
+        <div class="nav-item" onclick="showView('users')"><i data-lucide="users"></i> Registered Users</div>
         <div class="nav-item" onclick="showView('clinics')"><i data-lucide="building"></i> Clinics</div>
         <div class="nav-item" onclick="showView('hospitals')"><i data-lucide="building-2"></i> Partner Hospitals</div>
         <div class="nav-item" onclick="showView('activity')"><i data-lucide="activity"></i> Activity Logs</div>
@@ -324,6 +325,49 @@
                         </tr>
                     </thead>
                     <tbody id="doctorsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- View: Registered Users / Patients -->
+        <div id="view-users" style="display: none;">
+            <div class="stats-grid" style="margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <h3>TOTAL PATIENTS</h3>
+                    <div class="value" id="statUsersTotal">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Registered Patient Accounts</div>
+                </div>
+                <div class="stat-card">
+                    <h3>HOSPITAL PARTNER USERS</h3>
+                    <div class="value" id="statUsersPartner" style="color: var(--admin-accent);">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">QR / Partner Hospital Referrals</div>
+                </div>
+                <div class="stat-card">
+                    <h3>WATCH SYNC ACTIVE</h3>
+                    <div class="value" id="statUsersWatch" style="color: #10b981;">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Google Fit / Apple Health Linked</div>
+                </div>
+            </div>
+
+            <div class="white-panel">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Registered Patients & Users</h2>
+                    <input type="text" class="search-box" id="usersSearch" placeholder="Filter by name / phone / hospital..." onkeyup="filterUsers()">
+                </div>
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>PATIENT NAME</th>
+                            <th>PHONE NUMBER</th>
+                            <th>AGE / GENDER</th>
+                            <th>PARTNER SOURCE</th>
+                            <th>SMARTWATCH SYNC</th>
+                            <th>REGISTERED DATE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersList">
+                        <tr><td colspan="6" style="text-align:center; color: var(--admin-text-dim);">Loading users...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -872,8 +916,81 @@
         let allDoctors = [];
         let allActivity = [];
         let allHospitals = [];
+        let allUsers = [];
 
         function initIcons() { try { lucide.createIcons(); } catch(e) {} }
+
+        async function loadUsers() {
+            try {
+                const res = await fetch(`${API_BASE}/doctor/admin/users`, { headers });
+                const data = await res.json();
+                if (data.status === 'success' || data.users) {
+                    allUsers = data.users || [];
+                    renderUsers(allUsers);
+                }
+            } catch (err) { console.error('Error loading users:', err); }
+        }
+
+        function renderUsers(list) {
+            document.getElementById('statUsersTotal').innerText = list.length;
+            const partnerCount = list.filter(u => u.partner_hospital_id || u.partner_hospital_ref).length;
+            const watchCount = list.filter(u => u.google_access_token || u.apple_health_connected).length;
+            
+            document.getElementById('statUsersPartner').innerText = partnerCount;
+            document.getElementById('statUsersWatch').innerText = watchCount;
+
+            const tbody = document.getElementById('usersList');
+            tbody.innerHTML = '';
+
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--admin-text-dim);">No registered users found.</td></tr>';
+                return;
+            }
+
+            list.forEach(u => {
+                const tr = document.createElement('tr');
+                const name = u.name && u.name.toLowerCase() !== 'patient' ? u.name : 'Registered Patient';
+                const ageGender = (u.age || u.gender) ? `${u.age || '-'} / ${u.gender || '-'}` : 'N/A';
+                
+                let sourceBadge = '<span class="ig-status ig-status-not_contacted">General User</span>';
+                if (u.partner_hospital_name) {
+                    sourceBadge = `<span class="ig-status ig-status-messaged">🏥 ${u.partner_hospital_name}</span>`;
+                } else if (u.partner_hospital_ref) {
+                    sourceBadge = `<span class="ig-status ig-status-messaged">🏥 ${u.partner_hospital_ref.toUpperCase()}</span>`;
+                }
+
+                let watchBadge = '<span style="color: var(--admin-text-dim); font-size: 0.8rem;">Not Linked</span>';
+                if (u.apple_health_connected) {
+                    watchBadge = '<span style="color: #10b981; font-weight: 600; font-size: 0.85rem;">🍎 Apple Health</span>';
+                } else if (u.google_access_token) {
+                    watchBadge = '<span style="color: #3b82f6; font-weight: 600; font-size: 0.85rem;">⌚ Google Fit</span>';
+                }
+
+                const regDate = u.created_at ? u.created_at.slice(0, 10) : 'Recent';
+
+                tr.innerHTML = `
+                    <td><strong>${name}</strong></td>
+                    <td><code style="background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px;">+${u.phone}</code></td>
+                    <td>${ageGender}</td>
+                    <td>${sourceBadge}</td>
+                    <td>${watchBadge}</td>
+                    <td>${regDate}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            initIcons();
+        }
+
+        function filterUsers() {
+            const query = (document.getElementById('usersSearch').value || '').toLowerCase();
+            const filtered = allUsers.filter(u => 
+                (u.name || '').toLowerCase().includes(query) ||
+                (u.phone || '').toLowerCase().includes(query) ||
+                (u.partner_hospital_name || '').toLowerCase().includes(query) ||
+                (u.partner_hospital_ref || '').toLowerCase().includes(query)
+            );
+            renderUsers(filtered);
+        }
 
         async function loadHospitals() {
             try {
@@ -1027,6 +1144,7 @@
         function showView(view) {
             document.getElementById('view-overview').style.display = view === 'overview' ? 'block' : 'none';
             document.getElementById('view-doctors').style.display = view === 'doctors' ? 'block' : 'none';
+            document.getElementById('view-users').style.display = view === 'users' ? 'block' : 'none';
             document.getElementById('view-clinics').style.display = view === 'clinics' ? 'block' : 'none';
             document.getElementById('view-hospitals').style.display = view === 'hospitals' ? 'block' : 'none';
             document.getElementById('view-activity').style.display = view === 'activity' ? 'block' : 'none';
@@ -1042,6 +1160,7 @@
                 loadLeaderboard();
             }
             if (view === 'doctors') loadDoctors();
+            if (view === 'users') loadUsers();
             if (view === 'clinics') loadClinics();
             if (view === 'hospitals') loadHospitals();
             if (view === 'activity') loadActivityLogs();
