@@ -793,7 +793,7 @@
           if (tempMsg) tempMsg.remove();
 
           if (data.success) {
-            let replyHtml = escapeHtml(data.reply);
+            let replyHtml = formatChatMessage(data.reply);
             if (data.audio_url) {
               const fullAudioUrl = data.audio_url.startsWith('http') ? data.audio_url : `${API_BASE}${data.audio_url}`;
               replyHtml += `<br><br><audio controls style="width: 100%; margin-top: 8px; border-radius: 12px; height: 36px;"><source src="${fullAudioUrl}" type="audio/mpeg">Your browser does not support audio playback.</audio>`;
@@ -911,7 +911,9 @@
           box.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--ink-soft);">No medical documents yet. Upload a report above! 📄</div>`;
           return;
         }
-        box.innerHTML = data.files.map(f => `
+        box.innerHTML = data.files.map(f => {
+          const fileUrl = f.file_url ? `${API_BASE}${f.file_url}` : `${API_BASE}/static/uploads/${encodeURIComponent(f.file_name)}`;
+          return `
           <div class="file-card">
             <div class="file-card-left">
               <div class="file-icon-box">
@@ -922,9 +924,10 @@
                 <div style="font-size: 12px; color: var(--ink-soft); font-family: var(--mono);">${f.category || 'Lab Report'} • ${f.created_at ? f.created_at.slice(0,10) : 'Recent'}</div>
               </div>
             </div>
-            <a class="btn btn-ghost btn-sm" style="padding: 6px 12px; font-size: 12px;" href="${API_BASE}/static/uploads/${encodeURIComponent(f.file_name)}" target="_blank">View →</a>
+            <a class="btn btn-ghost btn-sm" style="padding: 6px 12px; font-size: 12px;" href="${fileUrl}" target="_blank">View →</a>
           </div>
-        `).join('');
+        `;
+        }).join('');
         try { lucide.createIcons(); } catch(e) {}
       }
     } catch(e) {
@@ -962,7 +965,7 @@
       if (tempMsg) tempMsg.remove();
 
       if (data.success && data.reply) {
-        box.innerHTML += `<div class="msg-bubble msg-assistant">${escapeHtml(data.reply)}</div>`;
+        box.innerHTML += `<div class="msg-bubble msg-assistant">${formatChatMessage(data.reply)}</div>`;
         box.scrollTop = box.scrollHeight;
         loadLockerFiles();
       } else {
