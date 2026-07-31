@@ -874,6 +874,19 @@
   let loadedDoctors = [];
   let loadedScans = [];
 
+  function getToken() {
+    return token || localStorage.getItem('hospital_token') || '';
+  }
+
+  function handleApiError(res) {
+    if (res && (res.status === 401 || res.status === 403)) {
+      console.warn('Session expired or unauthorized. Signing out...');
+      logout();
+      return true;
+    }
+    return false;
+  }
+
   async function handleLogin(e) {
     e.preventDefault();
     const ref_code = document.getElementById('refCodeInput').value.trim();
@@ -893,11 +906,11 @@
         localStorage.setItem('hospital_info', JSON.stringify(data.hospital));
         showDashboard(data.hospital);
       } else {
-        document.getElementById('loginError').textContent = data.error || 'Login failed';
+        document.getElementById('loginError').textContent = data.error || 'Invalid credentials. Please check hospital code & password.';
         document.getElementById('loginError').classList.remove('hidden');
       }
     } catch (err) {
-      document.getElementById('loginError').textContent = 'Server error. Please try again.';
+      document.getElementById('loginError').textContent = 'Server error connecting to portal API. Please retry.';
       document.getElementById('loginError').classList.remove('hidden');
     }
   }
@@ -912,38 +925,49 @@
   }
 
   function logout() {
+    token = '';
     localStorage.removeItem('hospital_token');
     localStorage.removeItem('hospital_info');
-    location.reload();
+    document.getElementById('dashboardView').classList.add('hidden');
+    document.getElementById('loginView').classList.remove('hidden');
   }
 
   async function loadDashboardData() {
+    const curToken = getToken();
+    if (!curToken) return;
     try {
       const res = await fetch(`${API}/dashboard`, {
-        headers: { 'X-Hospital-Token': token }
+        headers: { 'X-Hospital-Token': curToken }
       });
+      if (handleApiError(res)) return;
       const data = await res.json();
 
-      if (data.success) {
-        document.getElementById('statPatients').textContent = data.stats.total_patients || 0;
-        document.getElementById('statScans').textContent = data.stats.qr_scans || 0;
-        document.getElementById('statBookings').textContent = data.stats.total_bookings || 0;
-        document.getElementById('statPending').textContent = data.stats.pending_bookings || 0;
+      if (data.success && data.stats) {
+        document.getElementById('statPatients').textContent = data.stats.total_patients ?? 0;
+        document.getElementById('statScans').textContent = data.stats.qr_scans ?? 0;
+        document.getElementById('statBookings').textContent = data.stats.total_bookings ?? 0;
+        document.getElementById('statPending').textContent = data.stats.pending_bookings ?? 0;
 
         // Recent bookings
         const table = document.getElementById('recentBookingsTable');
-        if (data.recent_bookings && data.recent_bookings.length) {
-          table.innerHTML = data.recent_bookings.map(b => `
-            <tr>
-              <td>${b.user_phone}</td>
-              <td>${b.scan_name}</td>
-              <td>${b.created_at ? b.created_at.slice(0,10) : 'Today'}</td>
-              <td><span class="badge badge-${b.status === 'confirmed' ? 'success' : 'pending'}">${b.status}</span></td>
-            </tr>
-          `).join('');
+        if (table) {
+          if (data.recent_bookings && data.recent_bookings.length) {
+            table.innerHTML = data.recent_bookings.map(b => `
+              <tr>
+                <td><strong>${b.user_phone || 'Patient'}</strong></td>
+                <td>${b.scan_name || 'Scan / Service'}</td>
+                <td>${b.created_at ? b.created_at.slice(0,10) : 'Today'}</td>
+                <td><span class="badge badge-${b.status === 'confirmed' ? 'success' : 'pending'}">${b.status || 'pending'}</span></td>
+              </tr>
+            `).join('');
+          } else {
+            table.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--ink-soft);">No recent bookings found</td></tr>';
+          }
         }
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error('Error loading dashboard data:', err);
+    }
   }
 
   function switchTab(tab) {
@@ -968,76 +992,99 @@
   }
 
   async function loadDoctors() {
-    const res = await fetch(`${API}/doctors`, { headers: { 'X-Hospital-Token': token } });
+    const curToken = getToken();
+    if (!curToken) return;
+    const res = await fetch(`${API}/doctors`, { headers: { 'X-Hospital-Token': curToken } });
+    if (handleApiError(res)) return;
     const data = await res.json();
     const table = document.getElementById('doctorsTable');
-    if (data.doctors && data.doctors.length) {
-      loadedDoctors = data.doctors;
-      table.innerHTML = data.doctors.map(d => `
-        <tr>
-          <td><strong>Dr. ${d.doctor_name}</strong></td>
-          <td>${d.specialization}</td>
-          <td>${d.available_days || 'Mon-Fri'}</td>
-          <td>₹${d.consultation_fee}</td>
-          <td><span class="badge badge-success">Active</span></td>
-          <td>
-            <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px;" onclick="openEditDoctorModal(${d.id})">Edit</button>
-            <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px; color: #b91c1c; border-color: #fca5a5; margin-left: 4px;" onclick="deleteDoctor(${d.id})">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    } else {
-      loadedDoctors = [];
-      table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No doctors added yet</td></tr>';
+    if (table) {
+      if (data.doctors && data.doctors.length) {
+        loadedDoctors = data.doctors;
+        table.innerHTML = data.doctors.map(d => `
+          <tr>
+            <td><strong>Dr. ${d.doctor_name}</strong></td>
+            <td>${d.specialization}</td>
+            <td>${d.available_days || 'Mon-Fri'}</td>
+            <td>₹${d.consultation_fee}</td>
+            <td><span class="badge badge-success">Active</span></td>
+            <td>
+              <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px;" onclick="openEditDoctorModal(${d.id})">Edit</button>
+              <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px; color: #b91c1c; border-color: #fca5a5; margin-left: 4px;" onclick="deleteDoctor(${d.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        loadedDoctors = [];
+        table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No doctors added yet</td></tr>';
+      }
     }
   }
 
   async function loadScans() {
-    const res = await fetch(`${API}/scans`, { headers: { 'X-Hospital-Token': token } });
+    const curToken = getToken();
+    if (!curToken) return;
+    const res = await fetch(`${API}/scans`, { headers: { 'X-Hospital-Token': curToken } });
+    if (handleApiError(res)) return;
     const data = await res.json();
     const table = document.getElementById('scansTable');
-    if (data.scans && data.scans.length) {
-      loadedScans = data.scans;
-      table.innerHTML = data.scans.map(s => `
-        <tr>
-          <td>${s.category}</td>
-          <td><strong>${s.scan_name} ${s.sub_type ? '('+s.sub_type+')' : ''}</strong></td>
-          <td>₹${s.price}</td>
-          <td>${s.home_collection ? 'Yes' : 'No'}</td>
-          <td>${s.turnaround_hours} hrs</td>
-          <td>
-            <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px;" onclick="openEditScanModal(${s.id})">Edit</button>
-            <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px; color: #b91c1c; border-color: #fca5a5; margin-left: 4px;" onclick="deleteScan(${s.id})">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    } else {
-      loadedScans = [];
-      table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No scans added yet</td></tr>';
+    if (table) {
+      if (data.scans && data.scans.length) {
+        loadedScans = data.scans;
+        table.innerHTML = data.scans.map(s => `
+          <tr>
+            <td>${s.category}</td>
+            <td><strong>${s.scan_name} ${s.sub_type ? '('+s.sub_type+')' : ''}</strong></td>
+            <td>₹${s.price}</td>
+            <td>${s.home_collection ? 'Yes' : 'No'}</td>
+            <td>${s.turnaround_hours} hrs</td>
+            <td>
+              <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px;" onclick="openEditScanModal(${s.id})">Edit</button>
+              <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px; color: #b91c1c; border-color: #fca5a5; margin-left: 4px;" onclick="deleteScan(${s.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        loadedScans = [];
+        table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No scans added yet</td></tr>';
+      }
     }
   }
 
   async function loadAppointments() {
-    const res = await fetch(`${API}/appointments`, { headers: { 'X-Hospital-Token': token } });
+    const curToken = getToken();
+    if (!curToken) return;
+    const res = await fetch(`${API}/appointments`, { headers: { 'X-Hospital-Token': curToken } });
+    if (handleApiError(res)) return;
     const data = await res.json();
     const table = document.getElementById('appointmentsTable');
-    if (data.appointments && data.appointments.length) {
-      table.innerHTML = data.appointments.map(a => {
-        let actionBtn = '';
-        if (a.status === 'pending') {
-          actionBtn = `<button class="btn btn-primary btn-sm" style="padding: 4px 12px; font-size: 12px;" onclick="updateAppointmentStatus(${a.id}, 'confirmed')">✓ Confirm Slot</button>`;
-        } else if (a.status === 'confirmed') {
-          actionBtn = `<button class="btn btn-ghost btn-sm" style="padding: 4px 12px; font-size: 12px;" onclick="updateAppointmentStatus(${a.id}, 'completed')">Mark Completed</button>`;
-        } else {
-          actionBtn = `<span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft);">✓ Completed</span>`;
-        }
+    if (table) {
+      if (data.appointments && data.appointments.length) {
+        table.innerHTML = data.appointments.map(a => {
+          let actionBtn = '';
+          if (a.status === 'pending') {
+            actionBtn = `<button class="btn btn-primary btn-sm" style="padding: 4px 12px; font-size: 12px;" onclick="updateAppointmentStatus(${a.id}, 'confirmed')">✓ Confirm Slot</button>`;
+          } else if (a.status === 'confirmed') {
+            actionBtn = `<button class="btn btn-ghost btn-sm" style="padding: 4px 12px; font-size: 12px;" onclick="updateAppointmentStatus(${a.id}, 'completed')">Mark Completed</button>`;
+          } else {
+            actionBtn = `<span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft);">✓ Completed</span>`;
+          }
 
-        return `
-          <tr>
-            <td><strong>${a.user_phone}</strong></td>
-            <td>${a.scan_name}</td>
-            <td>${a.created_at ? a.created_at.slice(0,10) : 'Today'}</td>
-            <td><span class="badge badge-${a.status === 'confirmed' ? 'success' : 'pending'}">${a.status}</span></td>
+          return `
+            <tr>
+              <td><strong>${a.user_phone}</strong></td>
+              <td>${a.scan_name}</td>
+              <td>${a.created_at ? a.created_at.slice(0,10) : 'Today'}</td>
+              <td><span class="badge badge-${a.status === 'confirmed' ? 'success' : 'pending'}">${a.status}</span></td>
+              <td>${actionBtn}</td>
+            </tr>
+          `;
+        }).join('');
+      } else {
+        table.innerHTML = '<tr><td colspan="5" style="text-align:center;">No appointment or scan requests found</td></tr>';
+      }
+    }
+  }
             <td>${actionBtn}</td>
           </tr>
         `;
