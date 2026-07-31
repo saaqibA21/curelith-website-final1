@@ -290,8 +290,8 @@
 <body>
 
 <!-- PWA 1-TAP INSTALL MODAL (Pops up right after entering Patient Portal) -->
-<div id="pwaInstallModal" class="hidden" style="position: fixed; inset: 0; background: rgba(15,27,25,0.78); backdrop-filter: blur(8px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;">
-  <div style="background: #FFFFFF; width: 100%; max-width: 400px; border-radius: 24px; padding: 30px 24px 24px 24px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.35); position: relative; border: 1px solid var(--line);">
+<div id="pwaInstallModal" style="display: none; position: fixed; inset: 0; background: rgba(15,27,25,0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 999999; align-items: center; justify-content: center; padding: 20px;">
+  <div style="background: #FFFFFF; width: 100%; max-width: 400px; border-radius: 24px; padding: 30px 24px 24px 24px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 1px solid var(--line);">
     
     <div style="width: 68px; height: 68px; background: #EBF2EF; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; box-shadow: 0 4px 14px rgba(30,66,61,0.12);">
       <img src="assets/apple-touch-icon.png" style="width: 46px; height: 46px; border-radius: 12px;">
@@ -503,43 +503,33 @@
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
 
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const banner = document.getElementById('pwaInstallBanner');
+  function showPwaModal() {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     const modal = document.getElementById('pwaInstallModal');
-
-    // Show high-impact Modal popup right after clicking Patient Portal if not installed yet
-    if (!isStandalone && modal && !sessionStorage.getItem('pwa_modal_shown')) {
-      modal.classList.remove('hidden');
-      sessionStorage.setItem('pwa_modal_shown', '1');
-    } else if (banner && !localStorage.getItem('pwa_banner_dismissed')) {
-      banner.classList.remove('hidden');
+    if (!isStandalone && modal) {
+      modal.style.display = 'flex';
     }
-  });
-
-  // Fallback: If beforeinstallprompt hasn't fired yet but user entered Patient Portal
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-      const modal = document.getElementById('pwaInstallModal');
-      if (!isStandalone && modal && !sessionStorage.getItem('pwa_modal_shown')) {
-        modal.classList.remove('hidden');
-        sessionStorage.setItem('pwa_modal_shown', '1');
-      }
-    }, 1200);
-  });
-
-  async function triggerPwaInstallModal() {
-    closePwaInstallModal();
-    triggerPwaInstall();
   }
 
   function closePwaInstallModal() {
     const modal = document.getElementById('pwaInstallModal');
-    if (modal) modal.classList.add('hidden');
+    if (modal) modal.style.display = 'none';
   }
+
+  function triggerPwaInstallModal() {
+    closePwaInstallModal();
+    triggerPwaInstall();
+  }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showPwaModal();
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(showPwaModal, 300);
+  });
 
   async function triggerPwaInstall() {
     if (deferredPrompt) {

@@ -264,6 +264,29 @@
   </div>
 </section>
 
+<!-- PWA INSTALL MODAL POPUP -->
+<div id="pwaInstallModal" style="display: none; position: fixed; inset: 0; background: rgba(15,27,25,0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 999999; align-items: center; justify-content: center; padding: 20px;">
+  <div style="background: #FFFFFF; width: 100%; max-width: 400px; border-radius: 24px; padding: 30px 24px 24px 24px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 1px solid #E2DFD2;">
+    
+    <div style="width: 68px; height: 68px; background: #EBF2EF; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; box-shadow: 0 4px 14px rgba(30,66,61,0.12);">
+      <img src="assets/apple-touch-icon.png" style="width: 46px; height: 46px; border-radius: 12px;">
+    </div>
+
+    <h3 style="font-family: 'Fraunces', serif; font-size: 22px; color: #0F1B19; margin-bottom: 8px;">Install Curelith App</h3>
+    <p style="font-size: 13.5px; color: #52635E; line-height: 1.5; margin-bottom: 22px;">
+      Add Curelith to your Home Screen for 1-tap access, fast loading, and offline medical locker access.
+    </p>
+
+    <button onclick="triggerPwaInstallModal()" style="width: 100%; background: #1E423D; color: #FFFFFF; border: none; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; padding: 14px; border-radius: 100px; cursor: pointer; box-shadow: 0 4px 14px rgba(30,66,61,0.3); margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+      📲 Install App on Home Screen
+    </button>
+
+    <button onclick="closePwaInstallModal()" style="width: 100%; background: transparent; color: #52635E; border: none; font-size: 13px; font-weight: 600; padding: 8px; cursor: pointer;">
+      Continue in Browser →
+    </button>
+  </div>
+</div>
+
 <!-- PWA 1-TAP INSTALL PROMPT BANNER -->
 <div id="pwaInstallBanner" class="hidden" style="position: fixed; top: 12px; left: 50%; transform: translateX(-50%); width: calc(100% - 24px); max-width: 480px; z-index: 99999; background: #1E423D; color: #FFFFFF; padding: 10px 14px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(232,199,123,0.4);">
   <div style="display: flex; align-items: center; gap: 10px;">
@@ -290,13 +313,32 @@
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
 
+  function showPwaModal() {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    const modal = document.getElementById('pwaInstallModal');
+    if (!isStandalone && modal) {
+      modal.style.display = 'flex';
+    }
+  }
+
+  function closePwaInstallModal() {
+    const modal = document.getElementById('pwaInstallModal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function triggerPwaInstallModal() {
+    closePwaInstallModal();
+    triggerPwaInstall();
+  }
+
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const banner = document.getElementById('pwaInstallBanner');
-    if (banner && !localStorage.getItem('pwa_banner_dismissed')) {
-      banner.classList.remove('hidden');
-    }
+    showPwaModal();
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(showPwaModal, 400);
   });
 
   async function triggerPwaInstall() {
