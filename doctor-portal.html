@@ -129,10 +129,10 @@
   <div class="portal-body">
     
     <div class="tab-nav">
-      <button class="tab-btn active" id="tabQueueBtn" onclick="switchTab('queue')">📋 Today's Patients</button>
-      <button class="tab-btn" id="tabLockerBtn" onclick="switchTab('locker')">📁 Patient Medical Locker & Scans</button>
-      <button class="tab-btn" id="tabPrescriptionBtn" onclick="switchTab('prescription')">💊 Write Prescription</button>
-      <button class="tab-btn" id="tabScheduleBtn" onclick="switchTab('schedule')">⚙️ Schedule & Fees</button>
+      <button class="tab-btn active" id="tabQueueBtn" onclick="switchTab('queue')"><i data-lucide="users" style="width:16px; height:16px; margin-right:6px; vertical-align:-3px;"></i> Today's Patients</button>
+      <button class="tab-btn" id="tabLockerBtn" onclick="switchTab('locker')"><i data-lucide="folder-heart" style="width:16px; height:16px; margin-right:6px; vertical-align:-3px;"></i> Patient Medical Locker & Scans</button>
+      <button class="tab-btn" id="tabPrescriptionBtn" onclick="switchTab('prescription')"><i data-lucide="file-signature" style="width:16px; height:16px; margin-right:6px; vertical-align:-3px;"></i> Write Prescription</button>
+      <button class="tab-btn" id="tabScheduleBtn" onclick="switchTab('schedule')"><i data-lucide="clock" style="width:16px; height:16px; margin-right:6px; vertical-align:-3px;"></i> Schedule & Fees</button>
     </div>
 
     <!-- TAB 1: TODAY'S QUEUE -->
@@ -309,6 +309,7 @@
     });
     document.getElementById(`tab${capitalize(tabKey)}`).classList.remove('hidden');
     document.getElementById(`tab${capitalize(tabKey)}Btn`).classList.add('active');
+    try { lucide.createIcons(); } catch(e) {}
   }
 
   function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }

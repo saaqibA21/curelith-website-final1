@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
   <style>
     /* PAGE LAYOUT */
@@ -359,11 +360,11 @@
     <div class="sidebar">
       <div class="sidebar-brand">Hospital Admin</div>
       <div class="sidebar-nav">
-        <button class="nav-btn active" onclick="switchTab('overview')">📊 Overview</button>
-        <button class="nav-btn" onclick="switchTab('doctors')">👨‍⚕️ My Doctors</button>
-        <button class="nav-btn" onclick="switchTab('scans')">🔬 Scans & Services</button>
-        <button class="nav-btn" onclick="switchTab('appointments')">📅 Appointments</button>
-        <button class="nav-btn" onclick="switchTab('qr')">📱 QR Referral Code</button>
+        <button class="nav-btn active" onclick="switchTab('overview')"><i data-lucide="layout-dashboard" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> Overview</button>
+        <button class="nav-btn" onclick="switchTab('doctors')"><i data-lucide="user-check" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> My Doctors</button>
+        <button class="nav-btn" onclick="switchTab('scans')"><i data-lucide="activity" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> Scans & Services</button>
+        <button class="nav-btn" onclick="switchTab('appointments')"><i data-lucide="calendar" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> Appointments</button>
+        <button class="nav-btn" onclick="switchTab('qr')"><i data-lucide="qr-code" style="width:16px; height:16px; margin-right:8px; vertical-align:-3px;"></i> QR Referral Code</button>
       </div>
     </div>
 
@@ -644,6 +645,7 @@
     document.getElementById('hospitalNameHeader').classList.remove('hidden');
     document.getElementById('logoutBtn').classList.remove('hidden');
     document.getElementById('dashHospName').textContent = hospital.name;
+    try { lucide.createIcons(); } catch(e) {}
     loadDashboardData();
   }
 
@@ -690,6 +692,8 @@
     
     document.getElementById(`tab${capitalize(tab)}`).classList.remove('hidden');
     event.target.classList.add('active');
+
+    try { lucide.createIcons(); } catch(e) {}
 
     if (tab === 'doctors') loadDoctors();
     if (tab === 'scans') loadScans();
