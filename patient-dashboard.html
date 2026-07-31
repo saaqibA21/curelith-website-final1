@@ -319,7 +319,12 @@
       </div>
 
       <form class="chat-bar" onsubmit="handleSendWebChat(event)">
-        <input type="text" id="chatInput" class="chat-input" placeholder="Type symptoms or medical query..." required>
+        <button type="button" onclick="triggerScanImageUpload()" title="Attach Scan Image or Report" style="background: transparent; border: none; color: var(--pine); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <i data-lucide="image-plus" style="width: 22px; height: 22px;"></i>
+        </button>
+        <input type="file" id="scanImageInput" accept="image/*,.pdf" style="display: none;" onchange="handleScanImageSelect(event)">
+        
+        <input type="text" id="chatInput" class="chat-input" placeholder="Type symptoms or attach scan image..." required>
         <button type="submit" class="chat-send-btn" id="sendBtn">
           <i data-lucide="arrow-up" style="width: 20px; height: 20px;"></i>
         </button>
@@ -607,6 +612,47 @@
   }
 
   function triggerFileUpload() { document.getElementById('lockerFileInput').click(); }
+
+  function triggerScanImageUpload() {
+    document.getElementById('scanImageInput').click();
+  }
+
+  async function handleScanImageSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const box = document.getElementById('chatBox');
+    box.innerHTML += `<div class="msg-bubble msg-user">📷 [Attached Scan Image: ${escapeHtml(file.name)}]</div>`;
+    box.innerHTML += `<div class="msg-bubble msg-assistant" id="imgAnalyzingMsg">🔬 Analyzing scan image findings with AI Vision...</div>`;
+    box.scrollTop = box.scrollHeight;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('caption', 'Please analyze this scan image and explain the medical findings in detail.');
+
+    try {
+      const res = await fetch(`${API_BASE}/patient/chat/send-image`, {
+        method: 'POST',
+        headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone },
+        body: formData
+      });
+      const data = await res.json();
+      const tempMsg = document.getElementById('imgAnalyzingMsg');
+      if (tempMsg) tempMsg.remove();
+
+      if (data.success && data.reply) {
+        box.innerHTML += `<div class="msg-bubble msg-assistant">${escapeHtml(data.reply)}</div>`;
+        box.scrollTop = box.scrollHeight;
+        loadLockerFiles();
+      } else {
+        box.innerHTML += `<div class="msg-bubble msg-assistant">⚠ Image analysis failed: ${escapeHtml(data.error || 'Please try again.')}</div>`;
+      }
+    } catch(err) {
+      const tempMsg = document.getElementById('imgAnalyzingMsg');
+      if (tempMsg) tempMsg.remove();
+      box.innerHTML += `<div class="msg-bubble msg-assistant">⚠ Connection error analyzing image. Please try again.</div>`;
+    }
+  }
 
   async function handleLockerUpload(e) {
     const file = e.target.files[0];
