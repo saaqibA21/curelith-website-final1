@@ -1075,7 +1075,6 @@
               <td><strong>${a.user_phone}</strong></td>
               <td>${a.scan_name}</td>
               <td>${a.created_at ? a.created_at.slice(0,10) : 'Today'}</td>
-              <td><span class="badge badge-${a.status === 'confirmed' ? 'success' : 'pending'}">${a.status}</span></td>
               <td>${actionBtn}</td>
             </tr>
           `;
@@ -1083,14 +1082,6 @@
       } else {
         table.innerHTML = '<tr><td colspan="5" style="text-align:center;">No appointment or scan requests found</td></tr>';
       }
-    }
-  }
-            <td>${actionBtn}</td>
-          </tr>
-        `;
-      }).join('');
-    } else {
-      table.innerHTML = '<tr><td colspan="5" style="text-align:center;">No appointment or scan requests found</td></tr>';
     }
   }
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'curelith-v2';
+const CACHE_NAME = 'curelith-v3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -9,9 +9,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
+          return caches.delete(key);
         })
       );
     }).then(() => self.clients.claim())
@@ -19,13 +17,11 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
-    event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
-    );
-  } else {
-    event.respondWith(
-      caches.match(event.request).then((response) => response || fetch(event.request))
-    );
-  }
+  event.respondWith(
+    fetch(event.request).catch(() => {
+      return caches.match(event.request).then((res) => {
+        return res || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+      });
+    })
+  );
 });
