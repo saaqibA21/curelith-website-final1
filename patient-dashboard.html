@@ -832,6 +832,15 @@
     }
   }
 
+  function formatChatMessage(str) {
+    if (!str) return '';
+    let text = str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    text = text.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+    text = text.replace(/_(.*?)_/g, '<em>$1</em>');
+    text = text.replace(/\n/g, '<br>');
+    return text;
+  }
+
   /* ── UNIFIED CHAT API ── */
   async function loadChatHistory() {
     const box = document.getElementById('chatBox');
@@ -847,7 +856,7 @@
         }
         box.innerHTML = data.messages.map(m => `
           <div class="msg-bubble msg-${m.role}">
-            ${escapeHtml(m.content)}
+            ${formatChatMessage(m.content)}
           </div>
         `).join('');
         box.scrollTop = box.scrollHeight;
@@ -864,7 +873,7 @@
     if (!msg) return;
 
     const box = document.getElementById('chatBox');
-    box.innerHTML += `<div class="msg-bubble msg-user">${escapeHtml(msg)}</div>`;
+    box.innerHTML += `<div class="msg-bubble msg-user">${formatChatMessage(msg)}</div>`;
     input.value = '';
     box.scrollTop = box.scrollHeight;
 
@@ -881,7 +890,7 @@
       btn.disabled = false;
 
       if (data.success && data.reply) {
-        box.innerHTML += `<div class="msg-bubble msg-assistant">${escapeHtml(data.reply)}</div>`;
+        box.innerHTML += `<div class="msg-bubble msg-assistant">${formatChatMessage(data.reply)}</div>`;
         box.scrollTop = box.scrollHeight;
       }
     } catch(e) {
