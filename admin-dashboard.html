@@ -921,14 +921,24 @@
         function initIcons() { try { lucide.createIcons(); } catch(e) {} }
 
         async function loadUsers() {
+            const tbody = document.getElementById('usersList');
+            if (tbody && (!allUsers || !allUsers.length)) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2.5rem; color: var(--admin-primary);"><i data-lucide="loader-2" class="spin" style="width: 24px; height: 24px;"></i><br><span style="font-size: 0.85rem; color: var(--admin-text-dim); margin-top: 8px; display: inline-block;">Loading patient registry...</span></td></tr>';
+                initIcons();
+            }
             try {
                 const res = await fetch(`${API_BASE}/doctor/admin/users`, { headers });
                 const data = await res.json();
                 if (data.status === 'success' || data.users) {
                     allUsers = data.users || [];
                     renderUsers(allUsers);
+                } else {
+                    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--admin-text-dim);">Unable to fetch user records. Please retry.</td></tr>';
                 }
-            } catch (err) { console.error('Error loading users:', err); }
+            } catch (err) {
+                console.error('Error loading users:', err);
+                if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #b91c1c;">Connection timeout loading users.</td></tr>';
+            }
         }
 
         function renderUsers(list) {
