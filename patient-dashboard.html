@@ -360,13 +360,13 @@
       </div>
 
       <form class="chat-bar" onsubmit="handleSendWebChat(event)">
-        <button type="button" onclick="triggerScanImageUpload()" title="Attach Scan Image or Report" style="background: transparent; border: none; color: var(--pine); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <i data-lucide="image-plus" style="width: 22px; height: 22px;"></i>
+        <button type="button" onclick="triggerScanImageUpload()" title="Attach Scan Image or Report" style="width: 40px; height: 40px; border-radius: 50%; background: #EBF2EF; border: 1.5px solid rgba(30,66,61,0.25); color: var(--pine); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
+          <i data-lucide="image-plus" style="width: 20px; height: 20px;"></i>
         </button>
         <input type="file" id="scanImageInput" accept="image/*,.pdf" style="display: none;" onchange="handleScanImageSelect(event)">
         
-        <button type="button" id="micBtn" onclick="toggleVoiceRecording()" title="Send Voice Message" style="background: transparent; border: none; color: var(--clay-deep); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <i data-lucide="mic" style="width: 22px; height: 22px;"></i>
+        <button type="button" id="micBtn" onclick="toggleVoiceRecording()" title="Send Voice Message" style="width: 40px; height: 40px; border-radius: 50%; background: #FDF2E9; border: 1.5px solid rgba(212,130,74,0.35); color: var(--clay-deep); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
+          <i data-lucide="mic" style="width: 20px; height: 20px;"></i>
         </button>
 
         <div id="recordingIndicator" class="hidden" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #D9381E; font-weight: 600; flex: 1;">
@@ -375,7 +375,7 @@
           <button type="button" class="btn btn-ghost btn-sm" onclick="stopVoiceRecording()" style="padding: 2px 8px; font-size: 11px; color: #D9381E; border-color: #D9381E;">Stop & Send</button>
         </div>
 
-        <input type="text" id="chatInput" class="chat-input" placeholder="Type symptoms or send voice note..." required>
+        <input type="text" id="chatInput" class="chat-input" placeholder="Type symptoms or send voice note...">
         <button type="submit" class="chat-send-btn" id="sendBtn">
           <i data-lucide="arrow-up" style="width: 20px; height: 20px;"></i>
         </button>
@@ -580,6 +580,7 @@
     });
     document.getElementById(`screen${capitalize(tab)}`).classList.remove('hidden');
     document.getElementById(`navItem${capitalize(tab)}`).classList.add('active');
+    try { lucide.createIcons(); } catch(e) {}
   }
 
   function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
