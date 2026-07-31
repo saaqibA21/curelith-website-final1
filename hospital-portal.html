@@ -542,14 +542,21 @@
       cursor: pointer;
       flex: 1;
     }
-    .mobile-nav-btn.active {
-      color: var(--gold);
-      background: rgba(255,255,255,0.08);
-      font-weight: 700;
+    .desktop-only {
+      display: inline-block;
     }
-    .mobile-nav-btn i {
-      width: 18px;
-      height: 18px;
+    .mobile-nav-btn svg, .mobile-nav-btn i {
+      width: 20px !important;
+      height: 20px !important;
+      stroke-width: 2.2px;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .desktop-only {
+      display: none !important;
     }
   }
 </style>
@@ -609,13 +616,16 @@
   <!-- MAIN APP CONTAINER -->
   <div class="app-main">
     <div class="app-topbar">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <h3 id="dashHospName" style="font-family: var(--serif); font-size: 18px; margin: 0; color: var(--void);">Orthomed Hospital</h3>
-        <span class="badge badge-success" style="font-size:10px;">✓ Partner Verified</span>
+      <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+        <img src="assets/logo.png" style="width:24px; height:24px; flex-shrink: 0;" alt="Curelith">
+        <h3 id="topbarHospName" style="font-family: var(--serif); font-size: 16px; margin: 0; color: var(--void); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px;">Orthomed Hospital</h3>
       </div>
-      <button class="btn btn-ghost btn-sm" onclick="logout()" style="padding: 5px 10px; font-size: 12px; display: flex; align-items: center; gap: 4px;">
-        <i data-lucide="log-out" style="width:13px; height:13px;"></i> Logout
-      </button>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="badge badge-success desktop-only" style="font-size:10px;">✓ Partner Verified</span>
+        <button class="btn btn-ghost btn-sm" onclick="logout()" style="padding: 5px 12px; font-size: 12px; display: flex; align-items: center; gap: 4px; border: 1px solid var(--line);">
+          <i data-lucide="log-out" style="width:13px; height:13px;"></i> Logout
+        </button>
+      </div>
     </div>
 
     <div class="app-content">
@@ -624,8 +634,8 @@
       <div id="tabOverview">
         <div class="dash-header">
           <div class="dash-title">
-            <h2 id="dashHospName">Orthomed Hospital</h2>
-            <p>Real-time analytics and patient referral overview</p>
+            <h2 style="font-size: 24px; font-family: var(--serif); color: var(--void); margin: 0;">Partner Overview</h2>
+            <p style="margin-top: 4px; font-size: 13px; color: var(--ink-soft);">Real-time patient referrals and diagnostic scan analytics</p>
           </div>
         </div>
 
@@ -895,13 +905,8 @@
   function showDashboard(hospital) {
     document.getElementById('loginView').classList.add('hidden');
     document.getElementById('dashboardView').classList.remove('hidden');
-    const hHeader = document.getElementById('hospitalNameHeader');
-    if (hHeader) {
-      hHeader.textContent = `🏥 ${hospital.name}`;
-      hHeader.classList.remove('hidden');
-    }
-    const dashName = document.getElementById('dashHospName');
-    if (dashName) dashName.textContent = hospital.name;
+    const topName = document.getElementById('topbarHospName');
+    if (topName) topName.textContent = hospital.name;
     try { lucide.createIcons(); } catch(e) {}
     loadDashboardData();
   }
