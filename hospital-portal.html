@@ -960,6 +960,7 @@
 
     try { lucide.createIcons(); } catch(e) {}
 
+    if (tab === 'overview') loadDashboardData();
     if (tab === 'doctors') loadDoctors();
     if (tab === 'scans') loadScans();
     if (tab === 'appointments') loadAppointments();
