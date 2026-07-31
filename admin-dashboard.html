@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --admin-primary: #1E423D;
@@ -1194,9 +1194,14 @@
             } catch (err) { console.error(err); }
         }
 
+        let activityChartInstance = null;
         function renderChart(daily) {
-            const ctx = document.getElementById('activityChart').getContext('2d');
-            new Chart(ctx, {
+            const ctx = document.getElementById('activityChart');
+            if (!ctx) return;
+            if (activityChartInstance) {
+                activityChartInstance.destroy();
+            }
+            activityChartInstance = new Chart(ctx.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: daily.map(d => d.date).reverse(),
