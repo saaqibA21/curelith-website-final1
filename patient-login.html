@@ -1,266 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Login | Curelith</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: #F3EEE4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            color: #1B3A36;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Portal Login & Signup | Curelith</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: var(--paper);
+      color: var(--void);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .auth-hero {
+      background: var(--void);
+      color: #fff;
+      padding: 70px 0 50px 0;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .auth-hero::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 1.6px);
+      background-size: 26px 26px;
+      -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+      mask-image: linear-gradient(to bottom, black, transparent);
+    }
+    .auth-hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    .auth-hero h1 span { color: var(--gold); font-style: italic; }
 
-        .login-card {
-            background: white;
-            padding: 4rem;
-            border-radius: 40px;
-            box-shadow: 0 20px 50px rgba(27, 58, 54, 0.05);
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
-            border: 1px solid #DDD6C4;
-        }
+    .auth-section {
+      padding: 50px 0 80px 0;
+      flex: 1;
+    }
+    .auth-card-wrapper {
+      max-width: 460px;
+      margin: 0 auto;
+    }
+    .auth-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 40px 32px;
+      box-shadow: 0 16px 40px rgba(15,27,25,0.06);
+      text-align: center;
+    }
+    
+    .tab-toggle {
+      display: flex;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+    .tab-toggle button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-toggle button.active {
+      background: var(--pine);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(30,66,61,0.2);
+    }
 
-        h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-        p { color: #4F5D57; margin-bottom: 3rem; }
+    .form-group {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      font-family: var(--sans);
+      font-size: 15px;
+      color: var(--void);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .form-control:focus {
+      border-color: var(--pine);
+    }
 
-        .input-group { text-align: left; margin-bottom: 1.5rem; }
-        .input-group label { display: block; font-size: 0.75rem; color: #4F5D57; text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--pine);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: var(--sans);
+      font-size: 15.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 20px -4px rgba(30,66,61,0.3);
+      margin-top: 10px;
+    }
+    .submit-btn:hover {
+      background: var(--pine-light);
+      transform: translateY(-1px);
+    }
+    .submit-btn:disabled {
+      background: var(--line-dark);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
 
-        input {
-            width: 100%;
-            padding: 1.2rem;
-            background: #FAF9F4;
-            border: 1px solid #DDD6C4;
-            border-radius: 15px;
-            font-family: inherit;
-            outline: none;
-            box-sizing: border-box;
-            font-size: 1rem;
-            color: #1B3A36;
-        }
-
-        input:focus { border-color: #4C7F6D; }
-
-        button {
-            width: 100%;
-            padding: 1.2rem;
-            background: #1B3A36;
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 1rem;
-            font-size: 1rem;
-        }
-
-        button:hover { background: #4C7F6D; }
-        button:disabled { background: #C5CECA; cursor: not-allowed; }
-        
-        .footer-link { margin-top: 2rem; display: block; color: #4F5D57; text-decoration: none; font-size: 0.9rem; }
-        .resend-container { margin-top: 1.5rem; font-size: 0.85rem; color: #4F5D57; }
-        .resend-btn { background: none; border: none; color: #4C7F6D; font-weight: 700; padding: 0; margin: 0; width: auto; font-size: 0.85rem; display: inline; cursor: pointer; }
-        .resend-btn:hover { text-decoration: underline; }
-    </style>
+    .err-msg {
+      background: rgba(212,130,74,0.1);
+      border: 1px solid rgba(212,130,74,0.3);
+      color: var(--clay-deep);
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body>
-    <div class="login-card">
-        <img src="assets/logo.png" style="height: 60px; margin-bottom: 2rem;" alt="Curelith">
-        <h1>Patient Portal</h1>
-        <p id="portalDesc">Please agree to our terms and conditions to proceed.</p>
-        
-        <!-- Step 0: Terms and Conditions Agreement Form -->
-        <form id="termsForm">
-            <p style="text-align: left; font-size: 0.95rem; line-height: 1.5; color: #4F5D57; margin-bottom: 2rem; margin-top: 0;">
-                To access your secure medical locker, you must review and agree to our Terms & Conditions and Privacy Policy.
-            </p>
-            <div class="checkbox-group" style="text-align: left; margin-bottom: 2rem; display: flex; align-items: flex-start; gap: 10px;">
-                <input type="checkbox" id="agreeCheckbox" style="width: auto; margin-top: 4px; cursor: pointer;">
-                <label for="agreeCheckbox" style="font-size: 0.9rem; color: #1B3A36; line-height: 1.4; cursor: pointer; user-select: none;">
-                    I agree to the <a href="terms.html" target="_blank" style="color: #4C7F6D; font-weight: 700; text-decoration: underline;">Terms & Conditions</a> and <a href="privacy.html" target="_blank" style="color: #4C7F6D; font-weight: 700; text-decoration: underline;">Privacy Policy</a>.
-                </label>
-            </div>
-            <button type="submit" id="agreeBtn" disabled>Agree & Continue</button>
-        </form>
 
-        <!-- Step 1: Phone Form (Hidden Initially) -->
-        <form id="phoneForm" style="display: none;">
-            <div class="input-group">
-                <label>WhatsApp Phone Number</label>
-                <input type="tel" id="patientPhone" placeholder="e.g. +91 9876543210" required>
-            </div>
-            <div id="phoneErrMsg" style="color: #f43f5e; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
-            <button type="submit" id="sendOtpBtn">Send Verification Code</button>
-        </form>
-
-        <!-- Step 2: OTP Form (Hidden Initially) -->
-        <form id="otpForm" style="display: none;">
-            <div class="input-group">
-                <label>6-Digit Verification Code</label>
-                <input type="text" id="otpCode" maxlength="6" placeholder="Enter code" pattern="\d{6}" required>
-            </div>
-            <div id="otpErrMsg" style="color: #f43f5e; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
-            <button type="submit" id="verifyOtpBtn">Verify & Login</button>
-            <div class="resend-container">
-                Didn't receive the code? 
-                <span id="timerText">Resend in <span id="countdown">30</span>s</span>
-                <button type="button" class="resend-btn" id="resendBtn" style="display: none;">Resend Code</button>
-            </div>
-        </form>
-        
-        <a href="index.html" class="footer-link">← Return Home</a>
+<header>
+  <div class="wrap nav">
+    <a href="index.html" class="brand">
+      <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+      Curelith
+    </a>
+    <nav class="links">
+      <a href="index.html#why">Why Curelith</a>
+      <a href="index.html#tools">Tools</a>
+      <a href="doctors.html">Physicians</a>
+      <a href="hospitals.html">Hospitals</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="hospital-portal.html" class="btn btn-primary btn-sm">Hospital portal</a>
     </div>
+  </div>
+</header>
 
-    <script>
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+<section class="auth-hero">
+  <div class="wrap">
+    <div class="eyebrow on-dark">Patient Web Portal</div>
+    <h1>Access Your <span>Health Dashboard</span></h1>
+    <p class="sub" style="font-size: 15px; color: var(--mist); max-width: 500px; margin: 8px auto 0 auto;">
+      AI Clinical Chat, Medical Locker & Vitals — synced live with your WhatsApp.
+    </p>
+  </div>
+</section>
 
-        let userPhoneNumber = "";
-        let countdownTimer;
+<section class="auth-section">
+  <div class="wrap">
+    <div class="auth-card-wrapper">
+      <div class="auth-card">
+        
+        <!-- LOGIN / SIGNUP TAB TOGGLE -->
+        <div class="tab-toggle" id="tabToggle">
+          <button type="button" id="loginTabBtn" class="active" onclick="setMode('login')">Existing User Login</button>
+          <button type="button" id="signupTabBtn" onclick="setMode('signup')">New Patient Signup</button>
+        </div>
 
-        // Step 0: Terms and Conditions Validation
-        const agreeCheckbox = document.getElementById('agreeCheckbox');
-        const agreeBtn = document.getElementById('agreeBtn');
-        const termsForm = document.getElementById('termsForm');
-        const phoneForm = document.getElementById('phoneForm');
-        const portalDesc = document.getElementById('portalDesc');
+        <div id="errMsg" class="err-msg hidden"></div>
 
-        agreeCheckbox.addEventListener('change', () => {
-            agreeBtn.disabled = !agreeCheckbox.checked;
-        });
+        <!-- FORM 1: LOGIN -->
+        <form id="loginForm" onsubmit="handleSendOtp(event)">
+          <div class="form-group">
+            <label>Mobile Number (WhatsApp Enabled)</label>
+            <input type="tel" id="loginPhone" class="form-control" placeholder="e.g. 9042556225" required>
+          </div>
+          <button type="submit" class="submit-btn" id="loginSubmitBtn">Send Verification Code →</button>
+        </form>
 
-        termsForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (agreeCheckbox.checked) {
-                termsForm.style.display = 'none';
-                phoneForm.style.display = 'block';
-                portalDesc.innerText = "Sign in securely using WhatsApp verification.";
-            }
-        });
+        <!-- FORM 2: SIGNUP -->
+        <form id="signupForm" class="hidden" onsubmit="handleSignup(event)">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="signupName" class="form-control" placeholder="e.g. Ramesh Kumar" required>
+          </div>
+          <div class="form-group">
+            <label>Mobile Number (WhatsApp Enabled)</label>
+            <input type="tel" id="signupPhone" class="form-control" placeholder="e.g. 9042556225" required>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1;">
+              <label>Age</label>
+              <input type="number" id="signupAge" class="form-control" placeholder="32">
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label>Blood Group</label>
+              <select id="signupBlood" class="form-control">
+                <option value="">Select</option>
+                <option value="O+">O+</option>
+                <option value="A+">A+</option>
+                <option value="B+">B+</option>
+                <option value="AB+">AB+</option>
+                <option value="O-">O-</option>
+                <option value="A-">A-</option>
+                <option value="B-">B-</option>
+                <option value="AB-">AB-</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="submit-btn" id="signupSubmitBtn">Create Account & Proceed →</button>
+        </form>
 
-        // Step 1: Send OTP
-        document.getElementById('phoneForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const phone = document.getElementById('patientPhone').value.trim();
-            const btn = document.getElementById('sendOtpBtn');
-            const err = document.getElementById('phoneErrMsg');
+        <!-- FORM 3: OTP VERIFICATION -->
+        <form id="otpForm" class="hidden" onsubmit="handleVerifyOtp(event)">
+          <p style="font-size: 14px; color: var(--ink-soft); margin-bottom: 20px;" id="otpPromptText">
+            Enter verification code sent to your phone
+          </p>
+          <div class="form-group">
+            <label>6-Digit Verification Code</label>
+            <input type="text" id="otpCode" class="form-control" style="text-align: center; font-family: var(--mono); font-size: 20px; letter-spacing: 0.3em;" placeholder="123456" maxlength="6" required>
+          </div>
+          <button type="submit" class="submit-btn" id="otpSubmitBtn">Verify & Enter Dashboard →</button>
+          <p style="margin-top: 14px; font-size: 13px; color: var(--mist-dim);">Demo Verification Code: <strong>123456</strong></p>
+        </form>
 
-            btn.disabled = true;
-            btn.innerText = "Sending Code...";
-            err.style.display = 'none';
+        <a href="index.html" style="display: inline-block; margin-top: 24px; font-size: 13.5px; color: var(--ink-soft); text-decoration: none;">← Return to Curelith Home</a>
 
-            try {
-                const res = await fetch(`${API_BASE}/whatsapp/send-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone })
-                });
-                const data = await res.json();
-                
-                if (data.status === 'success') {
-                    userPhoneNumber = phone;
-                    document.getElementById('phoneForm').style.display = 'none';
-                    document.getElementById('otpForm').style.display = 'block';
-                    document.getElementById('portalDesc').innerText = `Enter the verification code sent to your WhatsApp number.`;
-                    startResendCountdown();
-                } else {
-                    err.innerText = data.error || "Failed to send code.";
-                    err.style.display = 'block';
-                    btn.disabled = false;
-                    btn.innerText = "Send Verification Code";
-                }
-            } catch (e) {
-                err.innerText = "Connection failure. Please try again.";
-                err.style.display = 'block';
-                btn.disabled = false;
-                btn.innerText = "Send Verification Code";
-            }
-        });
+      </div>
+    </div>
+  </div>
+</section>
 
-        // Step 2: Verify OTP
-        document.getElementById('otpForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const otp = document.getElementById('otpCode').value.trim();
-            const btn = document.getElementById('verifyOtpBtn');
-            const err = document.getElementById('otpErrMsg');
+<script>
+  const API_BASE = 'https://api.curelith.com';
+  let currentMode = 'login';
+  let userPhone = '';
 
-            btn.disabled = true;
-            btn.innerText = "Verifying...";
-            err.style.display = 'none';
+  function setMode(mode) {
+    currentMode = mode;
+    hideError();
+    document.getElementById('otpForm').classList.add('hidden');
+    if (mode === 'login') {
+      document.getElementById('loginTabBtn').classList.add('active');
+      document.getElementById('signupTabBtn').classList.remove('active');
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('signupForm').classList.add('hidden');
+    } else {
+      document.getElementById('signupTabBtn').classList.add('active');
+      document.getElementById('loginTabBtn').classList.remove('active');
+      document.getElementById('signupForm').classList.remove('hidden');
+      document.getElementById('loginForm').classList.add('hidden');
+    }
+  }
 
-            try {
-                const res = await fetch(`${API_BASE}/whatsapp/verify-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: userPhoneNumber, otp })
-                });
-                const data = await res.json();
-                
-                if (data.status === 'success') {
-                    localStorage.setItem('patient_phone', data.phone);
-                    localStorage.setItem('patient_token', data.token);
-                    window.location.replace('patient-dashboard.html');
-                } else {
-                    err.innerText = data.error || "Invalid verification code.";
-                    err.style.display = 'block';
-                    btn.disabled = false;
-                    btn.innerText = "Verify & Login";
-                }
-            } catch (e) {
-                err.innerText = "Connection failure. Please try again.";
-                err.style.display = 'block';
-                btn.disabled = false;
-                btn.innerText = "Verify & Login";
-            }
-        });
+  function showError(msg) {
+    const errBox = document.getElementById('errMsg');
+    errBox.textContent = msg;
+    errBox.classList.remove('hidden');
+  }
+  function hideError() {
+    document.getElementById('errMsg').classList.add('hidden');
+  }
 
-        // Step 3: Resend Code logic
-        document.getElementById('resendBtn').addEventListener('click', async () => {
-            const err = document.getElementById('otpErrMsg');
-            err.style.display = 'none';
-            document.getElementById('resendBtn').style.display = 'none';
-            document.getElementById('timerText').style.display = 'inline';
-            
-            try {
-                await fetch(`${API_BASE}/whatsapp/send-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: userPhoneNumber })
-                });
-                startResendCountdown();
-            } catch (e) {
-                err.innerText = "Connection failure. Please try again.";
-                err.style.display = 'block';
-                document.getElementById('resendBtn').style.display = 'inline';
-                document.getElementById('timerText').style.display = 'none';
-            }
-        });
+  async function handleSendOtp(e) {
+    e.preventDefault();
+    hideError();
+    const phone = document.getElementById('loginPhone').value.trim();
+    if (!phone) return showError('Please enter your mobile number.');
+    
+    userPhone = phone;
+    const btn = document.getElementById('loginSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending Code...';
 
-        function startResendCountdown() {
-            let timeLeft = 30;
-            document.getElementById('countdown').innerText = timeLeft;
-            document.getElementById('timerText').style.display = 'inline';
-            document.getElementById('resendBtn').style.display = 'none';
+    try {
+      const res = await fetch(`${API_BASE}/patient/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone })
+      });
+      const data = await res.json();
+      btn.disabled = false;
+      btn.textContent = 'Send Verification Code →';
 
-            clearInterval(countdownTimer);
-            countdownTimer = setInterval(() => {
-                timeLeft--;
-                document.getElementById('countdown').innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(countdownTimer);
-                    document.getElementById('timerText').style.display = 'none';
-                    document.getElementById('resendBtn').style.display = 'inline';
-                }
-            }, 1000);
-        }
-    </script>
+      if (data.success) {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('tabToggle').classList.add('hidden');
+        document.getElementById('otpForm').classList.remove('hidden');
+        document.getElementById('otpPromptText').textContent = `Enter the 6-digit code sent to ${phone}`;
+      } else {
+        showError(data.error || 'Failed to send verification code');
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Send Verification Code →';
+      showError('Connection error. Please try again.');
+    }
+  }
+
+  async function handleSignup(e) {
+    e.preventDefault();
+    hideError();
+    const name = document.getElementById('signupName').value.trim();
+    const phone = document.getElementById('signupPhone').value.trim();
+    const age = document.getElementById('signupAge').value.trim();
+    const blood_group = document.getElementById('signupBlood').value;
+
+    if (!name || !phone) return showError('Name and Mobile Number are required.');
+
+    userPhone = phone;
+    const btn = document.getElementById('signupSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Creating Account...';
+
+    try {
+      const res = await fetch(`${API_BASE}/patient/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, age, blood_group })
+      });
+      const data = await res.json();
+      btn.disabled = false;
+      btn.textContent = 'Create Account & Proceed →';
+
+      if (data.success && data.token) {
+        localStorage.setItem('patient_token', data.token);
+        localStorage.setItem('patient_phone', phone);
+        localStorage.setItem('patient_info', JSON.stringify(data.patient));
+        window.location.href = 'patient-dashboard.html';
+      } else {
+        showError(data.error || 'Failed to create account');
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Create Account & Proceed →';
+      showError('Connection error. Please try again.');
+    }
+  }
+
+  async function handleVerifyOtp(e) {
+    e.preventDefault();
+    hideError();
+    const otp = document.getElementById('otpCode').value.trim();
+    if (!otp) return showError('Please enter verification code.');
+
+    const btn = document.getElementById('otpSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Verifying...';
+
+    try {
+      const res = await fetch(`${API_BASE}/patient/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: userPhone, otp })
+      });
+      const data = await res.json();
+      btn.disabled = false;
+      btn.textContent = 'Verify & Enter Dashboard →';
+
+      if (data.success && data.token) {
+        localStorage.setItem('patient_token', data.token);
+        localStorage.setItem('patient_phone', userPhone);
+        localStorage.setItem('patient_info', JSON.stringify(data.patient));
+        window.location.href = 'patient-dashboard.html';
+      } else {
+        showError(data.error || 'Invalid verification code');
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Verify & Enter Dashboard →';
+      showError('Connection error. Please try again.');
+    }
+  }
+</script>
 </body>
 </html>

@@ -1,690 +1,623 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Dashboard | Curelith</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
-    <style>
-        :root {
-            --cl-primary: #1E423D;
-            --cl-accent: #D4824A;
-            --cl-bg: #F5F3ED;
-            --cl-card: #FFFFFF;
-            --cl-text: #14201D;
-            --cl-text-dim: #4D5C57;
-            --cl-border: #DCD7C8;
-            --serif: "Fraunces", Georgia, serif;
-            --sans: "Inter", sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Web Portal | Curelith</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: var(--paper);
+      color: var(--void);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .portal-topbar {
+      background: var(--void);
+      color: #fff;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .portal-topbar-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .patient-tag-header {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--gold);
+      background: rgba(232, 199, 123, 0.1);
+      border: 1px solid rgba(232, 199, 123, 0.25);
+      padding: 4px 12px;
+      border-radius: 100px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            transition: all 0.3s ease;
-        }
+    /* MAIN TAB CONTAINER */
+    .portal-main {
+      flex: 1;
+      padding: 30px 0 60px 0;
+    }
 
-        body {
-            background-color: var(--cl-bg);
-            color: var(--cl-text);
-            font-family: var(--sans);
-            min-height: 100vh;
-            padding: 2rem;
-            display: flex;
-            justify-content: center;
-        }
+    /* TAB NAV */
+    .portal-tabs-nav {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 12px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      padding: 10px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover {
+      background: var(--card-tint);
+      color: var(--pine);
+    }
+    .tab-btn.active {
+      background: var(--pine);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(30, 66, 61, 0.25);
+    }
 
-        .container {
-            width: 100%;
-            max-width: 1100px;
-        }
+    /* ── TAB 1: CHAT ── */
+    .chat-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      height: 620px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 16px 40px rgba(15,27,25,0.05);
+      overflow: hidden;
+    }
+    .chat-header {
+      padding: 18px 24px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: #FAF9F5;
+    }
+    .msg-bubble {
+      max-width: 82%;
+      padding: 16px 20px;
+      border-radius: 18px;
+      font-size: 14.5px;
+      line-height: 1.6;
+      position: relative;
+      white-space: pre-wrap;
+    }
+    .msg-user {
+      align-self: flex-end;
+      background: var(--pine);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .msg-assistant {
+      align-self: flex-start;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      color: var(--void);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 4px 12px rgba(15,27,25,0.03);
+    }
+    .chat-input-bar {
+      padding: 16px 20px;
+      background: #FFFFFF;
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 14px 18px;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      font-family: var(--sans);
+      font-size: 14.5px;
+      outline: none;
+    }
+    .chat-input:focus { border-color: var(--pine); }
+    .chat-send-btn {
+      padding: 14px 24px;
+      background: var(--pine);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .chat-send-btn:hover { background: var(--pine-light); }
 
-        /* HEADER */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--cl-border);
-        }
+    /* ── TAB 2: LOCKER ── */
+    .locker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .file-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(15,27,25,0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .file-icon-box {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: #EBF2EF;
+      color: var(--pine);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+    }
+    .file-name {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--void);
+      margin-bottom: 6px;
+    }
+    .file-meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin-bottom: 16px;
+    }
 
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+    /* ── TAB 3: PROFILE ── */
+    .profile-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 16px 40px rgba(15,27,25,0.05);
+    }
+    .vitals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
 
-        .logo-img {
-            height: 45px;
-        }
-
-        .brand {
-            font-family: var(--serif);
-            font-weight: 600;
-            font-size: 1.5rem;
-            color: var(--cl-primary);
-        }
-
-        .profile-pic-container {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid var(--cl-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #FFFFFF;
-        }
-
-        .profile-pic {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-pic-hover {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(27, 58, 54, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            color: #FFFFFF;
-        }
-
-        .profile-pic-container:hover .profile-pic-hover {
-            opacity: 1;
-        }
-
-        .user-phone {
-            background: #E8EDE4;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--cl-primary);
-        }
-
-        .btn-logout {
-            background: transparent;
-            color: var(--cl-text-dim);
-            border: 1px solid var(--cl-border);
-            padding: 0.6rem 1.2rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .btn-logout:hover {
-            background: #E8EDE4;
-            color: var(--cl-primary);
-            border-color: var(--cl-primary);
-        }
-
-        /* DASHBOARD GRID */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        @media (min-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 350px 1fr;
-            }
-        }
-
-        /* CARDS */
-        .card {
-            background: var(--cl-card);
-            border-radius: 32px;
-            border: 1px solid var(--cl-border);
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(27, 58, 54, 0.02);
-        }
-
-        .card h2 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--cl-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* VITALS CARD */
-        .vitals-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-
-        .vital-row {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: #FAF9F5;
-            border-radius: 20px;
-            border: 1px solid #FAF9F5;
-        }
-
-        .vital-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            color: white;
-        }
-
-        .vital-steps { background: #4C7F6D; }
-        .vital-heart { background: #e06c75; }
-        .vital-cal { background: #d19a66; }
-
-        .vital-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .vital-label {
-            font-size: 0.75rem;
-            color: var(--cl-text-dim);
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        .vital-value {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--cl-primary);
-        }
-
-        .no-vitals {
-            text-align: center;
-            color: var(--cl-text-dim);
-            font-size: 0.85rem;
-            padding: 1.5rem 0;
-            line-height: 1.5;
-        }
-
-        .no-vitals a {
-            color: var(--cl-accent);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        /* UPLOAD ZONE */
-        .upload-zone {
-            border: 2px dashed var(--cl-accent);
-            background: #FAF9F5;
-            border-radius: 24px;
-            padding: 2.5rem;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 2rem;
-        }
-
-        .upload-zone:hover {
-            background: #E8EDE4;
-        }
-
-        .upload-zone input {
-            display: none;
-        }
-
-        .upload-text {
-            font-size: 0.9rem;
-            color: var(--cl-text-dim);
-            margin-top: 10px;
-        }
-
-        .upload-text b {
-            color: var(--cl-primary);
-        }
-
-        /* LOCKER GRID */
-        .locker-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1.2rem;
-            margin-top: 1.5rem;
-        }
-
-        .file-card {
-            padding: 1.5rem;
-            border-radius: 24px;
-            background: #F8F7F2;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid var(--cl-border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .file-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(27, 58, 54, 0.05);
-            background: var(--cl-card);
-        }
-
-        .file-name {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--cl-text);
-            margin-top: 10px;
-            word-break: break-all;
-            line-height: 1.3;
-        }
-
-        .folder-card {
-            border: 2px dashed var(--cl-accent);
-            background: #E8EDE4;
-        }
-
-        .folder-badge {
-            font-size: 0.65rem;
-            color: var(--cl-accent);
-            font-weight: 600;
-            margin-top: 5px;
-            background: #DCE5E0;
-            padding: 2px 10px;
-            border-radius: 20px;
-        }
-
-        .back-btn {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            color: var(--cl-accent);
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        .back-btn:hover {
-            text-decoration: underline;
-        }
-
-        #uploadProgress {
-            display: none;
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: var(--cl-accent);
-            font-weight: 600;
-        }
-    </style>
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER -->
-        <header>
-            <div class="logo-section">
-                <img src="assets/logo.png" class="logo-img" alt="Curelith">
-                <div class="profile-pic-container" onclick="document.getElementById('profilePicInput').click()" title="Click to upload profile picture">
-                    <img id="headerProfilePic" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%234F5D57' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E" class="profile-pic" alt="Profile Picture">
-                    <div class="profile-pic-hover"><i data-lucide="camera" style="width:14px; height:14px;"></i></div>
-                </div>
-                <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="uploadProfilePic(event)">
-                <span class="user-phone" id="userPhoneDisplay">+91 9876543210</span>
-            </div>
-            <button class="btn-logout" onclick="logout()">Sign Out</button>
-        </header>
 
-        <!-- MAIN LAYOUT -->
-        <div class="dashboard-grid">
-            
-            <!-- LEFT PANEL: VITALS -->
-            <div class="card">
-                <h2><i data-lucide="activity"></i> Vitals Summary</h2>
-                <div id="vitalsContainer" class="vitals-grid">
-                    <div class="no-vitals">Loading smartwatch details...</div>
-                </div>
-            </div>
+<!-- TOPBAR -->
+<div class="portal-topbar">
+  <div class="wrap portal-topbar-content">
+    <a href="index.html" class="brand" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+      <img src="assets/logo.png" style="width: 26px; height: 26px;" alt="Curelith">
+      Curelith Portal
+    </a>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div id="partnerHospitalBadge" class="patient-tag-header hidden">
+        <i data-lucide="building-2" style="width: 14px; height: 14px;"></i> <span id="hospBadgeName">Orthomed Hospital</span>
+      </div>
+      <button class="btn btn-ghost-dark btn-sm" onclick="handleLogout()">Logout</button>
+    </div>
+  </div>
+</div>
 
-            <!-- RIGHT PANEL: MEDICAL LOCKER -->
-            <div class="card">
-                <h2><i data-lucide="folder-open"></i> Secure Medical Locker</h2>
-                
-                <!-- Upload Zone -->
-                <div class="upload-zone" onclick="document.getElementById('fileInput').click()" id="dropZone">
-                    <input type="file" id="fileInput" accept="image/*,application/pdf" onchange="handleFileSelect(event)">
-                    <i data-lucide="upload-cloud" style="width: 48px; height: 48px; color: var(--cl-accent); margin: 0 auto;"></i>
-                    <div class="upload-text">
-                        <b>Click to upload</b> or drag and drop<br>
-                        <span>Images or PDFs up to 10MB</span>
-                    </div>
-                    <div id="uploadProgress">Uploading & analyzing file...</div>
-                </div>
-
-                <!-- File Grid -->
-                <div id="lockerBackBtnContainer"></div>
-                <div class="locker-grid" id="lockerGrid">
-                    <div class="no-vitals">Loading locker items...</div>
-                </div>
-            </div>
-
-        </div>
+<!-- MAIN SECTION -->
+<section class="portal-main">
+  <div class="wrap">
+    
+    <!-- TABS NAV -->
+    <div class="portal-tabs-nav">
+      <button class="tab-btn active" id="tabNavChat" onclick="switchPortalTab('chat')">
+        <i data-lucide="message-square" style="width: 18px; height: 18px;"></i> AI Clinical Chat
+      </button>
+      <button class="tab-btn" id="tabNavLocker" onclick="switchPortalTab('locker')">
+        <i data-lucide="folder-heart" style="width: 18px; height: 18px;"></i> Medical Locker
+      </button>
+      <button class="tab-btn" id="tabNavProfile" onclick="switchPortalTab('profile')">
+        <i data-lucide="user" style="width: 18px; height: 18px;"></i> My Profile & Vitals
+      </button>
     </div>
 
-    <script>
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+    <!-- ──────────────── TAB 1: AI CLINICAL CHAT ──────────────── -->
+    <div id="portalTabChat">
+      <div class="chat-card">
+        <div class="chat-header">
+          <div>
+            <h3 style="font-family: var(--serif); font-size: 19px; color: var(--void);">Curelith AI Clinical Assistant</h3>
+            <p style="font-size: 13px; color: var(--ink-soft);">Synced live with your WhatsApp chat history</p>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="loadChatHistory()"><i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Refresh</button>
+        </div>
 
-        // Prevent back-button access via history/bfcache
-        function checkAuth() {
-            const patientPhone = localStorage.getItem('patient_phone');
-            const patientToken = localStorage.getItem('patient_token');
-            if (!patientPhone || !patientToken) {
-                window.location.replace('patient-login.html');
-                return false;
-            }
-            return { patientPhone, patientToken };
+        <div class="chat-messages" id="chatMessagesBox">
+          <div style="text-align: center; color: var(--ink-soft); margin: auto;">Loading chat history...</div>
+        </div>
+
+        <form class="chat-input-bar" onsubmit="handleSendWebChat(event)">
+          <input type="text" id="webChatInput" class="chat-input" placeholder="Type your symptoms or health query..." required>
+          <button type="submit" class="chat-send-btn" id="sendBtn">
+            Send <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ──────────────── TAB 2: MEDICAL LOCKER ──────────────── -->
+    <div id="portalTabLocker" class="hidden">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-family: var(--serif); font-size: 26px; color: var(--void);">Medical Locker</h2>
+          <p style="font-size: 14.5px; color: var(--ink-soft);">Lab reports, prescriptions, and diagnostic scans uploaded via WhatsApp or Web App</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="triggerFileUpload()">+ Upload Document</button>
+        <input type="file" id="lockerFileInput" style="display: none;" onchange="handleLockerFileUpload(event)">
+      </div>
+
+      <div class="locker-grid" id="lockerGridBox">
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-soft);">Loading medical locker files...</div>
+      </div>
+    </div>
+
+    <!-- ──────────────── TAB 3: PROFILE & VITALS ──────────────── -->
+    <div id="portalTabProfile" class="hidden">
+      <div class="profile-card">
+        <h2 style="font-family: var(--serif); font-size: 26px; color: var(--void); margin-bottom: 6px;">Patient Profile & Health Vitals</h2>
+        <p style="font-size: 14.5px; color: var(--ink-soft); margin-bottom: 28px;">Manage your health metrics, blood group, and connected partner hospital</p>
+
+        <form onsubmit="handleSaveProfile(event)">
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin-bottom: 24px;">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="profName" class="form-control" placeholder="Ramesh Kumar">
+            </div>
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input type="text" id="profPhone" class="form-control" readonly style="background: rgba(0,0,0,0.03);">
+            </div>
+            <div class="form-group">
+              <label>Age</label>
+              <input type="number" id="profAge" class="form-control" placeholder="32">
+            </div>
+            <div class="form-group">
+              <label>Gender</label>
+              <select id="profGender" class="form-control">
+                <option value="">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Blood Group</label>
+              <select id="profBlood" class="form-control">
+                <option value="">Select</option>
+                <option value="O+">O+</option>
+                <option value="A+">A+</option>
+                <option value="B+">B+</option>
+                <option value="AB+">AB+</option>
+                <option value="O-">O-</option>
+                <option value="A-">A-</option>
+                <option value="B-">B-</option>
+                <option value="AB-">AB-</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Height (cm)</label>
+              <input type="text" id="profHeight" class="form-control" placeholder="172">
+            </div>
+            <div class="form-group">
+              <label>Weight (kg)</label>
+              <input type="text" id="profWeight" class="form-control" placeholder="68">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label>Known Allergies</label>
+            <input type="text" id="profAllergies" class="form-control" placeholder="e.g. Penicillin, Dust, Peanuts">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 28px;">
+            <label>Chronic Medical Conditions</label>
+            <input type="text" id="profConditions" class="form-control" placeholder="e.g. Hypertension, Diabetes Type 2">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-sm" id="saveProfBtn">Save Health Profile →</button>
+        </form>
+
+        <hr style="margin: 36px 0; border: none; border-top: 1px solid var(--line);">
+
+        <!-- CONNECTED HOSPITAL CARD -->
+        <div id="hospCardBox" class="state-box" style="background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 24px;">
+          <h4 style="font-family: var(--serif); font-size: 19px; color: var(--void); margin-bottom: 8px;">Preferred Partner Hospital</h4>
+          <p style="font-size: 14px; color: var(--ink-soft);" id="hospDescText">Connected to <strong>Orthomed Hospital</strong> via QR referral.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-top">
+    <div>
+      <div class="foot-brand">
+        <img src="assets/logo.png" style="width:28px; height:28px;" alt="Curelith">
+        Curelith
+      </div>
+      <p>AI-first clinical intelligence navigating patients safely from symptoms to certified specialist care.</p>
+    </div>
+    <div class="foot-col">
+      <h5>Network</h5>
+      <a href="doctors.html">Physicians</a>
+      <a href="hospitals.html">Partner Hospitals</a>
+      <a href="hospital-portal.html">Hospital Admin Portal</a>
+    </div>
+    <div class="foot-col">
+      <h5>Legal & Contact</h5>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <div class="line">Support: support@curelith.com</div>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <div>© 2026 Curelith Intelligence. All rights reserved.</div>
+    <div class="disclaimer">Not for medical emergencies. In an emergency, visit a hospital immediately.</div>
+  </div>
+</footer>
+
+<script>
+  const API_BASE = 'https://api.curelith.com';
+  let token = localStorage.getItem('patient_token') || '';
+  let phone = localStorage.getItem('patient_phone') || '';
+
+  function init() {
+    if (!token && !phone) {
+      window.location.href = 'patient-login.html';
+      return;
+    }
+    try { lucide.createIcons(); } catch(e) {}
+    loadProfile();
+    loadChatHistory();
+    loadLockerFiles();
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('patient_token');
+    localStorage.removeItem('patient_phone');
+    localStorage.removeItem('patient_info');
+    window.location.href = 'patient-login.html';
+  }
+
+  function switchPortalTab(tab) {
+    ['chat', 'locker', 'profile'].forEach(t => {
+      document.getElementById(`portalTab${capitalize(t)}`).classList.add('hidden');
+      document.getElementById(`tabNav${capitalize(t)}`).classList.remove('active');
+    });
+    document.getElementById(`portalTab${capitalize(tab)}`).classList.remove('hidden');
+    document.getElementById(`tabNav${capitalize(tab)}`).classList.add('active');
+  }
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  /* ── PROFILE API ── */
+  async function loadProfile() {
+    try {
+      const res = await fetch(`${API_BASE}/patient/profile`, {
+        headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone }
+      });
+      const data = await res.json();
+      if (data.success && data.patient) {
+        const p = data.patient;
+        document.getElementById('profName').value = p.name || '';
+        document.getElementById('profPhone').value = p.phone || phone;
+        document.getElementById('profAge').value = p.age || '';
+        document.getElementById('profGender').value = p.gender || '';
+        document.getElementById('profBlood').value = p.blood_group || '';
+        document.getElementById('profHeight').value = p.height || '';
+        document.getElementById('profWeight').value = p.weight || '';
+        document.getElementById('profAllergies').value = p.allergies || '';
+        document.getElementById('profConditions').value = p.chronic_conditions || '';
+
+        if (p.partner_hospital) {
+          document.getElementById('partnerHospitalBadge').classList.remove('hidden');
+          document.getElementById('hospBadgeName').textContent = p.partner_hospital.name;
+          document.getElementById('hospDescText').innerHTML = `Connected to <strong>${p.partner_hospital.name}</strong> (${p.partner_hospital.city}) via QR code referral.`;
         }
+      }
+    } catch(e) {}
+  }
 
-        const auth = checkAuth();
-        if (!auth) {
-            // Stop execution if not authenticated
-            throw new Error("Unauthorized redirecting...");
+  async function handleSaveProfile(e) {
+    e.preventDefault();
+    const btn = document.getElementById('saveProfBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving Profile...';
+
+    const p = {
+      name: document.getElementById('profName').value,
+      age: document.getElementById('profAge').value,
+      gender: document.getElementById('profGender').value,
+      blood_group: document.getElementById('profBlood').value,
+      height: document.getElementById('profHeight').value,
+      weight: document.getElementById('profWeight').value,
+      allergies: document.getElementById('profAllergies').value,
+      chronic_conditions: document.getElementById('profConditions').value,
+    };
+
+    try {
+      await fetch(`${API_BASE}/patient/profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Patient-Token': token, 'X-Patient-Phone': phone },
+        body: JSON.stringify(p)
+      });
+      btn.disabled = false;
+      btn.textContent = 'Save Health Profile →';
+      alert('Profile updated successfully!');
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = 'Save Health Profile →';
+    }
+  }
+
+  /* ── UNIFIED CHAT API ── */
+  async function loadChatHistory() {
+    const box = document.getElementById('chatMessagesBox');
+    try {
+      const res = await fetch(`${API_BASE}/patient/chat/history`, {
+        headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone }
+      });
+      const data = await res.json();
+      if (data.success && data.messages) {
+        if (!data.messages.length) {
+          box.innerHTML = `<div style="text-align: center; color: var(--ink-soft); margin: auto;">No past messages yet. Describe your symptoms to get started! 🩺</div>`;
+          return;
         }
+        box.innerHTML = data.messages.map(m => `
+          <div class="msg-bubble msg-${m.role}">
+            ${escapeHtml(m.content)}
+          </div>
+        `).join('');
+        box.scrollTop = box.scrollHeight;
+      }
+    } catch(e) {
+      box.innerHTML = `<div style="text-align: center; color: var(--ink-soft); margin: auto;">Unable to load chat history.</div>`;
+    }
+  }
 
-        const patientPhone = auth.patientPhone;
-        const patientToken = auth.patientToken;
+  async function handleSendWebChat(e) {
+    e.preventDefault();
+    const input = document.getElementById('webChatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
 
-        window.addEventListener('pageshow', function(event) {
-            if (!localStorage.getItem('patient_phone') || !localStorage.getItem('patient_token')) {
-                window.location.replace('patient-login.html');
-            }
-        });
+    const box = document.getElementById('chatMessagesBox');
+    box.innerHTML += `<div class="msg-bubble msg-user">${escapeHtml(msg)}</div>`;
+    input.value = '';
+    box.scrollTop = box.scrollHeight;
 
-        document.getElementById('userPhoneDisplay').innerText = patientPhone;
+    const btn = document.getElementById('sendBtn');
+    btn.disabled = true;
 
-        const headers = { 'X-Patient-Token': patientToken };
+    try {
+      const res = await fetch(`${API_BASE}/patient/chat/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Patient-Token': token, 'X-Patient-Phone': phone },
+        body: JSON.stringify({ message: msg })
+      });
+      const data = await res.json();
+      btn.disabled = false;
 
-        let lockerData = [];
+      if (data.success && data.reply) {
+        box.innerHTML += `<div class="msg-bubble msg-assistant">${escapeHtml(data.reply)}</div>`;
+        box.scrollTop = box.scrollHeight;
+      }
+    } catch(e) {
+      btn.disabled = false;
+    }
+  }
 
-        // Fetch and load dashboard contents
-        async function loadDashboard() {
-            try {
-                const res = await fetch(`${API_BASE}/locker/list/${patientPhone}`, { headers });
-                lockerData = await res.json();
-                
-                renderVitals();
-                renderLocker(false);
-            } catch (e) {
-                console.error("Dashboard load failed:", e);
-            }
+  /* ── MEDICAL LOCKER API ── */
+  async function loadLockerFiles() {
+    const box = document.getElementById('lockerGridBox');
+    try {
+      const res = await fetch(`${API_BASE}/patient/locker`, {
+        headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone }
+      });
+      const data = await res.json();
+      if (data.success && data.files) {
+        if (!data.files.length) {
+          box.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-soft);">No medical documents in your locker yet. Upload a report above or send via WhatsApp! 📄</div>`;
+          return;
         }
+        box.innerHTML = data.files.map(f => `
+          <div class="file-card">
+            <div>
+              <div class="file-icon-box">
+                <i data-lucide="file-text" style="width: 22px; height: 22px;"></i>
+              </div>
+              <div class="file-name">${escapeHtml(f.file_name)}</div>
+              <div class="file-meta">${f.category || 'Lab Report'} • ${f.created_at ? f.created_at.slice(0,10) : 'Recent'}</div>
+            </div>
+            <a class="btn btn-ghost btn-sm" style="width: 100%; justify-content: center;" href="${API_BASE}/static/uploads/${encodeURIComponent(f.file_name)}" target="_blank">View / Download →</a>
+          </div>
+        `).join('');
+        try { lucide.createIcons(); } catch(e) {}
+      }
+    } catch(e) {
+      box.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--ink-soft);">Unable to load medical locker.</div>`;
+    }
+  }
 
-        // Render Vitals summary
-        function renderVitals() {
-            const vitalsContainer = document.getElementById('vitalsContainer');
-            // Find the most recent fit report
-            const latestFit = lockerData.find(r => r.file_type === 'fit');
+  function triggerFileUpload() {
+    document.getElementById('lockerFileInput').click();
+  }
 
-            if (!latestFit || !latestFit.extracted_summary) {
-                vitalsContainer.innerHTML = `
-                    <div class="no-vitals">
-                        ⌚ <b>Smartwatch Not Linked</b><br><br>
-                        Connect Google Fit on WhatsApp to display steps, heart rate, and active calories here.<br><br>
-                        <i>Reply with <b>"connect smartwatch"</b> in WhatsApp to begin!</i>
-                    </div>
-                `;
-                return;
-            }
+  async function handleLockerFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
 
-            // Parse extracted_summary
-            const lines = latestFit.extracted_summary.split('\n');
-            let steps = "0";
-            let hr = "0 BPM";
-            let cal = "0 kcal";
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('category', 'Lab Report');
 
-            lines.forEach(l => {
-                if (l.includes("Steps:")) steps = l.replace("Steps:", "").trim();
-                if (l.includes("Heart Rate:")) hr = l.replace("Average Heart Rate:", "").trim();
-                if (l.includes("Calories:")) cal = l.replace("Active Calories Burned:", "").trim();
-            });
+    try {
+      await fetch(`${API_BASE}/patient/locker/upload`, {
+        method: 'POST',
+        headers: { 'X-Patient-Token': token, 'X-Patient-Phone': phone },
+        body: formData
+      });
+      alert('Document uploaded to Medical Locker!');
+      loadLockerFiles();
+    } catch(e) {}
+  }
 
-            vitalsContainer.innerHTML = `
-                <div class="vital-row">
-                    <div class="vital-icon vital-steps"><i data-lucide="footprints"></i></div>
-                    <div class="vital-info">
-                        <span class="vital-label">Steps Today</span>
-                        <span class="vital-value">${steps}</span>
-                    </div>
-                </div>
-                <div class="vital-row">
-                    <div class="vital-icon vital-heart"><i data-lucide="heart"></i></div>
-                    <div class="vital-info">
-                        <span class="vital-label">Avg Heart Rate</span>
-                        <span class="vital-value">${hr}</span>
-                    </div>
-                </div>
-                <div class="vital-row">
-                    <div class="vital-icon vital-cal"><i data-lucide="flame"></i></div>
-                    <div class="vital-info">
-                        <span class="vital-label">Calories Burned</span>
-                        <span class="vital-value">${cal}</span>
-                    </div>
-                </div>
-                <div style="font-size: 0.7rem; color: var(--cl-text-dim); text-align: center; margin-top: 10px;">
-                    Last updated: ${new Date(latestFit.uploaded_at).toLocaleString()}
-                </div>
-            `;
-            initIcons();
-        }
+  function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
 
-        // Render Locker Grid with Folder Grouping
-        function renderLocker(showFitFolderOnly = false) {
-            const grid = document.getElementById('lockerGrid');
-            const backBtnContainer = document.getElementById('lockerBackBtnContainer');
-            
-            grid.innerHTML = '';
-            backBtnContainer.innerHTML = '';
-
-            const fitReports = lockerData.filter(r => r.file_type === 'fit');
-            const otherFiles = lockerData.filter(r => r.file_type !== 'fit');
-
-            if (showFitFolderOnly) {
-                // RENDER SUB-FOLDER VIEW
-                const backBtn = document.createElement('div');
-                backBtn.className = 'back-btn';
-                backBtn.onclick = () => renderLocker(false);
-                backBtn.innerHTML = `<i data-lucide="arrow-left" style="width:18px; height:18px; margin-right:5px;"></i> Back to Locker`;
-                backBtnContainer.appendChild(backBtn);
-
-                if (!fitReports.length) {
-                    grid.innerHTML = '<div class="no-vitals">No reports found.</div>';
-                } else {
-                    fitReports.forEach(r => {
-                        const div = document.createElement('div');
-                        div.className = 'file-card';
-                        div.onclick = () => window.open(`${API_BASE}${r.file_path}`, '_blank');
-                        div.innerHTML = `<i data-lucide="activity" style="color:var(--cl-accent);"></i><div class="file-name"></div>`;
-                        div.querySelector('.file-name').textContent = r.original_name;
-                        grid.appendChild(div);
-                    });
-                }
-            } else {
-                // RENDER MAIN VIEW
-                if (!lockerData.length) {
-                    grid.innerHTML = '<div class="no-vitals">Locker is empty. Upload medical files or images above.</div>';
-                    return;
-                }
-
-                // Render ordinary files (PDFs/Images)
-                otherFiles.forEach(r => {
-                    const div = document.createElement('div');
-                    div.className = 'file-card';
-                    div.onclick = () => window.open(`${API_BASE}${r.file_path}`, '_blank');
-                    const iconType = r.file_type === 'pdf' ? 'file-text' : 'image';
-                    div.innerHTML = `<i data-lucide="${iconType}"></i><div class="file-name"></div>`;
-                    div.querySelector('.file-name').textContent = r.original_name;
-                    grid.appendChild(div);
-                });
-
-                // Render Folder Card for Fit reports
-                if (fitReports.length > 0) {
-                    const div = document.createElement('div');
-                    div.className = 'file-card folder-card';
-                    div.onclick = () => renderLocker(true);
-                    div.innerHTML = `
-                        <i data-lucide="folder-heart" style="color:var(--cl-accent); width:32px; height:32px;"></i>
-                        <div class="file-name" style="font-weight:700; color:var(--cl-primary);">Smartwatch Vitals</div>
-                        <span class="folder-badge">${fitReports.length} reports</span>
-                    `;
-                    grid.appendChild(div);
-                }
-            }
-
-            initIcons();
-        }
-
-        // File Select Handler (Uploads directly to /locker/upload)
-        async function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const progress = document.getElementById('uploadProgress');
-            progress.style.display = 'block';
-
-            const formData = new FormData();
-            formData.append('sender', patientPhone);
-            formData.append('file', file);
-            
-            // Detect file type
-            const ext = file.name.split('.').pop().toLowerCase();
-            const type = ext === 'pdf' ? 'pdf' : 'image';
-            formData.append('type', type);
-
-            try {
-                const res = await fetch(`${API_BASE}/locker/upload`, {
-                    method: 'POST',
-                    headers: { 'X-Patient-Token': patientToken },
-                    body: formData
-                });
-                
-                if (res.ok) {
-                    progress.style.display = 'none';
-                    alert("File successfully added to locker!");
-                    loadDashboard();
-                } else {
-                    progress.style.display = 'none';
-                    alert("Upload failed. Please try again.");
-                }
-            } catch (err) {
-                progress.style.display = 'none';
-                alert("Connection error during upload.");
-            }
-        }
-
-        // Drag and Drop handlers
-        const dropZone = document.getElementById('dropZone');
-        
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                dropZone.style.background = '#E8EDE4';
-            }, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                dropZone.style.background = '#FAF9F5';
-            }, false);
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            if (files.length) {
-                document.getElementById('fileInput').files = files;
-                handleFileSelect({ target: { files } });
-            }
-        });
-
-        async function loadProfile() {
-            try {
-                const res = await fetch(`${API_BASE}/locker/profile/${encodeURIComponent(patientPhone)}`, { headers });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.profile_pic) {
-                        document.getElementById('headerProfilePic').src = `${API_BASE}${data.profile_pic}`;
-                    }
-                }
-            } catch (e) {
-                console.error("Failed to load profile:", e);
-            }
-        }
-
-        async function uploadProfilePic(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.append('phone', patientPhone);
-            formData.append('file', file);
-
-            try {
-                const res = await fetch(`${API_BASE}/locker/upload-profile-pic`, {
-                    method: 'POST',
-                    headers: { 'X-Patient-Token': patientToken },
-                    body: formData
-                });
-                
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.profile_pic) {
-                        document.getElementById('headerProfilePic').src = `${API_BASE}${data.profile_pic}`;
-                        alert("Profile picture updated successfully!");
-                    }
-                } else {
-                    alert("Failed to upload profile picture.");
-                }
-            } catch (err) {
-                alert("Connection error during profile picture upload.");
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('patient_phone');
-            localStorage.removeItem('patient_token');
-            window.location.replace('patient-login.html');
-        }
-
-        function initIcons() {
-            try {
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-            } catch (e) {
-                console.error("Lucide failed:", e);
-            }
-        }
-
-        // Initialize Lucide icons on start
-        initIcons();
-        loadProfile();
-        loadDashboard();
-    </script>
+  document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
