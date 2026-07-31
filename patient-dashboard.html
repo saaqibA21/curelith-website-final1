@@ -360,13 +360,13 @@
       </div>
 
       <form class="chat-bar" onsubmit="handleSendWebChat(event)">
-        <button type="button" onclick="triggerScanImageUpload()" title="Attach Scan Image or Report" style="width: 40px; height: 40px; border-radius: 50%; background: #EBF2EF; border: 1.5px solid rgba(30,66,61,0.25); color: var(--pine); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
-          <i data-lucide="image-plus" style="width: 20px; height: 20px;"></i>
+        <button type="button" onclick="triggerScanImageUpload()" title="Attach Scan Image or Report" style="width: 38px; height: 38px; border-radius: 50%; background: #EBF2EF; border: 1.5px solid #2E5C54; color: #1E423D; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E423D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/><path d="M16 5h6"/><path d="M19 2v6"/></svg>
         </button>
         <input type="file" id="scanImageInput" accept="image/*,.pdf" style="display: none;" onchange="handleScanImageSelect(event)">
         
-        <button type="button" id="micBtn" onclick="toggleVoiceRecording()" title="Send Voice Message" style="width: 40px; height: 40px; border-radius: 50%; background: #FDF2E9; border: 1.5px solid rgba(212,130,74,0.35); color: var(--clay-deep); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
-          <i data-lucide="mic" style="width: 20px; height: 20px;"></i>
+        <button type="button" id="micBtn" onclick="toggleVoiceRecording()" title="Send Voice Message" style="width: 38px; height: 38px; border-radius: 50%; background: #FDF2E9; border: 1.5px solid #D4824A; color: #B5642F; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B5642F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
         </button>
 
         <div id="recordingIndicator" class="hidden" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #D9381E; font-weight: 600; flex: 1;">
@@ -376,8 +376,8 @@
         </div>
 
         <input type="text" id="chatInput" class="chat-input" placeholder="Type symptoms or send voice note...">
-        <button type="submit" class="chat-send-btn" id="sendBtn">
-          <i data-lucide="arrow-up" style="width: 20px; height: 20px;"></i>
+        <button type="submit" class="chat-send-btn" id="sendBtn" style="width: 42px; height: 42px; border-radius: 50%; background: #1E423D; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 4px 12px rgba(30,66,61,0.3);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
         </button>
       </form>
     </div>
