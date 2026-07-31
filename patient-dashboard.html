@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
       --void: #0F1B19;
@@ -750,7 +750,7 @@
   let activeRecApptId = null;
   let recMediaRecorder = null;
   let recAudioChunks = [];
-  let recTimerInterval = null;
+  let consultTimerInterval = null;
 
   async function loadAppointments() {
     const listContainer = document.getElementById('appointmentsListBox');
@@ -858,7 +858,7 @@
       recMediaRecorder.stop();
       recMediaRecorder.stream.getTracks().forEach(t => t.stop());
     }
-    if (recTimerInterval) clearInterval(recTimerInterval);
+    if (consultTimerInterval) clearInterval(consultTimerInterval);
     document.getElementById('recorderModal').classList.add('hidden');
   }
 
@@ -873,7 +873,7 @@
       };
 
       recMediaRecorder.onstop = async () => {
-        if (recTimerInterval) clearInterval(recTimerInterval);
+        if (consultTimerInterval) clearInterval(consultTimerInterval);
         const audioBlob = new Blob(recAudioChunks, { type: 'audio/webm' });
         
         document.getElementById('recorderActiveView').classList.add('hidden');
@@ -916,7 +916,7 @@
       document.getElementById('recMicCircle').style.background = '#FDF2E9';
 
       let sec = 0;
-      recTimerInterval = setInterval(() => {
+      consultTimerInterval = setInterval(() => {
         sec++;
         const mins = Math.floor(sec / 60);
         const secs = sec % 60;
