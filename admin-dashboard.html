@@ -913,6 +913,31 @@
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
         const headers = { 'X-Admin-Password': adminPass };
 
+        // Wraps fetch for admin-authenticated calls: on 401 (bad/expired password),
+        // clears the session and bounces back to login instead of failing silently per-section.
+        async function adminFetch(url, options = {}) {
+            const res = await fetch(url, options);
+            if (res.status === 401) {
+                localStorage.removeItem('admin_pass');
+                localStorage.removeItem('admin_expiry');
+                window.location.replace('admin-login.html?reason=expired');
+                throw new Error('Session expired');
+            }
+            return res;
+        }
+
+        function setStat(id, value, isError = false) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.innerText = value;
+            el.style.color = isError ? '#b91c1c' : '';
+        }
+
+        function tableErrorRow(tbodyId, colspan, message = 'Failed to load data. Please retry.') {
+            const tbody = document.getElementById(tbodyId);
+            if (tbody) tbody.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; color:#b91c1c; padding:2rem;">${message}</td></tr>`;
+        }
+
         let allDoctors = [];
         let allActivity = [];
         let allHospitals = [];
@@ -927,27 +952,33 @@
                 initIcons();
             }
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/users`, { headers });
+                const res = await adminFetch(`${API_BASE}/doctor/admin/users`, { headers });
                 const data = await res.json();
-                if (data.status === 'success' || data.users) {
+                if (res.ok && (data.status === 'success' || data.users)) {
                     allUsers = data.users || [];
                     renderUsers(allUsers);
                 } else {
-                    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--admin-text-dim);">Unable to fetch user records. Please retry.</td></tr>';
+                    tableErrorRow('usersList', 6, 'Unable to fetch user records. Please retry.');
+                    setStat('statUsersTotal', '—', true);
+                    setStat('statUsersPartner', '—', true);
+                    setStat('statUsersWatch', '—', true);
                 }
             } catch (err) {
                 console.error('Error loading users:', err);
-                if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #b91c1c;">Connection timeout loading users.</td></tr>';
+                tableErrorRow('usersList', 6, 'Connection error loading users.');
+                setStat('statUsersTotal', '—', true);
+                setStat('statUsersPartner', '—', true);
+                setStat('statUsersWatch', '—', true);
             }
         }
 
         function renderUsers(list) {
-            document.getElementById('statUsersTotal').innerText = list.length;
+            setStat('statUsersTotal', list.length);
             const partnerCount = list.filter(u => u.partner_hospital_id || u.partner_hospital_ref).length;
             const watchCount = list.filter(u => u.google_access_token || u.apple_health_connected).length;
-            
-            document.getElementById('statUsersPartner').innerText = partnerCount;
-            document.getElementById('statUsersWatch').innerText = watchCount;
+
+            setStat('statUsersPartner', partnerCount);
+            setStat('statUsersWatch', watchCount);
 
             const tbody = document.getElementById('usersList');
             tbody.innerHTML = '';
@@ -1004,18 +1035,27 @@
 
         async function loadHospitals() {
             try {
-                const res = await fetch(`${API_BASE}/hospital/admin/all`, { headers });
+                const res = await adminFetch(`${API_BASE}/hospital/admin/all`, { headers });
                 const data = await res.json();
-                if (data.success) {
+                if (res.ok && data.success) {
                     allHospitals = data.hospitals;
                     renderHospitals(allHospitals);
+                } else {
+                    tableErrorRow('hospList', 7, 'Unable to fetch partner hospitals. Please retry.');
+                    setStat('statHospTotal', '—', true);
+                    setStat('statHospActive', '—', true);
                 }
-            } catch (err) { console.error('Error loading hospitals:', err); }
+            } catch (err) {
+                console.error('Error loading hospitals:', err);
+                tableErrorRow('hospList', 7, 'Connection error loading partner hospitals.');
+                setStat('statHospTotal', '—', true);
+                setStat('statHospActive', '—', true);
+            }
         }
 
         function renderHospitals(list) {
-            document.getElementById('statHospTotal').innerText = list.length;
-            document.getElementById('statHospActive').innerText = list.filter(h => h.is_active).length;
+            setStat('statHospTotal', list.length);
+            setStat('statHospActive', list.filter(h => h.is_active).length);
 
             const tbody = document.getElementById('hospList');
             tbody.innerHTML = '';
@@ -1082,7 +1122,7 @@
                 is_active: document.getElementById('editHospActive').value === '1'
             };
             try {
-                const res = await fetch(`${API_BASE}/hospital/admin/update`, {
+                const res = await adminFetch(`${API_BASE}/hospital/admin/update`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', ...headers },
                     body: JSON.stringify(payload)
@@ -1118,7 +1158,7 @@
                 phone: document.getElementById('addHospPhone').value.trim()
             };
             try {
-                const res = await fetch(`${API_BASE}/hospital/register`, {
+                const res = await adminFetch(`${API_BASE}/hospital/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', ...headers },
                     body: JSON.stringify(payload)
@@ -1179,19 +1219,26 @@
 
         async function loadGlobalStats() {
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/stats`, { headers });
+                const res = await adminFetch(`${API_BASE}/doctor/admin/stats`, { headers });
+                if (!res.ok) throw new Error('Failed to load global stats');
                 const data = await res.json();
-                
-                document.getElementById('statActiveDocs').innerText = data.active_doctors;
-                document.getElementById('statTotalConsults').innerText = data.total_consultations;
-                document.getElementById('statTotalViews').innerText = data.total_record_views;
-                
+
+                setStat('statActiveDocs', data.active_doctors);
+                setStat('statTotalConsults', data.total_consultations);
+                setStat('statTotalViews', data.total_record_views);
+
                 // Calculate and update Interrogation-to-Consultation Ratio
                 const ratio = data.total_consultations > 0 ? (data.total_record_views / data.total_consultations).toFixed(1) : 0;
-                document.getElementById('statRatio').innerText = ratio + "x";
+                setStat('statRatio', ratio + "x");
 
                 renderChart(data.daily_activity);
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error(err);
+                setStat('statActiveDocs', '—', true);
+                setStat('statTotalConsults', '—', true);
+                setStat('statTotalViews', '—', true);
+                setStat('statRatio', '—', true);
+            }
         }
 
         let activityChartInstance = null;
@@ -1225,9 +1272,10 @@
 
         async function loadLeaderboard() {
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/doctors`, { headers });
+                const res = await adminFetch(`${API_BASE}/doctor/admin/doctors`, { headers });
+                if (!res.ok) throw new Error('Failed to load leaderboard');
                 const docs = await res.json();
-                
+
                 // Sort by interrogation count (record_views_count) descending
                 const sorted = docs.sort((a, b) => b.record_views_count - a.record_views_count).slice(0, 3);
                 
@@ -1257,15 +1305,23 @@
                     `;
                     list.appendChild(row);
                 });
-            } catch(e) { console.error(e); }
+            } catch(e) {
+                console.error(e);
+                const list = document.getElementById('leaderboardList');
+                if (list) list.innerHTML = '<p style="color: #b91c1c; text-align: center; padding: 1rem;">Unable to load leaderboard data.</p>';
+            }
         }
 
         async function loadDoctors() {
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/doctors`, { headers });
+                const res = await adminFetch(`${API_BASE}/doctor/admin/doctors`, { headers });
+                if (!res.ok) throw new Error('Failed to load doctors');
                 allDoctors = await res.json();
                 renderDoctors(allDoctors);
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error(err);
+                tableErrorRow('doctorsList', 6, 'Unable to fetch doctors. Please retry.');
+            }
         }
 
         function renderDoctors(docs) {
@@ -1296,7 +1352,7 @@
         async function handleDeleteDoctor(id) {
             if (!confirm('Are you sure you want to delete this doctor from the platform?')) return;
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/doctor/delete`, {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/doctor/delete`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', ...headers },
                     body: JSON.stringify({ id })
@@ -1312,10 +1368,14 @@
 
         async function loadActivityLogs() {
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/interrogations`, { headers });
+                const res = await adminFetch(`${API_BASE}/doctor/admin/interrogations`, { headers });
+                if (!res.ok) throw new Error('Failed to load activity logs');
                 allActivity = await res.json();
                 renderActivity(allActivity);
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error(err);
+                tableErrorRow('activityList', 4, 'Unable to fetch activity logs. Please retry.');
+            }
         }
 
         function renderActivity(logs) {
@@ -1393,7 +1453,7 @@
             };
 
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/doctor/update`, {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/doctor/update`, {
                     method: 'POST',
                     headers: { ...headers, 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -1437,7 +1497,7 @@
             };
 
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/doctor/add`, {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/doctor/add`, {
                     method: 'POST',
                     headers: { ...headers, 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -1466,11 +1526,19 @@
 
         async function loadInstagramLeads() {
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/instagram-outreach`, { headers });
+                const res = await adminFetch(`${API_BASE}/doctor/admin/instagram-outreach`, { headers });
+                if (!res.ok) throw new Error('Failed to load Instagram leads');
                 allIgLeads = await res.json();
                 renderInstagramLeads(allIgLeads);
                 updateInstagramStats(allIgLeads);
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error(err);
+                tableErrorRow('igList', 7, 'Unable to fetch Instagram outreach leads. Please retry.');
+                setStat('igStatTotal', '—', true);
+                setStat('igStatMessaged', '—', true);
+                setStat('igStatReplied', '—', true);
+                setStat('igStatSeenNoReply', '—', true);
+            }
         }
 
         function updateInstagramStats(leads) {
@@ -1478,11 +1546,11 @@
             const messaged = leads.filter(l => l.status === 'messaged').length;
             const replied = leads.filter(l => l.status === 'replied').length;
             const seenNoReply = leads.filter(l => l.status === 'seen_no_reply').length;
-            
-            document.getElementById('igStatTotal').innerText = total;
-            document.getElementById('igStatMessaged').innerText = messaged;
-            document.getElementById('igStatReplied').innerText = replied;
-            document.getElementById('igStatSeenNoReply').innerText = seenNoReply;
+
+            setStat('igStatTotal', total);
+            setStat('igStatMessaged', messaged);
+            setStat('igStatReplied', replied);
+            setStat('igStatSeenNoReply', seenNoReply);
         }
 
         function renderInstagramLeads(leads) {
@@ -1548,7 +1616,7 @@
             };
             
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/instagram-outreach/update`, {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/instagram-outreach/update`, {
                     method: 'POST',
                     headers: { ...headers, 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -1612,7 +1680,7 @@
             }
             
             try {
-                const res = await fetch(url, {
+                const res = await adminFetch(url, {
                     method: 'POST',
                     headers: { ...headers, 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -1634,7 +1702,7 @@
             if (!confirm("Are you sure you want to delete this outreach lead?")) return;
             
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/instagram-outreach/delete`, {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/instagram-outreach/delete`, {
                     method: 'POST',
                     headers: { ...headers, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id })
@@ -1669,7 +1737,7 @@
             initIcons();
             
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/instagram-outreach/sync`, {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/instagram-outreach/sync`, {
                     method: 'POST',
                     headers
                 });
@@ -1703,7 +1771,7 @@
 
         async function loadIgConfig() {
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/instagram-config`, { headers });
+                const res = await adminFetch(`${API_BASE}/doctor/admin/instagram-config`, { headers });
                 if (res.ok) {
                     const data = await res.json();
                     document.getElementById('igAccessToken').value = data.access_token || '';
@@ -1720,7 +1788,7 @@
             };
             
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/instagram-config`, {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/instagram-config`, {
                     method: 'POST',
                     headers: { ...headers, 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -1736,10 +1804,14 @@
 
         async function loadClinics() {
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/clinics`, { headers });
+                const res = await adminFetch(`${API_BASE}/doctor/admin/clinics`, { headers });
+                if (!res.ok) throw new Error('Failed to load clinics');
                 const clinics = await res.json();
                 renderClinics(clinics);
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error(err);
+                tableErrorRow('clinicsList', 6, 'Unable to fetch clinics. Please retry.');
+            }
         }
 
         function renderClinics(clinics) {
@@ -1769,7 +1841,7 @@
         async function populateDoctorsCheckboxes() {
             try {
                 if (allDoctors.length === 0) {
-                    const res = await fetch(`${API_BASE}/doctor/admin/doctors`, { headers });
+                    const res = await adminFetch(`${API_BASE}/doctor/admin/doctors`, { headers });
                     allDoctors = await res.json();
                 }
                 const container = document.getElementById('clinicDocsCheckboxList');
@@ -1817,7 +1889,7 @@
             });
             
             try {
-                const res = await fetch(`${API_BASE}/doctor/admin/clinic/add`, {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/clinic/add`, {
                     method: 'POST',
                     headers: { ...headers, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, clinic_id, password, location, phone, email, doctor_ids })
