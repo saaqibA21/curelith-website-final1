@@ -1146,6 +1146,7 @@
   // something new actually arrived — avoids disrupting scroll position/typing on
   // every poll tick when there's nothing to show.
   let lastChatMessageCount = 0;
+  let lastChatMessageId = null; // fingerprint: "count:lastContent"
 
   async function loadChatHistory() {
     const box = document.getElementById('chatBox');
@@ -1158,10 +1159,16 @@
         if (!data.messages.length) {
           box.innerHTML = `<div style="text-align: center; color: var(--ink-soft); margin: auto;">Describe your symptoms to start chatting with Curelith AI! 🩺</div>`;
           lastChatMessageCount = 0;
+          lastChatMessageId = null;
           return;
         }
-        if (data.messages.length === lastChatMessageCount) return;
-        lastChatMessageCount = data.messages.length;
+        // Use the last message's content as a stable fingerprint so we re-render
+        // even if the count is the same (e.g. a message was replaced) and always
+        // show hospital notifications that arrive without the patient typing.
+        const lastMsg = data.messages[data.messages.length - 1];
+        const fingerprint = `${data.messages.length}:${lastMsg.content}`;
+        if (fingerprint === lastChatMessageId) return;
+        lastChatMessageId = fingerprint;
         box.innerHTML = data.messages.map(m => `
           <div class="msg-bubble msg-${m.role}">
             ${formatChatMessage(m.content)}
@@ -1181,10 +1188,12 @@
   // writes these into conversation_memory (channel='webapp') and already handles a
   // webapp reply of "1"-"4" as a slot pick — this poll is the only piece that was
   // missing for the webapp side of that same flow to actually surface on its own.
+  // Polling every 4 s keeps latency low — the tab-hidden guard prevents wasted
+  // requests while the user is away, keeping server load negligible.
   setInterval(() => {
     if (document.hidden) return; // skip while the tab isn't visible
     loadChatHistory();
-  }, 12000);
+  }, 4000);
 
   async function handleSendWebChat(e) {
     e.preventDefault();
