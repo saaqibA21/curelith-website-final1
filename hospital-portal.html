@@ -1090,6 +1090,9 @@
           } else if (a.status === 'rejected') {
             statusLabel = `<span style="color: var(--ink-soft);">✕ Rejected</span>`;
             actionBtn = `<span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft);">—</span>`;
+          } else if (a.status === 'cancelled_by_patient') {
+            statusLabel = `<span style="color: var(--ink-soft);">✕ Cancelled by patient</span>`;
+            actionBtn = `<span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft);">—</span>`;
           } else {
             statusLabel = `<span style="color: var(--ink-soft);">✓ Completed</span>`;
             actionBtn = `<span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft);">✓ Completed</span>`;
