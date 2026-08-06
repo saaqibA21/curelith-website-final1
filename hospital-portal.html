@@ -779,7 +779,27 @@
           <p style="font-family: var(--mono); font-size: 13px; color: var(--pine); margin-bottom: 16px;" id="qrUrlText">https://www.curelith.com/join.html?ref=orthomed</p>
           <a class="btn btn-primary" id="downloadQrBtn" href="#" download="hospital_qr.png">Download Printable QR →</a>
         </div>
+
+        <div class="table-card" style="margin-top: 24px;">
+          <div class="table-header">
+            <h3>Recent QR Code Scans & Patient Sessions</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Patient Phone</th>
+                <th>Scan Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="qrScansTable">
+              <tr><td colspan="4" style="text-align:center; color: var(--ink-soft);">Loading QR scans...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
 
     </div>
   </div>
@@ -1134,7 +1154,57 @@
       document.getElementById('qrUrlText').textContent = data.qr_url;
       document.getElementById('downloadQrBtn').href = `data:image/png;base64,${data.qr_base64}`;
     }
+    loadQrScans();
   }
+
+  async function loadQrScans() {
+    const curToken = getToken();
+    if (!curToken) return;
+    try {
+      const res = await fetch(`${API}/qr-scans`, { headers: { 'X-Hospital-Token': curToken } });
+      const data = await res.json();
+      const table = document.getElementById('qrScansTable');
+      if (table) {
+        if (data.scans && data.scans.length) {
+          table.innerHTML = data.scans.map(s => `
+            <tr>
+              <td><strong>${s.user_phone || 'Scanned Patient'}</strong></td>
+              <td>${s.created_at ? s.created_at.slice(0,16).replace('T', ' ') : 'Recent'}</td>
+              <td><span class="badge badge-success">Connected</span></td>
+              <td>
+                <button class="btn btn-ghost btn-sm" style="padding: 4px 10px; font-size: 12px; color: #b91c1c; border-color: #fca5a5;" onclick="resetPatientFlow('${s.user_phone}')">Disconnect / Reset Session</button>
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          table.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--ink-soft);">No QR scans logged yet</td></tr>';
+        }
+      }
+    } catch(e) {
+      console.error('loadQrScans error:', e);
+    }
+  }
+
+  async function resetPatientFlow(phone) {
+    if (!phone) return;
+    if (!confirm(`Are you sure you want to disconnect/reset patient session for ${phone}?`)) return;
+    const curToken = getToken();
+    try {
+      const res = await fetch(`${API}/patients/reset-flow`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': curToken },
+        body: JSON.stringify({ patient_phone: phone })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`Session reset for patient ${phone}`);
+        loadQrScans();
+      }
+    } catch(e) {
+      alert('Error resetting patient session.');
+    }
+  }
+
 
   function openAddDoctorModal() {
     editingDoctorId = null;

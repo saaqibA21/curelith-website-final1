@@ -1093,13 +1093,32 @@
           if (tempMsg) tempMsg.remove();
 
           if (data.success) {
-            let replyHtml = formatChatMessage(data.reply);
+            // Use permanent server URL (not ephemeral blob) so audio survives refresh
+            const userAudioSrc = data.user_audio_url
+              ? (data.user_audio_url.startsWith('http') ? data.user_audio_url : `${API_BASE}${data.user_audio_url}`)
+              : userAudioUrl; // fallback to blob if server URL missing
+
+            // Replace the user bubble that was inserted with blob URL
+            const lastUserBubble = box.querySelector('.msg-bubble.msg-user:last-of-type');
+            if (lastUserBubble && data.user_audio_url) {
+              lastUserBubble.innerHTML = `
+                <div style="font-size:12px;opacity:0.85;margin-bottom:5px;">🎙️ Your voice message</div>
+                <div style="font-size:13px;margin-bottom:8px;">${formatChatMessage(data.transcription || '')}</div>
+                <audio controls style="width:100%;max-width:240px;height:34px;border-radius:8px;display:block;">
+                  <source src="${userAudioSrc}" type="audio/webm">
+                </audio>`;
+            }
+
+            // Curelith reply — text + TTS audio
+            let replyHtml = `<div style="font-size:12px;opacity:0.7;margin-bottom:6px;">🔊 Curelith reply</div>${formatChatMessage(data.reply)}`;
             if (data.audio_url) {
-              const fullAudioUrl = data.audio_url.startsWith('http') ? data.audio_url : `${API_BASE}${data.audio_url}`;
-              replyHtml += `<br><br><audio controls style="width: 100%; margin-top: 8px; border-radius: 12px; height: 36px;"><source src="${fullAudioUrl}" type="audio/mpeg">Your browser does not support audio playback.</audio>`;
+              const replyAudioUrl = data.audio_url.startsWith('http') ? data.audio_url : `${API_BASE}${data.audio_url}`;
+              replyHtml += `<audio controls style="width:100%;margin-top:10px;border-radius:8px;height:34px;display:block;"><source src="${replyAudioUrl}" type="audio/mpeg"></audio>`;
             }
             box.innerHTML += `<div class="msg-bubble msg-assistant">${replyHtml}</div>`;
             box.scrollTop = box.scrollHeight;
+            // Update fingerprint so the next poll doesn't redundantly re-render
+            lastChatMessageId = null;
           } else {
             box.innerHTML += `<div class="msg-bubble msg-assistant">Unable to process voice message. Please try again.</div>`;
           }
@@ -1169,11 +1188,22 @@
         const fingerprint = `${data.messages.length}:${lastMsg.content}`;
         if (fingerprint === lastChatMessageId) return;
         lastChatMessageId = fingerprint;
-        box.innerHTML = data.messages.map(m => `
-          <div class="msg-bubble msg-${m.role}">
-            ${formatChatMessage(m.content)}
-          </div>
-        `).join('');
+        box.innerHTML = data.messages.map(m => {
+          // Strip [Voice] prefix from display content
+          const displayContent = m.content ? m.content.replace(/^\[Voice\]\s*/i, '') : '';
+          let html = formatChatMessage(displayContent);
+          // If this message has an audio_url, append a playable audio element
+          if (m.audio_url) {
+            const fullAudioUrl = m.audio_url.startsWith('http') ? m.audio_url : `${API_BASE}${m.audio_url}`;
+            const isUserVoice = m.role === 'user';
+            const audioType = isUserVoice ? 'audio/webm' : 'audio/mpeg';
+            html = `<div style="font-size:12px;opacity:0.7;margin-bottom:6px;">🎙️ ${isUserVoice ? 'Your voice message' : 'Voice reply'}</div>${html}
+              <audio controls style="width:100%;max-width:240px;height:34px;border-radius:8px;margin-top:8px;display:block;">
+                <source src="${fullAudioUrl}" type="${audioType}">
+              </audio>`;
+          }
+          return `<div class="msg-bubble msg-${m.role}">${html}</div>`;
+        }).join('');
         box.scrollTop = box.scrollHeight;
       }
     } catch(e) {
