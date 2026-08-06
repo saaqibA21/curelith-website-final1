@@ -893,6 +893,7 @@
   let editingScanId = null;
   let loadedDoctors = [];
   let loadedScans = [];
+  let appointmentsPollInterval = null;
 
   function getToken() {
     return token || localStorage.getItem('hospital_token') || '';
@@ -1009,6 +1010,14 @@
     if (tab === 'scans') loadScans();
     if (tab === 'appointments') loadAppointments();
     if (tab === 'qr') loadQR();
+
+    if (appointmentsPollInterval) {
+      clearInterval(appointmentsPollInterval);
+      appointmentsPollInterval = null;
+    }
+    if (tab === 'appointments') {
+      appointmentsPollInterval = setInterval(loadAppointments, 15000);
+    }
   }
 
   async function loadDoctors() {
