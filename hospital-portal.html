@@ -1263,6 +1263,14 @@
   }
 
   function closeCallbackChat() {
+    if (callbackChatBookingId) {
+      try {
+        fetch(`${API}/appointments/${callbackChatBookingId}/callback-close`, {
+          method: 'POST',
+          headers: { 'X-Hospital-Token': getToken() }
+        });
+      } catch(e) {}
+    }
     document.getElementById('callbackChatPanel').classList.add('hidden');
     if (callbackChatPollInterval) {
       clearInterval(callbackChatPollInterval);
@@ -1292,15 +1300,15 @@
       const btn = document.getElementById('callbackChatSendBtn');
       const status = document.getElementById('callbackChatStatus');
 
-      if (hospitalCount >= 2) {
+      if (hospitalCount >= 5) {
         input.disabled = true; btn.disabled = true;
-        status.textContent = 'Follow-up limit reached (2 messages max) for this booking.';
+        status.textContent = 'Follow-up limit reached (5 messages max) for this booking.';
       } else if (lastIsHospital) {
         input.disabled = true; btn.disabled = true;
         status.textContent = 'Waiting for the patient to reply before you can follow up again.';
       } else {
         input.disabled = false; btn.disabled = false;
-        status.textContent = hospitalCount === 0 ? '' : `${2 - hospitalCount} follow-up message left.`;
+        status.textContent = hospitalCount === 0 ? '' : `${5 - hospitalCount} follow-up message left.`;
       }
     } catch(e) {}
   }
