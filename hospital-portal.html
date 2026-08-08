@@ -1297,6 +1297,8 @@
 
   async function handleSaveDoctor(e) {
     e.preventDefault();
+    const curToken = getToken();
+    if (!curToken) return;
     const d = {
       doctor_name: document.getElementById('docName').value,
       specialization: document.getElementById('docSpec').value,
@@ -1305,26 +1307,32 @@
     const method = editingDoctorId ? 'PUT' : 'POST';
     const url = editingDoctorId ? `${API}/doctors/${editingDoctorId}` : `${API}/doctors`;
     
-    await fetch(url, {
+    const res = await fetch(url, {
       method: method,
-      headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': token },
+      headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': curToken },
       body: JSON.stringify(d)
     });
+    if (handleApiError(res)) return;
     closeDoctorModal();
     loadDoctors();
   }
 
   async function deleteDoctor(id) {
     if (!confirm('Are you sure you want to remove this doctor profile?')) return;
-    await fetch(`${API}/doctors/${id}`, {
+    const curToken = getToken();
+    if (!curToken) return;
+    const res = await fetch(`${API}/doctors/${id}`, {
       method: 'DELETE',
-      headers: { 'X-Hospital-Token': token }
+      headers: { 'X-Hospital-Token': curToken }
     });
+    if (handleApiError(res)) return;
     loadDoctors();
   }
 
   async function handleSaveScan(e) {
     e.preventDefault();
+    const curToken = getToken();
+    if (!curToken) return;
     const s = {
       category: document.getElementById('scanCategory').value,
       scan_name: document.getElementById('scanName').value,
@@ -1333,21 +1341,25 @@
     const method = editingScanId ? 'PUT' : 'POST';
     const url = editingScanId ? `${API}/scans/${editingScanId}` : `${API}/scans`;
 
-    await fetch(url, {
+    const res = await fetch(url, {
       method: method,
-      headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': token },
+      headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': curToken },
       body: JSON.stringify(s)
     });
+    if (handleApiError(res)) return;
     closeScanModal();
     loadScans();
   }
 
   async function deleteScan(id) {
     if (!confirm('Are you sure you want to remove this scan offering?')) return;
-    await fetch(`${API}/scans/${id}`, {
+    const curToken = getToken();
+    if (!curToken) return;
+    const res = await fetch(`${API}/scans/${id}`, {
       method: 'DELETE',
-      headers: { 'X-Hospital-Token': token }
+      headers: { 'X-Hospital-Token': curToken }
     });
+    if (handleApiError(res)) return;
     loadScans();
   }
 
