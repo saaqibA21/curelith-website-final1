@@ -517,6 +517,7 @@
                             <th>PHONE</th>
                             <th>PORTAL URL</th>
                             <th>STATUS</th>
+                            <th>APPOINTMENTS BOOKED</th>
                             <th>ACTIONS</th>
                         </tr>
                     </thead>
@@ -845,6 +846,32 @@
         </div>
     </div>
 
+    <!-- Modal for Confirmed Bookings / Missing Contact Numbers -->
+    <div class="modal" id="hospBookingsModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 style="margin: 0; color: var(--admin-primary);" id="hospBookingsTitle">Confirmed Bookings</h2>
+                    <p style="color: var(--admin-text-dim); margin-top: 5px;">Follow up and fill in missing contact numbers — saving here updates the hospital's own dashboard too.</p>
+                </div>
+                <button onclick="closeHospBookingsModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SERVICE</th>
+                        <th>DATE</th>
+                        <th>CONTACT NUMBER</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="hospBookingsList">
+                    <!-- Confirmed bookings injected here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Modal for Adding Partner Hospital -->
     <div class="modal" id="addHospModal">
         <div class="modal-content">
@@ -1061,7 +1088,7 @@
             tbody.innerHTML = '';
 
             if (!list.length) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--admin-text-dim);">No partner hospitals found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--admin-text-dim);">No partner hospitals found.</td></tr>';
                 return;
             }
 
@@ -1074,6 +1101,11 @@
                     <td>${h.phone || 'N/A'}</td>
                     <td><a href="https://www.curelith.com/hospital-portal.html" target="_blank" style="color: var(--admin-accent); font-weight: 600;">Open Portal ↗</a></td>
                     <td><span class="ig-status ${h.is_active ? 'ig-status-replied' : 'ig-status-not_contacted'}">${h.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td>
+                        <button class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; background: var(--admin-accent, #d4824a); color: white; border-radius: 8px; cursor: pointer;" onclick="openHospBookingsModal(${h.id}, '${(h.name || '').replace(/'/g, "\\'")}')">
+                            ${h.appointments_booked || 0} booked
+                        </button>
+                    </td>
                     <td>
                         <button class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; background: var(--admin-primary); color: white; border-radius: 8px; cursor: pointer;" onclick="openEditHospModal(${h.id})">
                             <i data-lucide="key" style="width: 14px; height: 14px; inline-block;"></i> Edit Credentials
@@ -1108,6 +1140,69 @@
 
         function closeEditHospModal() {
             document.getElementById('editHospModal').style.display = 'none';
+        }
+
+        let hospBookingsHospitalId = null;
+
+        async function openHospBookingsModal(hospitalId, hospitalName) {
+            hospBookingsHospitalId = hospitalId;
+            document.getElementById('hospBookingsTitle').textContent = `Confirmed Bookings — ${hospitalName}`;
+            document.getElementById('hospBookingsList').innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--admin-text-dim);">Loading...</td></tr>';
+            document.getElementById('hospBookingsModal').style.display = 'flex';
+            try {
+                const res = await adminFetch(`${API_BASE}/hospital/admin/bookings?hospital_id=${hospitalId}`, { headers });
+                const data = await res.json();
+                renderHospBookings(data.bookings || []);
+            } catch (e) {
+                document.getElementById('hospBookingsList').innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--admin-text-dim);">Could not load bookings.</td></tr>';
+            }
+        }
+
+        function closeHospBookingsModal() {
+            document.getElementById('hospBookingsModal').style.display = 'none';
+            hospBookingsHospitalId = null;
+        }
+
+        function renderHospBookings(list) {
+            const tbody = document.getElementById('hospBookingsList');
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--admin-text-dim);">No confirmed bookings yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = list.map(b => `
+                <tr>
+                    <td>${b.scan_name}</td>
+                    <td>${b.booking_date || (b.created_at ? b.created_at.slice(0,10) : '')}</td>
+                    <td>
+                        <input type="text" id="bookingContact_${b.id}" value="${b.contact_phone || ''}" placeholder="No number yet"
+                            style="width: 140px; padding: 6px 8px; border-radius: 8px; border: 1px solid #DDD6C4;">
+                    </td>
+                    <td>
+                        <button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.7rem; background: var(--admin-primary); color: white; border-radius: 8px; cursor: pointer;" onclick="saveBookingContact(${b.id})">Save</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function saveBookingContact(bookingId) {
+            const input = document.getElementById(`bookingContact_${bookingId}`);
+            const contact_phone = input.value.trim();
+            if (!contact_phone) { alert('Enter a phone number first.'); return; }
+            try {
+                const res = await adminFetch(`${API_BASE}/hospital/admin/bookings/${bookingId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify({ contact_phone })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Saved — updated in the hospital dashboard too.');
+                } else {
+                    alert(data.error || 'Could not save the number.');
+                }
+            } catch (e) {
+                alert('Could not save the number.');
+            }
         }
 
         async function handleSaveEditHospital(e) {

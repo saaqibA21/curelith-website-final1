@@ -291,6 +291,57 @@
     }
     .hidden { display: none !important; }
 
+    /* CALLBACK CHAT POPUP */
+    .callback-chat-panel {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      width: 320px; max-width: calc(100vw - 32px);
+      height: 420px; max-height: calc(100vh - 40px);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+      display: flex; flex-direction: column;
+      z-index: 250;
+      overflow: hidden;
+    }
+    .callback-chat-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--pine); color: #fff;
+    }
+    .callback-chat-header strong { font-family: var(--serif); font-size: 15px; }
+    .callback-chat-close {
+      background: transparent; border: none; color: #fff; opacity: 0.8;
+      font-size: 16px; cursor: pointer; line-height: 1;
+    }
+    .callback-chat-close:hover { opacity: 1; }
+    .callback-chat-messages {
+      flex: 1; overflow-y: auto; padding: 12px 14px;
+      display: flex; flex-direction: column; gap: 8px;
+      background: var(--paper);
+    }
+    .callback-chat-bubble {
+      max-width: 85%; padding: 8px 12px; border-radius: 12px;
+      font-size: 13px; line-height: 1.4; word-wrap: break-word;
+    }
+    .callback-chat-bubble.hospital {
+      align-self: flex-end;
+      background: var(--pine); color: #fff;
+      border-bottom-right-radius: 3px;
+    }
+    .callback-chat-bubble.patient {
+      align-self: flex-start;
+      background: #fff; color: var(--ink);
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 3px;
+    }
+    .callback-chat-footer {
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+    }
+
     @media (max-width: 980px) {
       .dashboard-container { flex-direction: column; }
       .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--line-dark); }
@@ -884,7 +935,24 @@
   </div>
 </div>
 
-
+<!-- CALLBACK CHAT POPUP -->
+<div id="callbackChatPanel" class="callback-chat-panel hidden">
+  <div class="callback-chat-header">
+    <div>
+      <strong>Callback Chat</strong>
+      <div style="font-size: 11px; opacity: 0.85;" id="callbackChatSubtitle"></div>
+    </div>
+    <button type="button" class="callback-chat-close" onclick="closeCallbackChat()">✕</button>
+  </div>
+  <div class="callback-chat-messages" id="callbackChatMessages"></div>
+  <div class="callback-chat-footer">
+    <div id="callbackChatStatus" style="font-size: 11px; color: var(--ink-soft); margin-bottom: 6px;"></div>
+    <div style="display: flex; gap: 8px;">
+      <input type="text" id="callbackChatInput" class="form-control" placeholder="Type a follow-up..." style="flex:1; padding: 8px 10px;" onkeydown="if(event.key==='Enter'){sendCallbackChatMessage();}">
+      <button type="button" class="btn btn-primary btn-sm" id="callbackChatSendBtn" onclick="sendCallbackChatMessage()">Send</button>
+    </div>
+  </div>
+</div>
 
 <script>
   const API = 'https://api.curelith.com/hospital';
@@ -1091,7 +1159,9 @@
       if (data.appointments && data.appointments.length) {
         table.innerHTML = data.appointments.map(a => {
           const type = a.booking_type || 'scan';
-          const slot = (a.booking_date && a.booking_time) ? `${a.booking_date} · ${a.booking_time}` : '';
+          const slot = a.booking_date
+            ? (a.booking_time ? `${a.booking_date} · ${a.booking_time}` : a.booking_date)
+            : '';
           let statusLabel = '';
           let actionBtn = '';
 
@@ -1138,7 +1208,7 @@
             } else {
               phoneCell = `
                 <span style="color: var(--ink-soft); font-size: 12px;">📵 No number yet</span><br>
-                <button class="btn btn-ghost btn-sm" style="padding: 2px 8px; font-size: 11px; margin-top: 4px;" onclick="requestCallback(${a.id})">Request Callback</button>
+                <button class="btn btn-ghost btn-sm" style="padding: 2px 8px; font-size: 11px; margin-top: 4px;" onclick="openCallbackChat(${a.id})">Request Callback</button>
               `;
             }
           }
@@ -1171,21 +1241,103 @@
     } catch(e) {}
   }
 
-  async function requestCallback(id) {
+  /* ── CALLBACK CHAT POPUP ── */
+  let callbackChatBookingId = null;
+  let callbackChatPollInterval = null;
+
+  async function openCallbackChat(id) {
+    callbackChatBookingId = id;
+    document.getElementById('callbackChatSubtitle').textContent = `Booking #${id}`;
+    document.getElementById('callbackChatPanel').classList.remove('hidden');
+
+    // Fires the initial "please call us" nudge the first time only — the endpoint is a
+    // no-op on repeat opens, since it checks whether a thread already exists.
     try {
-      const res = await fetch(`${API}/appointments/${id}/request-callback`, {
+      await fetch(`${API}/appointments/${id}/request-callback`, {
         method: 'POST',
         headers: { 'X-Hospital-Token': getToken() }
       });
+    } catch(e) {}
+
+    await loadCallbackMessages();
+    if (callbackChatPollInterval) clearInterval(callbackChatPollInterval);
+    callbackChatPollInterval = setInterval(loadCallbackMessages, 5000);
+  }
+
+  function closeCallbackChat() {
+    document.getElementById('callbackChatPanel').classList.add('hidden');
+    if (callbackChatPollInterval) {
+      clearInterval(callbackChatPollInterval);
+      callbackChatPollInterval = null;
+    }
+    callbackChatBookingId = null;
+  }
+
+  async function loadCallbackMessages() {
+    if (!callbackChatBookingId) return;
+    try {
+      const res = await fetch(`${API}/appointments/${callbackChatBookingId}/callback-messages`, {
+        headers: { 'X-Hospital-Token': getToken() }
+      });
+      const data = await res.json();
+      if (!data.success) return;
+
+      const box = document.getElementById('callbackChatMessages');
+      box.innerHTML = data.messages.map(m => `
+        <div class="callback-chat-bubble ${m.sender}">${escapeHtml(m.message)}</div>
+      `).join('');
+      box.scrollTop = box.scrollHeight;
+
+      const hospitalCount = data.messages.filter(m => m.sender === 'hospital').length;
+      const lastIsHospital = data.messages.length && data.messages[data.messages.length - 1].sender === 'hospital';
+      const input = document.getElementById('callbackChatInput');
+      const btn = document.getElementById('callbackChatSendBtn');
+      const status = document.getElementById('callbackChatStatus');
+
+      if (hospitalCount >= 2) {
+        input.disabled = true; btn.disabled = true;
+        status.textContent = 'Follow-up limit reached (2 messages max) for this booking.';
+      } else if (lastIsHospital) {
+        input.disabled = true; btn.disabled = true;
+        status.textContent = 'Waiting for the patient to reply before you can follow up again.';
+      } else {
+        input.disabled = false; btn.disabled = false;
+        status.textContent = hospitalCount === 0 ? '' : `${2 - hospitalCount} follow-up message left.`;
+      }
+    } catch(e) {}
+  }
+
+  async function sendCallbackChatMessage() {
+    const input = document.getElementById('callbackChatInput');
+    const msg = input.value.trim();
+    if (!msg || !callbackChatBookingId) return;
+
+    const btn = document.getElementById('callbackChatSendBtn');
+    btn.disabled = true;
+    try {
+      const res = await fetch(`${API}/appointments/${callbackChatBookingId}/callback-messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': getToken() },
+        body: JSON.stringify({ message: msg })
+      });
       const data = await res.json();
       if (data.success) {
-        alert('Sent — the patient has been asked on WhatsApp to call you to confirm.');
+        input.value = '';
+        await loadCallbackMessages();
       } else {
-        alert(data.error || 'Could not send the request. Please try again.');
+        alert(data.error || 'Could not send the message.');
+        btn.disabled = false;
       }
     } catch(e) {
-      alert('Could not send the request. Please try again.');
+      alert('Could not send the message.');
+      btn.disabled = false;
     }
+  }
+
+  function escapeHtml(s) {
+    const div = document.createElement('div');
+    div.textContent = s || '';
+    return div.innerHTML;
   }
 
   async function loadQR() {
