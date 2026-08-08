@@ -1045,7 +1045,7 @@
               <tr>
                 <td><strong>${b.user_phone || 'Patient'}</strong></td>
                 <td>${b.scan_name || 'Scan / Service'}</td>
-                <td>${b.created_at ? b.created_at.slice(0,10) : 'Today'}</td>
+                <td>${b.booking_date || (b.created_at ? b.created_at.slice(0,10) : 'Today')}</td>
                 <td><span class="badge badge-${b.status === 'confirmed' ? 'success' : 'pending'}">${b.status || 'pending'}</span></td>
               </tr>
             `).join('');
@@ -1159,9 +1159,7 @@
       if (data.appointments && data.appointments.length) {
         table.innerHTML = data.appointments.map(a => {
           const type = a.booking_type || 'scan';
-          const slot = a.booking_date
-            ? (a.booking_time ? `${a.booking_date} · ${a.booking_time}` : a.booking_date)
-            : '';
+          const dateStr = a.booking_date ? (a.booking_time ? `${a.booking_date} · ${a.booking_time}` : a.booking_date) : '';
           let statusLabel = '';
           let actionBtn = '';
 
@@ -1175,7 +1173,7 @@
             statusLabel = `<span style="color: var(--ink-soft);">Sent time options — waiting on patient</span>`;
             actionBtn = `<span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft);">—</span>`;
           } else if (a.status === 'slot_selected') {
-            statusLabel = `<strong>Patient picked:</strong> ${slot || 'a slot'}`;
+            statusLabel = `<strong>Patient picked:</strong> ${dateStr || 'a slot'}`;
             actionBtn = `
               <button class="btn btn-primary btn-sm" style="padding: 4px 12px; font-size: 12px;" onclick="updateAppointmentStatus(${a.id}, '${type}', 'confirmed')">✓ Approve slot</button>
               <button class="btn btn-ghost btn-sm" style="padding: 4px 12px; font-size: 12px;" onclick="updateAppointmentStatus(${a.id}, '${type}', 'rejected_slot')">✕ Reject slot</button>
@@ -1184,7 +1182,7 @@
             statusLabel = `<span style="color: #b45309; font-weight: 600;">📞 Needs a call — picked time didn't work</span>`;
             actionBtn = `<span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft);">Call patient directly</span>`;
           } else if (a.status === 'confirmed') {
-            statusLabel = `<span style="color: var(--brand, #16a34a); font-weight: 600;">✓ Confirmed${slot ? ' — ' + slot : ''}</span>`;
+            statusLabel = `<span style="color: var(--brand, #16a34a); font-weight: 600;">✓ Confirmed${dateStr ? ' — ' + dateStr : ''}</span>`;
             actionBtn = `<button class="btn btn-ghost btn-sm" style="padding: 4px 12px; font-size: 12px;" onclick="updateAppointmentStatus(${a.id}, '${type}', 'completed')">Mark Completed</button>`;
           } else if (a.status === 'rejected') {
             statusLabel = `<span style="color: var(--ink-soft);">✕ Rejected</span>`;
@@ -1217,7 +1215,7 @@
             <tr>
               <td>${phoneCell}</td>
               <td>${a.scan_name}</td>
-              <td>${slot || (a.created_at ? a.created_at.slice(0,10) : 'Today')}</td>
+              <td>${dateStr || (a.created_at ? a.created_at.slice(0,10) : 'Today')}</td>
               <td>${statusLabel}</td>
               <td>${actionBtn}</td>
             </tr>
