@@ -1127,9 +1127,25 @@
             actionBtn = `<span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft);">✓ Completed</span>`;
           }
 
+          // Mark 2/3 QR bookings can be placed before a real contact number is known — for
+          // those, patient_phone is just a WhatsApp session key, not a dialable number. Show
+          // the confirmed contact_phone once the patient's provided it; until then, offer a
+          // one-click nudge instead of showing a number that might not actually reach them.
+          let phoneCell = `<strong>${a.patient_phone || ''}</strong>`;
+          if (type === 'scan') {
+            if (a.contact_phone) {
+              phoneCell = `<strong>${a.contact_phone}</strong>`;
+            } else {
+              phoneCell = `
+                <span style="color: var(--ink-soft); font-size: 12px;">📵 No number yet</span><br>
+                <button class="btn btn-ghost btn-sm" style="padding: 2px 8px; font-size: 11px; margin-top: 4px;" onclick="requestCallback(${a.id})">Request Callback</button>
+              `;
+            }
+          }
+
           return `
             <tr>
-              <td><strong>${a.patient_phone || ''}</strong></td>
+              <td>${phoneCell}</td>
               <td>${a.scan_name}</td>
               <td>${slot || (a.created_at ? a.created_at.slice(0,10) : 'Today')}</td>
               <td>${statusLabel}</td>
@@ -1153,6 +1169,23 @@
       loadAppointments();
       loadDashboardData();
     } catch(e) {}
+  }
+
+  async function requestCallback(id) {
+    try {
+      const res = await fetch(`${API}/appointments/${id}/request-callback`, {
+        method: 'POST',
+        headers: { 'X-Hospital-Token': getToken() }
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert('Sent — the patient has been asked on WhatsApp to call you to confirm.');
+      } else {
+        alert(data.error || 'Could not send the request. Please try again.');
+      }
+    } catch(e) {
+      alert('Could not send the request. Please try again.');
+    }
   }
 
   async function loadQR() {
