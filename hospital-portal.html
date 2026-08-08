@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Hospital Partner Portal | Curelith</title>
   <meta name="description" content="Manage your hospital's doctors, diagnostic scans, appointments, and QR referrals on Curelith.">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -1336,7 +1339,6 @@
       box.scrollTop = box.scrollHeight;
 
       const hospitalCount = data.messages.filter(m => m.sender === 'hospital').length;
-      const lastIsHospital = data.messages.length && data.messages[data.messages.length - 1].sender === 'hospital';
       const input = document.getElementById('callbackChatInput');
       const btn = document.getElementById('callbackChatSendBtn');
       const status = document.getElementById('callbackChatStatus');
@@ -1344,12 +1346,9 @@
       if (hospitalCount >= 5) {
         input.disabled = true; btn.disabled = true;
         status.textContent = 'Follow-up limit reached (5 messages max) for this booking.';
-      } else if (lastIsHospital) {
-        input.disabled = true; btn.disabled = true;
-        status.textContent = 'Waiting for the patient to reply before you can follow up again.';
       } else {
         input.disabled = false; btn.disabled = false;
-        status.textContent = hospitalCount === 0 ? '' : `${5 - hospitalCount} follow-up message left.`;
+        status.textContent = hospitalCount === 0 ? '' : `${5 - hospitalCount} follow-up message(s) left.`;
       }
     } catch(e) {}
   }
