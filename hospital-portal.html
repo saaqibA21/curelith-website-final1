@@ -957,7 +957,7 @@
     const curToken = getToken();
     if (!curToken) return;
     try {
-      const res = await fetch(`${API}/dashboard`, {
+      const res = await fetch(`${API}/dashboard?_t=${Date.now()}`, {
         headers: { 'X-Hospital-Token': curToken }
       });
       if (handleApiError(res)) return;
@@ -1023,7 +1023,7 @@
   async function loadDoctors() {
     const curToken = getToken();
     if (!curToken) return;
-    const res = await fetch(`${API}/doctors`, { headers: { 'X-Hospital-Token': curToken } });
+    const res = await fetch(`${API}/doctors?_t=${Date.now()}`, { headers: { 'X-Hospital-Token': curToken } });
     if (handleApiError(res)) return;
     const data = await res.json();
     const table = document.getElementById('doctorsTable');
@@ -1053,7 +1053,7 @@
   async function loadScans() {
     const curToken = getToken();
     if (!curToken) return;
-    const res = await fetch(`${API}/scans`, { headers: { 'X-Hospital-Token': curToken } });
+    const res = await fetch(`${API}/scans?_t=${Date.now()}`, { headers: { 'X-Hospital-Token': curToken } });
     if (handleApiError(res)) return;
     const data = await res.json();
     const table = document.getElementById('scansTable');
@@ -1083,7 +1083,7 @@
   async function loadAppointments() {
     const curToken = getToken();
     if (!curToken) return;
-    const res = await fetch(`${API}/appointments`, { headers: { 'X-Hospital-Token': curToken } });
+    const res = await fetch(`${API}/appointments?_t=${Date.now()}`, { headers: { 'X-Hospital-Token': curToken } });
     if (handleApiError(res)) return;
     const data = await res.json();
     const table = document.getElementById('appointmentsTable');
