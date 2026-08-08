@@ -789,17 +789,19 @@
 
       <!-- APPOINTMENTS TAB -->
       <div id="tabAppointments" class="hidden">
-        <div class="dash-header">
+        <div class="dash-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <div class="dash-title">
             <h2>All Appointments & Scan Requests</h2>
             <p>View, manage, and confirm all patient scan bookings in real-time</p>
           </div>
+          <button class="btn btn-primary btn-sm" onclick="openManualBookingModal()">➕ Add Manual Appointment</button>
         </div>
 
         <div class="table-card">
           <table>
             <thead>
               <tr>
+                <th>Token</th>
                 <th>Patient Phone</th>
                 <th>Requested Scan / Service</th>
                 <th>Booking Date</th>
@@ -808,7 +810,7 @@
               </tr>
             </thead>
             <tbody id="appointmentsTable">
-              <tr><td colspan="5" style="text-align:center; color: var(--ink-soft);">Loading appointments...</td></tr>
+              <tr><td colspan="6" style="text-align:center; color: var(--ink-soft);">Loading appointments...</td></tr>
             </tbody>
           </table>
         </div>
@@ -935,6 +937,39 @@
   </div>
 </div>
 
+<!-- MANUAL BOOKING MODAL -->
+<div id="manualBookingModal" class="modal hidden">
+  <div class="modal-card">
+    <h3 style="font-family: var(--serif); font-size: 22px; margin-bottom: 12px;">➕ Add Appointment / Token Search</h3>
+    <p style="font-size: 13px; color: var(--ink-soft); margin-bottom: 16px;">Lookup an existing patient by Token Number or Phone, or enter walk-in details to issue a new Token.</p>
+    
+    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <input type="text" id="tokenSearchInput" class="form-control" placeholder="Search Token (e.g. TK-085) or Phone..." onkeydown="if(event.key==='Enter'){event.preventDefault();searchPatientByToken();}">
+      <button type="button" class="btn btn-ghost btn-sm" onclick="searchPatientByToken()">Search</button>
+    </div>
+    <div id="tokenSearchResult" style="font-size: 12px; margin-bottom: 16px; min-height: 18px;"></div>
+
+    <form onsubmit="handleSaveManualBooking(event)">
+      <div class="form-group">
+        <label>Patient Phone Number</label>
+        <input type="text" id="manualPatientPhone" class="form-control" placeholder="e.g. 919876543210" required>
+      </div>
+      <div class="form-group">
+        <label>Scan / Service Package</label>
+        <input type="text" id="manualScanName" class="form-control" placeholder="e.g. Cardiac Health Check-up" required>
+      </div>
+      <div class="form-group">
+        <label>Appointment Date</label>
+        <input type="date" id="manualBookingDate" class="form-control" required>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeManualBookingModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-sm" id="saveManualBookingBtn">Confirm & Book →</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- CALLBACK CHAT POPUP -->
 <div id="callbackChatPanel" class="callback-chat-panel hidden">
   <div class="callback-chat-header">
@@ -1041,16 +1076,20 @@
         const table = document.getElementById('recentBookingsTable');
         if (table) {
           if (data.recent_bookings && data.recent_bookings.length) {
-            table.innerHTML = data.recent_bookings.map(b => `
-              <tr>
-                <td><strong>${b.user_phone || 'Patient'}</strong></td>
-                <td>${b.scan_name || 'Scan / Service'}</td>
-                <td>${b.booking_date || (b.created_at ? b.created_at.slice(0,10) : 'Today')}</td>
-                <td><span class="badge badge-${b.status === 'confirmed' ? 'success' : 'pending'}">${b.status || 'pending'}</span></td>
-              </tr>
-            `).join('');
+            table.innerHTML = data.recent_bookings.map(b => {
+              const tokenStr = b.token_number || `TK-${String(b.id).padStart(3, '0')}`;
+              return `
+                <tr>
+                  <td><span style="font-family: var(--mono); font-weight: 700; color: var(--brand, #0d9488);">${tokenStr}</span></td>
+                  <td><strong>${b.user_phone || 'Patient'}</strong></td>
+                  <td>${b.scan_name || 'Scan / Service'}</td>
+                  <td>${b.booking_date || (b.created_at ? b.created_at.slice(0,10) : 'Today')}</td>
+                  <td><span class="badge badge-${b.status === 'confirmed' ? 'success' : 'pending'}">${b.status || 'pending'}</span></td>
+                </tr>
+              `;
+            }).join('');
           } else {
-            table.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--ink-soft);">No recent bookings found</td></tr>';
+            table.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--ink-soft);">No recent bookings found</td></tr>';
           }
         }
       }
@@ -1213,6 +1252,7 @@
 
           return `
             <tr>
+              <td><span style="font-family: var(--mono); font-weight: 700; color: var(--brand, #0d9488);">${a.token_number || ('TK-'+String(a.id).padStart(3,'0'))}</span></td>
               <td>${phoneCell}</td>
               <td>${a.scan_name}</td>
               <td>${dateStr || (a.created_at ? a.created_at.slice(0,10) : 'Today')}</td>
@@ -1222,7 +1262,7 @@
           `;
         }).join('');
       } else {
-        table.innerHTML = '<tr><td colspan="5" style="text-align:center;">No appointment or scan requests found</td></tr>';
+        table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No appointment or scan requests found</td></tr>';
       }
     }
   }
@@ -1243,9 +1283,10 @@
   let callbackChatBookingId = null;
   let callbackChatPollInterval = null;
 
-  async function openCallbackChat(id) {
+  async function openCallbackChat(id, tokenNum) {
     callbackChatBookingId = id;
-    document.getElementById('callbackChatSubtitle').textContent = `Booking #${id}`;
+    const tokenDisplay = tokenNum || `TK-${String(id).padStart(3, '0')}`;
+    document.getElementById('callbackChatSubtitle').textContent = `Booking #${id} · Token: ${tokenDisplay}`;
     document.getElementById('callbackChatPanel').classList.remove('hidden');
 
     // Fires the initial "please call us" nudge the first time only — the endpoint is a
@@ -1336,6 +1377,77 @@
       }
     } catch(e) {
       alert('Could not send the message.');
+      btn.disabled = false;
+    }
+  }
+
+  /* ── MANUAL BOOKING & TOKEN LOOKUP ── */
+  function openManualBookingModal() {
+    document.getElementById('tokenSearchInput').value = '';
+    document.getElementById('tokenSearchResult').innerHTML = '';
+    document.getElementById('manualPatientPhone').value = '';
+    document.getElementById('manualScanName').value = 'Cardiac Health Check-up';
+    document.getElementById('manualBookingDate').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('manualBookingModal').classList.remove('hidden');
+  }
+
+  function closeManualBookingModal() {
+    document.getElementById('manualBookingModal').classList.add('hidden');
+  }
+
+  async function searchPatientByToken() {
+    const q = document.getElementById('tokenSearchInput').value.trim();
+    const resBox = document.getElementById('tokenSearchResult');
+    if (!q) {
+      resBox.innerHTML = '<span style="color: #b45309;">Please enter a Token Number (e.g. TK-085) or phone number to search.</span>';
+      return;
+    }
+    resBox.innerHTML = '<span style="color: var(--ink-soft);">Searching...</span>';
+    try {
+      const res = await fetch(`${API}/appointments/lookup?q=${encodeURIComponent(q)}`, {
+        headers: { 'X-Hospital-Token': getToken() }
+      });
+      const data = await res.json();
+      if (data.success && data.results && data.results.length) {
+        const p = data.results[0];
+        document.getElementById('manualPatientPhone').value = p.patient_phone || p.contact_phone || '';
+        if (p.scan_name) document.getElementById('manualScanName').value = p.scan_name;
+        if (p.booking_date) document.getElementById('manualBookingDate').value = p.booking_date;
+        resBox.innerHTML = `<span style="color: #16a34a; font-weight: 600;">✓ Found Patient Token ${p.token_number}! Details populated below.</span>`;
+      } else {
+        resBox.innerHTML = `<span style="color: #b45309;">No matching patient found for "${q}". Enter details below to create a new booking.</span>`;
+      }
+    } catch(e) {
+      resBox.innerHTML = '<span style="color: #c93b2b;">Search failed. Please try again.</span>';
+    }
+  }
+
+  async function handleSaveManualBooking(e) {
+    e.preventDefault();
+    const btn = document.getElementById('saveManualBookingBtn');
+    btn.disabled = true;
+    const patient_phone = document.getElementById('manualPatientPhone').value.trim();
+    const scan_name = document.getElementById('manualScanName').value.trim();
+    const booking_date = document.getElementById('manualBookingDate').value;
+
+    try {
+      const res = await fetch(`${API}/appointments/manual`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': getToken() },
+        body: JSON.stringify({ patient_phone, scan_name, booking_date })
+      });
+      const data = await res.json();
+      if (data.success) {
+        closeManualBookingModal();
+        alert(`✅ Appointment Created Successfully!\nAssigned Token Number: ${data.token_number}`);
+        loadAppointments();
+        loadDashboardData();
+      } else {
+        alert(data.error || 'Failed to create manual appointment.');
+      }
+    } catch(err) {
+      alert('Server error creating manual appointment.');
+    } finally {
       btn.disabled = false;
     }
   }
