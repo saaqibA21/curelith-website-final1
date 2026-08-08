@@ -795,7 +795,9 @@
         <div class="dash-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <div class="dash-title">
             <h2>All Appointments & Scan Requests</h2>
-            <p>View, manage, and confirm all patient scan bookings in real-time</p>
+            <p>View, manage, and confirm all patient scan bookings in real-time
+              <span id="appointmentsLiveStatus" style="font-family: var(--mono); font-size: 11px; color: var(--ink-soft); margin-left: 6px;"></span>
+            </p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="openManualBookingModal()">➕ Add Manual Appointment</button>
         </div>
@@ -1126,7 +1128,10 @@
       appointmentsPollInterval = null;
     }
     if (tab === 'appointments') {
-      appointmentsPollInterval = setInterval(loadAppointments, 15000);
+      appointmentsPollInterval = setInterval(loadAppointments, 8000);
+    } else {
+      const liveStatus = document.getElementById('appointmentsLiveStatus');
+      if (liveStatus) liveStatus.textContent = '';
     }
   }
 
@@ -1193,9 +1198,18 @@
   async function loadAppointments() {
     const curToken = getToken();
     if (!curToken) return;
-    const res = await fetch(`${API}/appointments?_t=${Date.now()}`, { headers: { 'X-Hospital-Token': curToken } });
-    if (handleApiError(res)) return;
-    const data = await res.json();
+    let res, data;
+    try {
+      res = await fetch(`${API}/appointments?_t=${Date.now()}`, { headers: { 'X-Hospital-Token': curToken } });
+      if (handleApiError(res)) return;
+      data = await res.json();
+    } catch (e) {
+      const liveStatus = document.getElementById('appointmentsLiveStatus');
+      if (liveStatus) liveStatus.textContent = '⚠ Refresh failed, retrying...';
+      return;
+    }
+    const liveStatus = document.getElementById('appointmentsLiveStatus');
+    if (liveStatus) liveStatus.textContent = `● Live — updated ${new Date().toLocaleTimeString()}`;
     const table = document.getElementById('appointmentsTable');
     if (table) {
       if (data.appointments && data.appointments.length) {
