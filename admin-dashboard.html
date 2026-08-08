@@ -859,6 +859,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>TOKEN</th>
                         <th>SERVICE</th>
                         <th>DATE</th>
                         <th>CONTACT NUMBER</th>
@@ -1147,14 +1148,14 @@
         async function openHospBookingsModal(hospitalId, hospitalName) {
             hospBookingsHospitalId = hospitalId;
             document.getElementById('hospBookingsTitle').textContent = `Confirmed Bookings — ${hospitalName}`;
-            document.getElementById('hospBookingsList').innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--admin-text-dim);">Loading...</td></tr>';
+            document.getElementById('hospBookingsList').innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--admin-text-dim);">Loading...</td></tr>';
             document.getElementById('hospBookingsModal').style.display = 'flex';
             try {
                 const res = await adminFetch(`${API_BASE}/hospital/admin/bookings?hospital_id=${hospitalId}`, { headers });
                 const data = await res.json();
                 renderHospBookings(data.bookings || []);
             } catch (e) {
-                document.getElementById('hospBookingsList').innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--admin-text-dim);">Could not load bookings.</td></tr>';
+                document.getElementById('hospBookingsList').innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--admin-text-dim);">Could not load bookings.</td></tr>';
             }
         }
 
@@ -1166,22 +1167,26 @@
         function renderHospBookings(list) {
             const tbody = document.getElementById('hospBookingsList');
             if (!list.length) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--admin-text-dim);">No confirmed bookings yet.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--admin-text-dim);">No confirmed bookings yet.</td></tr>';
                 return;
             }
-            tbody.innerHTML = list.map(b => `
-                <tr>
-                    <td>${b.scan_name}</td>
-                    <td>${b.booking_date || (b.created_at ? b.created_at.slice(0,10) : '')}</td>
-                    <td>
-                        <input type="text" id="bookingContact_${b.id}" value="${b.contact_phone || ''}" placeholder="No number yet"
-                            style="width: 140px; padding: 6px 8px; border-radius: 8px; border: 1px solid #DDD6C4;">
-                    </td>
-                    <td>
-                        <button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.7rem; background: var(--admin-primary); color: white; border-radius: 8px; cursor: pointer;" onclick="saveBookingContact(${b.id})">Save</button>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = list.map(b => {
+                const tokenStr = b.token_number || `TK-${String(b.id).padStart(3, '0')}`;
+                return `
+                    <tr>
+                        <td><span style="font-family: monospace; font-weight: 700; color: var(--admin-accent);">${tokenStr}</span></td>
+                        <td>${b.scan_name}</td>
+                        <td>${b.booking_date || (b.created_at ? b.created_at.slice(0,10) : '')}</td>
+                        <td>
+                            <input type="text" id="bookingContact_${b.id}" value="${b.contact_phone || ''}" placeholder="No number yet"
+                                style="width: 140px; padding: 6px 8px; border-radius: 8px; border: 1px solid #DDD6C4;">
+                        </td>
+                        <td>
+                            <button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.7rem; background: var(--admin-primary); color: white; border-radius: 8px; cursor: pointer;" onclick="saveBookingContact(${b.id})">Save</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         async function saveBookingContact(bookingId) {
