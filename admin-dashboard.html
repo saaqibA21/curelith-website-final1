@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Curelith | Admin Command Node</title>
+    <meta name="theme-color" content="#0F1B19">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="admin-manifest.json">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -122,6 +128,8 @@
             border: 1px solid #DDD6C4;
             box-shadow: 0 10px 30px rgba(0,0,0,0.02);
             margin-bottom: 3rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
@@ -232,10 +240,87 @@
             animation: spin 1s linear infinite;
             display: inline-block;
         }
+
+        /* Mobile nav (hidden on desktop) */
+        .mobile-topbar { display: none; }
+        .sidebar-overlay { display: none; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+
+            .mobile-topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: var(--admin-sidebar-bg);
+                color: white;
+                padding: 1rem 1.5rem;
+                position: sticky;
+                top: 0;
+                z-index: 1100;
+            }
+            .mobile-topbar h2 {
+                font-family: var(--serif);
+                font-size: 1.15rem;
+                font-weight: 600;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .hamburger-btn {
+                background: none;
+                border: none;
+                color: white;
+                cursor: pointer;
+                padding: 4px;
+                display: flex;
+                align-items: center;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 260px;
+                z-index: 1200;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+            }
+            .sidebar.open { transform: translateX(0); }
+
+            .sidebar-overlay.open {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 27, 25, 0.6);
+                z-index: 1150;
+            }
+
+            .main-workspace { padding: 1.5rem 1.2rem; }
+
+            header { flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+
+            .stats-grid { grid-template-columns: 1fr; gap: 1rem; margin-bottom: 2rem; }
+
+            .panel-header { flex-wrap: wrap; gap: 1rem; }
+
+            .search-box { width: 100%; box-sizing: border-box; }
+
+            .form-grid { grid-template-columns: 1fr; }
+
+            .modal-content { width: 92%; padding: 1.8rem; border-radius: 24px; }
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="mobile-topbar">
+        <h2><img src="assets/logo.png" style="width: 26px; height: 26px; object-fit: contain;" alt="Curelith"> Curelith</h2>
+        <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Toggle menu"><i data-lucide="menu"></i></button>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <div class="sidebar" id="sidebarNav">
         <h2><img src="assets/logo.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Curelith Logo"> Curelith</h2>
         <div class="nav-item active" onclick="showView('overview')"><i data-lucide="layout-dashboard"></i> Overview</div>
         <div class="nav-item" onclick="showView('doctors')"><i data-lucide="stethoscope"></i> Doctors</div>
@@ -937,6 +1022,10 @@
             }
         });
 
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
+
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
         const headers = { 'X-Admin-Password': adminPass };
@@ -1291,7 +1380,18 @@
             if (e.target === addHospModal) closeAddHospModal();
         });
 
+        function toggleSidebar() {
+            document.getElementById('sidebarNav').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('open');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebarNav').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('open');
+        }
+
         function showView(view) {
+            closeSidebar();
             document.getElementById('view-overview').style.display = view === 'overview' ? 'block' : 'none';
             document.getElementById('view-doctors').style.display = view === 'doctors' ? 'block' : 'none';
             document.getElementById('view-users').style.display = view === 'users' ? 'block' : 'none';

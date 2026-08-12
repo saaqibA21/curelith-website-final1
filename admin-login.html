@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Admin Login | Curelith Command</title>
+    <meta name="theme-color" content="#0F1B19">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="admin-manifest.json">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -26,6 +32,13 @@
             max-width: 450px;
             text-align: center;
             border: 1px solid #DDD6C4;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 1.2rem; height: auto; min-height: 100vh; }
+            .login-card { padding: 2.2rem 1.6rem; border-radius: 28px; }
+            h1 { font-size: 1.6rem; }
         }
 
         h1 { font-size: 2rem; margin-bottom: 0.5rem; }
@@ -131,6 +144,10 @@
     <script>
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
 
         const loginError = document.getElementById('loginError');
         function showLoginError(msg) {

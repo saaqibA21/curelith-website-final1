@@ -1,0 +1,24 @@
+{
+  "name": "Curelith Admin",
+  "short_name": "Cure Admin",
+  "description": "Curelith Platform Governance & Admin Console",
+  "start_url": "/admin-dashboard.html",
+  "display": "standalone",
+  "background_color": "#0F1B19",
+  "theme_color": "#0F1B19",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
