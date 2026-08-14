@@ -1044,6 +1044,8 @@
     }
   }
 
+  let realTimePollInterval = null;
+
   function showDashboard(hospital) {
     document.getElementById('loginView').classList.add('hidden');
     document.getElementById('dashboardView').classList.remove('hidden');
@@ -1051,10 +1053,18 @@
     if (topName) topName.textContent = hospital.name;
     try { lucide.createIcons(); } catch(e) {}
     loadDashboardData();
+    loadAppointments();
+
+    if (realTimePollInterval) clearInterval(realTimePollInterval);
+    realTimePollInterval = setInterval(() => {
+      loadDashboardData();
+      loadAppointments();
+    }, 4000);
   }
 
   function logout() {
     token = '';
+    if (realTimePollInterval) clearInterval(realTimePollInterval);
     localStorage.removeItem('hospital_token');
     localStorage.removeItem('hospital_info');
     document.getElementById('dashboardView').classList.add('hidden');
@@ -1121,18 +1131,7 @@
     if (tab === 'doctors') loadDoctors();
     if (tab === 'scans') loadScans();
     if (tab === 'appointments') loadAppointments();
-    if (tab === 'qr') loadQR();
-
-    if (appointmentsPollInterval) {
-      clearInterval(appointmentsPollInterval);
-      appointmentsPollInterval = null;
-    }
-    if (tab === 'appointments') {
-      appointmentsPollInterval = setInterval(loadAppointments, 8000);
-    } else {
-      const liveStatus = document.getElementById('appointmentsLiveStatus');
-      if (liveStatus) liveStatus.textContent = '';
-    }
+    if (tab === 'qr') loadQrScans();
   }
 
   async function loadDoctors() {
