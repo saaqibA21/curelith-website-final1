@@ -2242,6 +2242,27 @@
 
         // --- PARTNER HOSPITAL APPOINTMENTS & ENQUIRY LEADS CONTROLLERS ---
         let allAppointments = [];
+        const DEFAULT_HOSPITALS = [
+            { id: 1, name: "Orthomed Hospital", ref_code: "ORTHOMED" },
+            { id: 2, name: "Kardia Heart Foundation", ref_code: "kardia" },
+            { id: 3, name: "Sunray Scans", ref_code: "sunray" }
+        ];
+
+        async function ensureHospitalsLoaded() {
+            if (!allHospitals || !allHospitals.length) {
+                try {
+                    const hRes = await adminFetch(`${API_BASE}/hospital/admin/all`, { headers });
+                    const hData = await hRes.json();
+                    if (hData.success && hData.hospitals && hData.hospitals.length) {
+                        allHospitals = hData.hospitals;
+                    }
+                } catch(e) {}
+            }
+            if (!allHospitals || !allHospitals.length) {
+                allHospitals = DEFAULT_HOSPITALS;
+            }
+            populateHospFilterDropdown();
+        }
 
         async function loadAppointments() {
             const tbody = document.getElementById('apptList');
@@ -2250,13 +2271,7 @@
                 initIcons();
             }
             try {
-                if (!allHospitals || !allHospitals.length) {
-                    try {
-                        const hRes = await adminFetch(`${API_BASE}/hospital/admin/all`, { headers });
-                        const hData = await hRes.json();
-                        if (hData.success) allHospitals = hData.hospitals || [];
-                    } catch(e) {}
-                }
+                await ensureHospitalsLoaded();
 
                 const aggregatedBookings = [];
                 if (allHospitals && allHospitals.length) {
@@ -2290,7 +2305,8 @@
             if (!select) return;
             const currentVal = select.value;
             select.innerHTML = '<option value="all">All Hospitals</option>';
-            allHospitals.forEach(h => {
+            const hospList = (allHospitals && allHospitals.length) ? allHospitals : DEFAULT_HOSPITALS;
+            hospList.forEach(h => {
                 const opt = document.createElement('option');
                 opt.value = h.id;
                 opt.textContent = h.name;
@@ -2377,13 +2393,20 @@
             const hospFilter = document.getElementById('apptHospFilter').value;
             const statusFilter = document.getElementById('apptStatusFilter').value;
 
+            const hospList = (allHospitals && allHospitals.length) ? allHospitals : DEFAULT_HOSPITALS;
+            const selectedHospObj = hospList.find(h => String(h.id) === String(hospFilter));
+
             const filtered = allAppointments.filter(a => {
                 const matchesQuery = (a.token_number || '').toLowerCase().includes(query) ||
                                      (a.contact_phone || '').toLowerCase().includes(query) ||
                                      (a.user_phone || '').toLowerCase().includes(query) ||
                                      (a.scan_name || '').toLowerCase().includes(query) ||
                                      (a.hospital_name || '').toLowerCase().includes(query);
-                const matchesHosp = hospFilter === 'all' || String(a.hospital_id) === String(hospFilter);
+                
+                const matchesHosp = hospFilter === 'all' || 
+                                     String(a.hospital_id) === String(hospFilter) ||
+                                     (selectedHospObj && (a.hospital_name || '').toLowerCase().includes(selectedHospObj.name.toLowerCase()));
+                
                 const st = (a.status || '').toLowerCase();
                 const matchesStatus = statusFilter === 'all' || 
                                      (statusFilter === 'enquiry' && (st === 'enquiry' || st === 'enquired')) ||
@@ -2395,7 +2418,7 @@
 
         async function saveApptContact(bookingId) {
             const input = document.getElementById(`apptPhone_${bookingId}`);
-            const contact_phone = input.value.trim();
+            const contact_phone = input ? input.value.trim() : '';
             if (!contact_phone) { alert('Enter a phone number first.'); return; }
             try {
                 await adminFetch(`${API_BASE}/hospital/admin/bookings/${bookingId}`, {
@@ -2451,20 +2474,21 @@
         }
 
         async function openAddEnquiryModal(preselectedHospId = null) {
-            if (!allHospitals || !allHospitals.length) {
-                await loadHospitals();
-            }
+            await ensureHospitalsLoaded();
             const select = document.getElementById('addEnquiryHospSelect');
-            select.innerHTML = '<option value="">Select Partner Hospital...</option>';
-            allHospitals.forEach(h => {
+            select.innerHTML = '';
+            
+            const hospList = (allHospitals && allHospitals.length) ? allHospitals : DEFAULT_HOSPITALS;
+            hospList.forEach(h => {
                 const opt = document.createElement('option');
                 opt.value = h.id;
-                opt.textContent = `${h.name} (${h.ref_code})`;
+                opt.textContent = `${h.name} (${h.ref_code || 'PARTNER'})`;
                 if (preselectedHospId && String(h.id) === String(preselectedHospId)) {
                     opt.selected = true;
                 }
                 select.appendChild(opt);
             });
+            
             document.getElementById('addEnquiryDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('addEnquiryModal').style.display = 'flex';
             initIcons();
@@ -2477,20 +2501,28 @@
 
         async function handleSaveAddEnquiry(e) {
             e.preventDefault();
-            const hospital_id = parseInt(document.getElementById('addEnquiryHospSelect').value, 10);
+            const selectVal = document.getElementById('addEnquiryHospSelect').value;
+            const hospList = (allHospitals && allHospitals.length) ? allHospitals : DEFAULT_HOSPITALS;
+            
+            let hospital_id = parseInt(selectVal, 10);
+            if (isNaN(hospital_id) && hospList.length) {
+                hospital_id = hospList[0].id;
+            }
+
             const patient_phone = document.getElementById('addEnquiryPhone').value.trim();
             const patient_name = document.getElementById('addEnquiryPatientName').value.trim();
-            const scan_name = document.getElementById('addEnquiryScanName').value.trim();
-            const booking_date = document.getElementById('addEnquiryDate').value;
-            const status = document.getElementById('addEnquiryStatus').value;
+            const scan_name = document.getElementById('addEnquiryScanName').value.trim() || 'General Enquiry';
+            const booking_date = document.getElementById('addEnquiryDate').value || new Date().toISOString().split('T')[0];
+            const status = document.getElementById('addEnquiryStatus').value || 'enquiry';
 
-            if (!hospital_id || !patient_phone) {
-                alert('Please select a hospital and enter patient phone number.');
+            if (!patient_phone) {
+                alert('Please enter the patient phone number.');
                 return;
             }
 
-            const targetHosp = allHospitals.find(h => h.id === hospital_id);
-            const hospName = targetHosp ? targetHosp.name : `Hospital #${hospital_id}`;
+            const targetHosp = hospList.find(h => String(h.id) === String(hospital_id)) || hospList[0];
+            const actualHospId = targetHosp ? targetHosp.id : 1;
+            const hospName = targetHosp ? targetHosp.name : 'Orthomed Hospital';
 
             let tokenNumber = '';
             let savedSuccess = false;
@@ -2499,7 +2531,7 @@
                 const res = await adminFetch(`${API_BASE}/hospital/admin/add-enquiry`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', ...headers },
-                    body: JSON.stringify({ hospital_id, patient_phone, patient_name, scan_name, booking_date, status })
+                    body: JSON.stringify({ hospital_id: actualHospId, patient_phone, patient_name, scan_name, booking_date, status })
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -2518,7 +2550,7 @@
                 
                 const newEnquiry = {
                     id: newId,
-                    hospital_id: hospital_id,
+                    hospital_id: actualHospId,
                     hospital_name: hospName,
                     user_phone: patient_phone,
                     contact_phone: patient_phone,
