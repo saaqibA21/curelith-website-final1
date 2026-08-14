@@ -2250,13 +2250,42 @@
                 initIcons();
             }
             try {
-                const res = await adminFetch(`${API_BASE}/hospital/admin/all-bookings`, { headers });
+                let res = await adminFetch(`${API_BASE}/hospital/admin/all-bookings`, { headers });
                 let data = {};
                 try {
                     data = await res.json();
                 } catch(jsonErr) {
                     console.warn('Non-JSON response from server:', jsonErr);
                 }
+
+                // Resilient fallback: if /admin/all-bookings returns 404, aggregate from per-hospital endpoint
+                if (!res.ok || !data.success) {
+                    if (!allHospitals || !allHospitals.length) {
+                        try {
+                            const hRes = await adminFetch(`${API_BASE}/hospital/admin/all`, { headers });
+                            const hData = await hRes.json();
+                            if (hData.success) allHospitals = hData.hospitals || [];
+                        } catch(e) {}
+                    }
+                    const fallbackBookings = [];
+                    if (allHospitals && allHospitals.length) {
+                        for (const h of allHospitals) {
+                            try {
+                                const hRes = await adminFetch(`${API_BASE}/hospital/admin/bookings?hospital_id=${h.id}`, { headers });
+                                const hData = await hRes.json();
+                                if (hData.success && hData.bookings) {
+                                    hData.bookings.forEach(b => { b.hospital_name = h.name; });
+                                    fallbackBookings.push(...hData.bookings);
+                                }
+                            } catch(e) {}
+                        }
+                    }
+                    if (fallbackBookings.length || allHospitals.length) {
+                        data = { success: true, bookings: fallbackBookings };
+                        res = { ok: true };
+                    }
+                }
+
                 if (res.ok && data.success) {
                     allAppointments = data.bookings || [];
                     populateHospFilterDropdown();
