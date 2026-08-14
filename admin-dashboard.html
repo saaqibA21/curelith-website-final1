@@ -2575,12 +2575,21 @@
                             const manRes = await fetch(`${API_BASE}/hospital/appointments/manual`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': loginData.token },
-                                body: JSON.stringify({ patient_phone, patient_name, scan_name, booking_date })
+                                body: JSON.stringify({ patient_phone, patient_name, scan_name, booking_date, status })
                             });
                             if (manRes.ok) {
                                 const manData = await manRes.json();
                                 if (manData.success) {
-                                    tokenNumber = manData.token_number || `TK-${String(manData.booking_id).padStart(3, '0')}`;
+                                    tokenNumber = manData.token_number || (status === 'enquiry' || status === 'enquired' ? `ENQ-${String(manData.booking_id).padStart(3, '0')}` : `TK-${String(manData.booking_id).padStart(3, '0')}`);
+                                    
+                                    try {
+                                        await fetch(`${API_BASE}/hospital/appointments/${manData.booking_id}`, {
+                                            method: 'PUT',
+                                            headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': loginData.token },
+                                            body: JSON.stringify({ type: 'scan', status: status })
+                                        });
+                                    } catch(e) {}
+
                                     savedSuccess = true;
                                 }
                             }
