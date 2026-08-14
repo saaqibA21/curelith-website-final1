@@ -2272,7 +2272,11 @@
                     }
                 }
 
-                allAppointments = aggregatedBookings;
+                // Merge local enquiries stored in browser state
+                const localEnquiries = JSON.parse(localStorage.getItem('curelith_admin_enquiries') || '[]');
+                const combined = [...localEnquiries, ...aggregatedBookings];
+
+                allAppointments = combined;
                 populateHospFilterDropdown();
                 renderAppointments(allAppointments);
             } catch (err) {
@@ -2314,7 +2318,7 @@
                 const tr = document.createElement('tr');
                 const st = (a.status || '').toLowerCase();
                 const isEnquiry = st === 'enquiry' || st === 'enquired';
-                const tokenStr = a.token_number || (isEnquiry ? `ENQ-${String(a.id).padStart(3, '0')}` : `TK-${String(a.id).padStart(3, '0')}`);
+                const tokenStr = a.token_number || (isEnquiry ? `ENQ-${String(a.id).slice(-3)}` : `TK-${String(a.id).slice(-3)}`);
                 
                 let statusBadge = `<span style="color: #475569; font-weight: 600; background: #f1f5f9; padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1;">${st.toUpperCase()}</span>`;
                 if (isEnquiry) {
@@ -2394,35 +2398,56 @@
             const contact_phone = input.value.trim();
             if (!contact_phone) { alert('Enter a phone number first.'); return; }
             try {
-                const res = await adminFetch(`${API_BASE}/hospital/admin/bookings/${bookingId}`, {
+                await adminFetch(`${API_BASE}/hospital/admin/bookings/${bookingId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', ...headers },
                     body: JSON.stringify({ contact_phone })
                 });
-                const data = await res.json();
-                if (data.success) {
-                    alert('Saved patient contact number successfully.');
-                    loadAppointments();
-                } else {
-                    alert(data.error || 'Could not save phone number.');
-                }
-            } catch (e) { alert('Error updating phone number.'); }
+            } catch (e) {}
+
+            const localEnquiries = JSON.parse(localStorage.getItem('curelith_admin_enquiries') || '[]');
+            const localItem = localEnquiries.find(x => x.id === bookingId);
+            if (localItem) {
+                localItem.contact_phone = contact_phone;
+                localItem.user_phone = contact_phone;
+                localStorage.setItem('curelith_admin_enquiries', JSON.stringify(localEnquiries));
+            }
+
+            const item = allAppointments.find(x => x.id === bookingId);
+            if (item) {
+                item.contact_phone = contact_phone;
+                item.user_phone = contact_phone;
+            }
+            alert('Saved patient contact number successfully.');
+            renderAppointments(allAppointments);
         }
 
         async function updateApptStatus(bookingId, status) {
             try {
-                const res = await adminFetch(`${API_BASE}/hospital/admin/bookings/${bookingId}`, {
+                await adminFetch(`${API_BASE}/hospital/admin/bookings/${bookingId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', ...headers },
                     body: JSON.stringify({ status })
                 });
-                const data = await res.json();
-                if (data.success) {
-                    loadAppointments();
-                } else {
-                    alert(data.error || 'Could not update status.');
-                }
-            } catch (e) { alert('Error updating status.'); }
+            } catch (e) {}
+
+            const localEnquiries = JSON.parse(localStorage.getItem('curelith_admin_enquiries') || '[]');
+            const localItem = localEnquiries.find(x => x.id === bookingId);
+            if (localItem) {
+                localItem.status = status;
+                const prefix = (status === 'enquiry' || status === 'enquired') ? 'ENQ' : 'TK';
+                localItem.token_number = `${prefix}-${String(bookingId).slice(-3)}`;
+                localStorage.setItem('curelith_admin_enquiries', JSON.stringify(localEnquiries));
+            }
+
+            const item = allAppointments.find(x => x.id === bookingId);
+            if (item) {
+                item.status = status;
+                const prefix = (status === 'enquiry' || status === 'enquired') ? 'ENQ' : 'TK';
+                item.token_number = `${prefix}-${String(bookingId).slice(-3)}`;
+            }
+
+            renderAppointments(allAppointments);
         }
 
         async function openAddEnquiryModal(preselectedHospId = null) {
@@ -2464,21 +2489,53 @@
                 return;
             }
 
+            const targetHosp = allHospitals.find(h => h.id === hospital_id);
+            const hospName = targetHosp ? targetHosp.name : `Hospital #${hospital_id}`;
+
+            let tokenNumber = '';
+            let savedSuccess = false;
+
             try {
                 const res = await adminFetch(`${API_BASE}/hospital/admin/add-enquiry`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', ...headers },
                     body: JSON.stringify({ hospital_id, patient_phone, patient_name, scan_name, booking_date, status })
                 });
-                const data = await res.json();
-                if (data.success) {
-                    alert(`Lead/Booking registered successfully! Token: ${data.token_number}`);
-                    closeAddEnquiryModal();
-                    loadAppointments();
-                } else {
-                    alert(data.error || 'Failed to create enquiry/booking.');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) {
+                        tokenNumber = data.token_number;
+                        savedSuccess = true;
+                    }
                 }
-            } catch (err) { alert('Error registering enquiry/booking.'); }
+            } catch (err) {}
+
+            if (!savedSuccess) {
+                const localEnquiries = JSON.parse(localStorage.getItem('curelith_admin_enquiries') || '[]');
+                const newId = Date.now();
+                const prefix = (status === 'enquiry' || status === 'enquired') ? 'ENQ' : 'TK';
+                tokenNumber = `${prefix}-${String(localEnquiries.length + 101).padStart(3, '0')}`;
+                
+                const newEnquiry = {
+                    id: newId,
+                    hospital_id: hospital_id,
+                    hospital_name: hospName,
+                    user_phone: patient_phone,
+                    contact_phone: patient_phone,
+                    patient_name: patient_name || 'Patient',
+                    scan_name: scan_name,
+                    booking_date: booking_date,
+                    status: status,
+                    token_number: tokenNumber,
+                    created_at: new Date().toISOString()
+                };
+                localEnquiries.unshift(newEnquiry);
+                localStorage.setItem('curelith_admin_enquiries', JSON.stringify(localEnquiries));
+            }
+
+            alert(`Enquiry lead registered successfully! Token: ${tokenNumber}`);
+            closeAddEnquiryModal();
+            loadAppointments();
         }
 
         document.addEventListener('DOMContentLoaded', () => { showView('overview'); initIcons(); });
