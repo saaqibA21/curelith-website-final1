@@ -1076,12 +1076,11 @@
                 <div class="form-grid">
                     <div class="form-group" style="grid-column: span 2;">
                         <label>Partnered Hospital</label>
-                        <select id="addEnquiryHospSelect" required style="width: 100%; padding: 0.8rem; border: 1px solid #DDD6C4; border-radius: 12px; background: white; font-family: inherit; font-size: 0.95rem;">
-                            <option value="">Select Partner Hospital...</option>
+                        <select id="addEnquiryHospSelect" style="width: 100%; padding: 0.8rem; border: 1px solid #DDD6C4; border-radius: 12px; background: white; font-family: inherit; font-size: 0.95rem;">
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Patient Contact Phone</label>
+                        <label>Patient Contact Phone *</label>
                         <input type="text" id="addEnquiryPhone" placeholder="e.g. 9876543210" required>
                     </div>
                     <div class="form-group">
@@ -1089,8 +1088,8 @@
                         <input type="text" id="addEnquiryPatientName" placeholder="e.g. Rahul Sharma">
                     </div>
                     <div class="form-group">
-                        <label>Service / Scan / Doctor Name</label>
-                        <input type="text" id="addEnquiryScanName" placeholder="e.g. General Enquiry / X-Ray / CT Scan" required>
+                        <label>Service / Scan / Doctor Name (Optional)</label>
+                        <input type="text" id="addEnquiryScanName" placeholder="Defaults to General Enquiry">
                     </div>
                     <div class="form-group">
                         <label>Preferred Booking Date</label>
@@ -2479,11 +2478,11 @@
             select.innerHTML = '';
             
             const hospList = (allHospitals && allHospitals.length) ? allHospitals : DEFAULT_HOSPITALS;
-            hospList.forEach(h => {
+            hospList.forEach((h, idx) => {
                 const opt = document.createElement('option');
                 opt.value = h.id;
                 opt.textContent = `${h.name} (${h.ref_code || 'PARTNER'})`;
-                if (preselectedHospId && String(h.id) === String(preselectedHospId)) {
+                if (preselectedHospId ? String(h.id) === String(preselectedHospId) : idx === 0) {
                     opt.selected = true;
                 }
                 select.appendChild(opt);
