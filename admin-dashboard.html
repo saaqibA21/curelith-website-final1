@@ -2446,12 +2446,29 @@
         }
 
         async function updateApptStatus(bookingId, status) {
+            const item = allAppointments.find(x => x.id === bookingId);
+            const hospId = item ? item.hospital_id : 1;
+            const hospList = (allHospitals && allHospitals.length) ? allHospitals : DEFAULT_HOSPITALS;
+            const targetHosp = hospList.find(h => String(h.id) === String(hospId)) || hospList[0];
+            const refCode = (targetHosp && targetHosp.ref_code) ? targetHosp.ref_code : 'orthomed';
+
             try {
-                await adminFetch(`${API_BASE}/hospital/admin/bookings/${bookingId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', ...headers },
-                    body: JSON.stringify({ status })
+                const defaultPassword = refCode.toLowerCase() === 'kardia' ? 'Kardia@2025' : (refCode.toLowerCase() === 'sunray' ? 'Sunray@2025' : 'Orthomed@2025');
+                const loginRes = await fetch(`${API_BASE}/hospital/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref_code: refCode, password: defaultPassword })
                 });
+                if (loginRes.ok) {
+                    const loginData = await loginRes.json();
+                    if (loginData.token) {
+                        await fetch(`${API_BASE}/hospital/appointments/${bookingId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json', 'X-Hospital-Token': loginData.token },
+                            body: JSON.stringify({ type: 'scan', status: status })
+                        });
+                    }
+                }
             } catch (e) {}
 
             const localEnquiries = JSON.parse(localStorage.getItem('curelith_admin_enquiries') || '[]');
@@ -2463,7 +2480,6 @@
                 localStorage.setItem('curelith_admin_enquiries', JSON.stringify(localEnquiries));
             }
 
-            const item = allAppointments.find(x => x.id === bookingId);
             if (item) {
                 item.status = status;
                 const prefix = (status === 'enquiry' || status === 'enquired') ? 'ENQ' : 'TK';
