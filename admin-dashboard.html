@@ -329,7 +329,7 @@
         <div class="nav-item" onclick="showView('hospitals')"><i data-lucide="building-2"></i> Partner Hospitals</div>
         <div class="nav-item" onclick="showView('appointments')"><i data-lucide="calendar"></i> Appointments & Enquiries</div>
         <div class="nav-item" onclick="showView('activity')"><i data-lucide="activity"></i> Activity Logs</div>
-        <div class="nav-item" onclick="showView('instagram')"><i data-lucide="instagram"></i> Instagram CRM</div>
+        <div class="nav-item" onclick="showView('instagram')"><i data-lucide="camera"></i> Instagram CRM</div>
         <div style="margin-top: auto; padding-top: 2rem;">
             <div class="nav-item" onclick="logout()"><i data-lucide="log-out"></i> Logout</div>
         </div>
@@ -1893,7 +1893,7 @@
                     <td style="font-weight: 600;">${lead.doctor_name}</td>
                     <td>
                         <a href="https://instagram.com/${lead.instagram_handle}/" target="_blank" class="ig-link">
-                            <i data-lucide="instagram" style="width: 14px; height: 14px;"></i> @${lead.instagram_handle}
+                            <i data-lucide="camera" style="width: 14px; height: 14px;"></i> @${lead.instagram_handle}
                         </a>
                     </td>
                     <td>${lead.speciality || '-'}</td>
@@ -2251,7 +2251,12 @@
             }
             try {
                 const res = await adminFetch(`${API_BASE}/hospital/admin/all-bookings`, { headers });
-                const data = await res.json();
+                let data = {};
+                try {
+                    data = await res.json();
+                } catch(jsonErr) {
+                    console.warn('Non-JSON response from server:', jsonErr);
+                }
                 if (res.ok && data.success) {
                     allAppointments = data.bookings || [];
                     populateHospFilterDropdown();
