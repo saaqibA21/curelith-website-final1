@@ -2361,11 +2361,22 @@
 
                 let actionBtn = '';
                 if (isEnquiry) {
-                    actionBtn = `<button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; background: #059669; color: white; border-radius: 8px; cursor: pointer;" onclick="updateApptStatus(${a.id}, 'confirmed')">Convert to Confirmed</button>`;
+                    actionBtn = `
+                        <button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; background: #059669; color: white; border-radius: 8px; cursor: pointer;" onclick="updateApptStatus(${a.id}, 'confirmed')">Convert to Confirmed</button>
+                        <button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; background: #dc2626; color: white; border-radius: 8px; cursor: pointer; margin-left: 4px;" onclick="updateApptStatus(${a.id}, 'rejected')">Cancel</button>
+                    `;
                 } else if (st === 'pending') {
-                    actionBtn = `<button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; background: #2563eb; color: white; border-radius: 8px; cursor: pointer;" onclick="updateApptStatus(${a.id}, 'confirmed')">Mark Confirmed</button>`;
+                    actionBtn = `
+                        <button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; background: #2563eb; color: white; border-radius: 8px; cursor: pointer;" onclick="updateApptStatus(${a.id}, 'confirmed')">Mark Confirmed</button>
+                        <button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; background: #dc2626; color: white; border-radius: 8px; cursor: pointer; margin-left: 4px;" onclick="updateApptStatus(${a.id}, 'rejected')">Cancel</button>
+                    `;
+                } else if (st === 'rejected' || st === 'cancelled') {
+                    actionBtn = `<span style="font-size: 0.75rem; color: #94a3b8;">✕ Cancelled</span>`;
                 } else {
-                    actionBtn = `<button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; background: #d97706; color: white; border-radius: 8px; cursor: pointer;" onclick="updateApptStatus(${a.id}, 'enquiry')">Mark Enquiry</button>`;
+                    actionBtn = `
+                        <button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; background: #d97706; color: white; border-radius: 8px; cursor: pointer;" onclick="updateApptStatus(${a.id}, 'enquiry')">Mark Enquiry</button>
+                        <button class="btn-action" style="padding: 0.35rem 0.7rem; font-size: 0.75rem; background: #dc2626; color: white; border-radius: 8px; cursor: pointer; margin-left: 4px;" onclick="updateApptStatus(${a.id}, 'rejected')">Cancel</button>
+                    `;
                 }
 
                 tr.innerHTML = `
