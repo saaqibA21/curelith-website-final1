@@ -2640,7 +2640,16 @@
             loadAppointments();
         }
 
-        document.addEventListener('DOMContentLoaded', () => { showView('overview'); initIcons(); });
+        document.addEventListener('DOMContentLoaded', () => { 
+            showView('overview'); 
+            initIcons(); 
+            setInterval(() => {
+                const apptView = document.getElementById('view-appointments');
+                if (apptView && !apptView.classList.contains('hidden')) {
+                    loadAppointments();
+                }
+            }, 5000);
+        });
     </script>
 </body>
 </html>
