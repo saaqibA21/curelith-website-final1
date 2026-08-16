@@ -604,6 +604,11 @@
             try {
                 // Fetch appointments for all profiles under this doctor name
                 const res = await fetch(`${API_BASE}/doctor/appointments?name=${encodeURIComponent(docName)}`, { headers });
+                if (res.status === 401) {
+                    ['doctor_name','doctor_password','doctor_id','doctor_expiry'].forEach(k => localStorage.removeItem(k));
+                    window.location.replace('doctor-login.html');
+                    return;
+                }
                 allApps = await res.json();
                 
                 // Fetch stats for the selected doctor profile ID
@@ -612,6 +617,11 @@
                     url += `&id=${selectedProfileId}`;
                 }
                 const sRes = await fetch(url, { headers });
+                if (sRes.status === 401) {
+                    ['doctor_name','doctor_password','doctor_id','doctor_expiry'].forEach(k => localStorage.removeItem(k));
+                    window.location.replace('doctor-login.html');
+                    return;
+                }
                 const s = await sRes.json();
 
                 // Save doctor specific fees
