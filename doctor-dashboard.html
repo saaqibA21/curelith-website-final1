@@ -604,10 +604,9 @@
             try {
                 // Fetch appointments for all profiles under this doctor name
                 const res = await fetch(`${API_BASE}/doctor/appointments?name=${encodeURIComponent(docName)}`, { headers });
-                if (res.status === 401) {
-                    ['doctor_name','doctor_password','doctor_id','doctor_expiry'].forEach(k => localStorage.removeItem(k));
-                    window.location.replace('doctor-login.html');
-                    return;
+                if (!res.ok) {
+                    console.warn('Appointments fetch status:', res.status);
+                    if (res.status === 401) return;
                 }
                 allApps = await res.json();
                 
@@ -617,10 +616,9 @@
                     url += `&id=${selectedProfileId}`;
                 }
                 const sRes = await fetch(url, { headers });
-                if (sRes.status === 401) {
-                    ['doctor_name','doctor_password','doctor_id','doctor_expiry'].forEach(k => localStorage.removeItem(k));
-                    window.location.replace('doctor-login.html');
-                    return;
+                if (!sRes.ok) {
+                    console.warn('Stats fetch status:', sRes.status);
+                    if (sRes.status === 401) return;
                 }
                 const s = await sRes.json();
 
