@@ -163,7 +163,7 @@
 
         <div class="nav-item active" onclick="showView('appointments')"><i data-lucide="calendar"></i> Schedule</div>
         <div class="nav-item" onclick="showView('patients')"><i data-lucide="users"></i> Patients</div>
-        <div class="nav-item" id="navCamps" style="display: none;" onclick="showView('camps')"><i data-lucide="tent"></i> Camps</div>
+        <div class="nav-item" id="navCamps" onclick="showView('camps')"><i data-lucide="tent"></i> Camps</div>
         <div class="nav-item" onclick="showView('settings')"><i data-lucide="settings"></i> Settings</div>
         
         <div style="margin-top: auto;">
@@ -1357,8 +1357,7 @@
                 const res = await fetch(`${API_BASE}/camp/doctor/my-camps`, { headers });
                 if (!res.ok) return;
                 myCamps = await res.json();
-                document.getElementById('navCamps').style.display = myCamps.length ? 'flex' : 'none';
-            } catch (e) { /* silent — camps nav just stays hidden */ }
+            } catch (e) {}
         }
 
         async function loadMyCamps() {
