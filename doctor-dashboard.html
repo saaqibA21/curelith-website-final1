@@ -163,6 +163,7 @@
 
         <div class="nav-item active" onclick="showView('appointments')"><i data-lucide="calendar"></i> Schedule</div>
         <div class="nav-item" onclick="showView('patients')"><i data-lucide="users"></i> Patients</div>
+        <div class="nav-item" id="navCamps" style="display: none;" onclick="showView('camps')"><i data-lucide="tent"></i> Camps</div>
         <div class="nav-item" onclick="showView('settings')"><i data-lucide="settings"></i> Settings</div>
         
         <div style="margin-top: auto;">
@@ -336,6 +337,81 @@
                 </form>
             </div>
         </div>
+
+        <div id="view-camps" style="display: none;">
+            <div class="white-panel" style="margin-bottom: 2rem;">
+                <div class="panel-header">
+                    <h2>Active Health Camps</h2>
+                    <select id="campSelect" onchange="selectCamp(this.value)" style="background: var(--cl-bg); border: 1px solid #DDD6C4; padding: 0.8rem 1.5rem; border-radius: 12px; font-family: inherit; font-size: 0.9rem; color: var(--cl-primary); font-weight: 600; outline: none; cursor: pointer; min-width: 260px;">
+                        <option value="">Select a camp...</option>
+                    </select>
+                </div>
+                <p id="campMeta" style="color: var(--cl-text-dim); margin: 0;"></p>
+            </div>
+
+            <div id="campWorkspace" style="display: none;">
+                <div class="analytics-grid">
+                    <div class="white-panel">
+                        <div class="panel-header">
+                            <h2 id="campFormTitle">Register Patient</h2>
+                            <button type="button" class="btn-action" onclick="resetCampForm()">New Entry</button>
+                        </div>
+                        <form id="campPatientForm" onsubmit="return saveCampPatient(event)">
+                            <input type="hidden" id="campEditingId">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem;">
+                                <div>
+                                    <label style="font-size: 0.75rem; color: var(--cl-text-dim); text-transform: uppercase; font-weight: 600;">Patient Phone *</label>
+                                    <input type="text" id="campPatientPhone" required placeholder="98765 43210" style="width: 100%; padding: 0.9rem; border: 1px solid #DDD6C4; border-radius: 12px; margin-top: 6px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.75rem; color: var(--cl-text-dim); text-transform: uppercase; font-weight: 600;">Patient Name</label>
+                                    <input type="text" id="campPatientName" style="width: 100%; padding: 0.9rem; border: 1px solid #DDD6C4; border-radius: 12px; margin-top: 6px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.75rem; color: var(--cl-text-dim); text-transform: uppercase; font-weight: 600;">Age</label>
+                                    <input type="text" id="campPatientAge" style="width: 100%; padding: 0.9rem; border: 1px solid #DDD6C4; border-radius: 12px; margin-top: 6px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.75rem; color: var(--cl-text-dim); text-transform: uppercase; font-weight: 600;">Gender</label>
+                                    <select id="campPatientGender" style="width: 100%; padding: 0.9rem; border: 1px solid #DDD6C4; border-radius: 12px; margin-top: 6px; font-family: inherit;">
+                                        <option value="">Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="campMetricFields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem;"></div>
+                            <button type="submit" class="btn-action" id="campSaveBtn" style="width: 100%; padding: 1rem; background: var(--cl-accent); color: white; border-color: var(--cl-accent);">Save & Generate Report</button>
+                            <p id="campSaveStatus" style="margin-top: 1rem; font-size: 0.85rem; font-weight: 600;"></p>
+                        </form>
+
+                        <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid #F3EEE4;">
+                            <h3 style="font-size: 0.95rem; margin-bottom: 1rem;">Upload Report / Image for this Patient</h3>
+                            <input type="file" id="campUploadFile" accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.heif" style="margin-bottom: 1rem;">
+                            <button type="button" class="btn-action" onclick="uploadCampFile()">Upload to Locker</button>
+                            <p id="campUploadStatus" style="margin-top: 1rem; font-size: 0.85rem; font-weight: 600;"></p>
+                        </div>
+                    </div>
+
+                    <div class="white-panel">
+                        <div class="panel-header">
+                            <h2>Today's Entries</h2>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>PATIENT</th>
+                                    <th>REPORT</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="campEntriesList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modal for Patient Reports -->
@@ -500,7 +576,7 @@
         function initIcons() { try { lucide.createIcons(); } catch(e) {} }
 
         function showView(view) {
-            ['appointments', 'patients', 'settings'].forEach(v => {
+            ['appointments', 'patients', 'settings', 'camps'].forEach(v => {
                 document.getElementById('view-' + v).style.display = view === v ? 'block' : 'none';
             });
             document.querySelectorAll('.nav-item').forEach(i => {
@@ -510,6 +586,7 @@
             if (view === 'appointments') loadApps();
             if (view === 'patients') loadPatients();
             if (view === 'settings') loadSettings();
+            if (view === 'camps') loadMyCamps();
         }
 
         let trendChartInstance = null;
@@ -1270,7 +1347,216 @@
             }
         }
 
-        function filterApps(q) { 
+        // ── Mark 4: Health Camps ──────────────────────────────────────────
+        let myCamps = [];
+        let activeCamp = null;
+        let campEntries = [];
+
+        async function checkCampsNav() {
+            try {
+                const res = await fetch(`${API_BASE}/camp/doctor/my-camps`, { headers });
+                if (!res.ok) return;
+                myCamps = await res.json();
+                document.getElementById('navCamps').style.display = myCamps.length ? 'flex' : 'none';
+            } catch (e) { /* silent — camps nav just stays hidden */ }
+        }
+
+        async function loadMyCamps() {
+            try {
+                const res = await fetch(`${API_BASE}/camp/doctor/my-camps`, { headers });
+                myCamps = await res.json();
+                const sel = document.getElementById('campSelect');
+                sel.innerHTML = '<option value="">Select a camp...</option>' +
+                    myCamps.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+                if (myCamps.length === 1) {
+                    sel.value = myCamps[0].id;
+                    selectCamp(myCamps[0].id);
+                } else if (!myCamps.length) {
+                    document.getElementById('campMeta').innerText = 'No active camps assigned to you right now.';
+                    document.getElementById('campWorkspace').style.display = 'none';
+                }
+            } catch (e) {
+                document.getElementById('campMeta').innerText = 'Could not load camps.';
+            }
+        }
+
+        function escapeHtml(s) {
+            const d = document.createElement('div');
+            d.innerText = s || '';
+            return d.innerHTML;
+        }
+
+        function selectCamp(campId) {
+            if (!campId) { document.getElementById('campWorkspace').style.display = 'none'; return; }
+            activeCamp = myCamps.find(c => String(c.id) === String(campId));
+            if (!activeCamp) return;
+            document.getElementById('campMeta').innerText =
+                `${activeCamp.host_org || ''}${activeCamp.host_org ? ' · ' : ''}${activeCamp.location || ''}${activeCamp.camp_date ? ' · ' + activeCamp.camp_date : ''}`;
+            document.getElementById('campWorkspace').style.display = 'block';
+            renderCampMetricFields(activeCamp.metric_fields_parsed || []);
+            resetCampForm();
+            loadCampEntries();
+        }
+
+        function renderCampMetricFields(fields) {
+            const container = document.getElementById('campMetricFields');
+            container.innerHTML = fields.map(f => {
+                const inputType = f.type === 'text' ? 'text' : 'number';
+                const full = f.type === 'text' ? 'grid-column: 1 / -1;' : '';
+                return `
+                    <div style="${full}">
+                        <label style="font-size: 0.75rem; color: var(--cl-text-dim); text-transform: uppercase; font-weight: 600;">${escapeHtml(f.label)}${f.unit ? ' (' + escapeHtml(f.unit) + ')' : ''}</label>
+                        <input type="${inputType}" step="any" data-metric-key="${f.key}" class="camp-metric-input" style="width: 100%; padding: 0.9rem; border: 1px solid #DDD6C4; border-radius: 12px; margin-top: 6px;">
+                    </div>`;
+            }).join('');
+        }
+
+        function resetCampForm() {
+            document.getElementById('campEditingId').value = '';
+            document.getElementById('campPatientPhone').value = '';
+            document.getElementById('campPatientPhone').disabled = false;
+            document.getElementById('campPatientName').value = '';
+            document.getElementById('campPatientAge').value = '';
+            document.getElementById('campPatientGender').value = '';
+            document.querySelectorAll('.camp-metric-input').forEach(i => i.value = '');
+            document.getElementById('campFormTitle').innerText = 'Register Patient';
+            document.getElementById('campSaveStatus').innerText = '';
+            document.getElementById('campUploadStatus').innerText = '';
+        }
+
+        async function saveCampPatient(evt) {
+            evt.preventDefault();
+            if (!activeCamp) return false;
+            const statusEl = document.getElementById('campSaveStatus');
+            const btn = document.getElementById('campSaveBtn');
+            const phone = document.getElementById('campPatientPhone').value.trim();
+            if (!phone) { statusEl.style.color = '#c0392b'; statusEl.innerText = 'Patient phone is required.'; return false; }
+
+            const metrics = {};
+            document.querySelectorAll('.camp-metric-input').forEach(i => {
+                if (i.value.trim() !== '') metrics[i.dataset.metricKey] = i.value.trim();
+            });
+
+            const payload = {
+                phone,
+                name: document.getElementById('campPatientName').value.trim(),
+                age: document.getElementById('campPatientAge').value.trim(),
+                gender: document.getElementById('campPatientGender').value,
+                metrics
+            };
+
+            btn.disabled = true;
+            statusEl.style.color = 'var(--cl-text-dim)';
+            statusEl.innerText = 'Saving and generating report...';
+
+            try {
+                const res = await fetch(`${API_BASE}/camp/doctor/${activeCamp.id}/save-patient`, {
+                    method: 'POST',
+                    headers: { ...headers, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    statusEl.style.color = '#1a7a4c';
+                    statusEl.innerText = 'Saved — report generated and stored in patient locker.';
+                    loadCampEntries();
+                } else {
+                    statusEl.style.color = '#c0392b';
+                    statusEl.innerText = data.error || 'Saved data, but report generation failed. Retry from admin panel.';
+                    loadCampEntries();
+                }
+            } catch (e) {
+                statusEl.style.color = '#c0392b';
+                statusEl.innerText = 'Network error while saving.';
+            } finally {
+                btn.disabled = false;
+            }
+            return false;
+        }
+
+        function editCampEntry(campPatientId) {
+            const p = campEntries.find(e => e.id === campPatientId);
+            if (!p) return;
+            document.getElementById('campEditingId').value = p.id;
+            document.getElementById('campPatientPhone').value = p.phone;
+            document.getElementById('campPatientPhone').disabled = true; // phone is the identity key — edit re-saves the same record
+            document.getElementById('campPatientName').value = p.name || '';
+            document.getElementById('campPatientAge').value = p.age || '';
+            document.getElementById('campPatientGender').value = p.gender || '';
+            document.querySelectorAll('.camp-metric-input').forEach(i => {
+                i.value = (p.metrics && p.metrics[i.dataset.metricKey]) || '';
+            });
+            document.getElementById('campFormTitle').innerText = 'Edit Patient Entry';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function uploadCampFile() {
+            if (!activeCamp) return;
+            const statusEl = document.getElementById('campUploadStatus');
+            const phone = document.getElementById('campPatientPhone').value.trim();
+            const fileInput = document.getElementById('campUploadFile');
+            if (!phone) { statusEl.style.color = '#c0392b'; statusEl.innerText = 'Enter/select the patient phone above first.'; return; }
+            if (!fileInput.files.length) { statusEl.style.color = '#c0392b'; statusEl.innerText = 'Choose a file first.'; return; }
+
+            const fd = new FormData();
+            fd.append('phone', phone);
+            fd.append('file', fileInput.files[0]);
+
+            statusEl.style.color = 'var(--cl-text-dim)';
+            statusEl.innerText = 'Uploading...';
+            try {
+                const res = await fetch(`${API_BASE}/camp/doctor/${activeCamp.id}/upload`, {
+                    method: 'POST',
+                    headers: { 'X-Doctor-Name': docName, 'X-Doctor-Password': docPass },
+                    body: fd
+                });
+                const data = await res.json();
+                if (data.success) {
+                    statusEl.style.color = '#1a7a4c';
+                    statusEl.innerText = 'File uploaded to patient locker.';
+                    fileInput.value = '';
+                } else {
+                    statusEl.style.color = '#c0392b';
+                    statusEl.innerText = data.error || 'Upload failed.';
+                }
+            } catch (e) {
+                statusEl.style.color = '#c0392b';
+                statusEl.innerText = 'Network error during upload.';
+            }
+        }
+
+        async function loadCampEntries() {
+            if (!activeCamp) return;
+            try {
+                const res = await fetch(`${API_BASE}/camp/doctor/${activeCamp.id}/entries`, { headers });
+                campEntries = await res.json();
+                renderCampEntries();
+            } catch (e) {
+                document.getElementById('campEntriesList').innerHTML = '<tr><td colspan="3">Could not load entries.</td></tr>';
+            }
+        }
+
+        function renderCampEntries() {
+            const tbody = document.getElementById('campEntriesList');
+            if (!campEntries.length) {
+                tbody.innerHTML = '<tr><td colspan="3" style="color: var(--cl-text-dim);">No patients registered yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = campEntries.map(p => {
+                let badge = '<span class="badge" style="background: rgba(0,0,0,0.05); color: var(--cl-text-dim);">Pending</span>';
+                if (p.report_status === 'generated') badge = '<span class="badge badge-physical">Generated</span>';
+                if (p.report_status === 'failed') badge = '<span class="badge" style="background: rgba(192,57,43,0.1); color: #c0392b;">Failed</span>';
+                const viewLink = p.report_url ? `<a href="${p.report_url}" target="_blank" style="margin-left: 8px;">View</a>` : '';
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(p.name || 'Unnamed')}</strong><br><span style="color: var(--cl-text-dim); font-size: 0.85rem;">${escapeHtml(p.phone)}</span></td>
+                        <td>${badge}${viewLink}</td>
+                        <td><button type="button" class="btn-action" onclick="editCampEntry(${p.id})">Edit</button></td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function filterApps(q) {
             const awaitingApps = allApps.filter(app => app.status !== 'completed');
             renderApps(awaitingApps.filter(a => a.patient_phone.includes(q))); 
         }
@@ -1293,7 +1579,7 @@
 
         function logout() { localStorage.clear(); window.location.replace('doctor-login.html'); }
 
-        document.addEventListener('DOMContentLoaded', () => { showView('appointments'); loadSettings(); initIcons(); });
+        document.addEventListener('DOMContentLoaded', () => { showView('appointments'); loadSettings(); checkCampsNav(); initIcons(); });
     </script>
 </body>
 </html>

@@ -327,6 +327,7 @@
         <div class="nav-item" onclick="showView('users')"><i data-lucide="users"></i> Registered Users</div>
         <div class="nav-item" onclick="showView('clinics')"><i data-lucide="building"></i> Clinics</div>
         <div class="nav-item" onclick="showView('hospitals')"><i data-lucide="building-2"></i> Partner Hospitals</div>
+        <div class="nav-item" onclick="showView('camps')"><i data-lucide="tent"></i> Health Camps</div>
         <div class="nav-item" onclick="showView('appointments')"><i data-lucide="calendar"></i> Appointments & Enquiries</div>
         <div class="nav-item" onclick="showView('activity')"><i data-lucide="activity"></i> Activity Logs</div>
         <div class="nav-item" onclick="showView('instagram')"><i data-lucide="camera"></i> Instagram CRM</div>
@@ -609,6 +610,35 @@
                     </thead>
                     <tbody id="hospList">
                         <!-- Partner Hospitals injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- View: Health Camps (Mark 4) -->
+        <div id="view-camps" style="display: none;">
+            <div class="white-panel">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <h2>Medical Awareness Camps</h2>
+                    <button class="btn-action" style="background: var(--admin-primary); color: white; border-color: var(--admin-primary); font-weight: 700; border-radius: 12px; height: 45px; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="openAddCampModal()">
+                        <i data-lucide="plus" style="width: 18px; height: 18px;"></i> Create Camp
+                    </button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CAMP</th>
+                            <th>DATE / LOCATION</th>
+                            <th>STATUS</th>
+                            <th>VISIBLE TO DOCTORS UNTIL</th>
+                            <th>DOCTORS</th>
+                            <th>PATIENTS</th>
+                            <th>REPORTS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="campList">
+                        <!-- Camps injected here -->
                     </tbody>
                 </table>
             </div>
@@ -1062,6 +1092,91 @@
             </form>
         </div>
     </div>
+    <!-- Modal for Creating a Camp -->
+    <div class="modal" id="addCampModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 style="margin: 0; color: var(--admin-primary);">Create Health Camp</h2>
+                    <p style="color: var(--admin-text-dim); margin-top: 5px;">Doctors assigned below will see this camp on their dashboard once you set it Live</p>
+                </div>
+                <button onclick="closeAddCampModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="addCampForm" onsubmit="handleCreateCamp(event)">
+                <div class="form-grid">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Camp Name</label>
+                        <input type="text" id="addCampName" placeholder="e.g. Village Health Awareness Camp" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Host Organization</label>
+                        <input type="text" id="addCampHostOrg" placeholder="e.g. Rotary Club">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="addCampLocation" placeholder="e.g. Thiruvallur">
+                    </div>
+                    <div class="form-group">
+                        <label>Camp Date</label>
+                        <input type="date" id="addCampDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Doctors visible until (default: camp date + 2 days)</label>
+                        <input type="datetime-local" id="addCampAccessUntil">
+                    </div>
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%; margin-top: 2rem; padding: 1.1rem; background: var(--admin-primary); color: white; font-weight: 700; border-radius: 15px;">Create Camp (Draft)</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Managing a Camp: doctors + patients + status -->
+    <div class="modal" id="manageCampModal">
+        <div class="modal-content" style="max-width: 1000px; max-height: 85vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <h2 id="manageCampName" style="margin: 0; color: var(--admin-primary);">Camp</h2>
+                    <p id="manageCampMeta" style="color: var(--admin-text-dim); margin-top: 5px;"></p>
+                </div>
+                <button onclick="closeManageCampModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem; flex-wrap: wrap;">
+                <label style="font-weight: 700; font-size: 0.85rem;">Status:</label>
+                <select id="manageCampStatus" onchange="handleUpdateCampStatus()" style="padding: 0.6rem 1rem; border: 1px solid #DDD6C4; border-radius: 10px; font-family: inherit;">
+                    <option value="draft">Draft (hidden from doctors)</option>
+                    <option value="live">Live (visible to assigned doctors)</option>
+                    <option value="closed">Closed (hidden from doctors)</option>
+                </select>
+                <label style="font-weight: 700; font-size: 0.85rem; margin-left: 1rem;">Visible until:</label>
+                <input type="datetime-local" id="manageCampAccessUntil" onchange="handleUpdateCampStatus()" style="padding: 0.6rem 1rem; border: 1px solid #DDD6C4; border-radius: 10px; font-family: inherit;">
+                <label style="font-weight: 700; font-size: 0.85rem; margin-left: 1rem; display: flex; align-items: center; gap: 6px;">
+                    <input type="checkbox" id="manageCampNotify" onchange="handleUpdateCampStatus()"> 24h follow-up WhatsApp message
+                </label>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: end; margin-bottom: 1rem; background: #FAF9F4; padding: 1.2rem; border-radius: 15px; border: 1px solid #DDD6C4;">
+                <div class="form-group" style="margin: 0;">
+                    <label>Assign Doctor by Phone Number</label>
+                    <input type="text" id="manageCampDoctorPhone" placeholder="e.g. 9876543210">
+                </div>
+                <button type="button" class="btn-action" style="background: var(--admin-primary); color: white; border-color: var(--admin-primary);" onclick="handleAddCampDoctor()">Assign Doctor</button>
+            </div>
+            <p id="manageCampDoctorStatus" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 1.5rem;"></p>
+
+            <table style="margin-bottom: 2.5rem;">
+                <thead><tr><th>DOCTOR</th><th>PHONE</th><th>LOGIN FOUND</th><th>ACTIONS</th></tr></thead>
+                <tbody id="manageCampDoctorsList"></tbody>
+            </table>
+
+            <h3 style="margin-bottom: 1rem;">Patients Registered at This Camp</h3>
+            <table>
+                <thead><tr><th>PATIENT</th><th>ENTERED BY</th><th>REPORT</th><th>ACTIONS</th></tr></thead>
+                <tbody id="manageCampPatientsList"></tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Modal for Adding Enquiry / Appointment -->
     <div class="modal" id="addEnquiryModal">
         <div class="modal-content">
@@ -1476,6 +1591,204 @@
             } catch (err) { alert('Error creating hospital'); }
         }
 
+        // ── Mark 4: Health Camps ──────────────────────────────────────────
+        let allCamps = [];
+        let activeManageCampId = null;
+
+        function campStatusBadge(status) {
+            if (status === 'live') return '<span class="badge badge-physical">Live</span>';
+            if (status === 'closed') return '<span class="badge" style="background: rgba(0,0,0,0.08); color: var(--admin-text-dim);">Closed</span>';
+            return '<span class="badge" style="background: rgba(212,130,74,0.12); color: var(--admin-accent, #D4824A);">Draft</span>';
+        }
+
+        function escapeHtmlCamp(s) {
+            const d = document.createElement('div');
+            d.innerText = s || '';
+            return d.innerHTML;
+        }
+
+        async function loadCamps() {
+            try {
+                const res = await adminFetch(`${API_BASE}/camp/admin/list`, { headers });
+                allCamps = await res.json();
+                renderCamps();
+            } catch (e) {
+                tableErrorRow('campList', 8);
+            }
+        }
+
+        function renderCamps() {
+            const tbody = document.getElementById('campList');
+            if (!allCamps.length) {
+                tbody.innerHTML = '<tr><td colspan="8" style="color: var(--admin-text-dim); text-align:center; padding: 2rem;">No camps created yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = allCamps.map(c => `
+                <tr>
+                    <td><strong>${escapeHtmlCamp(c.name)}</strong><br><span style="color: var(--admin-text-dim); font-size: 0.85rem;">${escapeHtmlCamp(c.host_org || '')}</span></td>
+                    <td>${escapeHtmlCamp(c.camp_date || '-')}<br><span style="color: var(--admin-text-dim); font-size: 0.85rem;">${escapeHtmlCamp(c.location || '')}</span></td>
+                    <td>${campStatusBadge(c.status)}</td>
+                    <td>${escapeHtmlCamp(c.access_until || '-')}</td>
+                    <td>${c.doctor_count}</td>
+                    <td>${c.patient_count}</td>
+                    <td>${c.report_generated_count} generated${c.report_failed_count ? `<br><span style="color:#c0392b;">${c.report_failed_count} failed</span>` : ''}</td>
+                    <td><button type="button" class="btn-action" onclick="openManageCampModal(${c.id})">Manage</button></td>
+                </tr>`).join('');
+        }
+
+        function openAddCampModal() {
+            document.getElementById('addCampForm').reset();
+            document.getElementById('addCampModal').style.display = 'flex';
+        }
+        function closeAddCampModal() {
+            document.getElementById('addCampModal').style.display = 'none';
+        }
+
+        async function handleCreateCamp(e) {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('addCampName').value.trim(),
+                host_org: document.getElementById('addCampHostOrg').value.trim(),
+                location: document.getElementById('addCampLocation').value.trim(),
+                camp_date: document.getElementById('addCampDate').value,
+                access_until: document.getElementById('addCampAccessUntil').value ? document.getElementById('addCampAccessUntil').value.replace('T', ' ') + ':00' : ''
+            };
+            try {
+                const res = await adminFetch(`${API_BASE}/camp/admin/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeAddCampModal();
+                    loadCamps();
+                } else {
+                    alert(data.error || 'Failed to create camp');
+                }
+            } catch (err) { alert('Error creating camp'); }
+        }
+
+        async function openManageCampModal(campId) {
+            activeManageCampId = campId;
+            document.getElementById('manageCampModal').style.display = 'flex';
+            document.getElementById('manageCampDoctorStatus').innerText = '';
+            await refreshManageCamp();
+        }
+        function closeManageCampModal() {
+            document.getElementById('manageCampModal').style.display = 'none';
+            activeManageCampId = null;
+        }
+
+        async function refreshManageCamp() {
+            if (!activeManageCampId) return;
+            try {
+                const res = await adminFetch(`${API_BASE}/camp/admin/${activeManageCampId}`, { headers });
+                const data = await res.json();
+                const camp = data.camp;
+                document.getElementById('manageCampName').innerText = camp.name;
+                document.getElementById('manageCampMeta').innerText = `${camp.host_org || ''} ${camp.location ? '· ' + camp.location : ''} ${camp.camp_date ? '· ' + camp.camp_date : ''}`;
+                document.getElementById('manageCampStatus').value = camp.status;
+                document.getElementById('manageCampAccessUntil').value = camp.access_until ? camp.access_until.replace(' ', 'T').slice(0, 16) : '';
+                document.getElementById('manageCampNotify').checked = !!camp.notify_patients;
+
+                document.getElementById('manageCampDoctorsList').innerHTML = data.doctors.length ? data.doctors.map(d => `
+                    <tr>
+                        <td>${escapeHtmlCamp(d.doctor_name || 'Unregistered')}</td>
+                        <td>${escapeHtmlCamp(d.doctor_phone)}</td>
+                        <td>${d.is_active ? '✅' : '❌ Removed'}</td>
+                        <td>${d.is_active ? `<button type="button" class="btn-action" onclick="handleRemoveCampDoctor(${d.id})">Remove</button>` : ''}</td>
+                    </tr>`).join('') : '<tr><td colspan="4" style="color: var(--admin-text-dim);">No doctors assigned yet.</td></tr>';
+
+                document.getElementById('manageCampPatientsList').innerHTML = data.patients.length ? data.patients.map(p => {
+                    let badge = '<span class="badge" style="background: rgba(0,0,0,0.05); color: var(--admin-text-dim);">Pending</span>';
+                    if (p.report_status === 'generated') badge = '<span class="badge badge-physical">Generated</span>';
+                    if (p.report_status === 'failed') badge = `<span class="badge" style="background: rgba(192,57,43,0.1); color: #c0392b;" title="${escapeHtmlCamp(p.report_error || '')}">Failed</span>`;
+                    return `
+                        <tr>
+                            <td><strong>${escapeHtmlCamp(p.name || 'Unnamed')}</strong><br><span style="color: var(--admin-text-dim); font-size: 0.85rem;">${escapeHtmlCamp(p.phone)}</span></td>
+                            <td>${escapeHtmlCamp(p.entered_by_doctor_name || '-')}</td>
+                            <td>${badge}</td>
+                            <td>${p.report_status !== 'generated' ? `<button type="button" class="btn-action" onclick="handleRetryReport(${p.id})">Retry Report</button>` : ''}</td>
+                        </tr>`;
+                }).join('') : '<tr><td colspan="4" style="color: var(--admin-text-dim);">No patients registered yet.</td></tr>';
+            } catch (e) {
+                alert('Failed to load camp details');
+            }
+        }
+
+        async function handleUpdateCampStatus() {
+            if (!activeManageCampId) return;
+            const payload = {
+                camp_id: activeManageCampId,
+                status: document.getElementById('manageCampStatus').value,
+                access_until: document.getElementById('manageCampAccessUntil').value ? document.getElementById('manageCampAccessUntil').value.replace('T', ' ') + ':00' : '',
+                notify_patients: document.getElementById('manageCampNotify').checked
+            };
+            try {
+                await adminFetch(`${API_BASE}/camp/admin/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify(payload)
+                });
+                loadCamps();
+            } catch (e) { alert('Failed to update camp'); }
+        }
+
+        async function handleAddCampDoctor() {
+            const phone = document.getElementById('manageCampDoctorPhone').value.trim();
+            const statusEl = document.getElementById('manageCampDoctorStatus');
+            if (!phone) { statusEl.style.color = '#c0392b'; statusEl.innerText = 'Enter a phone number first.'; return; }
+            try {
+                const res = await adminFetch(`${API_BASE}/camp/admin/doctor/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify({ camp_id: activeManageCampId, phone })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    statusEl.style.color = data.warning ? '#b45309' : '#1a7a4c';
+                    statusEl.innerText = data.warning || `Assigned ${data.doctor_name || phone} to this camp.`;
+                    document.getElementById('manageCampDoctorPhone').value = '';
+                    refreshManageCamp();
+                    loadCamps();
+                } else {
+                    statusEl.style.color = '#c0392b';
+                    statusEl.innerText = data.error || 'Failed to assign doctor.';
+                }
+            } catch (e) {
+                statusEl.style.color = '#c0392b';
+                statusEl.innerText = 'Network error.';
+            }
+        }
+
+        async function handleRemoveCampDoctor(id) {
+            if (!confirm('Remove this doctor from the camp? They will lose access to it immediately.')) return;
+            try {
+                await adminFetch(`${API_BASE}/camp/admin/doctor/remove`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify({ id })
+                });
+                refreshManageCamp();
+                loadCamps();
+            } catch (e) { alert('Failed to remove doctor'); }
+        }
+
+        async function handleRetryReport(campPatientId) {
+            try {
+                const res = await adminFetch(`${API_BASE}/camp/admin/patient/retry-report`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify({ camp_patient_id: campPatientId })
+                });
+                const data = await res.json();
+                if (!data.success) alert(data.error || 'Report generation failed again.');
+                refreshManageCamp();
+                loadCamps();
+            } catch (e) { alert('Failed to retry report'); }
+        }
+
         // Close modals when clicking on the backdrop overlay
         window.addEventListener('click', (e) => {
             const editModal = document.getElementById('editDocModal');
@@ -1486,6 +1799,8 @@
             const editHospModal = document.getElementById('editHospModal');
             const addHospModal = document.getElementById('addHospModal');
             const addEnquiryModal = document.getElementById('addEnquiryModal');
+            const addCampModal = document.getElementById('addCampModal');
+            const manageCampModal = document.getElementById('manageCampModal');
             if (e.target === editModal) closeModal();
             if (e.target === addModal) closeAddModal();
             if (e.target === igModal) closeIgLeadModal();
@@ -1494,6 +1809,8 @@
             if (e.target === editHospModal) closeEditHospModal();
             if (e.target === addHospModal) closeAddHospModal();
             if (e.target === addEnquiryModal) closeAddEnquiryModal();
+            if (e.target === addCampModal) closeAddCampModal();
+            if (e.target === manageCampModal) closeManageCampModal();
         });
 
         function toggleSidebar() {
@@ -1513,6 +1830,7 @@
             document.getElementById('view-users').style.display = view === 'users' ? 'block' : 'none';
             document.getElementById('view-clinics').style.display = view === 'clinics' ? 'block' : 'none';
             document.getElementById('view-hospitals').style.display = view === 'hospitals' ? 'block' : 'none';
+            document.getElementById('view-camps').style.display = view === 'camps' ? 'block' : 'none';
             document.getElementById('view-appointments').style.display = view === 'appointments' ? 'block' : 'none';
             document.getElementById('view-activity').style.display = view === 'activity' ? 'block' : 'none';
             document.getElementById('view-instagram').style.display = view === 'instagram' ? 'block' : 'none';
@@ -1530,6 +1848,7 @@
             if (view === 'users') loadUsers();
             if (view === 'clinics') loadClinics();
             if (view === 'hospitals') loadHospitals();
+            if (view === 'camps') loadCamps();
             if (view === 'appointments') { loadHospitals(); loadAppointments(); }
             if (view === 'activity') loadActivityLogs();
             if (view === 'instagram') loadInstagramLeads();
