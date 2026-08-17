@@ -1274,7 +1274,7 @@
           return;
         }
         box.innerHTML = data.files.map(f => {
-          const fileUrl = f.file_url ? `${API_BASE}${f.file_url}` : `${API_BASE}/static/uploads/${encodeURIComponent(f.file_name)}`;
+          const fileUrl = f.file_url ? (f.file_url.startsWith('http') ? f.file_url : `${API_BASE}${f.file_url}`) : `${API_BASE}/static/uploads/${encodeURIComponent(f.file_name)}`;
           const isImage = /\.(jpg|jpeg|png|webp|gif)$/i.test(f.file_name || '') || /\.(jpg|jpeg|png|webp|gif)$/i.test(f.file_url || '');
 
           const imagePreview = isImage ? `
