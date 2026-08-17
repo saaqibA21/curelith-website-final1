@@ -1274,7 +1274,13 @@
           return;
         }
         box.innerHTML = data.files.map(f => {
-          let fileUrl = f.file_url || '';
+          let fileUrl = f.file_url || f.file_path || '';
+          if (fileUrl.includes('api.curelith.comhttps://api.curelith.com')) {
+            fileUrl = fileUrl.replace('api.curelith.comhttps://api.curelith.com', 'api.curelith.com');
+          }
+          if (fileUrl.includes('api.curelith.comhttp://') || fileUrl.includes('api.curelith.comhttps://')) {
+            fileUrl = fileUrl.replace(/https?:\/\/api\.curelith\.com(https?:\/\/)/i, '$1');
+          }
           if (!fileUrl.startsWith('http://') && !fileUrl.startsWith('https://')) {
             fileUrl = `${API_BASE}/${fileUrl.replace(/^\/+/, '')}`;
           }
