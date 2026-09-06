@@ -450,10 +450,11 @@
                             <th>PARTNER SOURCE</th>
                             <th>SMARTWATCH SYNC</th>
                             <th>REGISTERED DATE</th>
+                            <th>ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody id="usersList">
-                        <tr><td colspan="6" style="text-align:center; color: var(--admin-text-dim);">Loading users...</td></tr>
+                        <tr><td colspan="7" style="text-align:center; color: var(--admin-text-dim);">Loading users...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -703,6 +704,46 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal for Editing Registered User / Patient -->
+    <div class="modal" id="editUserModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 style="margin: 0; color: var(--admin-primary);">Edit Patient / User</h2>
+                    <p style="color: var(--admin-text-dim); margin-top: 5px; font-size: 0.85rem;">Modify patient name and partner hospital attribution</p>
+                </div>
+                <button type="button" onclick="closeEditUserModal()" style="background:none; border:none; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="editUserPhone" readonly style="background: rgba(0,0,0,0.03); opacity: 0.8; cursor: not-allowed;">
+                    </div>
+                    <div class="form-group">
+                        <label>Patient Name</label>
+                        <input type="text" id="editUserName" placeholder="Enter patient name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Partner Source / Hospital</label>
+                        <select id="editUserPartner">
+                            <option value="">General User (No Hospital Partner)</option>
+                        </select>
+                        <small style="color: var(--admin-text-dim); margin-top: 4px; display: block; font-size: 0.75rem;">
+                            Assign to a partner hospital (e.g. Orthomed, Kardia, Sunray) or select General User to remove hospital attribution.
+                        </small>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" onclick="closeEditUserModal()" class="btn-action" style="flex: 1; padding: 0.9rem; background: #f3f4f6; color: #4b5563; font-weight: 600; border-radius: 12px; border: 1px solid #e5e7eb; cursor: pointer;">Cancel</button>
+                    <button type="submit" id="btnSaveUser" class="btn-action" style="flex: 2; padding: 0.9rem; background: var(--admin-primary); color: white; font-weight: 700; border-radius: 12px; border: none; cursor: pointer;">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1289,8 +1330,11 @@
         async function loadUsers() {
             const tbody = document.getElementById('usersList');
             if (tbody && (!allUsers || !allUsers.length)) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2.5rem; color: var(--admin-primary);"><i data-lucide="loader-2" class="spin" style="width: 24px; height: 24px;"></i><br><span style="font-size: 0.85rem; color: var(--admin-text-dim); margin-top: 8px; display: inline-block;">Loading patient registry...</span></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2.5rem; color: var(--admin-primary);"><i data-lucide="loader-2" class="spin" style="width: 24px; height: 24px;"></i><br><span style="font-size: 0.85rem; color: var(--admin-text-dim); margin-top: 8px; display: inline-block;">Loading patient registry...</span></td></tr>';
                 initIcons();
+            }
+            if (!allHospitals || !allHospitals.length) {
+                loadHospitals();
             }
             try {
                 const res = await adminFetch(`${API_BASE}/doctor/admin/users`, { headers });
@@ -1299,14 +1343,14 @@
                     allUsers = data.users || [];
                     renderUsers(allUsers);
                 } else {
-                    tableErrorRow('usersList', 6, 'Unable to fetch user records. Please retry.');
+                    tableErrorRow('usersList', 7, 'Unable to fetch user records. Please retry.');
                     setStat('statUsersTotal', '—', true);
                     setStat('statUsersPartner', '—', true);
                     setStat('statUsersWatch', '—', true);
                 }
             } catch (err) {
                 console.error('Error loading users:', err);
-                tableErrorRow('usersList', 6, 'Connection error loading users.');
+                tableErrorRow('usersList', 7, 'Connection error loading users.');
                 setStat('statUsersTotal', '—', true);
                 setStat('statUsersPartner', '—', true);
                 setStat('statUsersWatch', '—', true);
@@ -1325,7 +1369,7 @@
             tbody.innerHTML = '';
 
             if (!list.length) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--admin-text-dim);">No registered users found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--admin-text-dim);">No registered users found.</td></tr>';
                 return;
             }
 
@@ -1357,6 +1401,11 @@
                     <td>${sourceBadge}</td>
                     <td>${watchBadge}</td>
                     <td>${regDate}</td>
+                    <td>
+                        <button class="btn-action" style="padding: 6px 14px; font-size: 0.8rem; border-radius: 8px; background: rgba(0, 212, 170, 0.1); color: var(--admin-primary); border: 1px solid rgba(0, 212, 170, 0.35); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;" onclick="openEditUserModal(${u.id})">
+                            <i data-lucide="edit-2" style="width: 13px; height: 13px;"></i> Edit
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1373,6 +1422,87 @@
             );
             renderUsers(filtered);
         }
+
+        function openEditUserModal(userId) {
+            const user = allUsers.find(x => x.id === userId);
+            if (!user) return;
+
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editUserPhone').value = '+' + user.phone;
+            document.getElementById('editUserName').value = (user.name && user.name.toLowerCase() !== 'patient') ? user.name : '';
+
+            // Populate Partner Source select
+            const partnerSelect = document.getElementById('editUserPartner');
+            partnerSelect.innerHTML = '<option value="">General User (No Hospital Partner)</option>';
+
+            const hospList = (allHospitals && allHospitals.length) ? allHospitals : DEFAULT_HOSPITALS;
+            hospList.forEach(h => {
+                const opt = document.createElement('option');
+                opt.value = h.id;
+                opt.textContent = `🏥 ${h.name} (${h.ref_code ? h.ref_code.toUpperCase() : 'PARTNER'})`;
+
+                const matchesId = user.partner_hospital_id && String(user.partner_hospital_id) === String(h.id);
+                const matchesRef = user.partner_hospital_ref && h.ref_code && user.partner_hospital_ref.toUpperCase() === h.ref_code.toUpperCase();
+                if (matchesId || matchesRef) {
+                    opt.selected = true;
+                }
+                partnerSelect.appendChild(opt);
+            });
+
+            document.getElementById('editUserModal').style.display = 'flex';
+            initIcons();
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').style.display = 'none';
+        }
+
+        document.getElementById('editUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSaveUser');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const userId = parseInt(document.getElementById('editUserId').value, 10);
+            const name = document.getElementById('editUserName').value.trim();
+            const partnerVal = document.getElementById('editUserPartner').value;
+            const partner_hospital_id = partnerVal ? parseInt(partnerVal, 10) : null;
+
+            try {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/user/update`, {
+                    method: 'POST',
+                    headers: {
+                        ...headers,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        name: name,
+                        partner_hospital_id: partner_hospital_id
+                    })
+                });
+                const data = await res.json();
+                if (res.ok && data.status === 'success') {
+                    closeEditUserModal();
+                    // Update user in local allUsers array
+                    const idx = allUsers.findIndex(u => u.id === userId);
+                    if (idx !== -1 && data.user) {
+                        allUsers[idx] = { ...allUsers[idx], ...data.user };
+                    }
+                    renderUsers(allUsers);
+                    alert('Patient details updated successfully!');
+                } else {
+                    alert(data.error || 'Failed to update patient details.');
+                }
+            } catch (err) {
+                console.error('Error updating user:', err);
+                alert('Connection error while updating user.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
 
         async function loadHospitals() {
             try {
