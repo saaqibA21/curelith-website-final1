@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicons and Touch Icons -->
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/favicon-48x48.png" sizes="48x48" type="image/png">
+  <link rel="icon" href="assets/favicon-96x96.png" sizes="96x96" type="image/png">
+  <link rel="icon" href="assets/favicon-192x192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join as a Doctor | Curelith</title>
+<meta name="description" content="Apply to join Curelith's verified physician network.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="style.css">
+<style>
+  .onboard-hero {
+    background: var(--void);
+    color: #fff;
+    padding: 120px 0 80px 0;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .onboard-hero::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 1.6px);
+    background-size: 26px 26px;
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+    mask-image: linear-gradient(to bottom, black, transparent);
+  }
+  .onboard-hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(34px, 4.8vw, 54px);
+    font-weight: 600;
+    margin-top: 12px;
+    line-height: 1.25;
+  }
+  .onboard-hero h1 span {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .onboard-hero p.sub {
+    font-size: 17px;
+    color: var(--mist);
+    max-width: 560px;
+    margin: 16px auto 0 auto;
+    line-height: 1.6;
+  }
+
+  .onboard-section {
+    padding: 60px 0 100px 0;
+    background: var(--paper);
+  }
+  .onboard-wrapper {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .onboard-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 44px 40px;
+    box-shadow: 0 16px 40px rgba(15, 27, 25, 0.05);
+  }
+
+  .field-group { margin-bottom: 22px; }
+  .field-group label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .field-group label .req { color: var(--clay-deep); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field-group input,
+  .field-group select {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--ink);
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field-group input:focus,
+  .field-group select:focus {
+    border-color: var(--pine-light);
+    box-shadow: 0 6px 18px -5px rgba(15,27,25,0.08);
+  }
+  .field-error {
+    font-size: 12.5px;
+    color: #b91c1c;
+    margin-top: 6px;
+    display: none;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 16px 28px;
+    background: var(--pine);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.1);
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+    box-shadow: 0 10px 24px -5px rgba(30, 66, 61, 0.4);
+    margin-top: 6px;
+  }
+  .submit-btn:hover { background: var(--pine-light); transform: translateY(-2px); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .form-note {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--mist-dim);
+    text-align: center;
+    margin-top: 18px;
+  }
+
+  .card-icon {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    background: #EBF2EF;
+    border: 1px solid #C4D9D2;
+    color: var(--pine);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px auto;
+  }
+
+  .onboard-card h2 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--void);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .onboard-card p.card-desc {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+
+  .submit-error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #b91c1c;
+    font-size: 13.5px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    display: none;
+  }
+
+  /* Thank-you / success state */
+  .success-box { text-align: center; }
+  .success-icon {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: #EBF2EF;
+    border: 1.5px solid #C4D9D2;
+    color: var(--pine);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 22px auto;
+  }
+  .success-box h2 { font-family: var(--serif); font-size: 26px; color: var(--void); margin-bottom: 12px; }
+  .success-box p { font-size: 15px; color: var(--ink-soft); line-height: 1.7; max-width: 420px; margin: 0 auto 10px auto; }
+  .success-box .growth-note {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--pine);
+    background: #EBF2EF;
+    border: 1px solid #C4D9D2;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 22px;
+    line-height: 1.6;
+  }
+  .hidden { display: none !important; }
+
+  @media (max-width: 560px) {
+    .onboard-card { padding: 34px 24px; border-radius: 20px; }
+    .field-row { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="index.html" class="brand">
+      <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+      Curelith
+    </a>
+    <nav class="links">
+      <a href="index.html#why">Why Curelith</a>
+      <a href="index.html#tools">Tools</a>
+      <a href="doctors.html">Physicians</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="patient-login.html" class="btn btn-ghost-dark btn-sm">Patient portal</a>
+      <a href="index.html#consult" class="btn btn-primary btn-sm">Start a consult</a>
+    </div>
+    <button class="menu-toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html#why">Why Curelith</a>
+    <a href="index.html#tools">Tools</a>
+    <a href="doctors.html">Physicians</a>
+    <a href="hospitals.html">Hospitals</a>
+    <a href="about.html">About</a>
+    <a href="patient-login.html" class="btn btn-ghost-dark btn-sm" style="justify-content: center; margin-top: 10px;">Patient portal</a>
+    <a href="index.html#consult" class="btn btn-primary btn-sm" style="justify-content: center;">Start a consult</a>
+  </div>
+</header>
+
+<main>
+  <section class="onboard-hero">
+    <div class="wrap">
+      <span class="eyebrow on-dark">Physician Onboarding</span>
+      <h1>Welcome to <span>Curelith</span></h1>
+      <p class="sub">Join a growing network of verified physicians helping patients get to the right care, faster. Tell us a bit about your practice and we'll take it from there.</p>
+    </div>
+  </section>
+
+  <section class="onboard-section">
+    <div class="wrap">
+      <div class="onboard-wrapper">
+        <div class="onboard-card">
+
+          <!-- FORM STATE -->
+          <div id="formState">
+            <div class="card-icon">
+              <i data-lucide="stethoscope" style="width: 28px; height: 28px;"></i>
+            </div>
+            <h2>Apply to Join</h2>
+            <p class="card-desc">Fill in your details below. Our team reviews every application before it goes live on the Physician Network.</p>
+
+            <div class="submit-error" id="submitError"></div>
+
+            <form id="applyForm" novalidate>
+              <div class="field-group">
+                <label for="fName">Full Name <span class="req">*</span></label>
+                <input type="text" id="fName" name="name" placeholder="Dr. Full Name" required>
+                <div class="field-error" id="errName">Please enter your name.</div>
+              </div>
+
+              <div class="field-group">
+                <label for="fQualification">Qualification <span class="req">*</span></label>
+                <input type="text" id="fQualification" name="qualification" placeholder="e.g. MBBS, MD, BDS" required>
+                <div class="field-error" id="errQualification">Please enter your qualification.</div>
+              </div>
+
+              <div class="field-group">
+                <label for="fSpeciality">Speciality <span class="req">*</span></label>
+                <input type="text" id="fSpeciality" name="speciality" placeholder="e.g. General Medicine, Orthopedics" required>
+                <div class="field-error" id="errSpeciality">Please enter your speciality.</div>
+              </div>
+
+              <div class="field-row">
+                <div class="field-group">
+                  <label for="fArea">Area / Locality</label>
+                  <input type="text" id="fArea" name="area" placeholder="e.g. Ambattur">
+                </div>
+                <div class="field-group">
+                  <label for="fCity">City <span class="req">*</span></label>
+                  <input type="text" id="fCity" name="city" placeholder="e.g. Chennai" required>
+                  <div class="field-error" id="errCity">Please enter your city.</div>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="fPhone">Phone / WhatsApp Number <span class="req">*</span></label>
+                <input type="tel" id="fPhone" name="phone" placeholder="10-digit mobile number" required>
+                <div class="field-error" id="errPhone">Please enter a valid phone number.</div>
+              </div>
+
+              <button type="submit" class="submit-btn" id="submitBtn">Submit Application</button>
+              <p class="form-note">We'll reach out on this number once your application is reviewed.</p>
+            </form>
+          </div>
+
+          <!-- SUCCESS / THANK YOU STATE -->
+          <div id="successState" class="success-box hidden">
+            <div class="success-icon">
+              <i data-lucide="check-check" style="width: 34px; height: 34px;"></i>
+            </div>
+            <h2>Thank you!</h2>
+            <p>Your application has been received. You're now on our radar as part of the Curelith community.</p>
+            <div class="growth-note">
+              We're a young, fast-growing startup building India's most trusted AI-first care network — and every physician who joins helps us get there faster. Our team reviews applications by hand, so please hang tight while we confirm your details. We'll be in touch soon.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">
+          <img src="assets/logo.png" class="brand-mark" alt="Curelith Logo">
+          Curelith
+        </div>
+        <p>The intersection of clinical intelligence and human responsibility. Built in Tamil Nadu, India.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Platform</h5>
+        <a href="index.html">Home</a>
+        <a href="about.html">About us</a>
+        <a href="doctors.html">Physicians</a>
+        <a href="terms.html">Terms &amp; conditions</a>
+        <a href="privacy.html">Privacy policy</a>
+      </div>
+      <div class="foot-col">
+        <h5>Support</h5>
+        <span class="line">curelith.ai@gmail.com</span>
+        <span class="line">Tamil Nadu, India</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Curelith Intelligence</span>
+      <span class="disclaimer">Not a replacement for professional medical advice.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const API_BASE = isLocal ? "http://localhost:5000" : "https://api.curelith.com";
+
+  function initIcons() { try { lucide.createIcons(); } catch(e) {} }
+
+  function setFieldError(inputId, errId, show) {
+    document.getElementById(inputId).style.borderColor = show ? '#fca5a5' : '';
+    document.getElementById(errId).style.display = show ? 'block' : 'none';
+  }
+
+  function validateForm(fd) {
+    let valid = true;
+    if (!fd.name) { setFieldError('fName', 'errName', true); valid = false; } else setFieldError('fName', 'errName', false);
+    if (!fd.qualification) { setFieldError('fQualification', 'errQualification', true); valid = false; } else setFieldError('fQualification', 'errQualification', false);
+    if (!fd.speciality) { setFieldError('fSpeciality', 'errSpeciality', true); valid = false; } else setFieldError('fSpeciality', 'errSpeciality', false);
+    if (!fd.city) { setFieldError('fCity', 'errCity', true); valid = false; } else setFieldError('fCity', 'errCity', false);
+    const phoneDigits = (fd.phone || '').replace(/\D/g, '');
+    if (phoneDigits.length < 10) { setFieldError('fPhone', 'errPhone', true); valid = false; } else setFieldError('fPhone', 'errPhone', false);
+    return valid;
+  }
+
+  document.getElementById('applyForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errorBox = document.getElementById('submitError');
+    errorBox.style.display = 'none';
+
+    const fd = {
+      name: document.getElementById('fName').value.trim(),
+      qualification: document.getElementById('fQualification').value.trim(),
+      speciality: document.getElementById('fSpeciality').value.trim(),
+      area: document.getElementById('fArea').value.trim(),
+      city: document.getElementById('fCity').value.trim(),
+      phone: document.getElementById('fPhone').value.trim()
+    };
+
+    if (!validateForm(fd)) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    try {
+      const res = await fetch(`${API_BASE}/doctor/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fd)
+      });
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        document.getElementById('formState').classList.add('hidden');
+        document.getElementById('successState').classList.remove('hidden');
+        initIcons();
+      } else {
+        errorBox.textContent = data.error || 'Something went wrong. Please try again.';
+        errorBox.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Submit Application';
+      }
+    } catch (err) {
+      errorBox.textContent = 'Network error. Please check your connection and try again.';
+      errorBox.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Submit Application';
+    }
+  });
+
+  /* mobile menu */
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileNav = document.getElementById('mobileNav');
+  if (menuToggle && mobileNav) {
+    menuToggle.addEventListener('click', () => mobileNav.classList.toggle('open'));
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => mobileNav.classList.remove('open'));
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initIcons);
+</script>
+
+</body>
+</html>

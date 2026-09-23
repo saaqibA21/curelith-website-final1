@@ -324,6 +324,7 @@
         <h2><img src="assets/logo.png" style="width: 32px; height: 32px; object-fit: contain;" alt="Curelith Logo"> Curelith</h2>
         <div class="nav-item active" onclick="showView('overview')"><i data-lucide="layout-dashboard"></i> Overview</div>
         <div class="nav-item" onclick="showView('doctors')"><i data-lucide="stethoscope"></i> Doctors</div>
+        <div class="nav-item" onclick="showView('applications')"><i data-lucide="inbox"></i> Doctor Applications</div>
         <div class="nav-item" onclick="showView('users')"><i data-lucide="users"></i> Registered Users</div>
         <div class="nav-item" onclick="showView('clinics')"><i data-lucide="building"></i> Clinics</div>
         <div class="nav-item" onclick="showView('hospitals')"><i data-lucide="building-2"></i> Partner Hospitals</div>
@@ -412,6 +413,30 @@
                         </tr>
                     </thead>
                     <tbody id="doctorsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- View: Doctor Onboarding Applications -->
+        <div id="view-applications" style="display: none;">
+            <div class="white-panel">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Doctor Onboarding Requests</h2>
+                    <input type="text" class="search-box" placeholder="Filter by name/speciality..." onkeyup="filterApplications(this.value)">
+                </div>
+                <table id="applicationsTable">
+                    <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>QUALIFICATION</th>
+                            <th>SPECIALITY</th>
+                            <th>AREA / CITY</th>
+                            <th>PHONE</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicationsList"></tbody>
                 </table>
             </div>
         </div>
@@ -1321,6 +1346,7 @@
         }
 
         let allDoctors = [];
+        let allApplications = [];
         let allActivity = [];
         let allHospitals = [];
         let allUsers = [];
@@ -1957,6 +1983,7 @@
             closeSidebar();
             document.getElementById('view-overview').style.display = view === 'overview' ? 'block' : 'none';
             document.getElementById('view-doctors').style.display = view === 'doctors' ? 'block' : 'none';
+            document.getElementById('view-applications').style.display = view === 'applications' ? 'block' : 'none';
             document.getElementById('view-users').style.display = view === 'users' ? 'block' : 'none';
             document.getElementById('view-clinics').style.display = view === 'clinics' ? 'block' : 'none';
             document.getElementById('view-hospitals').style.display = view === 'hospitals' ? 'block' : 'none';
@@ -1975,6 +2002,7 @@
                 loadLeaderboard();
             }
             if (view === 'doctors') loadDoctors();
+            if (view === 'applications') loadApplications();
             if (view === 'users') loadUsers();
             if (view === 'clinics') loadClinics();
             if (view === 'hospitals') loadHospitals();
@@ -2131,6 +2159,78 @@
                     alert(data.error || 'Failed to delete doctor');
                 }
             } catch(e) { alert('Error deleting doctor'); }
+        }
+
+        async function loadApplications() {
+            try {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/applications`, { headers });
+                if (!res.ok) throw new Error('Failed to load applications');
+                allApplications = await res.json();
+                renderApplications(allApplications);
+            } catch (err) {
+                console.error(err);
+                tableErrorRow('applicationsList', 7, 'Unable to fetch applications. Please retry.');
+            }
+        }
+
+        function applicationStatusBadge(status) {
+            if (status === 'accepted') return '<span class="badge badge-physical">Accepted</span>';
+            if (status === 'rejected') return '<span class="badge" style="background: rgba(192,57,43,0.1); color: #c0392b;">Rejected</span>';
+            return '<span class="badge" style="background: rgba(212,130,74,0.12); color: var(--admin-accent, #D4824A);">Pending</span>';
+        }
+
+        function renderApplications(apps) {
+            const list = document.getElementById('applicationsList');
+            list.innerHTML = '';
+            if (!apps.length) {
+                list.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--admin-text-dim); padding: 2rem;">No doctor onboarding requests yet.</td></tr>';
+                return;
+            }
+            apps.forEach(app => {
+                const tr = document.createElement('tr');
+                const location = [app.area, app.city].filter(Boolean).join(', ');
+                const actions = app.status === 'pending'
+                    ? `<button class="btn-action" style="background:#dcfce7; color:#15803d; border-color:#86efac;" onclick="handleReviewApplication(${app.id}, 'accept')">Accept</button>
+                       <button class="btn-action" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5; margin-left:4px;" onclick="handleReviewApplication(${app.id}, 'reject')">Reject</button>`
+                    : '<span style="color: var(--admin-text-dim); font-size: 0.85rem;">Reviewed</span>';
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${escapeHtmlCamp(app.name)}</td>
+                    <td>${escapeHtmlCamp(app.qualification || '-')}</td>
+                    <td>${escapeHtmlCamp(app.speciality)}</td>
+                    <td>${escapeHtmlCamp(location || '-')}</td>
+                    <td>${escapeHtmlCamp(app.phone)}</td>
+                    <td>${applicationStatusBadge(app.status)}</td>
+                    <td>${actions}</td>
+                `;
+                list.appendChild(tr);
+            });
+            initIcons();
+        }
+
+        function filterApplications(q) {
+            const query = q.toLowerCase();
+            const filtered = allApplications.filter(a =>
+                a.name.toLowerCase().includes(query) || (a.speciality || '').toLowerCase().includes(query)
+            );
+            renderApplications(filtered);
+        }
+
+        async function handleReviewApplication(id, action) {
+            const verb = action === 'accept' ? 'accept this application and add the doctor to the Physician Network' : 'reject this application';
+            if (!confirm(`Are you sure you want to ${verb}?`)) return;
+            try {
+                const res = await adminFetch(`${API_BASE}/doctor/admin/application/review`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify({ id, action })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    loadApplications();
+                } else {
+                    alert(data.error || 'Failed to update application');
+                }
+            } catch(e) { alert('Error updating application'); }
         }
 
         async function loadActivityLogs() {
