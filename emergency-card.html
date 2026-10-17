@@ -1714,6 +1714,7 @@
                       <img src="assets/logo.png" alt="Curelith Logo">
                       Curelith
                       <span class="c-badge medpass" style="margin-left:4px;">MED-PASS</span>
+                      <span class="c-badge medpass" id="cardCompanyBadge" style="display:none; margin-left:4px; max-width:130px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; background:#E5ECE9; color:#0C3832; border:1px solid #7BABA0;">🏢 <span id="cardCompanyBadgeName">Company</span></span>
                     </div>
                     <div class="c-badge alert">
                       <span class="c-alert-dot"></span> Medical Alert
@@ -1730,7 +1731,12 @@
                     </div>
 
                     <div class="c-info-col">
-                      <div style="font-family:var(--mono); font-size:8px; text-transform:uppercase; color:var(--pine); font-weight:600;">Patient</div>
+                      <div style="display:flex; align-items:center; justify-content:space-between;">
+                        <span style="font-family:var(--mono); font-size:8px; text-transform:uppercase; color:#0C3832; font-weight:700;">Patient</span>
+                        <span id="cardCompanyLine" style="display:none; font-family:var(--sans); font-size:9.5px; font-weight:700; color:#0C3832; align-items:center; gap:3px;">
+                          <span>🏢</span> <span id="cardCompanyNameDisplay" style="max-width:115px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Company Name</span>
+                        </span>
+                      </div>
                       <div class="c-patient-name" id="cardNameDisplay">Sarah Ananya</div>
                       <div class="c-patient-sub" id="cardDemographicsDisplay">Age 28 • Female</div>
 
@@ -1781,6 +1787,7 @@
                       <img src="assets/logo.png" alt="Curelith Logo">
                       Curelith
                       <span class="c-badge medpass" style="color:#0C3832; border-color:#7BABA0; background:#E5ECE9; margin-left:4px;">Clinical</span>
+                      <span class="c-badge medpass" id="cardBackCompanyBadge" style="display:none; color:#0C3832; border-color:#7BABA0; background:#E5ECE9; margin-left:4px; font-weight:700;">🏢 <span id="cardBackCompanyBadgeName">Company</span></span>
                     </div>
                     <span class="c-badge medpass" style="background:#E5ECE9; color:#0C3832; border-color:rgba(12, 56, 50, 0.2);">
                       DOCTOR PORTAL
@@ -1811,7 +1818,7 @@
 
                   <!-- Footer -->
                   <div class="c-footer" style="font-family:var(--mono); font-size:9px; color:#4D5C57; border-top: 1px solid rgba(12, 56, 50, 0.15);">
-                    <span>Care Desk: +91 99400 99992</span>
+                    <span id="cardBackFooterText">Care Desk: +91 99400 99992</span>
                     <span style="color:#0C3832; font-weight:700;">www.curelith.com</span>
                   </div>
                 </div>
@@ -1963,6 +1970,61 @@
       document.getElementById('cardEmergencyPhoneDisplay').innerText = emPhone;
       document.getElementById('cardAllergiesDisplay').innerText = allergies;
       document.getElementById('cardConditionsDisplay').innerText = conditions;
+
+      if (sponsoringCompany) {
+        applySponsoringCompany(sponsoringCompany);
+      }
+    }
+
+    function applySponsoringCompany(comp) {
+      if (!comp) return;
+      sponsoringCompany = comp;
+      const compName = comp.company_name || comp.name || '';
+      if (!compName) return;
+
+      // 1. Sponsorship notice bar above form
+      const notice = document.getElementById('companyInviteNotice');
+      if (notice) notice.style.display = 'flex';
+      const noticeName = document.getElementById('sponsorCompanyName');
+      if (noticeName) noticeName.innerText = compName;
+
+      // 2. Form hidden inputs & badges
+      const compUuidInput = document.getElementById('companyUuid');
+      if (compUuidInput && comp.company_uuid) compUuidInput.value = comp.company_uuid;
+      const accTypeInput = document.getElementById('accountType');
+      if (accTypeInput) accTypeInput.value = 'corporate';
+      const formBadge = document.getElementById('formCardBadge');
+      if (formBadge) formBadge.innerText = `🏢 Corporate Pass: ${compName}`;
+
+      // 3. Card Front Company Badge (top header)
+      const frontBadge = document.getElementById('cardCompanyBadge');
+      const frontBadgeName = document.getElementById('cardCompanyBadgeName');
+      if (frontBadge && frontBadgeName) {
+        frontBadgeName.innerText = compName;
+        frontBadge.style.display = 'inline-flex';
+      }
+
+      // 4. Card Front Patient Info row
+      const frontLine = document.getElementById('cardCompanyLine');
+      const frontLineName = document.getElementById('cardCompanyNameDisplay');
+      if (frontLine && frontLineName) {
+        frontLineName.innerText = compName;
+        frontLine.style.display = 'inline-flex';
+      }
+
+      // 5. Card Back Company Badge
+      const backBadge = document.getElementById('cardBackCompanyBadge');
+      const backBadgeName = document.getElementById('cardBackCompanyBadgeName');
+      if (backBadge && backBadgeName) {
+        backBadgeName.innerText = compName;
+        backBadge.style.display = 'inline-flex';
+      }
+
+      // 6. Card Back Footer
+      const backFooterText = document.getElementById('cardBackFooterText');
+      if (backFooterText) {
+        backFooterText.innerText = `🏢 ${compName} • Care Desk: +91 99400 99992`;
+      }
     }
 
     function handlePhotoSelect(event) {
@@ -2151,6 +2213,12 @@
         // Update Live Preview with verified card details
         document.getElementById('cardUuidDisplay').innerText = card.card_uuid;
         document.getElementById('cardPinDisplay').innerText = (card.access_pin || '4821').split('').join(' ');
+        if (card.company_name) {
+          applySponsoringCompany({
+            company_name: card.company_name,
+            company_uuid: card.company_uuid
+          });
+        }
         updatePreviewFromForm();
 
         // Update front/back QR if available or generate from URL
@@ -2408,12 +2476,7 @@
           const res = await fetch(`https://api.curelith.com/emergency/companies/${encodeURIComponent(companyParam.trim())}`);
           const data = await res.json();
           if (data.success && data.company) {
-            sponsoringCompany = data.company;
-            document.getElementById('companyInviteNotice').style.display = 'flex';
-            document.getElementById('sponsorCompanyName').innerText = data.company.company_name;
-            document.getElementById('companyUuid').value = data.company.company_uuid;
-            document.getElementById('accountType').value = 'corporate';
-            document.getElementById('formCardBadge').innerText = `🏢 Corporate Pass: ${data.company.company_name}`;
+            applySponsoringCompany(data.company);
           }
         } catch (e) {
           console.warn('Failed to load sponsoring company:', e);
@@ -2538,6 +2601,13 @@
           }
           if (data.back_qr_base64) {
             document.getElementById('cardBackQrImg').src = data.back_qr_base64;
+          }
+
+          if (data.company_name) {
+            applySponsoringCompany({
+              company_name: data.company_name,
+              company_uuid: data.company_uuid
+            });
           }
 
           statusMsg.style.color = '#059669';

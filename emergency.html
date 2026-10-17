@@ -369,7 +369,10 @@
             <div class="patient-main">
               <img id="patientPhoto" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%238FA89F'><circle cx='50' cy='36' r='20'/><path d='M15 88c0-18 16-28 35-28s35 10 35 28z'/></svg>" alt="Patient" class="patient-photo" style="background:var(--card-tint);">
               <div class="patient-meta">
-                <span id="cardUuid" class="card-id">CL-88258-E7</span>
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:4px;">
+                  <span id="cardUuid" class="card-id" style="margin-bottom:0;">CL-88258-E7</span>
+                  <span id="companyBadge" class="card-id" style="display:none; margin-bottom:0; background:#E5ECE9; color:#0C3832; border:1px solid #7BABA0;">🏢 <span id="companyNameDisplay">Company</span></span>
+                </div>
                 <h1 id="patientName">Sarah Ananya</h1>
                 <div id="patientDemo" class="demo">Age 28 • Female</div>
               </div>
@@ -454,7 +457,7 @@
   <script>
     async function loadEmergencyData() {
       const urlParams = new URLSearchParams(window.location.search);
-      const cardId = urlParams.get('id') || 'CL-99992-610A';
+      const cardId = urlParams.get('id') || urlParams.get('card') || 'CL-99992-610A';
 
       try {
         const res = await fetch(`https://api.curelith.com/emergency/data/${cardId}`);
@@ -467,6 +470,14 @@
           document.getElementById('dataBox').style.display = 'block';
 
           document.getElementById('cardUuid').innerText = c.card_uuid;
+          if (c.company_name) {
+            const compBadge = document.getElementById('companyBadge');
+            const compNameDisplay = document.getElementById('companyNameDisplay');
+            if (compBadge && compNameDisplay) {
+              compNameDisplay.innerText = c.company_name;
+              compBadge.style.display = 'inline-block';
+            }
+          }
           document.getElementById('patientName').innerText = c.patient_name;
           document.getElementById('patientDemo').innerText = `Age ${c.age || '--'} • ${c.gender || 'Not specified'}`;
           document.getElementById('patientBlood').innerText = (c.blood_group || 'O+VE').replace('VE', 've');
