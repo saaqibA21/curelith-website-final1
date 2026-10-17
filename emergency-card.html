@@ -528,16 +528,12 @@
     }
 
     /* 3D CR80 WALLET CARD (Standard 85.6mm x 53.98mm = 1.586 ratio) */
-    .perspective-1000 {
-      perspective: 1200px;
-      max-width: 444px;
-      margin: 0 auto;
-    }
+    .perspective-1000 { perspective: 1200px; }
 
     .flip-card-inner {
       position: relative;
       width: 100%;
-      height: 280px;
+      height: 275px;
       transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
       transform-style: preserve-3d;
     }
@@ -550,381 +546,110 @@
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       border-radius: 18px;
-      box-shadow: 0 20px 40px -15px rgba(12,56,50,0.22), 0 0 0 1px rgba(12,56,50,0.1);
+      box-shadow: 0 20px 40px -15px rgba(15,27,25,0.22), 0 0 0 1px rgba(15,27,25,0.08);
       cursor: pointer;
     }
     .card-back { transform: rotateY(180deg); }
 
-    /* ================= CURELITH WAVE SIGNATURE THEME ================= */
-    .c-face-content.theme-curelith-wave {
-      background: #F4F7F4 !important;
-      border: 1.5px solid rgba(12, 56, 50, 0.12);
+    /* Security pattern on clinical white card */
+    .white-security-pattern {
+      background-image: 
+        radial-gradient(circle at 100% 0%, rgba(30,66,61,0.06) 0%, transparent 60%),
+        radial-gradient(circle at 0% 100%, rgba(220,38,38,0.04) 0%, transparent 50%),
+        linear-gradient(to right, rgba(20,32,29,0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(20,32,29,0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 12px 12px, 12px 12px;
+    }
+
+    /* CARD INTERNAL STYLES */
+    .c-face-content {
+      background: #FFFFFF;
+      height: 100%;
       border-radius: 18px;
-      padding: 14px 18px 12px 18px;
+      padding: 16px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       position: relative;
       overflow: hidden;
-      height: 100%;
-      box-sizing: border-box;
-      box-shadow: 0 16px 36px -12px rgba(12, 56, 50, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    }
+    .c-top-ribbon {
+      position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(to right, var(--pine), var(--pine-light), var(--clay));
+    }
+    .c-header {
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative; z-index: 2;
+    }
+    .c-brand {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--serif); font-weight: 600; font-size: 17px; color: var(--void);
+    }
+    .c-brand img { width: 22px; height: 22px; }
+    .c-badge {
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 4px; font-weight: 600;
+    }
+    .c-badge.medpass { background: rgba(30,66,61,0.08); color: var(--pine); border: 1px solid rgba(30,66,61,0.2); }
+    .c-badge.alert { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; display: flex; align-items: center; gap: 4px; }
+    .c-alert-dot { width: 5px; height: 5px; border-radius: 50%; background: #DC2626; animation: blink 1.2s infinite; }
+
+    .c-body {
+      display: grid; grid-template-columns: 70px 1fr 70px; gap: 14px; align-items: center;
+      position: relative; z-index: 2; margin: 4px 0;
+    }
+    .c-photo-box {
+      width: 70px; height: 70px; border-radius: 12px; overflow: hidden;
+      border: 1.5px solid var(--line); background: var(--card-tint);
+    }
+    .c-photo-box img { width: 100%; height: 100%; object-cover: cover; }
+    .c-card-id {
+      font-family: var(--mono); font-size: 9px; font-weight: 600; color: var(--ink-soft);
+      text-align: center; margin-top: 4px; display: block;
     }
 
-    /* FRONT HEADER */
-    .c-wave-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      position: relative;
-      z-index: 3;
+    .c-info-col { min-width: 0; padding-right: 4px; }
+    .c-patient-name {
+      font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--ink);
+      line-height: 1.35; padding: 2px 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .c-wave-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .c-patient-sub {
+      font-size: 11px; color: var(--ink-soft); margin-top: 2px; font-weight: 500; line-height: 1.3;
     }
-    .c-wave-logo-icon {
-      width: 38px;
-      height: 38px;
-      flex-shrink: 0;
+    .c-tags { margin-top: 5px; display: flex; flex-direction: column; gap: 3px; }
+    .c-tag-row { display: flex; align-items: center; gap: 6px; font-size: 10.5px; line-height: 1.35; }
+    .c-tag-lbl {
+      font-family: var(--mono); font-size: 8px; font-weight: 700; text-transform: uppercase;
+      padding: 1px 4px; border-radius: 3px;
     }
-    .c-wave-brand-title {
-      font-family: var(--sans);
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      color: #0C3832;
-      line-height: 1.1;
-    }
-    .c-wave-brand-sub {
-      font-family: var(--sans);
-      font-size: 7.5px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: #1B4A43;
-      margin-top: 3px;
-    }
-    .c-wave-card-type {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      padding-top: 2px;
-    }
-    .c-wave-type-title {
-      font-family: var(--sans);
-      font-size: 9.5px;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      color: #0C3832;
-      text-transform: uppercase;
-    }
-    .c-wave-type-bar {
-      width: 28px;
-      height: 2px;
-      background: #0C3832;
-      margin-top: 4px;
-      border-radius: 1px;
-    }
+    .c-tag-lbl.alr { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+    .c-tag-lbl.cnd { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+    .c-tag-val { font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.35; padding-bottom: 2px; }
 
-    /* FRONT BODY */
-    .c-wave-body {
-      display: grid;
-      grid-template-columns: 1fr 108px;
-      gap: 14px;
-      align-items: center;
-      position: relative;
-      z-index: 3;
-      margin-top: 4px;
+    .c-blood-badge {
+      width: 66px; height: 66px; border-radius: 14px;
+      background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+      color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 8px 16px -4px rgba(220,38,38,0.4); border: 2px solid #fff;
     }
-    .c-wave-fields {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .c-wave-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .c-wave-icon {
-      width: 18px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .c-wave-field-wrap {
-      flex: 1;
-      min-width: 0;
-    }
-    .c-wave-label {
-      font-family: var(--sans);
-      font-size: 7.5px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      color: #0C3832;
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
-    .c-wave-pill {
-      background: #E5ECE9;
-      border-radius: 10px;
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #0C3832;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      min-height: 21px;
-      display: flex;
-      align-items: center;
-      border: 0.5px solid rgba(12, 56, 50, 0.06);
-    }
+    .c-blood-lbl { font-family: var(--mono); font-size: 7.5px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.9; }
+    .c-blood-val { font-family: var(--sans); font-size: 19px; font-weight: 800; line-height: 1; margin-top: 2px; }
 
-    /* FRONT QR BOX */
-    .c-wave-qr-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    .c-footer {
+      border-top: 1px solid var(--line); padding-top: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative; z-index: 2;
     }
-    .c-wave-qr-frame {
-      background: #FFFFFF;
-      padding: 4px;
-      border-radius: 8px;
-      border: 1.5px solid #0C3832;
-      box-shadow: 0 4px 10px rgba(12, 56, 50, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .c-wave-qr-img {
-      width: 76px;
-      height: 76px;
-      display: block;
-      border-radius: 4px;
-    }
-    .c-wave-qr-label {
-      font-family: var(--sans);
-      font-size: 7px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-align: center;
-      color: #0C3832;
-      line-height: 1.25;
-      margin-top: 6px;
-      text-transform: uppercase;
-    }
+    .c-ice-title { font-family: var(--mono); font-size: 8.5px; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+    .c-ice-contact { font-size: 11.5px; font-weight: 700; color: var(--ink); margin-top: 2px; display: flex; gap: 5px; }
+    .c-ice-contact .phone { font-family: var(--mono); color: var(--pine); }
 
-    /* FRONT BOTTOM WAVE */
-    .c-wave-bottom-art {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 52px;
-      pointer-events: none;
-      z-index: 2;
+    .c-qr-wrap { display: flex; flex-direction: column; align-items: center; }
+    .c-qr-img {
+      width: 44px; height: 44px; padding: 2px; background: #fff;
+      border: 1px solid var(--line); border-radius: 6px;
     }
-    .c-wave-svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .c-wave-tagline {
-      position: absolute;
-      bottom: 7px;
-      left: 18px;
-      font-family: var(--sans);
-      font-size: 8px;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      color: #FFFFFF;
-      text-transform: uppercase;
-      z-index: 3;
-    }
-
-    /* ================= BACK CARD STYLES ================= */
-    .c-back-content {
-      padding: 12px 18px 10px 18px !important;
-    }
-    .c-wave-top-right-art {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 120px;
-      height: 48px;
-      pointer-events: none;
-      z-index: 1;
-    }
-    .c-back-head {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      position: relative;
-      z-index: 2;
-      margin-bottom: 5px;
-    }
-    .c-back-head-icon {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #0C3832;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .c-back-head-title {
-      font-family: var(--sans);
-      font-size: 9.5px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      color: #0C3832;
-      text-transform: uppercase;
-    }
-
-    /* MEDICAL CAMP TABLE */
-    .c-back-camp-table {
-      background: #EBF0ED;
-      border-radius: 8px;
-      border: 1px solid rgba(12, 56, 50, 0.12);
-      overflow: hidden;
-      margin-bottom: 7px;
-      position: relative;
-      z-index: 2;
-    }
-    .c-camp-thead {
-      display: flex;
-      background: rgba(12, 56, 50, 0.05);
-      border-bottom: 1px solid rgba(12, 56, 50, 0.1);
-    }
-    .c-camp-th {
-      font-family: var(--sans);
-      font-size: 7px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      color: #0C3832;
-      padding: 3px 6px;
-      border-right: 1px solid rgba(12, 56, 50, 0.08);
-      text-transform: uppercase;
-    }
-    .c-camp-th:last-child {
-      border-right: none;
-    }
-    .c-camp-trow {
-      display: flex;
-      border-bottom: 1px solid rgba(12, 56, 50, 0.08);
-      min-height: 18px;
-    }
-    .c-camp-trow:last-child {
-      border-bottom: none;
-    }
-    .c-camp-td {
-      font-family: var(--sans);
-      font-size: 8px;
-      color: #0C3832;
-      font-weight: 600;
-      padding: 2px 6px;
-      border-right: 1px solid rgba(12, 56, 50, 0.08);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: flex;
-      align-items: center;
-    }
-    .c-camp-td:last-child {
-      border-right: none;
-    }
-    .c-camp-trow-empty {
-      height: 16px;
-      background: #FFFFFF;
-    }
-
-    /* BACK MIDDLE SECTIONS */
-    .c-back-sec {
-      margin-bottom: 6px;
-      position: relative;
-      z-index: 2;
-    }
-    .c-back-sec-header {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 3px;
-    }
-    .c-back-sec-icon {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: #0C3832;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .c-back-sec-label {
-      font-family: var(--sans);
-      font-size: 7.5px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      color: #0C3832;
-      text-transform: uppercase;
-    }
-    .c-back-pill-full {
-      width: 100%;
-    }
-
-    .c-back-row-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 6px;
-      position: relative;
-      z-index: 2;
-    }
-    .c-back-col {
-      min-width: 0;
-    }
-
-    /* BACK FOOTER */
-    .c-back-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 5px;
-      border-top: 1px dashed rgba(12, 56, 50, 0.18);
-      position: relative;
-      z-index: 2;
-    }
-    .c-back-security {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      max-width: 270px;
-    }
-    .c-back-notice-text {
-      font-family: var(--sans);
-      font-size: 6.8px;
-      color: #4D5C57;
-      line-height: 1.3;
-      font-weight: 500;
-    }
-    .c-back-brand {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .c-back-brand-name {
-      font-family: var(--sans);
-      font-size: 10.5px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      color: #0C3832;
-    }
+    .c-qr-sub { font-family: var(--mono); font-size: 7.5px; font-weight: 700; color: #DC2626; text-transform: uppercase; margin-top: 2px; }
 
     /* ACTION BUTTONS UNDER PREVIEW */
     .preview-actions {
@@ -1975,227 +1700,116 @@
           <div class="perspective-1000" id="printableCardArea">
             <div class="flip-card-inner" id="cardInner" onclick="toggleFlip()">
 
-              <!-- FRONT FACE (CURELITH WAVE SIGNATURE THEME) -->
+              <!-- FRONT FACE (CLEAN MEDICAL WHITE) -->
               <div class="card-face" id="cardFrontFace">
-                <div class="c-face-content theme-curelith-wave">
-                  <!-- Top Bar: Logo & Card Type -->
-                  <div class="c-wave-top">
-                    <div class="c-wave-brand">
-                      <svg viewBox="0 0 44 44" class="c-wave-logo-icon">
-                        <defs>
-                          <linearGradient id="waveLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#7BABA0"/>
-                            <stop offset="50%" stop-color="#1B5E54"/>
-                            <stop offset="100%" stop-color="#0C3832"/>
-                          </linearGradient>
-                        </defs>
-                        <path d="M 22 2 C 33.05 2, 42 10.95, 42 22 C 42 33.05, 33.05 42, 22 42 C 12 42, 4 34, 2 24 C 1 19 4 15 8 16 C 12 17 13 21 14 24 C 15 28 18 31 22 31 C 27 31 31 27 31 22 C 31 17 27 13 22 13 C 18 13 15 15 13 18 C 11 20 8 20 6 18 C 4 16 5 12 8 9 C 12 5 17 2 22 2 Z" fill="url(#waveLogoGrad)" />
-                        <path d="M 22 10 L 22 26 M 19 14 Q 22 11, 25 14 Q 22 17, 19 20 Q 22 23, 25 20 M 17 29 L 27 29" stroke="#E5ECE9" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.95" />
-                        <circle cx="22" cy="8" r="2.2" fill="#E5ECE9" />
-                      </svg>
-                      <div class="c-wave-brand-text">
-                        <div class="c-wave-brand-title">C U R E L I T H</div>
-                        <div class="c-wave-brand-sub">CLARITY OVER CONFUSION</div>
-                      </div>
-                    </div>
+                <div class="c-face-content white-security-pattern">
+                  <div class="c-top-ribbon"></div>
 
-                    <div class="c-wave-card-type">
-                      <span class="c-wave-type-title">HEALTH CARD</span>
-                      <div class="c-wave-type-bar"></div>
+                  <!-- Header -->
+                  <div class="c-header">
+                    <div class="c-brand">
+                      <img src="assets/logo.png" alt="Curelith Logo">
+                      Curelith
+                      <span class="c-badge medpass" style="margin-left:4px;">MED-PASS</span>
+                    </div>
+                    <div class="c-badge alert">
+                      <span class="c-alert-dot"></span> Medical Alert
                     </div>
                   </div>
 
-                  <!-- Body: 4 Info Capsules (Left) + QR Frame (Right) -->
-                  <div class="c-wave-body">
-                    <div class="c-wave-fields">
-                      <!-- Field 1: FULL NAME -->
-                      <div class="c-wave-row">
-                        <div class="c-wave-icon">
-                          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#0C3832" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                          </svg>
-                        </div>
-                        <div class="c-wave-field-wrap">
-                          <div class="c-wave-label">FULL NAME</div>
-                          <div class="c-wave-pill" id="cardNameDisplay">Sarah Ananya</div>
-                        </div>
+                  <!-- Body -->
+                  <div class="c-body">
+                    <div>
+                      <div class="c-photo-box" style="display:flex; align-items:center; justify-content:center; background:var(--card-tint);">
+                        <img id="cardPhotoPreview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%238FA89F'><circle cx='50' cy='36' r='20'/><path d='M15 88c0-18 16-28 35-28s35 10 35 28z'/></svg>" alt="Patient">
                       </div>
+                      <span class="c-card-id" id="cardUuidDisplay">CL-DEMO-01</span>
+                    </div>
 
-                      <!-- Field 2: PHONE NUMBER -->
-                      <div class="c-wave-row">
-                        <div class="c-wave-icon">
-                          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#0C3832" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                          </svg>
-                        </div>
-                        <div class="c-wave-field-wrap">
-                          <div class="c-wave-label">PHONE NUMBER</div>
-                          <div class="c-wave-pill" id="cardPhoneDisplay">+91 98400 99992</div>
-                        </div>
-                      </div>
+                    <div class="c-info-col">
+                      <div style="font-family:var(--mono); font-size:8px; text-transform:uppercase; color:var(--pine); font-weight:600;">Patient</div>
+                      <div class="c-patient-name" id="cardNameDisplay">Sarah Ananya</div>
+                      <div class="c-patient-sub" id="cardDemographicsDisplay">Age 28 • Female</div>
 
-                      <!-- Field 3: GENDER / AGE -->
-                      <div class="c-wave-row">
-                        <div class="c-wave-icon">
-                          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#0C3832" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="9" r="5"></circle>
-                            <path d="M12 14v7M9 18h6"></path>
-                          </svg>
+                      <div class="c-tags">
+                        <div class="c-tag-row">
+                          <span class="c-tag-lbl alr">Allergy</span>
+                          <span class="c-tag-val" id="cardAllergiesDisplay">Penicillin, Peanuts</span>
                         </div>
-                        <div class="c-wave-field-wrap">
-                          <div class="c-wave-label">GENDER</div>
-                          <div class="c-wave-pill" id="cardDemographicsDisplay">Female • 28 Yrs</div>
-                        </div>
-                      </div>
-
-                      <!-- Field 4: BLOOD GROUP -->
-                      <div class="c-wave-row">
-                        <div class="c-wave-icon">
-                          <svg viewBox="0 0 24 24" width="13" height="13" fill="#0C3832">
-                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-                          </svg>
-                        </div>
-                        <div class="c-wave-field-wrap">
-                          <div class="c-wave-label">BLOOD GROUP</div>
-                          <div class="c-wave-pill" id="cardBloodDisplay" style="font-weight:700;">O+ve</div>
+                        <div class="c-tag-row">
+                          <span class="c-tag-lbl cnd">Alert</span>
+                          <span class="c-tag-val" id="cardConditionsDisplay">Type 2 Diabetes</span>
                         </div>
                       </div>
                     </div>
 
-                    <!-- Right QR Box -->
-                    <div class="c-wave-qr-box">
-                      <div class="c-wave-qr-frame">
-                        <img id="cardFrontQrImg" class="c-wave-qr-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='28' height='28' rx='4' fill='none' stroke='%230C3832' stroke-width='7'/><rect x='13' y='13' width='12' height='12' fill='%230C3832'/><rect x='67' y='5' width='28' height='28' rx='4' fill='none' stroke='%230C3832' stroke-width='7'/><rect x='75' y='13' width='12' height='12' fill='%230C3832'/><rect x='5' y='67' width='28' height='28' rx='4' fill='none' stroke='%230C3832' stroke-width='7'/><rect x='13' y='75' width='12' height='12' fill='%230C3832'/><rect x='42' y='42' width='16' height='16' fill='%230C3832'/></svg>" alt="Health Profile QR">
-                      </div>
-                      <div class="c-wave-qr-label">
-                        SCAN TO ACCESS<br>YOUR HEALTH PROFILE
-                      </div>
+                    <div class="c-blood-badge">
+                      <span class="c-blood-lbl">Blood</span>
+                      <span class="c-blood-val" id="cardBloodDisplay">O+ve</span>
                     </div>
                   </div>
 
-                  <!-- Bottom Flowing Waves -->
-                  <div class="c-wave-bottom-art">
-                    <svg class="c-wave-svg" viewBox="0 0 444 65" preserveAspectRatio="none">
-                      <!-- Soft sage wave behind -->
-                      <path d="M 110 65 Q 260 5, 444 14 L 444 65 Z" fill="#7BABA0" opacity="0.9"/>
-                      <!-- Deep pine green wave in front -->
-                      <path d="M 0 32 Q 130 18, 210 44 Q 290 68, 444 36 L 444 65 L 0 65 Z" fill="#0C3832"/>
-                    </svg>
-                    <div class="c-wave-tagline">YOUR HEALTH. ANYWHERE.</div>
+                  <!-- Footer -->
+                  <div class="c-footer">
+                    <div>
+                      <div class="c-ice-title">ICE (Emergency Contact)</div>
+                      <div class="c-ice-contact">
+                        <span id="cardEmergencyNameDisplay">📞 Ramesh</span>
+                        <span class="phone" id="cardEmergencyPhoneDisplay">+91 98400 99992</span>
+                      </div>
+                    </div>
+
+                    <div class="c-qr-wrap">
+                      <img id="cardFrontQrImg" class="c-qr-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='13' width='12' height='12'/><rect x='67' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='75' y='13' width='12' height='12'/><rect x='5' y='67' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='75' width='12' height='12'/><rect x='42' y='42' width='16' height='16' fill='%23DC2626'/></svg>">
+                      <span class="c-qr-sub">Scan for SOS</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <!-- BACK FACE (CURELITH WAVE SIGNATURE THEME) -->
+              <!-- BACK FACE (DOCTOR & CLINICAL PORTAL) -->
               <div class="card-face card-back" id="cardBackFace">
-                <div class="c-face-content theme-curelith-wave c-back-content">
-                  <!-- Top Right Corner Wave SVG -->
-                  <div class="c-wave-top-right-art">
-                    <svg viewBox="0 0 130 55" preserveAspectRatio="none" style="width:130px; height:55px; display:block;">
-                      <path d="M 20 0 Q 60 40, 130 30 L 130 0 Z" fill="#7BABA0" opacity="0.9" />
-                      <path d="M 52 0 Q 85 28, 130 14 L 130 0 Z" fill="#0C3832" />
-                    </svg>
+                <div class="c-face-content white-security-pattern">
+                  <div class="c-top-ribbon" style="background:linear-gradient(to right, var(--clay), var(--pine));"></div>
+
+                  <!-- Header -->
+                  <div class="c-header">
+                    <div class="c-brand">
+                      <img src="assets/logo.png" alt="Curelith Logo">
+                      Curelith
+                      <span class="c-badge medpass" style="color:var(--clay-deep); border-color:rgba(212,130,74,0.3); margin-left:4px;">Clinical</span>
+                    </div>
+                    <span class="c-badge medpass" style="background:#F3F4F6; color:#4B5563; border-color:#E5E7EB;">
+                      DOCTOR PORTAL
+                    </span>
                   </div>
 
-                  <!-- 1. Header: MEDICAL CAMP DETAILS -->
-                  <div class="c-back-head">
-                    <div class="c-back-head-icon">
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill="#FFFFFF">
-                        <path d="M19 10.5h-5.5V5h-3v5.5H5v3h5.5V19h3v-5.5H19v-3z"/>
-                      </svg>
+                  <!-- Center -->
+                  <div style="display:grid; grid-template-columns:85px 1fr; gap:16px; align-items:center; margin:8px 0;">
+                    <div class="c-qr-wrap">
+                      <img id="cardBackQrImg" class="c-qr-img" style="width:68px; height:68px; border-color:var(--pine);" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='13' width='12' height='12'/><rect x='67' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='75' y='13' width='12' height='12'/><rect x='5' y='67' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='75' width='12' height='12'/><rect x='42' y='42' width='16' height='16' fill='%231E423D'/></svg>">
+                      <span class="c-qr-sub" style="color:var(--pine);">Doctor Upload QR</span>
                     </div>
-                    <div class="c-back-head-title">MEDICAL CAMP DETAILS</div>
-                  </div>
 
-                  <!-- 2. Medical Camp Table -->
-                  <div class="c-back-camp-table">
-                    <div class="c-camp-thead">
-                      <div class="c-camp-th" style="width:25%;">DATE</div>
-                      <div class="c-camp-th" style="width:40%;">CAMP / PROVIDER</div>
-                      <div class="c-camp-th" style="width:35%;">DETAILS / REMARKS</div>
-                    </div>
-                    <div class="c-camp-trow">
-                      <div class="c-camp-td" style="width:25%;" id="campDateCell">17/10/2026</div>
-                      <div class="c-camp-td" style="width:40%;" id="campProviderCell">Curelith Health Camp</div>
-                      <div class="c-camp-td" style="width:35%;" id="campRemarksCell">Vitals & Med-Pass OK</div>
-                    </div>
-                    <div class="c-camp-trow c-camp-trow-empty">
-                      <div class="c-camp-td" style="width:25%;"></div>
-                      <div class="c-camp-td" style="width:40%;"></div>
-                      <div class="c-camp-td" style="width:35%;"></div>
-                    </div>
-                  </div>
-
-                  <!-- 3. EMERGENCY CONTACT -->
-                  <div class="c-back-sec">
-                    <div class="c-back-sec-header">
-                      <div class="c-back-sec-icon">
-                        <svg viewBox="0 0 24 24" width="10" height="10" fill="#FFFFFF">
-                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                        </svg>
-                      </div>
-                      <div class="c-back-sec-label">EMERGENCY CONTACT</div>
-                    </div>
-                    <div class="c-wave-pill c-back-pill-full" id="cardEmergencyCombinedDisplay">
-                      Ramesh (Father) • +91 98400 99992
-                    </div>
-                  </div>
-
-                  <!-- 4. Two columns: BLOOD GROUP & YOUR HEALTH ID -->
-                  <div class="c-back-row-split">
-                    <div class="c-back-col">
-                      <div class="c-back-sec-header">
-                        <div class="c-back-sec-icon">
-                          <svg viewBox="0 0 24 24" width="10" height="10" fill="#FFFFFF">
-                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-                          </svg>
+                    <div>
+                      <div style="font-size:12px; font-weight:700; color:var(--ink);">🩺 For Physicians &amp; Diagnostics</div>
+                      <p style="font-size:10.5px; color:var(--ink-soft); line-height:1.45; margin-top:4px;">
+                        Scan to upload medical prescriptions, scan summaries, or blood reports directly to this patient’s Curelith locker.
+                      </p>
+                      <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+                        <div style="background:#FEF3C7; border:1px solid #FDE68A; padding:2px 8px; border-radius:5px;">
+                          <div style="font-family:var(--mono); font-size:7px; text-transform:uppercase; color:#92400E; font-weight:700;">PIN</div>
+                          <div id="cardPinDisplay" style="font-family:var(--mono); font-size:12px; font-weight:800; color:#78350F;">4 8 2 1</div>
                         </div>
-                        <div class="c-back-sec-label">BLOOD GROUP</div>
+                        <span style="font-size:9px; color:var(--ink-soft);">Required for full medical file downloads.</span>
                       </div>
-                      <div class="c-wave-pill" id="cardBackBloodDisplay" style="font-weight:700;">O+ve</div>
-                    </div>
-
-                    <div class="c-back-col">
-                      <div class="c-back-sec-header">
-                        <div class="c-back-sec-icon">
-                          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round">
-                            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
-                            <circle cx="9" cy="10" r="2"></circle>
-                            <line x1="15" y1="9" x2="17" y2="9"></line>
-                            <line x1="15" y1="13" x2="17" y2="13"></line>
-                          </svg>
-                        </div>
-                        <div class="c-back-sec-label">YOUR HEALTH ID</div>
-                      </div>
-                      <div class="c-wave-pill" id="cardUuidDisplay" style="font-family:var(--mono); font-weight:700;">CL-DEMO-01</div>
                     </div>
                   </div>
 
-                  <!-- 5. Footer: Security note + Curelith branding -->
-                  <div class="c-back-footer">
-                    <div class="c-back-security">
-                      <svg viewBox="0 0 24 24" width="13" height="13" fill="#0C3832" style="flex-shrink:0;">
-                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/>
-                      </svg>
-                      <div class="c-back-notice-text">
-                        This card contains your essential health information.<br>
-                        Keep it safe and do not share it with unauthorised persons.
-                      </div>
-                    </div>
-
-                    <div class="c-back-brand">
-                      <svg viewBox="0 0 36 36" width="19" height="19">
-                        <defs>
-                          <linearGradient id="waveLogoBackGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#7BABA0"/>
-                            <stop offset="100%" stop-color="#0C3832"/>
-                          </linearGradient>
-                        </defs>
-                        <path d="M 18 2 C 26.8 2, 34 9.2, 34 18 C 34 26.8, 26.8 34, 18 34 C 10 34, 3 27, 2 19 C 1 15 3 12 6 13 C 9 14 10 17 11 19 C 12 23 15 25 18 25 C 22 25 25 22 25 18 C 25 14 22 11 18 11 C 15 11 12 12 11 15 C 9 16 6 16 5 14 C 3 13 4 10 6 8 C 9 4 13 2 18 2 Z" fill="url(#waveLogoBackGrad)" />
-                      </svg>
-                      <span class="c-back-brand-name">CURELITH</span>
-                    </div>
+                  <!-- Footer -->
+                  <div class="c-footer" style="font-family:var(--mono); font-size:9px; color:var(--ink-soft);">
+                    <span>Care Desk: +91 99400 99992</span>
+                    <span style="color:var(--pine); font-weight:600;">www.curelith.com</span>
                   </div>
                 </div>
               </div>
@@ -2331,7 +1945,6 @@
 
     function updatePreviewFromForm() {
       const name = document.getElementById('patientName').value.trim() || 'Sarah Ananya';
-      const phone = document.getElementById('patientPhone').value.trim() || '98400 99992';
       const blood = document.getElementById('bloodGroup').value || 'O+VE';
       const age = document.getElementById('patientAge').value.trim() || '28';
       const gender = document.getElementById('patientGender').value || 'Female';
@@ -2340,38 +1953,13 @@
       const allergies = document.getElementById('knownAllergies').value.trim() || 'None';
       const conditions = document.getElementById('chronicConditions').value.trim() || 'None';
 
-      const cleanPhone = phone.startsWith('+') ? phone : (phone.length === 10 ? '+91 ' + phone : phone);
-      const formattedBlood = blood.replace(/VE/i, '+ve').replace(/NEG/i, '-ve').replace(/POS/i, '+ve');
-
-      if (document.getElementById('cardNameDisplay')) document.getElementById('cardNameDisplay').innerText = name;
-      if (document.getElementById('cardPhoneDisplay')) document.getElementById('cardPhoneDisplay').innerText = cleanPhone;
-      if (document.getElementById('cardDemographicsDisplay')) document.getElementById('cardDemographicsDisplay').innerText = `${gender} • ${age} Yrs`;
-      if (document.getElementById('cardBloodDisplay')) document.getElementById('cardBloodDisplay').innerText = formattedBlood;
-      if (document.getElementById('cardBackBloodDisplay')) document.getElementById('cardBackBloodDisplay').innerText = formattedBlood;
-      
-      if (document.getElementById('cardEmergencyCombinedDisplay')) {
-        document.getElementById('cardEmergencyCombinedDisplay').innerText = `${emName} • ${emPhone}`;
-      }
-
-      if (document.getElementById('campRemarksCell')) {
-        if (allergies && allergies.toLowerCase() !== 'none' && conditions && conditions.toLowerCase() !== 'none') {
-          document.getElementById('campRemarksCell').innerText = `${allergies} • ${conditions}`;
-        } else if (allergies && allergies.toLowerCase() !== 'none') {
-          document.getElementById('campRemarksCell').innerText = `Allergy: ${allergies}`;
-        } else if (conditions && conditions.toLowerCase() !== 'none') {
-          document.getElementById('campRemarksCell').innerText = `Alert: ${conditions}`;
-        } else {
-          document.getElementById('campRemarksCell').innerText = 'Vitals OK • Card Issued';
-        }
-      }
-
-      const today = new Date();
-      const dd = String(today.getDate()).padStart(2, '0');
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const yyyy = today.getFullYear();
-      if (document.getElementById('campDateCell')) {
-        document.getElementById('campDateCell').innerText = `${dd}/${mm}/${yyyy}`;
-      }
+      document.getElementById('cardNameDisplay').innerText = name;
+      document.getElementById('cardBloodDisplay').innerText = blood.replace('VE', 've');
+      document.getElementById('cardDemographicsDisplay').innerText = `Age ${age} • ${gender}`;
+      document.getElementById('cardEmergencyNameDisplay').innerText = `📞 ${emName}`;
+      document.getElementById('cardEmergencyPhoneDisplay').innerText = emPhone;
+      document.getElementById('cardAllergiesDisplay').innerText = allergies;
+      document.getElementById('cardConditionsDisplay').innerText = conditions;
     }
 
     function handlePhotoSelect(event) {
@@ -3001,8 +2589,15 @@
         // 1. Render Front Face
         stage.innerHTML = '';
         const fClone = frontContent.cloneNode(true);
-        fClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:1.5px solid rgba(12,56,50,0.18); background:#F4F7F4; transform:none; -webkit-transform:none; box-sizing:border-box; overflow:hidden; position:relative;';
+        fClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:2px solid #DCD7C8; transform:none; -webkit-transform:none; box-sizing:border-box;';
         
+        // Remove restrictive overflow clipping on text inside clone so html2canvas never cuts off font descenders
+        fClone.querySelectorAll('.c-patient-name, .c-tag-val, .c-patient-sub, .c-ice-contact, .c-tag-row, .c-info-col').forEach(el => {
+          el.style.overflow = 'visible';
+          el.style.textOverflow = 'clip';
+          el.style.lineHeight = '1.4';
+          el.style.paddingBottom = '3px';
+        });
         stage.appendChild(fClone);
 
         const canvasFront = await html2canvas(stage, {
@@ -3018,7 +2613,7 @@
         // 2. Render Back Face (100% normal orientation, zero CSS transform)
         stage.innerHTML = '';
         const bClone = backContent.cloneNode(true);
-        bClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:1.5px solid rgba(12,56,50,0.18); background:#F4F7F4; transform:none; -webkit-transform:none; box-sizing:border-box; overflow:hidden; position:relative;';
+        bClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:2px solid #DCD7C8; transform:none; -webkit-transform:none; box-sizing:border-box;';
         bClone.querySelectorAll('*').forEach(el => {
           if (el.style && el.style.transform) el.style.transform = 'none';
         });
@@ -3046,12 +2641,6 @@
         if (btn) btn.innerText = originalText;
       }
     }
-
-    // Initialize preview on load
-    document.addEventListener('DOMContentLoaded', () => {
-      updatePreviewFromForm();
-    });
-    updatePreviewFromForm();
   </script>
 </body>
 </html>
