@@ -180,8 +180,8 @@
     backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line-dark);
   }
-  .nav{ display:flex; align-items:center; justify-content:space-between; height:80px; }
-  .brand{ display:flex; align-items:center; gap:11px; font-family:var(--serif); font-weight:600; font-size:21px; color:#fff; }
+  .nav{ display:flex; align-items:center; justify-content:space-between; height:80px; gap:20px; }
+  .brand{ display:flex; align-items:center; gap:11px; font-family:var(--serif); font-weight:600; font-size:21px; color:#fff; flex-shrink:0; margin-right:12px; }
   .brand-mark{
     width:34px; height:34px;
     flex:none;
@@ -189,10 +189,10 @@
   }
   .brand-mark svg{ width:100%; height:100%; }
 
-  nav.links{ display:flex; align-items:center; gap:38px; }
-  nav.links a{ font-size:14.5px; font-weight:500; color:var(--mist); transition:color .15s ease; }
+  nav.links{ display:flex; align-items:center; gap:clamp(14px, 1.8vw, 24px); flex-wrap:nowrap; }
+  nav.links a{ font-size:14px; font-weight:500; color:var(--mist); transition:color .15s ease; white-space:nowrap; }
   nav.links a:hover{ color:#fff; }
-  .nav-actions{ display:flex; align-items:center; gap:14px; }
+  .nav-actions{ display:flex; align-items:center; gap:12px; flex-shrink:0; }
 
   /* ================= HERO ================= */
   .hero{

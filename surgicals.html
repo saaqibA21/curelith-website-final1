@@ -430,6 +430,116 @@
       font-size: 14px;
     }
 
+    /* Header & Navigation Spacing Fix */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: rgba(15, 27, 25, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line-dark);
+      width: 100%;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 21px;
+      color: #FFFFFF;
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: 16px;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      flex: none;
+      display: block;
+      object-fit: contain;
+    }
+
+    nav.links {
+      display: flex;
+      align-items: center;
+      gap: clamp(14px, 1.8vw, 24px);
+      flex-wrap: nowrap;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav.links a {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--mist);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 4px;
+      white-space: nowrap;
+      transition: color 0.15s ease;
+    }
+
+    nav.links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: width .25s ease;
+    }
+
+    nav.links a:hover::after,
+    nav.links a.active::after {
+      width: 100%;
+    }
+
+    nav.links a:hover {
+      color: #FFFFFF;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle span {
+      width: 22px;
+      height: 2px;
+      background: #FFFFFF;
+      display: block;
+    }
+
+    @media (max-width: 1060px) {
+      nav.links, .nav-actions { display: none !important; }
+      .menu-toggle { display: flex; }
+    }
+
     /* Active Pill in Header */
     .nav-soon-pill {
       font-family: var(--mono);
@@ -467,7 +577,6 @@
       </nav>
 
       <div class="nav-actions">
-        <a href="patient-login.html" class="btn btn-ghost-dark btn-sm">Patient Portal</a>
         <a href="#earlyAccessBox" class="btn btn-primary btn-sm">Priority Whitelist</a>
       </div>
 
