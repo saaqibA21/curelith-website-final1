@@ -279,6 +279,199 @@
       gap: 8px;
     }
 
+    /* ================= TERMS & CONDITIONS BOX & MODAL ================= */
+    .terms-agreement-box {
+      background: var(--card-tint);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 24px;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .terms-agreement-box.has-error {
+      border-color: #DC2626 !important;
+      background: #FFF5F5 !important;
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.15) !important;
+      animation: errorShake 0.4s ease;
+    }
+    @keyframes errorShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .terms-checkbox-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .terms-checkbox-label input[type="checkbox"] {
+      margin-top: 3px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--pine);
+      flex-shrink: 0;
+    }
+    .terms-checkbox-label a {
+      color: var(--pine);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .terms-checkbox-label a:hover {
+      color: var(--clay-deep);
+    }
+
+    .terms-summary-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--line);
+    }
+    .terms-pill {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: var(--ink-soft);
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 3px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 27, 25, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.active {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 18px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(15, 27, 25, 0.1);
+      overflow: hidden;
+      transform: translateY(20px) scale(0.98);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-backdrop.active .modal-card {
+      transform: translateY(0) scale(1);
+    }
+    .modal-head {
+      padding: 22px 28px;
+      background: var(--void);
+      color: #FFFFFF;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line-dark);
+    }
+    .modal-head h3 {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 600;
+      color: #FFFFFF;
+      line-height: 1.25;
+    }
+    .modal-head p {
+      font-size: 12.5px;
+      color: var(--mist);
+      margin-top: 4px;
+      font-family: var(--sans);
+    }
+    .modal-close-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: none;
+      color: #FFFFFF;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+      flex-shrink: 0;
+    }
+    .modal-close-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+    .modal-body {
+      padding: 24px 28px;
+      overflow-y: auto;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+    .modal-body h4 {
+      font-family: var(--serif);
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--void);
+      margin: 20px 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-body h4:first-child {
+      margin-top: 0;
+    }
+    .modal-body p {
+      margin-bottom: 12px;
+      color: var(--ink-soft);
+    }
+    .modal-alert-box {
+      background: #FEF3C7;
+      border-left: 4px solid #D97706;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 12.5px;
+      color: #92400E;
+      line-height: 1.5;
+    }
+    .modal-foot {
+      padding: 18px 28px;
+      background: var(--card-tint);
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
     /* PREVIEW CONTAINER (RIGHT) */
     .preview-sticky {
       position: sticky;
@@ -653,7 +846,23 @@
               </div>
             </div>
 
-            <div style="margin-top:24px;">
+            <!-- TERMS & CONDITIONS AGREEMENT -->
+            <div class="terms-agreement-box" id="termsAgreementBox">
+              <label class="terms-checkbox-label">
+                <input type="checkbox" id="agreeTerms" required onchange="handleTermsCheckboxChange()">
+                <span>
+                  I have read, understood, and agree to the <a href="javascript:void(0)" onclick="openTermsModal()">Emergency Medical Pass Terms &amp; Conditions</a> and provide informed consent for first responders to access my emergency summary via the SOS QR code. <span class="req">*</span>
+                </span>
+              </label>
+              <div class="terms-summary-pills">
+                <span class="terms-pill">🏥 Medical Disclaimer</span>
+                <span class="terms-pill">🔒 DPDP Act 2023 Compliant</span>
+                <span class="terms-pill">🚑 Good Samaritan Consent</span>
+                <span class="terms-pill">🩺 Doctor Upload Channel</span>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;">
               <button type="submit" id="generateBtn" class="btn btn-primary" style="width:100%; justify-content:center; padding:15px; font-size:15px;">
                 Generate Official Card &amp; QRs →
               </button>
@@ -842,6 +1051,55 @@
     </div>
   </footer>
 
+  <!-- ================= TERMS & CONDITIONS MODAL ================= -->
+  <div class="modal-backdrop" id="termsModal" onclick="handleModalBackdropClick(event)">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="termsModalTitle">
+      <div class="modal-head">
+        <div>
+          <span class="pill" style="background:rgba(232,199,123,0.15); color:var(--gold); border:1px solid rgba(232,199,123,0.3); margin-bottom:8px; display:inline-block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; padding:3px 8px; border-radius:5px;">Legal &amp; Clinical Terms</span>
+          <h3 id="termsModalTitle">Emergency Health Card — Terms of Use &amp; Clinical Consent</h3>
+          <p>Please review these terms governing emergency triage access, data accuracy, and medical locker uploads.</p>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeTermsModal()" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-alert-box">
+          <strong>⚠️ Critical Emergency Notice:</strong> The Curelith Emergency Health Card is designed to assist first responders with fast clinical information during accidents or sudden illnesses. It is NOT an insurance card, nor a substitute for calling emergency medical services (108 / 112 in India).
+        </div>
+
+        <h4>1. Purpose &amp; Scope of the Medical Pass</h4>
+        <p>The Curelith Emergency Health Card ("Med-Pass") is a digital health utility designed to store and display patient-declared vital information—such as blood group, drug and food allergies, pre-existing chronic conditions, and designated Next-of-Kin (ICE) emergency contacts—facilitating expedited care during medical emergencies.</p>
+
+        <h4>2. Medical &amp; Clinical Disclaimer</h4>
+        <p>Curelith Intelligence is a digital health technology company and is <strong>not</strong> a hospital, registered medical practitioner (RMP), clinical laboratory, or emergency response dispatch agency. The Emergency Health Card does not constitute medical advice, diagnosis, treatment, or clinical prognosis. In any acute medical emergency, first responders and healthcare professionals must follow standard emergency trauma protocols and exercise their independent medical judgment.</p>
+
+        <h4>3. Patient Responsibility &amp; Accuracy of Data</h4>
+        <p>You warrant that all information provided—including your legal name, mobile number, blood group, allergies, chronic illnesses, and emergency contact details—is truthful, accurate, and current. You acknowledge that providing erroneous, incomplete, or outdated information (such as an incorrect blood group or undisclosed allergy) poses severe clinical hazards for which Curelith disclaims all legal, civil, or medical liability.</p>
+
+        <h4>4. Good Samaritan &amp; First Responder Access Consent</h4>
+        <p>By generating, downloading, printing, or carrying this card, you grant explicit and informed consent for any paramedic, first responder, emergency room physician, nurse, police officer, or Good Samaritan who scans the Front SOS QR code to access your emergency health summary immediately, without authentication, solely for administering emergency triage or contacting your emergency family contacts.</p>
+
+        <h4>5. Physician Portal &amp; Clinical Locker Uploads</h4>
+        <p>The Back QR code provides an authorized clinical gateway for certified physicians and diagnostic laboratories to upload prescriptions, scan summaries, and lab reports directly into your secure Curelith Medical Locker. To safeguard sensitive medical history, viewing or downloading full medical files requires entering your confidential 4-digit PIN.</p>
+
+        <h4>6. Data Privacy, Storage &amp; DPDP Act Compliance (India)</h4>
+        <p>Your health information is managed in compliance with the Digital Personal Data Protection Act, 2023 (DPDP Act) and the Information Technology Rules, 2011. Data is encrypted in transit and at rest. You retain the right to modify, regenerate, or permanently request deletion of your emergency card records at any time by contacting Curelith Care Support or through your Curelith account.</p>
+
+        <h4>7. Limitation of Platform Liability</h4>
+        <p>While Curelith employs resilient cloud infrastructure, Curelith does not warrant that digital access will be 100% uninterrupted during telecommunication outages, device hardware failure, or QR code physical wear and tear. Curelith shall not be held liable for any indirect, punitive, or consequential damages resulting from technical downtime or inability to scan digital cards.</p>
+
+        <h4>8. Governing Law</h4>
+        <p>These terms shall be governed by and construed in accordance with the laws of India. Any legal dispute or proceeding arising out of or related to this service shall be subject to the exclusive jurisdiction of the competent courts in Tamil Nadu, India.</p>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-outline" onclick="closeTermsModal()" style="padding:10px 18px; font-size:13.5px;">Close</button>
+        <button type="button" class="btn btn-primary" onclick="acceptTermsAndClose()" style="padding:10px 22px; font-size:13.5px;">I Accept &amp; Agree</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let isFlipped = false;
     let currentPhotoBase64 = null;
@@ -904,8 +1162,65 @@
       }
     }
 
+    /* ================= TERMS MODAL HANDLERS ================= */
+    function openTermsModal() {
+      const modal = document.getElementById('termsModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTermsModal() {
+      const modal = document.getElementById('termsModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function acceptTermsAndClose() {
+      const agreeCheckbox = document.getElementById('agreeTerms');
+      if (agreeCheckbox) {
+        agreeCheckbox.checked = true;
+        handleTermsCheckboxChange();
+      }
+      closeTermsModal();
+    }
+
+    function handleTermsCheckboxChange() {
+      const box = document.getElementById('termsAgreementBox');
+      const agreeCheckbox = document.getElementById('agreeTerms');
+      if (agreeCheckbox && agreeCheckbox.checked) {
+        box.classList.remove('has-error');
+      }
+    }
+
+    function handleModalBackdropClick(e) {
+      if (e.target.id === 'termsModal') {
+        closeTermsModal();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('termsModal');
+        if (modal && modal.classList.contains('active')) {
+          closeTermsModal();
+        }
+      }
+    });
+
     async function handleFormSubmit(event) {
       event.preventDefault();
+
+      const agreeCheckbox = document.getElementById('agreeTerms');
+      const termsBox = document.getElementById('termsAgreementBox');
+      if (!agreeCheckbox || !agreeCheckbox.checked) {
+        if (termsBox) {
+          termsBox.classList.add('has-error');
+          termsBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        alert('Please review and agree to the Emergency Medical Pass Terms & Conditions before generating your official card.');
+        return;
+      }
+
       const btn = document.getElementById('generateBtn');
       const statusMsg = document.getElementById('statusMsg');
       btn.disabled = true;
@@ -915,6 +1230,7 @@
       statusMsg.innerText = 'Creating verified emergency card...';
 
       const formData = new FormData();
+      formData.append('terms_accepted', '1');
       formData.append('patient_phone', document.getElementById('patientPhone').value);
       formData.append('patient_name', document.getElementById('patientName').value);
       formData.append('blood_group', document.getElementById('bloodGroup').value);
