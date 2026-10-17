@@ -415,21 +415,21 @@
 
     .c-info-col { min-width: 0; padding-right: 4px; }
     .c-patient-name {
-      font-family: var(--serif); font-size: 19px; font-weight: 700; color: var(--ink);
-      line-height: 1.25; padding-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--ink);
+      line-height: 1.35; padding: 2px 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .c-patient-sub {
-      font-size: 11px; color: var(--ink-soft); margin-top: 2px; font-weight: 500;
+      font-size: 11px; color: var(--ink-soft); margin-top: 2px; font-weight: 500; line-height: 1.3;
     }
-    .c-tags { margin-top: 6px; display: flex; flex-direction: column; gap: 3px; }
-    .c-tag-row { display: flex; align-items: center; gap: 6px; font-size: 10.5px; }
+    .c-tags { margin-top: 5px; display: flex; flex-direction: column; gap: 3px; }
+    .c-tag-row { display: flex; align-items: center; gap: 6px; font-size: 10.5px; line-height: 1.35; }
     .c-tag-lbl {
       font-family: var(--mono); font-size: 8px; font-weight: 700; text-transform: uppercase;
       padding: 1px 4px; border-radius: 3px;
     }
     .c-tag-lbl.alr { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
     .c-tag-lbl.cnd { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
-    .c-tag-val { font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .c-tag-val { font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.35; padding-bottom: 2px; }
 
     .c-blood-badge {
       width: 66px; height: 66px; border-radius: 14px;
@@ -964,6 +964,10 @@
     }
 
     async function downloadCardPDF() {
+      const btn = event?.target || document.querySelector('.preview-actions button');
+      const originalText = btn ? btn.innerText : '';
+      if (btn) btn.innerText = 'Generating High-Res PDF...';
+
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
         orientation: 'landscape',
@@ -971,53 +975,75 @@
         format: [85.6, 53.98] // standard CR80 wallet card size
       });
 
-      const frontEl = document.getElementById('cardFrontFace');
-      const backEl = document.getElementById('cardBackFace');
+      // Wait for all web fonts (Fraunces, Inter, IBM Plex Mono) to finish rendering
+      if (document.fonts) {
+        await document.fonts.ready;
+      }
 
-      // Create an off-screen non-transformed clone container to ensure 100% crisp, un-mirrored rendering
-      const cloneContainer = document.createElement('div');
-      cloneContainer.style.position = 'fixed';
-      cloneContainer.style.left = '-9999px';
-      cloneContainer.style.top = '0';
-      cloneContainer.style.width = '440px';
-      cloneContainer.style.height = '275px';
-      cloneContainer.style.transform = 'none';
-      cloneContainer.style.webkitTransform = 'none';
-      document.body.appendChild(cloneContainer);
+      // Target the un-transformed inner content boxes directly (.c-face-content)
+      const frontContent = document.querySelector('#cardFrontFace .c-face-content');
+      const backContent = document.querySelector('#cardBackFace .c-face-content');
 
-      // 1. Render Front Face
-      const frontClone = frontEl.cloneNode(true);
-      frontClone.style.transform = 'none';
-      frontClone.style.webkitTransform = 'none';
-      frontClone.style.position = 'relative';
-      frontClone.style.width = '100%';
-      frontClone.style.height = '100%';
-      cloneContainer.appendChild(frontClone);
+      // Create an off-screen staging wrapper strictly matching CR80 ratio (444x280 = 1.5857) with NO 3D rotation
+      const stage = document.createElement('div');
+      stage.style.cssText = 'position:fixed; left:-9999px; top:0; width:444px; height:280px; z-index:-1; background:#ffffff;';
+      document.body.appendChild(stage);
 
-      const canvasFront = await html2canvas(frontClone, { scale: 3, useCORS: true, backgroundColor: '#FFFFFF' });
-      const imgFront = canvasFront.toDataURL('image/png');
-      pdf.addImage(imgFront, 'PNG', 0, 0, 85.6, 53.98);
+      try {
+        // 1. Render Front Face
+        stage.innerHTML = '';
+        const fClone = frontContent.cloneNode(true);
+        fClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:2px solid #DCD7C8; transform:none; -webkit-transform:none; box-sizing:border-box;';
+        
+        // Remove restrictive overflow clipping on text inside clone so html2canvas never cuts off font descenders
+        fClone.querySelectorAll('.c-patient-name, .c-tag-val, .c-patient-sub, .c-ice-contact, .c-tag-row, .c-info-col').forEach(el => {
+          el.style.overflow = 'visible';
+          el.style.textOverflow = 'clip';
+          el.style.lineHeight = '1.4';
+          el.style.paddingBottom = '3px';
+        });
+        stage.appendChild(fClone);
 
-      // 2. Render Back Face (strictly un-flipped)
-      cloneContainer.innerHTML = '';
-      const backClone = backEl.cloneNode(true);
-      backClone.style.transform = 'none';
-      backClone.style.webkitTransform = 'none';
-      backClone.style.position = 'relative';
-      backClone.style.width = '100%';
-      backClone.style.height = '100%';
-      cloneContainer.appendChild(backClone);
+        const canvasFront = await html2canvas(stage, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#FFFFFF',
+          logging: false
+        });
+        const imgFront = canvasFront.toDataURL('image/png', 1.0);
+        pdf.addImage(imgFront, 'PNG', 0, 0, 85.6, 53.98);
 
-      const canvasBack = await html2canvas(backClone, { scale: 3, useCORS: true, backgroundColor: '#FFFFFF' });
-      const imgBack = canvasBack.toDataURL('image/png');
-      pdf.addPage([85.6, 53.98], 'landscape');
-      pdf.addImage(imgBack, 'PNG', 0, 0, 85.6, 53.98);
+        // 2. Render Back Face (100% normal orientation, zero CSS transform)
+        stage.innerHTML = '';
+        const bClone = backContent.cloneNode(true);
+        bClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:2px solid #DCD7C8; transform:none; -webkit-transform:none; box-sizing:border-box;';
+        bClone.querySelectorAll('*').forEach(el => {
+          if (el.style && el.style.transform) el.style.transform = 'none';
+        });
+        stage.appendChild(bClone);
 
-      // Clean up clone
-      document.body.removeChild(cloneContainer);
+        const canvasBack = await html2canvas(stage, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#FFFFFF',
+          logging: false
+        });
+        const imgBack = canvasBack.toDataURL('image/png', 1.0);
+        pdf.addPage([85.6, 53.98], 'landscape');
+        pdf.addImage(imgBack, 'PNG', 0, 0, 85.6, 53.98);
 
-      const name = document.getElementById('patientName').value.trim() || 'Curelith_Emergency_Card';
-      pdf.save(`${name.replace(/\s+/g, '_')}_Emergency_Card.pdf`);
+        const name = document.getElementById('patientName').value.trim() || 'Curelith_Emergency_Card';
+        pdf.save(`${name.replace(/\s+/g, '_')}_Emergency_Card.pdf`);
+      } catch (err) {
+        alert('Could not render PDF: ' + err.message);
+      } finally {
+        if (document.body.contains(stage)) {
+          document.body.removeChild(stage);
+        }
+        if (btn) btn.innerText = originalText;
+      }
     }
   </script>
 </body>
