@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doctor Portal — Curelith Clinical Intake</title>
+  <title>Doctor Portal &amp; Medical Locker — Curelith Clinical Access</title>
   
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
@@ -37,7 +37,7 @@
       --sans:  "Inter", -apple-system, sans-serif;
       --mono:  "IBM Plex Mono", monospace;
 
-      --max: 680px;
+      --max: 720px;
       --radius: 16px;
     }
 
@@ -89,10 +89,10 @@
       font-weight: 600;
     }
 
-    /* MAIN FORM */
+    /* MAIN */
     main { padding: 30px 0 48px; }
 
-    .upload-card {
+    .portal-card {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -100,6 +100,7 @@
       overflow: hidden;
     }
 
+    /* PATIENT STRIP */
     .patient-strip {
       padding: 20px 24px;
       background: var(--card-tint);
@@ -140,10 +141,293 @@
       border-radius: 10px;
     }
 
-    .form-content {
-      padding: 26px 24px;
+    /* TABS */
+    .tabs-nav {
+      display: flex;
+      background: #FAFAFA;
+      border-bottom: 1px solid var(--line);
+      padding: 8px 16px 0;
+      gap: 10px;
+    }
+    .tab-btn {
+      font-family: var(--sans);
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      background: transparent;
+      color: var(--ink-soft);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .15s ease;
+    }
+    .tab-btn:hover {
+      color: var(--ink);
+    }
+    .tab-btn.active {
+      background: #FFFFFF;
+      color: var(--pine);
+      border-color: var(--line);
+      border-bottom: 1px solid #FFFFFF;
+      margin-bottom: -1px;
+      font-weight: 700;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.02);
     }
 
+    /* PIN UNLOCK VIEW */
+    .pin-unlock-box {
+      padding: 44px 28px 40px;
+      text-align: center;
+    }
+    .pin-icon-badge {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: rgba(30,66,61,0.08);
+      border: 1px solid rgba(30,66,61,0.18);
+      color: var(--pine);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin: 0 auto 16px;
+    }
+    .pin-unlock-box h3 {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .pin-unlock-box p {
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      max-width: 440px;
+      margin: 0 auto 24px;
+      line-height: 1.5;
+    }
+    .pin-input-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .pin-code-input {
+      font-family: var(--mono);
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.35em;
+      text-align: center;
+      width: 200px;
+      padding: 12px 14px;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      background: #FAFAFA;
+      color: var(--ink);
+      outline: none;
+      transition: all .2s ease;
+    }
+    .pin-code-input:focus {
+      background: #FFFFFF;
+      border-color: var(--pine);
+      box-shadow: 0 0 0 4px rgba(30,66,61,0.1);
+    }
+    .pin-hint {
+      font-size: 12px;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      background: var(--card-tint);
+      border: 1px dashed var(--line);
+      padding: 6px 14px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    /* UNLOCKED LOCKER VIEW */
+    .locker-unlocked-view {
+      padding: 24px;
+      display: none;
+    }
+    .locker-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 20px;
+    }
+    .locker-title {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-count {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: rgba(30,66,61,0.08);
+      color: var(--pine);
+      border: 1px solid rgba(30,66,61,0.2);
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .btn-lock {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 5px 10px;
+      color: var(--ink-soft);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-lock:hover {
+      background: var(--card-tint);
+      color: var(--ink);
+    }
+
+    .locker-files-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .locker-file-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: all .15s ease;
+    }
+    .locker-file-card:hover {
+      border-color: var(--pine);
+      box-shadow: 0 10px 24px -10px rgba(30,66,61,0.12);
+    }
+    .file-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      min-width: 0;
+    }
+    .file-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .file-icon.pdf {
+      background: #FEF2F2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+    }
+    .file-icon.img {
+      background: #EFF6FF;
+      color: #2563EB;
+      border: 1px solid #BFDBFE;
+    }
+    .file-details {
+      min-width: 0;
+    }
+    .file-name {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-source {
+      font-size: 12px;
+      color: var(--pine);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .file-date {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 3px;
+    }
+    .file-notes {
+      font-size: 12px;
+      color: var(--ink-soft);
+      background: #FAFAFA;
+      border-left: 3px solid var(--pine);
+      padding: 4px 8px;
+      margin-top: 6px;
+      border-radius: 0 4px 4px 0;
+      line-height: 1.4;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      color: #241208;
+      background: var(--clay);
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px -4px rgba(212,130,74,0.4);
+      transition: background .15s ease;
+    }
+    .btn-download:hover {
+      background: var(--clay-deep);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 44px 20px;
+    }
+    .empty-icon {
+      font-size: 38px;
+      margin-bottom: 12px;
+      opacity: 0.7;
+    }
+    .empty-state h4 {
+      font-family: var(--serif);
+      font-size: 17px;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .empty-state p {
+      font-size: 13px;
+      color: var(--ink-soft);
+      max-width: 380px;
+      margin: 0 auto 16px;
+    }
+
+    /* UPLOAD FORM */
+    .upload-form-view {
+      padding: 26px 24px;
+      display: none;
+    }
     .form-group { margin-bottom: 20px; }
     .form-label {
       display: block;
@@ -174,7 +458,6 @@
       border-color: var(--pine);
       box-shadow: 0 0 0 3px rgba(30,66,61,0.08);
     }
-
     textarea.input-field { resize: vertical; min-height: 85px; }
 
     .btn-submit {
@@ -227,7 +510,7 @@
   <main>
     <div class="wrap">
       
-      <div class="upload-card">
+      <div class="portal-card">
         
         <!-- Patient Identity Strip -->
         <div class="patient-strip">
@@ -239,37 +522,95 @@
           <div id="patientBlood" class="blood">--</div>
         </div>
 
-        <!-- Form -->
-        <form id="uploadForm" class="form-content" onsubmit="handleUploadSubmit(event)">
-          <input type="hidden" id="cardUuid">
+        <!-- 2 TABS NAVIGATION -->
+        <div class="tabs-nav">
+          <button type="button" class="tab-btn active" id="tabBtnLocker" onclick="switchPortalTab('locker')">
+            📂 View Patient Locker
+          </button>
+          <button type="button" class="tab-btn" id="tabBtnUpload" onclick="switchPortalTab('upload')">
+            📤 Upload Clinical Report
+          </button>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label">Doctor / Clinic Name <span class="req">*</span></label>
-            <input type="text" id="doctorName" required placeholder="e.g. Dr. K. Sundaram / Apollo Clinic" class="input-field">
+        <!-- TAB 1: LOCKER ACCESS -->
+        <div id="tabLockerContent">
+
+          <!-- State A: PIN Entry (Locked) -->
+          <div id="pinUnlockSection" class="pin-unlock-box">
+            <div class="pin-icon-badge">🔐</div>
+            <h3>Unlock Patient Medical Records</h3>
+            <p>Enter the confidential 4-digit security PIN printed on the back of the patient's physical card to access their complete prescriptions, lab reports, and imaging history.</p>
+
+            <form onsubmit="handlePinUnlock(event)" class="pin-input-wrap">
+              <input type="password" id="inputPin" required maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="● ● ● ●" class="pin-code-input" autocomplete="off">
+              <button type="submit" id="unlockBtn" class="btn-submit" style="width: auto; padding: 12px 28px; font-size: 14px;">
+                Unlock Medical Locker →
+              </button>
+            </form>
+
+            <div id="pinStatusMsg" style="display:none; font-family:var(--mono); font-size:12px; margin-bottom:12px; font-weight:600;"></div>
+            <div class="pin-hint">💡 Hint: The PIN is printed directly on the back of the patient's card.</div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Hospital / Test Center</label>
-            <input type="text" id="hospitalName" placeholder="e.g. Orthomed Hospital Chennai" class="input-field">
+          <!-- State B: Unlocked Files List -->
+          <div id="unlockedLockerSection" class="locker-unlocked-view">
+            <div class="locker-head">
+              <div class="locker-title">
+                <span>📁 Patient Medical Locker</span>
+                <span id="filesCountBadge" class="badge-count">0 Records</span>
+              </div>
+              <button type="button" onclick="lockLocker()" class="btn-lock">
+                🔒 Lock Locker
+              </button>
+            </div>
+
+            <!-- List of files -->
+            <div id="filesListContainer" class="locker-files-list">
+              <!-- Dynamically populated -->
+            </div>
+
+            <div style="margin-top:24px; text-align:center;">
+              <button type="button" onclick="switchPortalTab('upload')" class="btn-submit" style="display:inline-flex; width:auto; padding:12px 24px; font-size:13.5px; background:var(--pine); color:#fff; box-shadow:none;">
+                + Upload New Prescription or Report
+              </button>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Prescription or Report File (PDF / Image) <span class="req">*</span></label>
-            <input type="file" id="reportFile" required accept="image/*,application/pdf" class="input-field" style="padding: 8px;">
-          </div>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label">Clinical Advice / Diagnosis Notes</label>
-            <textarea id="notes" placeholder="e.g. Lumbar spondylosis. Prescribed physiotherapy and muscle relaxants. Review in 10 days." class="input-field"></textarea>
-          </div>
+        <!-- TAB 2: UPLOAD REPORT FORM -->
+        <div id="tabUploadContent" class="upload-form-view">
+          <form id="uploadForm" onsubmit="handleUploadSubmit(event)">
+            <input type="hidden" id="cardUuid">
 
-          <div>
-            <button type="submit" id="submitBtn" class="btn-submit">
-              Save to Patient Locker →
-            </button>
-            <div id="uploadStatus" style="display:none; font-family:var(--mono); font-size:12px; text-align:center; margin-top:10px; font-weight:600;"></div>
-          </div>
-        </form>
+            <div class="form-group">
+              <label class="form-label">Doctor / Clinic Name <span class="req">*</span></label>
+              <input type="text" id="doctorName" required placeholder="e.g. Dr. K. Sundaram / Apollo Clinic" class="input-field">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Hospital / Test Center</label>
+              <input type="text" id="hospitalName" placeholder="e.g. Orthomed Hospital Chennai" class="input-field">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Prescription or Report File (PDF / Image) <span class="req">*</span></label>
+              <input type="file" id="reportFile" required accept="image/*,application/pdf" class="input-field" style="padding: 8px;">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Clinical Advice / Diagnosis Notes</label>
+              <textarea id="notes" placeholder="e.g. Lumbar spondylosis. Prescribed physiotherapy and muscle relaxants. Review in 10 days." class="input-field"></textarea>
+            </div>
+
+            <div>
+              <button type="submit" id="submitBtn" class="btn-submit">
+                Save to Patient Locker →
+              </button>
+              <div id="uploadStatus" style="display:none; font-family:var(--mono); font-size:12px; text-align:center; margin-top:12px; font-weight:600;"></div>
+            </div>
+          </form>
+        </div>
 
       </div>
 
@@ -285,13 +626,42 @@
   </footer>
 
   <script>
+    let activeCardId = '';
+    let currentUnlockedPin = '';
+
+    function switchPortalTab(tab) {
+      const btnLocker = document.getElementById('tabBtnLocker');
+      const btnUpload = document.getElementById('tabBtnUpload');
+      const contentLocker = document.getElementById('tabLockerContent');
+      const contentUpload = document.getElementById('tabUploadContent');
+
+      if (tab === 'locker') {
+        btnLocker.classList.add('active');
+        btnUpload.classList.remove('active');
+        contentLocker.style.display = 'block';
+        contentUpload.style.display = 'none';
+      } else {
+        btnUpload.classList.add('active');
+        btnLocker.classList.remove('active');
+        contentLocker.style.display = 'none';
+        contentUpload.style.display = 'block';
+      }
+    }
+
     async function initDoctorPortal() {
       const urlParams = new URLSearchParams(window.location.search);
-      const cardId = urlParams.get('id') || 'CL-99992-610A';
-      document.getElementById('cardUuid').value = cardId;
+      activeCardId = urlParams.get('id') || 'CL-99992-610A';
+      document.getElementById('cardUuid').value = activeCardId;
+
+      // Handle query actions
+      if (urlParams.get('action') === 'upload' || urlParams.get('tab') === 'upload') {
+        switchPortalTab('upload');
+      } else {
+        switchPortalTab('locker');
+      }
 
       try {
-        const res = await fetch(`https://api.curelith.com/emergency/data/${cardId}`);
+        const res = await fetch(`https://api.curelith.com/emergency/data/${activeCardId}`);
         const data = await res.json();
         if (data.success && data.card) {
           const c = data.card;
@@ -304,6 +674,125 @@
       } catch (err) {
         document.getElementById('patientName').innerText = 'Patient: Error Loading Card';
       }
+
+      // Check if PIN was passed in query
+      const urlPin = urlParams.get('pin');
+      if (urlPin && urlPin.length === 4) {
+        document.getElementById('inputPin').value = urlPin;
+        fetchLockerFiles(urlPin);
+      }
+    }
+
+    async function handlePinUnlock(event) {
+      if (event) event.preventDefault();
+      const pin = document.getElementById('inputPin').value.trim();
+      if (!pin || pin.length !== 4) {
+        showPinError('Please enter a 4-digit PIN.');
+        return;
+      }
+      fetchLockerFiles(pin);
+    }
+
+    async function fetchLockerFiles(pin) {
+      const btn = document.getElementById('unlockBtn');
+      const status = document.getElementById('pinStatusMsg');
+      btn.disabled = true;
+      btn.innerText = 'Verifying Security PIN...';
+      status.style.display = 'block';
+      status.style.color = 'var(--pine)';
+      status.innerText = 'Decrypting patient medical locker...';
+
+      try {
+        const res = await fetch('https://api.curelith.com/emergency/locker/access', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ card_uuid: activeCardId, pin: pin })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          currentUnlockedPin = pin;
+          status.style.display = 'none';
+          renderUnlockedLocker(data.files || []);
+        } else {
+          showPinError(data.error || 'Incorrect PIN. Please verify the PIN printed on the card.');
+        }
+      } catch (err) {
+        showPinError(`Network error: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Unlock Medical Locker →';
+      }
+    }
+
+    function showPinError(msg) {
+      const status = document.getElementById('pinStatusMsg');
+      status.style.display = 'block';
+      status.style.color = '#DC2626';
+      status.innerText = `⚠️ ${msg}`;
+    }
+
+    function renderUnlockedLocker(files) {
+      document.getElementById('pinUnlockSection').style.display = 'none';
+      const unlockedView = document.getElementById('unlockedLockerSection');
+      unlockedView.style.display = 'block';
+
+      document.getElementById('filesCountBadge').innerText = `${files.length} Record${files.length === 1 ? '' : 's'}`;
+
+      const container = document.getElementById('filesListContainer');
+      container.innerHTML = '';
+
+      if (files.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📂</div>
+            <h4>No Records in Locker Yet</h4>
+            <p>No historical files were found for this patient. Click below to upload their first prescription or report.</p>
+          </div>
+        `;
+        return;
+      }
+
+      files.forEach(f => {
+        const isPdf = f.file_type === 'pdf' || (f.file_url && f.file_url.toLowerCase().endsWith('.pdf'));
+        const iconClass = isPdf ? 'pdf' : 'img';
+        const iconChar = isPdf ? '📄' : '🖼️';
+
+        let dateStr = 'Recent';
+        if (f.created_at) {
+          try {
+            dateStr = new Date(f.created_at).toLocaleDateString('en-IN', {
+              day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+          } catch(e) {}
+        }
+
+        const card = document.createElement('div');
+        card.className = 'locker-file-card';
+        card.innerHTML = `
+          <div class="file-left">
+            <div class="file-icon ${iconClass}">${iconChar}</div>
+            <div class="file-details">
+              <div class="file-name" title="${f.title || f.file_name}">${f.title || f.file_name}</div>
+              <div class="file-source">${f.doctor_name || 'Consultant'} • ${f.hospital_name || 'Clinic'}</div>
+              <div class="file-date">Uploaded: ${dateStr}</div>
+              ${f.notes ? `<div class="file-notes"><strong>Notes:</strong> ${f.notes}</div>` : ''}
+            </div>
+          </div>
+          <a href="${f.file_url}" target="_blank" rel="noopener noreferrer" class="btn-download">
+            📥 View Document ↗
+          </a>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function lockLocker() {
+      currentUnlockedPin = '';
+      document.getElementById('inputPin').value = '';
+      document.getElementById('pinUnlockSection').style.display = 'block';
+      document.getElementById('unlockedLockerSection').style.display = 'none';
+      document.getElementById('pinStatusMsg').style.display = 'none';
     }
 
     async function handleUploadSubmit(event) {
@@ -317,7 +806,7 @@
       status.innerText = 'Attaching to patient locker...';
 
       const formData = new FormData();
-      formData.append('card_uuid', document.getElementById('cardUuid').value);
+      formData.append('card_uuid', activeCardId);
       formData.append('doctor_name', document.getElementById('doctorName').value);
       formData.append('hospital_name', document.getElementById('hospitalName').value);
       formData.append('notes', document.getElementById('notes').value);
@@ -331,8 +820,18 @@
         const data = await res.json();
         if (data.success) {
           status.style.color = '#059669';
-          status.innerText = '✅ Report successfully saved to patient Curelith locker!';
+          status.innerHTML = `
+            <div>✅ Report successfully saved to patient's Curelith locker!</div>
+            <button type="button" onclick="switchPortalTab('locker')" class="btn" style="margin-top:10px; background:var(--pine); color:#fff; padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer; border:none;">
+              📂 Go to Locker View
+            </button>
+          `;
           document.getElementById('uploadForm').reset();
+          
+          // If locker was unlocked, refresh its files
+          if (currentUnlockedPin) {
+            fetchLockerFiles(currentUnlockedPin);
+          }
         } else {
           status.style.color = '#DC2626';
           status.innerText = `Error: ${data.error || 'Failed to upload'}`;

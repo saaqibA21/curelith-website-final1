@@ -426,6 +426,18 @@
           </div>
         </div>
 
+        <!-- Attending Doctor Locker Access Banner -->
+        <div style="background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px; box-shadow:0 10px 25px -10px rgba(15,27,25,0.06);">
+          <div>
+            <div style="font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--pine); font-weight:700;">Attending Doctor / ER Staff</div>
+            <div style="font-size:14px; font-weight:700; color:var(--ink); margin-top:2px;">Need Past Diagnostic Reports &amp; Locker Files?</div>
+            <div style="font-size:11.5px; color:var(--ink-soft); margin-top:2px;">Enter the 4-digit PIN printed on the back of the physical card to unlock historical prescriptions and scans.</div>
+          </div>
+          <a id="doctorLockerBtn" href="doctor-upload.html" style="background:var(--pine); color:#fff; padding:11px 18px; border-radius:10px; font-size:13px; font-weight:700; white-space:nowrap; text-decoration:none; display:inline-flex; align-items:center; gap:6px; flex-shrink:0;">
+            🔐 Open Locker →
+          </a>
+        </div>
+
       </div>
 
     </div>
@@ -474,6 +486,11 @@
           document.getElementById('campName').innerText = c.last_camp_name || 'Curelith Camp';
           document.getElementById('bpText').innerText = c.recent_bp || '120/80';
           document.getElementById('rbsText').innerText = (c.recent_rbs || '104') + ' mg/dL';
+
+          const lockerBtn = document.getElementById('doctorLockerBtn');
+          if (lockerBtn) {
+            lockerBtn.href = `doctor-upload.html?id=${encodeURIComponent(cardId)}`;
+          }
         } else {
           document.getElementById('loadingBox').style.display = 'block';
           document.getElementById('loadingBox').innerHTML = '<p style="color:#DC2626; font-weight:700;">Emergency Card Not Found</p><p style="font-size:12px; margin-top:4px;">Please check the QR code or call Curelith Care Desk.</p>';
