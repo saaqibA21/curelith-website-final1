@@ -316,7 +316,7 @@
 
   /* ================= TOOLS ================= */
   .tools{ background:var(--paper); }
-  .tool-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
+  .tool-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:24px; }
   .tool-card{
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
     padding:36px 30px; position:relative; overflow:hidden;
@@ -639,6 +639,7 @@
       <a href="#why">Why Curelith</a>
       <a href="#tools">Tools</a>
       <a href="doctors.html">Physicians</a>
+      <a href="emergency-card.html" style="color:var(--gold);">Emergency ID</a>
       <a href="hospitals.html">Hospitals</a>
       <a href="about.html">About</a>
     </nav>
@@ -652,7 +653,8 @@
     <a href="#why">Why Curelith</a>
     <a href="#tools">Tools</a>
     <a href="doctors.html">Physicians</a>
-      <a href="hospitals.html">Hospitals</a>
+    <a href="emergency-card.html" style="color:var(--gold);">Emergency ID Card</a>
+    <a href="hospitals.html">Hospitals</a>
     <a href="about.html">About</a>
     <a href="patient-login.html" class="btn btn-ghost-dark btn-sm" style="justify-content: center; margin-top: 10px;">Patient portal</a>
     <a href="#consult" class="btn btn-primary btn-sm" style="justify-content: center;">Start a consult</a>
@@ -804,6 +806,13 @@
           <h3>Symptom Conversation</h3>
           <p>Describe how you're feeling in your own words. Chat with Curelith naturally just like messaging a family doctor, and receive structured, calm health insights.</p>
           <a href="https://wa.me/919042556225" class="tool-link" target="_blank">Try on WhatsApp →</a>
+        </div>
+        <div class="tool-card" tabindex="0" style="background:var(--card-tint); border:1.5px solid var(--pine);">
+          <div class="ring" aria-hidden="true" style="border-color:var(--clay);"></div>
+          <div class="tool-index"><span class="bar" style="background:var(--pine);"></span>04 • NEW</div>
+          <h3 style="color:var(--void);">Emergency Health Card</h3>
+          <p>Create a pocket-sized medical card with your photo, blood group, allergies, and dual QRs — one for first responder emergency SOS and one for doctors to upload reports.</p>
+          <a href="emergency-card.html" class="tool-link" style="color:var(--clay-deep); font-weight:700;">Create Your Free Card →</a>
         </div>
       </div>
     </div>

@@ -3,140 +3,440 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curelith Emergency Health SOS — First Responder View</title>
+  <title>Emergency SOS — Curelith Medical Pass</title>
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <!-- Google Fonts: Fraunces, Inter, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
-    * { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    :root {
+      --void:       #0F1B19;
+      --void-soft:  #16241F;
+      --paper:      #F5F3ED;
+      --card:       #FFFFFF;
+      --card-tint:  #EDEAE0;
+      --ink:        #14201D;
+      --ink-soft:   #4D5C57;
+      --pine:       #1E423D;
+      --pine-light: #2E5C54;
+      --mist:       #8FA89F;
+      --mist-dim:   #5C7A71;
+      --line:       #DCD7C8;
+      --line-dark:  rgba(255,255,255,0.09);
+      --clay:       #D4824A;
+      --clay-deep:  #B5642F;
+      --gold:       #E8C77B;
+
+      --serif: "Fraunces", Georgia, serif;
+      --sans:  "Inter", -apple-system, sans-serif;
+      --mono:  "IBM Plex Mono", monospace;
+
+      --max: 680px;
+      --radius: 16px;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+      font-size: 15px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; width: 100%; }
+
+    /* HEADER */
+    header {
+      background: var(--void);
+      color: #fff;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line-dark);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 9px;
+      font-family: var(--serif); font-size: 19px; font-weight: 600; color: #fff; text-decoration: none;
+    }
+    .brand img { width: 28px; height: 28px; }
+
+    .sos-banner-pill {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: #DC2626;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pulse-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #DC2626;
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    /* MAIN CONTAINER */
+    main { padding: 24px 0 40px; }
+
+    .alert-banner {
+      background: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .alert-banner .icon {
+      font-size: 24px; flex-shrink: 0;
+    }
+    .alert-banner h3 {
+      font-family: var(--serif); font-size: 16px; font-weight: 600; color: #991B1B;
+    }
+    .alert-banner p {
+      font-size: 12.5px; color: #7F1D1D; margin-top: 2px;
+    }
+
+    /* PATIENT CARD */
+    .patient-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px -15px rgba(15,27,25,0.08);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .patient-head {
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .patient-main {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .patient-photo {
+      width: 72px; height: 72px; border-radius: 14px;
+      border: 1.5px solid var(--line);
+      object-fit: cover;
+      background: var(--card-tint);
+      flex-shrink: 0;
+    }
+    .patient-meta .card-id {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--pine);
+      background: rgba(30,66,61,0.08);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+    .patient-meta h1 {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.15;
+    }
+    .patient-meta .demo {
+      font-size: 13px;
+      color: var(--ink-soft);
+      margin-top: 3px;
+    }
+
+    /* BLOOD BADGE */
+    .blood-badge {
+      width: 76px; height: 76px; border-radius: 16px;
+      background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px -4px rgba(220,38,38,0.4);
+      border: 2px solid #fff;
+      flex-shrink: 0;
+    }
+    .blood-badge .lbl {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+    .blood-badge .val {
+      font-family: var(--sans);
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    /* SOS CALL BUTTON */
+    .sos-call-btn {
+      background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+      color: #fff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      box-shadow: 0 10px 24px -8px rgba(220,38,38,0.5);
+      margin-bottom: 20px;
+      transition: transform .15s ease, box-shadow .2s ease;
+    }
+    .sos-call-btn:active { transform: translateY(1px); }
+    .sos-call-btn .left {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sos-call-btn .left .tel-icon {
+      font-size: 24px;
+    }
+    .sos-call-btn .caller-name {
+      font-family: var(--serif);
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .sos-call-btn .caller-phone {
+      font-family: var(--mono);
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+    .sos-call-btn .call-pill {
+      background: rgba(255,255,255,0.22);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    /* MEDICAL FLAGS BOX */
+    .flags-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      margin-bottom: 20px;
+    }
+    .flags-card .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .flags-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .flag-item {
+      background: var(--card-tint);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .flag-item .tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .flag-item .tag.alr { color: #DC2626; }
+    .flag-item .tag.cnd { color: #D97706; }
+    .flag-item .val {
+      font-size: 14px; font-weight: 600; color: var(--ink);
+    }
+
+    /* CAMP VITALS */
+    .vitals-box {
+      border-top: 1px dashed var(--line);
+      padding-top: 16px;
+    }
+    .vitals-head {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: var(--ink-soft); margin-bottom: 10px;
+    }
+    .vitals-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .vital-pill {
+      background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+      padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .vital-pill .k { font-size: 12px; color: var(--ink-soft); }
+    .vital-pill .v { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--pine); }
+
+    /* FOOTER */
+    footer {
+      background: var(--void-soft);
+      color: var(--mist);
+      padding: 24px 0;
+      border-top: 1px solid var(--line-dark);
+      text-align: center;
+      font-size: 12px;
+    }
+    footer a { color: var(--gold); }
+
+    @media (max-width: 500px) {
+      .flags-grid, .vitals-grid { grid-template-columns: 1fr; }
+      .patient-head { flex-direction: column; align-items: flex-start; }
+      .blood-badge { align-self: flex-start; }
+    }
   </style>
 </head>
-<body class="bg-[#050814] text-slate-100 min-h-screen p-4 sm:p-6 flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+<body>
 
-  <!-- Top Emergency Alert Header -->
-  <header class="max-w-xl w-full mx-auto mb-4">
-    <div class="bg-rose-600/20 border-2 border-rose-500/50 rounded-2xl p-4 flex items-center justify-between shadow-lg shadow-rose-950/40">
-      <div class="flex items-center gap-3">
-        <span class="w-3.5 h-3.5 rounded-full bg-rose-500 animate-ping shrink-0"></span>
-        <div>
-          <div class="text-xs font-black uppercase tracking-widest text-rose-300">Curelith Medical SOS</div>
-          <div class="text-sm font-extrabold text-white">First Responder Triage Portal</div>
-        </div>
-      </div>
-      <a href="/" class="shrink-0">
-        <img src="assets/logo.png" alt="Curelith" class="h-6 w-auto brightness-125">
+  <!-- HEADER -->
+  <header>
+    <div class="wrap header-inner">
+      <a href="/" class="brand">
+        <img src="assets/logo.png" alt="Curelith">
+        Curelith
       </a>
+      <div class="sos-banner-pill">
+        <span class="pulse-dot"></span> Emergency SOS
+      </div>
     </div>
   </header>
 
-  <!-- Main Patient Emergency Card View -->
-  <main class="max-w-xl w-full mx-auto space-y-4">
-    
-    <!-- Loading State -->
-    <div id="loadingBox" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">
-      <div class="w-8 h-8 border-2 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-      <p class="text-sm font-semibold">Retrieving patient emergency vitals...</p>
-    </div>
-
-    <!-- Error State -->
-    <div id="errorBox" class="hidden bg-slate-900 border border-rose-500/30 rounded-2xl p-6 text-center text-rose-300">
-      <p class="text-base font-bold mb-1">Emergency Card Not Found</p>
-      <p class="text-xs text-slate-400">Please verify the QR code URL or contact Curelith Care Desk at +91 99400 99992.</p>
-    </div>
-
-    <!-- Loaded Patient Data Card -->
-    <div id="dataBox" class="hidden space-y-4">
-
-      <!-- Patient Header (Photo + Name + Big Blood Badge) -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 shadow-xl relative overflow-hidden">
-        <div class="flex items-center justify-between gap-4">
-          <div class="flex items-center gap-3.5">
-            <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 border-teal-500/50 p-0.5 bg-slate-800 shrink-0">
-              <img id="patientPhoto" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&auto=format&fit=crop&q=80" alt="Patient" class="w-full h-full object-cover rounded-xl">
-            </div>
-            <div>
-              <span id="cardUuid" class="text-[10px] font-mono font-bold text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded border border-teal-500/30">
-                CL-88258-E7
-              </span>
-              <h1 id="patientName" class="text-xl sm:text-2xl font-black text-white mt-1 leading-tight">Sarah Ananya</h1>
-              <p id="patientDemo" class="text-xs text-slate-300 font-semibold mt-0.5">Age 28 • Female</p>
-            </div>
-          </div>
-
-          <!-- Giant Blood Badge -->
-          <div class="shrink-0 flex flex-col items-center justify-center w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-rose-600 to-red-700 text-white shadow-lg shadow-rose-900/50 border-2 border-rose-400/50">
-            <span class="text-[8px] font-black uppercase tracking-widest text-rose-200">Blood</span>
-            <span id="patientBlood" class="text-2xl sm:text-3xl font-black leading-none mt-0.5">O+ve</span>
-          </div>
+  <!-- MAIN -->
+  <main>
+    <div class="wrap">
+      
+      <!-- Top Alert -->
+      <div class="alert-banner">
+        <span class="icon">🚨</span>
+        <div>
+          <h3>First Responder Emergency Portal</h3>
+          <p>This medical ID is verified on the Curelith clinical registry. Review critical flags and dial emergency contacts immediately.</p>
         </div>
       </div>
 
-      <!-- Critical 1-Tap SOS Call Buttons -->
-      <div class="bg-rose-950/40 border border-rose-500/40 rounded-2xl p-4 shadow-lg">
-        <div class="text-xs font-bold uppercase tracking-wider text-rose-300 mb-2 flex items-center gap-1.5">
-          <span>🚨 In Case of Emergency (ICE) Contacts</span>
-        </div>
-        
-        <div id="iceContainer" class="space-y-2">
-          <a id="iceCallBtn" href="tel:+919840099992" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-black text-sm flex items-center justify-between shadow-md transition active:scale-95">
-            <div class="flex items-center gap-2">
-              <span class="text-lg">📞</span>
-              <div>
-                <div id="iceName" class="leading-tight font-extrabold text-sm">Call Ramesh (Father)</div>
-                <div id="icePhone" class="text-[11px] font-mono opacity-90">+91 98400 99992</div>
+      <!-- Loading State -->
+      <div id="loadingBox" style="background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:36px; text-align:center; color:var(--ink-soft);">
+        <p style="font-family:var(--mono); font-size:13px;">Retrieving patient emergency vitals...</p>
+      </div>
+
+      <!-- Patient Data Box -->
+      <div id="dataBox" style="display:none;">
+
+        <!-- Main Identity & Blood Badge -->
+        <div class="patient-box">
+          <div class="patient-head">
+            <div class="patient-main">
+              <img id="patientPhoto" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&auto=format&fit=crop&q=80" alt="Patient" class="patient-photo">
+              <div class="patient-meta">
+                <span id="cardUuid" class="card-id">CL-88258-E7</span>
+                <h1 id="patientName">Sarah Ananya</h1>
+                <div id="patientDemo" class="demo">Age 28 • Female</div>
               </div>
             </div>
-            <span class="text-xs uppercase bg-white/20 px-2.5 py-1 rounded-full font-bold">Call Now</span>
-          </a>
-        </div>
-      </div>
 
-      <!-- Critical Medical Warnings -->
-      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-3.5">
-        <div class="text-xs font-bold uppercase tracking-wider text-teal-400">
-          Medical Flags & Critical Notes
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div class="bg-slate-800/60 border border-rose-500/30 rounded-xl p-3">
-            <div class="text-[10px] font-bold text-rose-400 uppercase tracking-wider">Allergies</div>
-            <div id="allergiesText" class="text-sm font-extrabold text-white mt-1">Penicillin, Peanuts</div>
-          </div>
-
-          <div class="bg-slate-800/60 border border-amber-500/30 rounded-xl p-3">
-            <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Chronic Conditions</div>
-            <div id="conditionsText" class="text-sm font-extrabold text-white mt-1">Type 2 Diabetes</div>
-          </div>
-        </div>
-
-        <!-- Recent Health Camp Screening Vitals -->
-        <div class="pt-3 border-t border-slate-800/80">
-          <div class="text-[11px] text-slate-400 mb-2 font-medium flex items-center justify-between">
-            <span>Recent Health Camp Vitals:</span>
-            <span id="campName" class="text-teal-400 font-semibold font-mono text-[10px]">Curelith Health Camp</span>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div class="bg-slate-800/40 border border-slate-700/60 rounded-lg p-2.5 flex items-center justify-between">
-              <span class="text-xs text-slate-400 font-medium">Blood Pressure (BP)</span>
-              <span id="bpText" class="text-sm font-black font-mono text-emerald-400">120/80</span>
-            </div>
-            <div class="bg-slate-800/40 border border-slate-700/60 rounded-lg p-2.5 flex items-center justify-between">
-              <span class="text-xs text-slate-400 font-medium">Random Sugar (RBS)</span>
-              <span id="rbsText" class="text-sm font-black font-mono text-cyan-400">104 mg/dL</span>
+            <div class="blood-badge">
+              <span class="lbl">Blood</span>
+              <span id="patientBlood" class="val">O+ve</span>
             </div>
           </div>
         </div>
+
+        <!-- 1-Tap SOS Contact Button -->
+        <a id="iceCallBtn" href="tel:+919840099992" class="sos-call-btn">
+          <div class="left">
+            <span class="tel-icon">📞</span>
+            <div>
+              <div id="iceName" class="caller-name">Call Ramesh (Father)</div>
+              <div id="icePhone" class="caller-phone">+91 98400 99992</div>
+            </div>
+          </div>
+          <span class="call-pill">Call Family</span>
+        </a>
+
+        <!-- Medical Flags & Conditions -->
+        <div class="flags-card">
+          <div class="section-label">Critical Alerts &amp; Conditions</div>
+          <div class="flags-grid">
+            <div class="flag-item">
+              <div class="tag alr">Allergies</div>
+              <div id="allergiesText" class="val">Penicillin, Peanuts</div>
+            </div>
+            <div class="flag-item">
+              <div class="tag cnd">Chronic Conditions</div>
+              <div id="conditionsText" class="val">Type 2 Diabetes</div>
+            </div>
+          </div>
+
+          <div class="vitals-box">
+            <div class="vitals-head">
+              <span>Recent Health Camp Vitals</span>
+              <span id="campName" style="font-family:var(--mono); font-weight:600; color:var(--pine);">Curelith Camp</span>
+            </div>
+            <div class="vitals-grid">
+              <div class="vital-pill">
+                <span class="k">Blood Pressure</span>
+                <span id="bpText" class="v">120/80</span>
+              </div>
+              <div class="vital-pill">
+                <span class="k">Random Blood Sugar</span>
+                <span id="rbsText" class="v">104 mg/dL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="max-w-xl w-full mx-auto mt-6 text-center text-slate-500 text-xs py-2">
-    <div>Curelith 24/7 Medical Care Desk: <a href="tel:+919940099992" class="text-teal-400 font-bold hover:underline">+91 99400 99992</a></div>
-    <div class="text-[10px] text-slate-600 mt-1">Verified Clinical Emergency Record • www.curelith.com</div>
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div>Curelith 24/7 Care Desk: <a href="tel:+919940099992">+91 99400 99992</a></div>
+      <div style="font-family:var(--mono); font-size:11px; margin-top:4px; opacity:0.8;">Curelith Intelligence • Verified Emergency Registry</div>
+    </div>
   </footer>
 
   <script>
@@ -148,11 +448,11 @@
         const res = await fetch(`https://api.curelith.com/emergency/data/${cardId}`);
         const data = await res.json();
 
-        document.getElementById('loadingBox').classList.add('hidden');
+        document.getElementById('loadingBox').style.display = 'none';
 
         if (data.success && data.card) {
           const c = data.card;
-          document.getElementById('dataBox').classList.remove('hidden');
+          document.getElementById('dataBox').style.display = 'block';
 
           document.getElementById('cardUuid').innerText = c.card_uuid;
           document.getElementById('patientName').innerText = c.patient_name;
@@ -175,11 +475,12 @@
           document.getElementById('bpText').innerText = c.recent_bp || '120/80';
           document.getElementById('rbsText').innerText = (c.recent_rbs || '104') + ' mg/dL';
         } else {
-          document.getElementById('errorBox').classList.remove('hidden');
+          document.getElementById('loadingBox').style.display = 'block';
+          document.getElementById('loadingBox').innerHTML = '<p style="color:#DC2626; font-weight:700;">Emergency Card Not Found</p><p style="font-size:12px; margin-top:4px;">Please check the QR code or call Curelith Care Desk.</p>';
         }
       } catch (err) {
-        document.getElementById('loadingBox').classList.add('hidden');
-        document.getElementById('errorBox').classList.remove('hidden');
+        document.getElementById('loadingBox').style.display = 'block';
+        document.getElementById('loadingBox').innerHTML = '<p style="color:#DC2626;">Network error. Please try again.</p>';
       }
     }
 

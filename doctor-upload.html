@@ -3,106 +3,285 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curelith Doctor Portal — Clinical Record Upload</title>
+  <title>Doctor Portal — Curelith Clinical Intake</title>
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <!-- Google Fonts: Fraunces, Inter, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
-    * { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    :root {
+      --void:       #0F1B19;
+      --void-soft:  #16241F;
+      --paper:      #F5F3ED;
+      --card:       #FFFFFF;
+      --card-tint:  #EDEAE0;
+      --ink:        #14201D;
+      --ink-soft:   #4D5C57;
+      --pine:       #1E423D;
+      --pine-light: #2E5C54;
+      --mist:       #8FA89F;
+      --mist-dim:   #5C7A71;
+      --line:       #DCD7C8;
+      --line-dark:  rgba(255,255,255,0.09);
+      --clay:       #D4824A;
+      --clay-deep:  #B5642F;
+      --gold:       #E8C77B;
+
+      --serif: "Fraunces", Georgia, serif;
+      --sans:  "Inter", -apple-system, sans-serif;
+      --mono:  "IBM Plex Mono", monospace;
+
+      --max: 680px;
+      --radius: 16px;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+      font-size: 15px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; width: 100%; }
+
+    /* HEADER */
+    header {
+      background: var(--void);
+      color: #fff;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line-dark);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 9px;
+      font-family: var(--serif); font-size: 19px; font-weight: 600; color: #fff; text-decoration: none;
+    }
+    .brand img { width: 28px; height: 28px; }
+
+    .doc-pill {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(30,66,61,0.2);
+      border: 1px solid var(--pine-light);
+      color: var(--gold);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* MAIN FORM */
+    main { padding: 30px 0 48px; }
+
+    .upload-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 40px -20px rgba(15,27,25,0.08);
+      overflow: hidden;
+    }
+
+    .patient-strip {
+      padding: 20px 24px;
+      background: var(--card-tint);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .patient-strip .label {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--pine);
+      font-weight: 700;
+      display: block;
+    }
+    .patient-strip .name {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-top: 2px;
+    }
+    .patient-strip .id {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+    .patient-strip .blood {
+      font-size: 18px;
+      font-weight: 800;
+      color: #DC2626;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      padding: 6px 12px;
+      border-radius: 10px;
+    }
+
+    .form-content {
+      padding: 26px 24px;
+    }
+
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
+      margin-bottom: 7px;
+      font-weight: 600;
+    }
+    .form-label .req { color: #DC2626; }
+
+    .input-field {
+      width: 100%;
+      font-family: var(--sans);
+      font-size: 14.5px;
+      color: var(--ink);
+      background: #FAFAFA;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 12px 14px;
+      outline: none;
+      transition: all .2s ease;
+    }
+    .input-field:focus {
+      background: #FFFFFF;
+      border-color: var(--pine);
+      box-shadow: 0 0 0 3px rgba(30,66,61,0.08);
+    }
+
+    textarea.input-field { resize: vertical; min-height: 85px; }
+
+    .btn-submit {
+      background: var(--clay);
+      color: #241208;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 10px 24px -10px rgba(212,130,74,0.55);
+      transition: background .2s ease;
+    }
+    .btn-submit:hover { background: var(--clay-deep); }
+    .btn-submit:active { transform: translateY(1px); }
+
+    /* FOOTER */
+    footer {
+      background: var(--void-soft);
+      color: var(--mist);
+      padding: 24px 0;
+      border-top: 1px solid var(--line-dark);
+      text-align: center;
+      font-size: 12px;
+    }
   </style>
 </head>
-<body class="bg-[#050814] text-slate-100 min-h-screen p-4 sm:p-6 flex flex-col justify-between selection:bg-teal-500 selection:text-slate-900">
+<body>
 
-  <!-- Header -->
-  <header class="max-w-xl w-full mx-auto mb-4">
-    <div class="bg-teal-950/40 border border-teal-500/40 rounded-2xl p-4 flex items-center justify-between shadow-lg">
-      <div class="flex items-center gap-3">
-        <span class="text-xl">🩺</span>
-        <div>
-          <div class="text-xs font-black uppercase tracking-widest text-teal-300">Curelith Clinical Network</div>
-          <div class="text-sm font-extrabold text-white">Doctor & Lab Intake Portal</div>
-        </div>
-      </div>
-      <a href="/" class="shrink-0">
-        <img src="assets/logo.png" alt="Curelith" class="h-6 w-auto brightness-125">
+  <!-- HEADER -->
+  <header>
+    <div class="wrap header-inner">
+      <a href="/" class="brand">
+        <img src="assets/logo.png" alt="Curelith">
+        Curelith
       </a>
+      <div class="doc-pill">
+        Clinical Intake Portal
+      </div>
     </div>
   </header>
 
-  <!-- Main Upload Area -->
-  <main class="max-w-xl w-full mx-auto">
-    <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+  <!-- MAIN -->
+  <main>
+    <div class="wrap">
       
-      <!-- Patient Identity Box -->
-      <div class="flex items-center justify-between pb-5 border-b border-slate-800 mb-6">
-        <div>
-          <span class="text-[10px] uppercase font-mono font-bold text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded border border-teal-500/30">
-            Card Verified
-          </span>
-          <h2 id="patientName" class="text-xl font-black text-white mt-1">Patient: Loading...</h2>
-          <p id="patientInfo" class="text-xs text-slate-400 font-mono mt-0.5">ID: --</p>
+      <div class="upload-card">
+        
+        <!-- Patient Identity Strip -->
+        <div class="patient-strip">
+          <div>
+            <span class="label">Verified Patient</span>
+            <div id="patientName" class="name">Loading Patient...</div>
+            <div id="patientInfo" class="id">ID: --</div>
+          </div>
+          <div id="patientBlood" class="blood">--</div>
         </div>
-        <div class="text-right">
-          <span class="text-[9px] uppercase font-bold text-slate-400 block">Blood Group</span>
-          <span id="patientBlood" class="text-lg font-black text-rose-400">--</span>
-        </div>
+
+        <!-- Form -->
+        <form id="uploadForm" class="form-content" onsubmit="handleUploadSubmit(event)">
+          <input type="hidden" id="cardUuid">
+
+          <div class="form-group">
+            <label class="form-label">Doctor / Clinic Name <span class="req">*</span></label>
+            <input type="text" id="doctorName" required placeholder="e.g. Dr. K. Sundaram / Apollo Clinic" class="input-field">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Hospital / Test Center</label>
+            <input type="text" id="hospitalName" placeholder="e.g. Orthomed Hospital Chennai" class="input-field">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Prescription or Report File (PDF / Image) <span class="req">*</span></label>
+            <input type="file" id="reportFile" required accept="image/*,application/pdf" class="input-field" style="padding: 8px;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Clinical Advice / Diagnosis Notes</label>
+            <textarea id="notes" placeholder="e.g. Lumbar spondylosis. Prescribed physiotherapy and muscle relaxants. Review in 10 days." class="input-field"></textarea>
+          </div>
+
+          <div>
+            <button type="submit" id="submitBtn" class="btn-submit">
+              Save to Patient Locker →
+            </button>
+            <div id="uploadStatus" style="display:none; font-family:var(--mono); font-size:12px; text-align:center; margin-top:10px; font-weight:600;"></div>
+          </div>
+        </form>
+
       </div>
-
-      <!-- Upload Form -->
-      <form id="uploadForm" class="space-y-5" onsubmit="handleUploadSubmit(event)">
-        <input type="hidden" id="cardUuid">
-
-        <div>
-          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-            Doctor / Clinic Name <span class="text-rose-400">*</span>
-          </label>
-          <input type="text" id="doctorName" required placeholder="e.g. Dr. K. Sundaram / Apollo Clinic"
-            class="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-            Hospital / Diagnostics Center
-          </label>
-          <input type="text" id="hospitalName" placeholder="e.g. Orthomed Hospital Chennai"
-            class="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-            Attach Prescription or Diagnostic Report (PDF / Image) <span class="text-rose-400">*</span>
-          </label>
-          <input type="file" id="reportFile" required accept="image/*,application/pdf"
-            class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-500/10 file:text-teal-400 hover:file:bg-teal-500/20 bg-slate-800/50 p-2 rounded-xl border border-slate-700">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-            Clinical Notes / Diagnosis / Advice
-          </label>
-          <textarea id="notes" rows="3" placeholder="e.g. Acute Lumbago prescribed NSAIDs. Advised lumbar spine MRI if pain persists."
-            class="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500"></textarea>
-        </div>
-
-        <div>
-          <button type="submit" id="submitBtn"
-            class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-black text-sm uppercase tracking-wider shadow-lg shadow-teal-500/25 transition flex items-center justify-center gap-2">
-            <span>Securely Save to Patient Locker</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-            </svg>
-          </button>
-          <p id="uploadStatus" class="text-xs text-center mt-2 text-slate-400 hidden"></p>
-        </div>
-      </form>
 
     </div>
   </main>
 
-  <footer class="max-w-xl w-full mx-auto mt-6 text-center text-slate-500 text-xs py-2">
-    <div>Curelith Clinical Security Infrastructure • Encrypted at Rest</div>
-    <div class="text-[10px] text-slate-600 mt-1">www.curelith.com</div>
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div>Curelith Clinical Security Infrastructure • Encrypted at Rest</div>
+      <div style="font-family:var(--mono); font-size:11px; margin-top:4px; opacity:0.8;">www.curelith.com</div>
+    </div>
   </footer>
 
   <script>
@@ -116,8 +295,8 @@
         const data = await res.json();
         if (data.success && data.card) {
           const c = data.card;
-          document.getElementById('patientName').innerText = `Patient: ${c.patient_name}`;
-          document.getElementById('patientInfo').innerText = `ID: ${c.card_uuid} • Phone: ${c.patient_phone}`;
+          document.getElementById('patientName').innerText = c.patient_name;
+          document.getElementById('patientInfo').innerText = `ID: ${c.card_uuid} • Phone: +${c.patient_phone}`;
           document.getElementById('patientBlood').innerText = (c.blood_group || 'O+VE').replace('VE', 've');
         } else {
           document.getElementById('patientName').innerText = 'Patient: Card ID Not Found';
@@ -133,8 +312,9 @@
       const status = document.getElementById('uploadStatus');
       btn.disabled = true;
       btn.innerText = 'Uploading Clinical File...';
-      status.className = 'text-xs text-center mt-2 text-teal-400 block';
-      status.innerText = 'Uploading to patient locker...';
+      status.style.display = 'block';
+      status.style.color = 'var(--pine)';
+      status.innerText = 'Attaching to patient locker...';
 
       const formData = new FormData();
       formData.append('card_uuid', document.getElementById('cardUuid').value);
@@ -150,19 +330,19 @@
         });
         const data = await res.json();
         if (data.success) {
-          status.className = 'text-xs text-center mt-2 text-emerald-400 font-bold block';
+          status.style.color = '#059669';
           status.innerText = '✅ Report successfully saved to patient Curelith locker!';
           document.getElementById('uploadForm').reset();
         } else {
-          status.className = 'text-xs text-center mt-2 text-rose-400 font-bold block';
+          status.style.color = '#DC2626';
           status.innerText = `Error: ${data.error || 'Failed to upload'}`;
         }
       } catch (err) {
-        status.className = 'text-xs text-center mt-2 text-rose-400 font-bold block';
+        status.style.color = '#DC2626';
         status.innerText = `Network Error: ${err.message}`;
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<span>Securely Save to Patient Locker</span><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>`;
+        btn.innerText = 'Save to Patient Locker →';
       }
     }
 
