@@ -18,6 +18,8 @@
   <!-- html2canvas and jsPDF for instant HD card download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Google Identity Services (GSI) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
     :root {
@@ -689,12 +691,490 @@
       padding-top: 28px; font-size: 12.5px; color: var(--mist-dim);
     }
 
+    /* ================= GOOGLE AUTH & CORPORATE WORKSPACE STYLES ================= */
+    .auth-section { margin-bottom: 28px; }
+
+    .auth-banner-card {
+      background: var(--void);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      box-shadow: 0 16px 36px -12px rgba(15,27,25,0.25);
+    }
+    .auth-banner-content { flex: 1; }
+    .auth-badge-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      background: rgba(232,199,123,0.12);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(232,199,123,0.25);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .auth-status-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--gold);
+      box-shadow: 0 0 8px rgba(232,199,123,0.8);
+    }
+    .auth-banner-content h3 {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.25;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+    .auth-banner-content p {
+      font-size: 13.5px;
+      color: var(--mist);
+      line-height: 1.55;
+      max-width: 600px;
+    }
+    .auth-features-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .auth-chip {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      color: var(--mist);
+      font-family: var(--sans);
+    }
+    .auth-banner-action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .auth-secure-hint {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--mist-dim);
+      text-align: center;
+    }
+
+    /* AUTH USER BAR */
+    .auth-user-bar {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 14px rgba(15,27,25,0.03);
+    }
+    .auth-user-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .auth-user-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 2px solid var(--mist);
+      object-fit: cover;
+      background: var(--card-tint);
+    }
+    .auth-user-name-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .auth-user-name {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .auth-user-pill {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #047857;
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    .auth-user-email {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+
+    /* MODE SELECTOR */
+    .mode-switch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .mode-card {
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: all .2s ease;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      position: relative;
+    }
+    .mode-card:hover {
+      border-color: var(--mist);
+      background: #FAF8F2;
+    }
+    .mode-card.active {
+      border-color: var(--pine);
+      background: #FFFFFF;
+      box-shadow: 0 8px 24px -8px rgba(30,66,61,0.2);
+    }
+    .mode-card-radio {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--line);
+      margin-top: 2px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s ease;
+    }
+    .mode-card.active .mode-card-radio {
+      border-color: var(--pine);
+      background: var(--pine);
+    }
+    .mode-card.active .mode-card-radio::after {
+      content: ""; width: 8px; height: 8px; border-radius: 50%; background: #FFFFFF;
+    }
+    .mode-card-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .mode-card-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #DBEAFE;
+      font-weight: 600;
+    }
+    .mode-card-badge.comp {
+      background: #FEF3C7;
+      color: #92400E;
+      border-color: #FDE68A;
+    }
+    .mode-card-desc {
+      font-size: 12.5px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+
+    /* COMPANY INVITE NOTICE */
+    .company-invite-notice {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .cin-icon { font-size: 24px; }
+    .cin-text { flex: 1; }
+    .cin-title { font-size: 13.5px; font-weight: 700; color: #1E40AF; }
+    .cin-desc { font-size: 12.5px; color: #1E3A8A; margin-top: 2px; }
+    .cin-badge {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      background: #DBEAFE;
+      color: #1E40AF;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    /* EXISTING INDIVIDUAL CARD BOX */
+    .existing-card-box {
+      background: #F0FDF4;
+      border: 1px solid #86EFAC;
+      border-radius: 14px;
+      padding: 22px 26px;
+      margin-bottom: 24px;
+    }
+    .ec-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .ec-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #065F46;
+      background: #D1FAE5;
+      padding: 3px 9px;
+      border-radius: 6px;
+      border: 1px solid #A7F3D0;
+    }
+    .ec-title {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 600;
+      color: #064E3B;
+      margin-bottom: 6px;
+    }
+    .ec-desc {
+      font-size: 13px;
+      color: #047857;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .ec-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      background: #FFFFFF;
+      border: 1px solid #A7F3D0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+    .ec-meta-item label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 9.5px;
+      text-transform: uppercase;
+      color: #6B7280;
+      margin-bottom: 2px;
+    }
+    .ec-meta-item span {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: #111827;
+    }
+    .ec-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* COMPANY WORKSPACE DASHBOARD */
+    .company-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .comp-header-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      box-shadow: 0 4px 14px rgba(15,27,25,0.03);
+    }
+    .comp-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .comp-title-group h3 {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--void);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .comp-verified-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: #047857;
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .comp-subline {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+    .comp-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .comp-stat-card {
+      background: var(--card-tint);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+    .comp-stat-card label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      letter-spacing: 0.05em;
+    }
+    .comp-stat-card .val {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--pine);
+      margin-top: 4px;
+    }
+
+    /* DISTRIBUTION CHANNELS */
+    .comp-channel-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+    }
+    .channel-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .channel-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--pine); color: #FFFFFF;
+      font-family: var(--mono); font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .channel-head h4 {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .copy-link-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .copy-input {
+      flex: 1;
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #FAF9F5;
+      color: var(--ink);
+    }
+    .csv-drop-box {
+      border: 2px dashed var(--mist);
+      background: #FAF8F2;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 12px;
+      cursor: pointer;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .csv-drop-box:hover {
+      border-color: var(--pine);
+      background: #F4F1E6;
+    }
+    .csv-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* EMPLOYEE ROSTER TABLE */
+    .roster-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+    }
+    .roster-table-wrap {
+      overflow-x: auto;
+      margin-top: 16px;
+    }
+    .roster-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+    .roster-table th {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--line);
+      background: var(--card-tint);
+    }
+    .roster-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .roster-table tr:hover td {
+      background: #FAF9F5;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 980px) {
       .builder-grid { grid-template-columns: 1fr; }
       .preview-sticky { position: static; margin-top: 20px; }
       .foot-top { grid-template-columns: 1fr; gap: 32px; }
       nav.links { display: none; }
+      .auth-banner-card { flex-direction: column; align-items: flex-start; }
+      .mode-switch-grid { grid-template-columns: 1fr; }
+      .comp-meta-row { flex-direction: column; align-items: flex-start; }
+      .copy-link-bar { flex-direction: column; }
     }
     @media (max-width: 600px) {
       .wrap { padding: 0 20px; }
@@ -739,23 +1219,162 @@
     </div>
   </section>
 
+  <!-- ================= GOOGLE AUTH & ACCESS GATEWAY ================= -->
+  <section class="auth-section">
+    <div class="wrap">
+      <!-- GOOGLE SIGN-IN GATE (Shown when logged out) -->
+      <div id="authGateSection" class="auth-banner-card">
+        <div class="auth-banner-content">
+          <div class="auth-badge-row">
+            <span class="auth-status-dot"></span>
+            <span>Google Identity Verification</span>
+          </div>
+          <h3>Verify Your Identity to Issue Lifesaving Medical Passes</h3>
+          <p>
+            To prevent counterfeit clinical cards and enforce our strict <strong>1 pass per citizen</strong> policy (or unlock corporate multi-employee passes), please sign in with your verified Google account.
+          </p>
+          <div class="auth-features-chips">
+            <span class="auth-chip">🛡️ DPDP Act 2023 Verified</span>
+            <span class="auth-chip">👤 1 Pass Per Google Account</span>
+            <span class="auth-chip">🏢 Corporate Multi-Pass (Inc. Cert Required)</span>
+          </div>
+        </div>
+        <div class="auth-banner-action">
+          <div id="googleSignInBtn"></div>
+          <div class="auth-secure-hint">🔒 Instant 256-bit encrypted authentication</div>
+        </div>
+      </div>
+
+      <!-- AUTH USER PROFILE BAR (Shown when logged in) -->
+      <div id="authUserBar" class="auth-user-bar" style="display:none;">
+        <div class="auth-user-info">
+          <img id="authUserAvatar" class="auth-user-avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%238FA89F'><circle cx='50' cy='36' r='20'/><path d='M15 88c0-18 16-28 35-28s35 10 35 28z'/></svg>" alt="User">
+          <div>
+            <div class="auth-user-name-line">
+              <span id="authUserName" class="auth-user-name">Authenticated User</span>
+              <span class="auth-user-pill">✓ Verified Google ID</span>
+            </div>
+            <div id="authUserEmail" class="auth-user-email">user@gmail.com</div>
+          </div>
+        </div>
+        <div>
+          <button type="button" class="btn btn-outline" onclick="signOutGoogle()" style="padding:7px 16px; font-size:12.5px;">
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+      <!-- CORPORATE SPONSORSHIP INVITE NOTICE (If URL has ?company=CMP-XXXX) -->
+      <div id="companyInviteNotice" class="company-invite-notice" style="display:none;">
+        <div class="cin-icon">🏢</div>
+        <div class="cin-text">
+          <div class="cin-title">Corporate Medical Pass Sponsorship</div>
+          <div class="cin-desc">You are registering an official employee emergency health card sponsored by <strong id="sponsorCompanyName">...</strong>.</div>
+        </div>
+        <span class="cin-badge">Sponsored Pass</span>
+      </div>
+
+      <!-- MODE SELECTOR TABS -->
+      <div id="modeSwitchContainer" class="mode-switch-container" style="display:none;">
+        <div class="mode-switch-grid">
+          <div class="mode-card active" id="modeCardIndividual" onclick="switchMode('individual')">
+            <div class="mode-card-radio"></div>
+            <div class="mode-card-content">
+              <div class="mode-card-title">
+                <span>👤 Individual Health Pass</span>
+                <span class="mode-card-badge">1 Card Limit</span>
+              </div>
+              <p class="mode-card-desc">For personal health records, paramedic SOS triage, and blood group verification.</p>
+            </div>
+          </div>
+
+          <div class="mode-card" id="modeCardCompany" onclick="switchMode('company')">
+            <div class="mode-card-radio"></div>
+            <div class="mode-card-content">
+              <div class="mode-card-title">
+                <span>🏢 Corporate / Workplace Portal</span>
+                <span class="mode-card-badge comp">Multi-Employee</span>
+              </div>
+              <p class="mode-card-desc">Issue smart emergency health passes to all employees via invite link or CSV roster.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ================= BUILDER + PREVIEW SECTION ================= -->
   <section class="builder-section">
     <div class="wrap">
       <div class="builder-grid">
 
-        <!-- LEFT: STEP FORM -->
-        <div class="form-card">
-          <div class="form-head">
-            <div>
-              <h2>Patient Information</h2>
-            </div>
-            <span class="pill">Option 1: Clinical White</span>
-          </div>
+        <!-- LEFT WORKSPACE COLUMN -->
+        <div class="builder-workspace-col">
 
-          <form id="cardForm" class="form-body" onsubmit="handleFormSubmit(event)">
-            <!-- Contact & Name -->
-            <div class="row-2">
+          <!-- 1. INDIVIDUAL WORKSPACE -->
+          <div id="individualWorkspace">
+            <!-- EXISTING INDIVIDUAL PASS CARD (Shown if user already has 1 individual card) -->
+            <div id="individualExistingCardBox" class="existing-card-box" style="display:none;">
+              <div class="ec-head">
+                <span class="ec-badge">✓ Lifetime Pass Active</span>
+                <span style="font-family:var(--mono); font-size:11px; color:#047857;">1-Card Limit Enforced</span>
+              </div>
+              <h3 class="ec-title">You Have an Active Emergency Health Pass</h3>
+              <p class="ec-desc">
+                Your Google account is linked to an official Curelith Emergency Pass. You can download the printable wallet card, view your SOS emergency gateway, or update your clinical details below.
+              </p>
+              <div class="ec-meta-grid">
+                <div class="ec-meta-item">
+                  <label>Pass ID</label>
+                  <span id="existCardUuid">CL-...</span>
+                </div>
+                <div class="ec-meta-item">
+                  <label>Blood Group</label>
+                  <span id="existCardBlood">O+VE</span>
+                </div>
+                <div class="ec-meta-item">
+                  <label>Patient Name</label>
+                  <span id="existCardName">...</span>
+                </div>
+                <div class="ec-meta-item">
+                  <label>Access PIN</label>
+                  <span id="existCardPin">****</span>
+                </div>
+              </div>
+              <div class="ec-actions">
+                <button type="button" class="btn btn-primary" onclick="downloadCardPDF()" style="font-size:13px; padding:9px 18px;">
+                  📥 Download Printable Wallet PDF
+                </button>
+                <a id="existCardSosLink" href="#" target="_blank" class="btn btn-outline" style="font-size:13px; padding:9px 18px;">
+                  👁️ View Public SOS Gateway
+                </a>
+                <button type="button" class="btn btn-outline" onclick="enableCardEditing()" style="font-size:13px; padding:9px 18px;">
+                  ✏️ Edit / Update Details
+                </button>
+              </div>
+            </div>
+
+            <!-- CARD FORM -->
+            <div class="form-card" id="individualFormCard">
+              <div class="form-head">
+                <div>
+                  <h2 id="formCardTitle">Patient Information</h2>
+                </div>
+                <span class="pill" id="formCardBadge">Option 1: Clinical White</span>
+              </div>
+
+              <form id="cardForm" class="form-body" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="accountType" value="individual">
+                <input type="hidden" id="companyUuid" value="">
+                <input type="hidden" id="userEmail" value="">
+                <input type="hidden" id="editingCardUuid" value="">
+
+                <div id="userEmailBadge" style="display:none; font-family:var(--mono); font-size:11.5px; color:var(--pine); margin-bottom:14px; background:var(--card-tint); padding:8px 12px; border-radius:6px; border:1px solid var(--line);">
+                  Authenticated Google ID: <strong id="userEmailText">...</strong>
+                </div>
+
+                <!-- Contact & Name -->
+                <div class="row-2">
               <div class="form-group">
                 <label class="form-label">Mobile Number <span class="req">*</span></label>
                 <div class="input-with-prefix">
@@ -870,6 +1489,200 @@
             </div>
           </form>
         </div>
+
+          </div><!-- end individualWorkspace -->
+
+          <!-- 2. COMPANY WORKSPACE -->
+          <div id="companyWorkspace" style="display:none;">
+
+            <!-- COMPANY REGISTRATION CARD (If company not yet registered) -->
+            <div id="companyRegisterCard" class="form-card" style="display:none;">
+              <div class="form-head">
+                <div>
+                  <h2>Corporate Medical Pass Registration</h2>
+                </div>
+                <span class="pill" style="background:#FEF3C7; color:#92400E; border-color:#FDE68A;">🏢 Corporate Workspace</span>
+              </div>
+
+              <form id="companyRegForm" class="form-body" onsubmit="handleCompanyRegister(event)">
+                <div class="modal-alert-box" style="margin-top:0;">
+                  <strong>🏢 Corporate Verification Notice:</strong> To issue verified emergency passes to your workforce, government-recognized proof of incorporation is mandatory. This prevents unauthorized corporate claims.
+                </div>
+
+                <div class="row-2">
+                  <div class="form-group">
+                    <label class="form-label">Company / Legal Entity Name <span class="req">*</span></label>
+                    <input type="text" id="compName" required placeholder="e.g. Orthomed Health Technologies Pvt Ltd" class="input-field">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Corporate Identification No. (CIN / LLPIN) <span class="req">*</span></label>
+                    <input type="text" id="compCin" required placeholder="e.g. U72900TN2022PTC123456" class="input-field" style="font-family:var(--mono); text-transform:uppercase;">
+                  </div>
+                </div>
+
+                <div class="row-2">
+                  <div class="form-group">
+                    <label class="form-label">Estimated Employee Count <span class="req">*</span></label>
+                    <select id="compEmpCount" class="input-field" required>
+                      <option value="25">1 – 25 Employees</option>
+                      <option value="50" selected>26 – 100 Employees</option>
+                      <option value="250">101 – 500 Employees</option>
+                      <option value="1000">501 – 2,000 Employees</option>
+                      <option value="5000">2,000+ Enterprise</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Admin Google Email</label>
+                    <input type="text" id="compAdminEmailDisplay" class="input-field" readonly style="background:var(--card-tint); font-family:var(--mono);">
+                  </div>
+                </div>
+
+                <!-- Mandatory Certificate Upload -->
+                <div class="form-group">
+                  <label class="form-label">Certificate of Incorporation (Mandatory PDF/Image) <span class="req">*</span></label>
+                  <div style="font-size:12px; color:var(--ink-soft); margin-bottom:6px;">
+                    Upload official MCA Certificate of Incorporation or GST registration document (PDF, JPG, PNG - max 10MB).
+                  </div>
+                  <input type="file" id="compCertFile" accept=".pdf,image/png,image/jpeg,image/webp" required class="input-field" style="padding:9px; background:#fff;">
+                </div>
+
+                <div style="margin-top:20px;">
+                  <button type="submit" id="compRegisterBtn" class="btn btn-primary" style="width:100%; justify-content:center; padding:15px; font-size:15px;">
+                    Verify &amp; Create Corporate Workspace →
+                  </button>
+                  <div id="compRegisterStatus" style="display:none; font-family:var(--mono); font-size:12px; text-align:center; margin-top:10px; font-weight:600;"></div>
+                </div>
+              </form>
+            </div>
+
+            <!-- COMPANY DASHBOARD (If company is registered) -->
+            <div id="companyDashboardCard" class="company-workspace" style="display:none;">
+              <!-- Header Card -->
+              <div class="comp-header-card">
+                <div class="comp-meta-row">
+                  <div class="comp-title-group">
+                    <h3>
+                      <span id="dashCompName">Company Name</span>
+                      <span class="comp-verified-pill">✓ Verified Enterprise</span>
+                    </h3>
+                    <div class="comp-subline">
+                      CIN: <strong id="dashCompCin">...</strong> • Admin: <strong id="dashCompAdminEmail">...</strong>
+                    </div>
+                  </div>
+                  <div>
+                    <a id="dashCompCertLink" href="#" target="_blank" class="btn btn-outline" style="font-size:12.5px; padding:7px 14px;">
+                      📄 View Incorporation Certificate
+                    </a>
+                  </div>
+                </div>
+
+                <div class="comp-stats-row">
+                  <div class="comp-stat-card">
+                    <label>Issued Employee Passes</label>
+                    <div class="val" id="dashIssuedCount">0</div>
+                  </div>
+                  <div class="comp-stat-card">
+                    <label>Target Workforce</label>
+                    <div class="val" id="dashTargetCount">50</div>
+                  </div>
+                  <div class="comp-stat-card">
+                    <label>Corporate Status</label>
+                    <div class="val" style="font-size:16px; color:#047857;">Active &amp; Verified</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Channel 1: Invite Link -->
+              <div class="comp-channel-card">
+                <div class="channel-head">
+                  <div class="channel-num">1</div>
+                  <div>
+                    <h4>Method A: Employee Self-Registration Invite Link</h4>
+                    <p style="font-size:12.5px; color:var(--ink-soft); margin-top:2px;">
+                      Share this verified link via Slack, Teams, or email. Employees create their emergency pass directly under company sponsorship.
+                    </p>
+                  </div>
+                </div>
+                <div class="copy-link-bar">
+                  <input type="text" id="dashInviteLinkInput" readonly class="copy-input">
+                  <button type="button" class="btn btn-primary" onclick="copyInviteLink()" style="padding:10px 18px;">
+                    📋 Copy Link
+                  </button>
+                </div>
+                <span id="copyFeedback" style="display:none; font-family:var(--mono); font-size:11.5px; color:#047857; margin-top:6px;">✓ Link copied to clipboard!</span>
+              </div>
+
+              <!-- Channel 2: Bulk CSV Upload -->
+              <div class="comp-channel-card">
+                <div class="channel-head">
+                  <div class="channel-num">2</div>
+                  <div>
+                    <h4>Method B: Admin Bulk Roster Upload (CSV)</h4>
+                    <p style="font-size:12.5px; color:var(--ink-soft); margin-top:2px;">
+                      Instantly issue emergency health cards for your entire workforce in batch by uploading an HR spreadsheet.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="csv-action-row">
+                  <button type="button" class="btn btn-outline" onclick="downloadSampleCsv()" style="font-size:12.5px; padding:8px 14px;">
+                    📥 Download Sample CSV Template
+                  </button>
+                  <span style="font-size:12px; color:var(--mist-dim);">Expected headers: EmployeeID, Name, Phone, BloodGroup, EmergencyContactName...</span>
+                </div>
+
+                <form id="bulkCsvForm" onsubmit="handleBulkCsvUpload(event)">
+                  <div class="csv-drop-box" onclick="document.getElementById('rosterCsvFile').click()">
+                    <div style="font-size:24px; margin-bottom:6px;">📊</div>
+                    <div style="font-size:13.5px; font-weight:600; color:var(--ink);" id="csvFileNameDisplay">Click to browse or drop Employee CSV file here</div>
+                    <div style="font-size:11.5px; color:var(--ink-soft); margin-top:4px;">Accepts .csv format (max 5MB)</div>
+                    <input type="file" id="rosterCsvFile" accept=".csv,text/csv" style="display:none;" onchange="handleCsvFileSelected(event)">
+                  </div>
+
+                  <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+                    <button type="submit" id="bulkUploadBtn" class="btn btn-primary" style="padding:10px 22px;">
+                      ⚡ Upload Roster &amp; Generate Cards
+                    </button>
+                  </div>
+                  <div id="bulkUploadStatus" style="display:none; font-family:var(--mono); font-size:12px; margin-top:10px; font-weight:600;"></div>
+                </form>
+              </div>
+
+              <!-- Channel 3: Issued Passes Table -->
+              <div class="roster-card">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                  <h4 style="font-family:var(--serif); font-size:18px; color:var(--void);">Issued Employee Emergency Passes</h4>
+                  <button type="button" class="btn btn-outline" onclick="refreshCompanyCards()" style="font-size:12px; padding:5px 12px;">
+                    🔄 Refresh
+                  </button>
+                </div>
+                <div class="roster-table-wrap">
+                  <table class="roster-table">
+                    <thead>
+                      <tr>
+                        <th>Emp ID</th>
+                        <th>Employee Name</th>
+                        <th>Phone</th>
+                        <th>Blood</th>
+                        <th>Pass ID</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashEmployeesTableBody">
+                      <tr>
+                        <td colspan="6" style="text-align:center; color:var(--ink-soft); padding:20px;">
+                          No employee passes issued yet. Share the invite link above or upload a CSV roster.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div><!-- end companyDashboardCard -->
+
+          </div><!-- end companyWorkspace -->
+
+        </div><!-- end builder-workspace-col -->
 
         <!-- RIGHT: PREVIEW & PRINT -->
         <div class="preview-sticky">
@@ -1207,8 +2020,459 @@
       }
     });
 
+    /* ================= GOOGLE AUTH & USER STATE ================= */
+    const GOOGLE_CLIENT_ID = "378376022524-ff94n11memvq4p9h1l016trhel97o7aq.apps.googleusercontent.com";
+    let currentUser = null;
+    let currentAuthStatus = null;
+    let currentMode = 'individual'; // 'individual' | 'company'
+    let sponsoringCompany = null; // if opened via ?company=CMP-XXXX
+
+    function decodeJwtResponse(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function handleGoogleLogin(response) {
+      const payload = decodeJwtResponse(response.credential);
+      if (!payload || !payload.email) {
+        alert("Unable to decode Google identity. Please try again.");
+        return;
+      }
+
+      currentUser = {
+        email: payload.email.toLowerCase(),
+        name: payload.name || payload.email.split('@')[0],
+        picture: payload.picture || '',
+        sub: payload.sub
+      };
+
+      localStorage.setItem('curelith_emergency_user', JSON.stringify(currentUser));
+      await onGoogleUserAuthenticated(currentUser);
+    }
+
+    function signOutGoogle() {
+      localStorage.removeItem('curelith_emergency_user');
+      currentUser = null;
+      currentAuthStatus = null;
+
+      // Update UI
+      document.getElementById('authGateSection').style.display = 'flex';
+      document.getElementById('authUserBar').style.display = 'none';
+      document.getElementById('modeSwitchContainer').style.display = 'none';
+      document.getElementById('userEmailBadge').style.display = 'none';
+      document.getElementById('userEmail').value = '';
+      document.getElementById('individualExistingCardBox').style.display = 'none';
+      document.getElementById('individualFormCard').style.display = 'block';
+
+      switchMode('individual');
+
+      // Re-init Google button
+      initGoogleAuth();
+    }
+
+    async function onGoogleUserAuthenticated(user) {
+      // 1. Show user bar, hide gate, show mode switcher
+      document.getElementById('authGateSection').style.display = 'none';
+      const userBar = document.getElementById('authUserBar');
+      userBar.style.display = 'flex';
+      document.getElementById('modeSwitchContainer').style.display = 'block';
+
+      document.getElementById('authUserName').innerText = user.name;
+      document.getElementById('authUserEmail').innerText = user.email;
+      if (user.picture) {
+        document.getElementById('authUserAvatar').src = user.picture;
+      }
+
+      // Prefill individual form
+      document.getElementById('userEmail').value = user.email;
+      const userEmailBadge = document.getElementById('userEmailBadge');
+      userEmailBadge.style.display = 'block';
+      document.getElementById('userEmailText').innerText = user.email;
+      if (!document.getElementById('patientName').value) {
+        document.getElementById('patientName').value = user.name;
+        updatePreviewFromForm();
+      }
+
+      // Prefill company admin email display
+      const compAdminInput = document.getElementById('compAdminEmailDisplay');
+      if (compAdminInput) compAdminInput.value = user.email;
+
+      // 2. Fetch auth status from server
+      try {
+        const res = await fetch('https://api.curelith.com/emergency/auth/status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: user.email })
+        });
+        const data = await res.json();
+        if (data.success) {
+          currentAuthStatus = data;
+          applyAuthStatus(data);
+        }
+      } catch (err) {
+        console.error('Error checking auth status:', err);
+      }
+    }
+
+    function applyAuthStatus(data) {
+      // 1. Handle Individual Pass Status (Strict 1-Card Enforcement)
+      if (data.has_individual_card && data.individual_card) {
+        const card = data.individual_card;
+        document.getElementById('individualExistingCardBox').style.display = 'block';
+        document.getElementById('existCardUuid').innerText = card.card_uuid;
+        document.getElementById('existCardBlood').innerText = card.blood_group || 'O+VE';
+        document.getElementById('existCardName').innerText = card.patient_name;
+        document.getElementById('existCardPin').innerText = (card.access_pin || '4821').split('').join(' ');
+        document.getElementById('existCardSosLink').href = `emergency.html?card=${card.card_uuid}`;
+
+        // Populate card form with existing data
+        document.getElementById('patientPhone').value = (card.patient_phone || '').replace(/^91/, '');
+        document.getElementById('patientName').value = card.patient_name || '';
+        document.getElementById('bloodGroup').value = card.blood_group || 'O+VE';
+        document.getElementById('patientAge').value = card.age || '';
+        document.getElementById('patientGender').value = card.gender || 'Female';
+        document.getElementById('emergencyName').value = card.emergency_contact_name || '';
+        document.getElementById('emergencyPhone').value = card.emergency_contact_phone || '';
+        document.getElementById('knownAllergies').value = card.known_allergies || '';
+        document.getElementById('chronicConditions').value = card.chronic_conditions || '';
+        document.getElementById('editingCardUuid').value = card.card_uuid;
+
+        // Update Live Preview with verified card details
+        document.getElementById('cardUuidDisplay').innerText = card.card_uuid;
+        document.getElementById('cardPinDisplay').innerText = (card.access_pin || '4821').split('').join(' ');
+        updatePreviewFromForm();
+
+        // Update front/back QR if available or generate from URL
+        const frontQr = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://www.curelith.com/emergency.html?card=' + card.card_uuid)}`;
+        const backQr = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://www.curelith.com/doctor-upload.html?card=' + card.card_uuid)}`;
+        document.getElementById('cardFrontQrImg').src = frontQr;
+        document.getElementById('cardBackQrImg').src = backQr;
+
+        // If user already has an individual card, collapse the creation form initially
+        document.getElementById('individualFormCard').style.display = 'none';
+      } else {
+        document.getElementById('individualExistingCardBox').style.display = 'none';
+        document.getElementById('individualFormCard').style.display = 'block';
+        document.getElementById('editingCardUuid').value = '';
+      }
+
+      // 2. Handle Company Status
+      if (data.has_company && data.company) {
+        const comp = data.company;
+        document.getElementById('dashCompName').innerText = comp.company_name;
+        document.getElementById('dashCompCin').innerText = comp.cin_number || 'N/A';
+        document.getElementById('dashCompAdminEmail').innerText = comp.admin_email;
+        document.getElementById('dashIssuedCount').innerText = comp.issued_employee_cards_count || 0;
+        document.getElementById('dashTargetCount').innerText = comp.employee_count_estimate || 50;
+        document.getElementById('dashInviteLinkInput').value = comp.invite_link;
+        if (comp.incorporation_cert_url) {
+          document.getElementById('dashCompCertLink').href = comp.incorporation_cert_url;
+        }
+
+        // Fetch detailed employee roster for table
+        refreshCompanyCards(comp.company_uuid);
+      }
+    }
+
+    function enableCardEditing() {
+      const formCard = document.getElementById('individualFormCard');
+      formCard.style.display = 'block';
+      document.getElementById('formCardTitle').innerText = 'Update Your Emergency Health Pass';
+      document.getElementById('generateBtn').innerText = 'Save & Update Official Medical Pass →';
+      formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* ================= MODE SWITCHER ================= */
+    function switchMode(mode) {
+      currentMode = mode;
+      const cardInd = document.getElementById('modeCardIndividual');
+      const cardComp = document.getElementById('modeCardCompany');
+      const wsInd = document.getElementById('individualWorkspace');
+      const wsComp = document.getElementById('companyWorkspace');
+
+      if (mode === 'company') {
+        cardComp.classList.add('active');
+        cardInd.classList.remove('active');
+        wsComp.style.display = 'block';
+        wsInd.style.display = 'none';
+
+        if (currentAuthStatus && currentAuthStatus.has_company) {
+          document.getElementById('companyDashboardCard').style.display = 'flex';
+          document.getElementById('companyRegisterCard').style.display = 'none';
+        } else {
+          document.getElementById('companyDashboardCard').style.display = 'none';
+          document.getElementById('companyRegisterCard').style.display = 'block';
+        }
+      } else {
+        cardInd.classList.add('active');
+        cardComp.classList.remove('active');
+        wsInd.style.display = 'block';
+        wsComp.style.display = 'none';
+      }
+    }
+
+    /* ================= COMPANY WORKSPACE ACTIONS ================= */
+    async function handleCompanyRegister(event) {
+      event.preventDefault();
+      if (!currentUser || !currentUser.email) {
+        alert('Please sign in with Google first.');
+        return;
+      }
+
+      const btn = document.getElementById('compRegisterBtn');
+      const status = document.getElementById('compRegisterStatus');
+      btn.disabled = true;
+      btn.innerText = 'Uploading Incorporation Document & Verifying...';
+      status.style.display = 'block';
+      status.style.color = 'var(--pine)';
+      status.innerText = 'Creating corporate workspace...';
+
+      const formData = new FormData();
+      formData.append('admin_email', currentUser.email);
+      formData.append('company_name', document.getElementById('compName').value);
+      formData.append('cin_number', document.getElementById('compCin').value);
+      formData.append('employee_count_estimate', document.getElementById('compEmpCount').value);
+
+      const certInput = document.getElementById('compCertFile');
+      if (certInput.files[0]) {
+        formData.append('incorporation_cert', certInput.files[0]);
+      } else {
+        alert('Certificate of Incorporation is mandatory.');
+        btn.disabled = false;
+        btn.innerText = 'Verify & Create Corporate Workspace →';
+        return;
+      }
+
+      try {
+        const res = await fetch('https://api.curelith.com/emergency/companies/register', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          status.style.color = '#059669';
+          status.innerText = '✅ Corporate Workspace Verified & Activated!';
+          // Refresh auth status
+          await onGoogleUserAuthenticated(currentUser);
+          switchMode('company');
+        } else {
+          status.style.color = '#DC2626';
+          status.innerText = `Error: ${data.error || 'Failed to register company'}`;
+        }
+      } catch (err) {
+        status.style.color = '#DC2626';
+        status.innerText = `Network Error: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Verify & Create Corporate Workspace →';
+      }
+    }
+
+    function copyInviteLink() {
+      const input = document.getElementById('dashInviteLinkInput');
+      input.select();
+      input.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(input.value);
+      const feedback = document.getElementById('copyFeedback');
+      feedback.style.display = 'block';
+      setTimeout(() => { feedback.style.display = 'none'; }, 3000);
+    }
+
+    function downloadSampleCsv() {
+      const csvContent = "data:text/csv;charset=utf-8," + 
+        "EmployeeID,Name,Phone,BloodGroup,EmergencyContactName,EmergencyContactPhone,Allergies,ChronicConditions\n" +
+        "EMP-101,Aakash Raman,9840012345,O+VE,Sangeetha,9840054321,None declared,None declared\n" +
+        "EMP-102,Priya Sharma,9840023456,B+VE,Venkatesh,9840065432,Penicillin,Asthma\n" +
+        "EMP-103,Mohammed Faiz,9840034567,A+VE,Fatima,9840076543,Peanuts,None declared\n";
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "curelith_employee_roster_sample.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function handleCsvFileSelected(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('csvFileNameDisplay').innerText = `Selected: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+      }
+    }
+
+    async function handleBulkCsvUpload(event) {
+      event.preventDefault();
+      if (!currentAuthStatus || !currentAuthStatus.company) {
+        alert('Company workspace not found.');
+        return;
+      }
+
+      const fileInput = document.getElementById('rosterCsvFile');
+      if (!fileInput.files[0]) {
+        alert('Please choose or drop an employee CSV file.');
+        return;
+      }
+
+      const btn = document.getElementById('bulkUploadBtn');
+      const status = document.getElementById('bulkUploadStatus');
+      btn.disabled = true;
+      btn.innerText = 'Processing Roster & Generating Med-Passes...';
+      status.style.display = 'block';
+      status.style.color = 'var(--pine)';
+      status.innerText = 'Reading CSV entries...';
+
+      const formData = new FormData();
+      formData.append('company_uuid', currentAuthStatus.company.company_uuid);
+      formData.append('csv_file', fileInput.files[0]);
+
+      try {
+        const res = await fetch('https://api.curelith.com/emergency/companies/bulk-upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          status.style.color = '#059669';
+          status.innerText = `✅ Success: ${data.message || 'Passes generated!'}`;
+          fileInput.value = '';
+          document.getElementById('csvFileNameDisplay').innerText = 'Click to browse or drop Employee CSV file here';
+          await refreshCompanyCards(currentAuthStatus.company.company_uuid);
+        } else {
+          status.style.color = '#DC2626';
+          status.innerText = `Error: ${data.error || 'Failed to process CSV'}`;
+        }
+      } catch (err) {
+        status.style.color = '#DC2626';
+        status.innerText = `Network Error: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '⚡ Upload Roster & Generate Cards';
+      }
+    }
+
+    async function refreshCompanyCards(compUuid) {
+      const uuid = compUuid || (currentAuthStatus && currentAuthStatus.company && currentAuthStatus.company.company_uuid);
+      if (!uuid) return;
+
+      try {
+        const res = await fetch(`https://api.curelith.com/emergency/companies/${uuid}`);
+        const data = await res.json();
+        if (data.success && data.company) {
+          const employees = data.company.employees || [];
+          document.getElementById('dashIssuedCount').innerText = employees.length;
+
+          const tbody = document.getElementById('dashEmployeesTableBody');
+          if (employees.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--ink-soft); padding:20px;">No employee passes issued yet. Share the invite link above or upload a CSV roster.</td></tr>`;
+          } else {
+            tbody.innerHTML = employees.map(emp => `
+              <tr>
+                <td style="font-family:var(--mono); font-weight:600;">${emp.employee_id_code || 'EMP'}</td>
+                <td style="font-weight:600;">${emp.patient_name}</td>
+                <td style="font-family:var(--mono);">${emp.patient_phone}</td>
+                <td><span class="c-blood-val" style="font-size:12px; font-weight:700; color:#DC2626;">${emp.blood_group}</span></td>
+                <td style="font-family:var(--mono); font-size:11.5px; color:var(--pine); font-weight:700;">${emp.card_uuid}</td>
+                <td>
+                  <a href="emergency.html?card=${emp.card_uuid}" target="_blank" class="btn btn-outline" style="padding:4px 9px; font-size:11px;">
+                    👁️ SOS View
+                  </a>
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        console.error('Error refreshing company cards:', err);
+      }
+    }
+
+    /* ================= URL PARAMETER & GOOGLE INIT ================= */
+    async function checkUrlParamsAndSponsor() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const companyParam = urlParams.get('company');
+      const modeParam = urlParams.get('mode');
+
+      if (companyParam) {
+        try {
+          const res = await fetch(`https://api.curelith.com/emergency/companies/${encodeURIComponent(companyParam.trim())}`);
+          const data = await res.json();
+          if (data.success && data.company) {
+            sponsoringCompany = data.company;
+            document.getElementById('companyInviteNotice').style.display = 'flex';
+            document.getElementById('sponsorCompanyName').innerText = data.company.company_name;
+            document.getElementById('companyUuid').value = data.company.company_uuid;
+            document.getElementById('accountType').value = 'corporate';
+            document.getElementById('formCardBadge').innerText = `🏢 Corporate Pass: ${data.company.company_name}`;
+          }
+        } catch (e) {
+          console.warn('Failed to load sponsoring company:', e);
+        }
+      }
+
+      if (modeParam === 'company') {
+        switchMode('company');
+      }
+    }
+
+    function initGoogleAuth() {
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleLogin,
+          auto_select: false
+        });
+        const btnContainer = document.getElementById("googleSignInBtn");
+        if (btnContainer) {
+          btnContainer.innerHTML = '';
+          google.accounts.id.renderButton(btnContainer, {
+            theme: "outline",
+            size: "large",
+            shape: "pill",
+            text: "continue_with",
+            width: 280
+          });
+        }
+      } else {
+        setTimeout(initGoogleAuth, 250);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      initGoogleAuth();
+      await checkUrlParamsAndSponsor();
+
+      // Check for saved user in localStorage
+      const savedUserStr = localStorage.getItem('curelith_emergency_user');
+      if (savedUserStr) {
+        try {
+          currentUser = JSON.parse(savedUserStr);
+          await onGoogleUserAuthenticated(currentUser);
+        } catch (e) {
+          localStorage.removeItem('curelith_emergency_user');
+        }
+      }
+    });
+
     async function handleFormSubmit(event) {
       event.preventDefault();
+
+      // Check Google Authentication requirement
+      if (!currentUser || !currentUser.email) {
+        const authSection = document.getElementById('authGateSection');
+        if (authSection) {
+          authSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        alert('Google Identity Verification is required to generate or link an official emergency pass. Please sign in with Google above.');
+        return;
+      }
 
       const agreeCheckbox = document.getElementById('agreeTerms');
       const termsBox = document.getElementById('termsAgreementBox');
@@ -1231,6 +2495,15 @@
 
       const formData = new FormData();
       formData.append('terms_accepted', '1');
+      formData.append('user_email', currentUser.email);
+      formData.append('account_type', document.getElementById('accountType').value || 'individual');
+      if (document.getElementById('companyUuid').value) {
+        formData.append('company_id', document.getElementById('companyUuid').value);
+      }
+      if (document.getElementById('editingCardUuid').value) {
+        formData.append('card_uuid', document.getElementById('editingCardUuid').value);
+      }
+
       formData.append('patient_phone', document.getElementById('patientPhone').value);
       formData.append('patient_name', document.getElementById('patientName').value);
       formData.append('blood_group', document.getElementById('bloodGroup').value);
@@ -1242,7 +2515,7 @@
       formData.append('chronic_conditions', document.getElementById('chronicConditions').value);
 
       const photoInput = document.getElementById('photoInput');
-      if (photoInput.files[0]) {
+      if (photoInput && photoInput.files[0]) {
         formData.append('photo', photoInput.files[0]);
       }
 
@@ -1266,9 +2539,16 @@
 
           statusMsg.style.color = '#059669';
           statusMsg.innerText = `✅ Official Card Generated! Med-Pass ID: ${data.card_uuid}`;
+
+          // Refresh auth status so the existing card box reflects new card
+          await onGoogleUserAuthenticated(currentUser);
         } else {
           statusMsg.style.color = '#DC2626';
           statusMsg.innerText = `Error: ${data.error || 'Failed to generate card'}`;
+          if (data.individual_card_id) {
+            alert(`You already have an official individual emergency health card (ID: ${data.individual_card_id}). Only 1 card per Google email is permitted.`);
+            await onGoogleUserAuthenticated(currentUser);
+          }
         }
       } catch (err) {
         statusMsg.style.color = '#DC2626';
