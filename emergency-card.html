@@ -546,24 +546,25 @@
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       border-radius: 18px;
-      box-shadow: 0 20px 40px -15px rgba(15,27,25,0.22), 0 0 0 1px rgba(15,27,25,0.08);
+      box-shadow: 0 20px 40px -15px rgba(12, 56, 50, 0.22), 0 0 0 1px rgba(12, 56, 50, 0.1);
       cursor: pointer;
     }
     .card-back { transform: rotateY(180deg); }
 
-    /* Security pattern on clinical white card */
+    /* Security pattern on clinical porcelain card */
     .white-security-pattern {
+      background-color: #F4F7F4;
       background-image: 
-        radial-gradient(circle at 100% 0%, rgba(30,66,61,0.06) 0%, transparent 60%),
-        radial-gradient(circle at 0% 100%, rgba(220,38,38,0.04) 0%, transparent 50%),
-        linear-gradient(to right, rgba(20,32,29,0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(20,32,29,0.02) 1px, transparent 1px);
+        radial-gradient(circle at 100% 0%, rgba(123, 171, 160, 0.16) 0%, transparent 60%),
+        radial-gradient(circle at 0% 100%, rgba(12, 56, 50, 0.08) 0%, transparent 50%),
+        linear-gradient(to right, rgba(12, 56, 50, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(12, 56, 50, 0.03) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 12px 12px, 12px 12px;
     }
 
     /* CARD INTERNAL STYLES */
     .c-face-content {
-      background: #FFFFFF;
+      background: #F4F7F4;
       height: 100%;
       border-radius: 18px;
       padding: 16px 20px;
@@ -572,10 +573,12 @@
       justify-content: space-between;
       position: relative;
       overflow: hidden;
+      border: 1.5px solid rgba(12, 56, 50, 0.12);
+      box-sizing: border-box;
     }
     .c-top-ribbon {
       position: absolute; top: 0; left: 0; right: 0; height: 5px;
-      background: linear-gradient(to right, var(--pine), var(--pine-light), var(--clay));
+      background: linear-gradient(to right, #0C3832, #1E5A50, #7BABA0);
     }
     .c-header {
       display: flex; align-items: center; justify-content: space-between;
@@ -583,16 +586,16 @@
     }
     .c-brand {
       display: flex; align-items: center; gap: 8px;
-      font-family: var(--serif); font-weight: 600; font-size: 17px; color: var(--void);
+      font-family: var(--serif); font-weight: 600; font-size: 17px; color: #0C3832;
     }
     .c-brand img { width: 22px; height: 22px; }
     .c-badge {
       font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
       padding: 2px 7px; border-radius: 4px; font-weight: 600;
     }
-    .c-badge.medpass { background: rgba(30,66,61,0.08); color: var(--pine); border: 1px solid rgba(30,66,61,0.2); }
-    .c-badge.alert { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; display: flex; align-items: center; gap: 4px; }
-    .c-alert-dot { width: 5px; height: 5px; border-radius: 50%; background: #DC2626; animation: blink 1.2s infinite; }
+    .c-badge.medpass { background: #E5ECE9; color: #0C3832; border: 1px solid rgba(12, 56, 50, 0.2); }
+    .c-badge.alert { background: #E5ECE9; color: #0C3832; border: 1px solid #7BABA0; display: flex; align-items: center; gap: 4px; }
+    .c-alert-dot { width: 5px; height: 5px; border-radius: 50%; background: #0C3832; animation: blink 1.2s infinite; }
 
     .c-body {
       display: grid; grid-template-columns: 70px 1fr 70px; gap: 14px; align-items: center;
@@ -600,21 +603,21 @@
     }
     .c-photo-box {
       width: 70px; height: 70px; border-radius: 12px; overflow: hidden;
-      border: 1.5px solid var(--line); background: var(--card-tint);
+      border: 1.5px solid #7BABA0; background: #E5ECE9;
     }
     .c-photo-box img { width: 100%; height: 100%; object-cover: cover; }
     .c-card-id {
-      font-family: var(--mono); font-size: 9px; font-weight: 600; color: var(--ink-soft);
+      font-family: var(--mono); font-size: 9px; font-weight: 700; color: #0C3832;
       text-align: center; margin-top: 4px; display: block;
     }
 
     .c-info-col { min-width: 0; padding-right: 4px; }
     .c-patient-name {
-      font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--ink);
+      font-family: var(--serif); font-size: 18px; font-weight: 700; color: #0C3832;
       line-height: 1.35; padding: 2px 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .c-patient-sub {
-      font-size: 11px; color: var(--ink-soft); margin-top: 2px; font-weight: 500; line-height: 1.3;
+      font-size: 11px; color: #4D5C57; margin-top: 2px; font-weight: 500; line-height: 1.3;
     }
     .c-tags { margin-top: 5px; display: flex; flex-direction: column; gap: 3px; }
     .c-tag-row { display: flex; align-items: center; gap: 6px; font-size: 10.5px; line-height: 1.35; }
@@ -622,34 +625,34 @@
       font-family: var(--mono); font-size: 8px; font-weight: 700; text-transform: uppercase;
       padding: 1px 4px; border-radius: 3px;
     }
-    .c-tag-lbl.alr { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
-    .c-tag-lbl.cnd { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
-    .c-tag-val { font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.35; padding-bottom: 2px; }
+    .c-tag-lbl.alr { background: #E5ECE9; color: #0C3832; border: 1px solid #7BABA0; }
+    .c-tag-lbl.cnd { background: #E5ECE9; color: #0C3832; border: 1px solid #7BABA0; }
+    .c-tag-val { font-weight: 600; color: #0C3832; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.35; padding-bottom: 2px; }
 
     .c-blood-badge {
       width: 66px; height: 66px; border-radius: 14px;
-      background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+      background: linear-gradient(135deg, #0C3832 0%, #174E45 100%);
       color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      box-shadow: 0 8px 16px -4px rgba(220,38,38,0.4); border: 2px solid #fff;
+      box-shadow: 0 8px 16px -4px rgba(12, 56, 50, 0.35); border: 2px solid #7BABA0;
     }
-    .c-blood-lbl { font-family: var(--mono); font-size: 7.5px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.9; }
-    .c-blood-val { font-family: var(--sans); font-size: 19px; font-weight: 800; line-height: 1; margin-top: 2px; }
+    .c-blood-lbl { font-family: var(--mono); font-size: 7.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7BABA0; }
+    .c-blood-val { font-family: var(--sans); font-size: 19px; font-weight: 800; line-height: 1; margin-top: 2px; color: #FFFFFF; }
 
     .c-footer {
-      border-top: 1px solid var(--line); padding-top: 8px;
+      border-top: 1px solid rgba(12, 56, 50, 0.15); padding-top: 8px;
       display: flex; align-items: center; justify-content: space-between;
       position: relative; z-index: 2;
     }
-    .c-ice-title { font-family: var(--mono); font-size: 8.5px; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
-    .c-ice-contact { font-size: 11.5px; font-weight: 700; color: var(--ink); margin-top: 2px; display: flex; gap: 5px; }
-    .c-ice-contact .phone { font-family: var(--mono); color: var(--pine); }
+    .c-ice-title { font-family: var(--mono); font-size: 8.5px; text-transform: uppercase; color: #0C3832; font-weight: 700; }
+    .c-ice-contact { font-size: 11.5px; font-weight: 700; color: #0C3832; margin-top: 2px; display: flex; gap: 5px; }
+    .c-ice-contact .phone { font-family: var(--mono); color: #0C3832; font-weight: 700; }
 
     .c-qr-wrap { display: flex; flex-direction: column; align-items: center; }
     .c-qr-img {
       width: 44px; height: 44px; padding: 2px; background: #fff;
-      border: 1px solid var(--line); border-radius: 6px;
+      border: 1.5px solid #0C3832; border-radius: 6px;
     }
-    .c-qr-sub { font-family: var(--mono); font-size: 7.5px; font-weight: 700; color: #DC2626; text-transform: uppercase; margin-top: 2px; }
+    .c-qr-sub { font-family: var(--mono); font-size: 7.5px; font-weight: 700; color: #0C3832; text-transform: uppercase; margin-top: 2px; }
 
     /* ACTION BUTTONS UNDER PREVIEW */
     .preview-actions {
@@ -1770,16 +1773,16 @@
               <!-- BACK FACE (DOCTOR & CLINICAL PORTAL) -->
               <div class="card-face card-back" id="cardBackFace">
                 <div class="c-face-content white-security-pattern">
-                  <div class="c-top-ribbon" style="background:linear-gradient(to right, var(--clay), var(--pine));"></div>
+                  <div class="c-top-ribbon" style="background:linear-gradient(to right, #7BABA0, #1E5A50, #0C3832);"></div>
 
                   <!-- Header -->
                   <div class="c-header">
                     <div class="c-brand">
                       <img src="assets/logo.png" alt="Curelith Logo">
                       Curelith
-                      <span class="c-badge medpass" style="color:var(--clay-deep); border-color:rgba(212,130,74,0.3); margin-left:4px;">Clinical</span>
+                      <span class="c-badge medpass" style="color:#0C3832; border-color:#7BABA0; background:#E5ECE9; margin-left:4px;">Clinical</span>
                     </div>
-                    <span class="c-badge medpass" style="background:#F3F4F6; color:#4B5563; border-color:#E5E7EB;">
+                    <span class="c-badge medpass" style="background:#E5ECE9; color:#0C3832; border-color:rgba(12, 56, 50, 0.2);">
                       DOCTOR PORTAL
                     </span>
                   </div>
@@ -1787,29 +1790,29 @@
                   <!-- Center -->
                   <div style="display:grid; grid-template-columns:85px 1fr; gap:16px; align-items:center; margin:8px 0;">
                     <div class="c-qr-wrap">
-                      <img id="cardBackQrImg" class="c-qr-img" style="width:68px; height:68px; border-color:var(--pine);" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='13' width='12' height='12'/><rect x='67' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='75' y='13' width='12' height='12'/><rect x='5' y='67' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='75' width='12' height='12'/><rect x='42' y='42' width='16' height='16' fill='%231E423D'/></svg>">
-                      <span class="c-qr-sub" style="color:var(--pine);">Doctor Upload QR</span>
+                      <img id="cardBackQrImg" class="c-qr-img" style="width:68px; height:68px; border-color:#0C3832;" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='28' height='28' rx='4' fill='none' stroke='%230C3832' stroke-width='7'/><rect x='13' y='13' width='12' height='12' fill='%230C3832'/><rect x='67' y='5' width='28' height='28' rx='4' fill='none' stroke='%230C3832' stroke-width='7'/><rect x='75' y='13' width='12' height='12' fill='%230C3832'/><rect x='5' y='67' width='28' height='28' rx='4' fill='none' stroke='%230C3832' stroke-width='7'/><rect x='13' y='75' width='12' height='12' fill='%230C3832'/><rect x='42' y='42' width='16' height='16' fill='%230C3832'/></svg>">
+                      <span class="c-qr-sub" style="color:#0C3832;">Doctor Upload QR</span>
                     </div>
 
                     <div>
-                      <div style="font-size:12px; font-weight:700; color:var(--ink);">🩺 For Physicians &amp; Diagnostics</div>
-                      <p style="font-size:10.5px; color:var(--ink-soft); line-height:1.45; margin-top:4px;">
+                      <div style="font-size:12px; font-weight:700; color:#0C3832;">🩺 For Physicians &amp; Diagnostics</div>
+                      <p style="font-size:10.5px; color:#4D5C57; line-height:1.45; margin-top:4px;">
                         Scan to upload medical prescriptions, scan summaries, or blood reports directly to this patient’s Curelith locker.
                       </p>
                       <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-                        <div style="background:#FEF3C7; border:1px solid #FDE68A; padding:2px 8px; border-radius:5px;">
-                          <div style="font-family:var(--mono); font-size:7px; text-transform:uppercase; color:#92400E; font-weight:700;">PIN</div>
-                          <div id="cardPinDisplay" style="font-family:var(--mono); font-size:12px; font-weight:800; color:#78350F;">4 8 2 1</div>
+                        <div style="background:#E5ECE9; border:1px solid #7BABA0; padding:2px 8px; border-radius:5px;">
+                          <div style="font-family:var(--mono); font-size:7px; text-transform:uppercase; color:#0C3832; font-weight:700;">PIN</div>
+                          <div id="cardPinDisplay" style="font-family:var(--mono); font-size:12px; font-weight:800; color:#0C3832;">4 8 2 1</div>
                         </div>
-                        <span style="font-size:9px; color:var(--ink-soft);">Required for full medical file downloads.</span>
+                        <span style="font-size:9px; color:#4D5C57;">Required for full medical file downloads.</span>
                       </div>
                     </div>
                   </div>
 
                   <!-- Footer -->
-                  <div class="c-footer" style="font-family:var(--mono); font-size:9px; color:var(--ink-soft);">
+                  <div class="c-footer" style="font-family:var(--mono); font-size:9px; color:#4D5C57; border-top: 1px solid rgba(12, 56, 50, 0.15);">
                     <span>Care Desk: +91 99400 99992</span>
-                    <span style="color:var(--pine); font-weight:600;">www.curelith.com</span>
+                    <span style="color:#0C3832; font-weight:700;">www.curelith.com</span>
                   </div>
                 </div>
               </div>
@@ -2589,7 +2592,7 @@
         // 1. Render Front Face
         stage.innerHTML = '';
         const fClone = frontContent.cloneNode(true);
-        fClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:2px solid #DCD7C8; transform:none; -webkit-transform:none; box-sizing:border-box;';
+        fClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:1.5px solid rgba(12,56,50,0.18); background:#F4F7F4; transform:none; -webkit-transform:none; box-sizing:border-box; overflow:hidden; position:relative;';
         
         // Remove restrictive overflow clipping on text inside clone so html2canvas never cuts off font descenders
         fClone.querySelectorAll('.c-patient-name, .c-tag-val, .c-patient-sub, .c-ice-contact, .c-tag-row, .c-info-col').forEach(el => {
@@ -2613,7 +2616,7 @@
         // 2. Render Back Face (100% normal orientation, zero CSS transform)
         stage.innerHTML = '';
         const bClone = backContent.cloneNode(true);
-        bClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:2px solid #DCD7C8; transform:none; -webkit-transform:none; box-sizing:border-box;';
+        bClone.style.cssText = 'width:100%; height:100%; border-radius:18px; border:1.5px solid rgba(12,56,50,0.18); background:#F4F7F4; transform:none; -webkit-transform:none; box-sizing:border-box; overflow:hidden; position:relative;';
         bClone.querySelectorAll('*').forEach(el => {
           if (el.style && el.style.transform) el.style.transform = 'none';
         });
