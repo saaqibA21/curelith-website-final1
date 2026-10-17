@@ -610,10 +610,10 @@
 
             <!-- Photo Upload -->
             <div class="form-group">
-              <label class="form-label">Passport Photo</label>
+              <label class="form-label">Passport Photo (Optional)</label>
               <div style="display:flex; align-items:center; gap:16px;">
-                <div style="width:58px; height:58px; border-radius:10px; border:1px solid var(--line); overflow:hidden; background:var(--card-tint); flex-shrink:0;">
-                  <img id="photoThumb" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&auto=format&fit=crop&q=80" alt="Thumb" style="width:100%; height:100%; object-fit:cover;">
+                <div style="width:58px; height:58px; border-radius:10px; border:1px solid var(--line); overflow:hidden; background:var(--card-tint); flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+                  <img id="photoThumb" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%238FA89F'><circle cx='50' cy='36' r='20'/><path d='M15 88c0-18 16-28 35-28s35 10 35 28z'/></svg>" alt="Thumb" style="width:100%; height:100%; object-fit:cover;">
                 </div>
                 <input type="file" id="photoInput" accept="image/*" class="input-field" style="padding:8px;" onchange="handlePhotoSelect(event)">
               </div>
@@ -698,8 +698,8 @@
                   <!-- Body -->
                   <div class="c-body">
                     <div>
-                      <div class="c-photo-box">
-                        <img id="cardPhotoPreview" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&auto=format&fit=crop&q=80" alt="Patient">
+                      <div class="c-photo-box" style="display:flex; align-items:center; justify-content:center; background:var(--card-tint);">
+                        <img id="cardPhotoPreview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%238FA89F'><circle cx='50' cy='36' r='20'/><path d='M15 88c0-18 16-28 35-28s35 10 35 28z'/></svg>" alt="Patient">
                       </div>
                       <span class="c-card-id" id="cardUuidDisplay">CL-DEMO-01</span>
                     </div>
