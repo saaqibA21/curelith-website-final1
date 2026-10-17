@@ -12,7 +12,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Curelith Surgicals — Precision Surgical Infrastructure &amp; OT Supplies | Coming Soon</title>
-  <meta name="description" content="Curelith Surgicals is launching precision-grade surgical instruments, direct-to-OT sterile supplies, and intelligent medical device logistics for hospitals and surgeons.">
+  <meta name="description" content="Curelith Surgicals is launching precision-grade surgical instruments, direct-to-OT sterile supplies, and intelligent medical logistics for hospitals and surgeons across India.">
   <meta name="keywords" content="Curelith Surgicals, Surgical Instruments, Hospital OT Supplies, Medical Devices India, Chennai Surgicals, Laparoscopic Instruments, Orthopedic Implants, Operating Theatre Equipment">
   <meta name="author" content="Curelith Intelligence">
 
@@ -31,27 +31,26 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* ================= CURELITH SURGICALS STYLES ================= */
+    /* ================= CURELITH LIGHT SIGNATURE THEME ================= */
     :root {
-      --void:        #0A1211;
-      --void-soft:   #121F1C;
-      --paper:       #F4F7F4;
+      --void:        #0F1B19;
+      --void-soft:   #16241F;
+      --paper:       #F5F3ED;
       --card:        #FFFFFF;
-      --card-tint:   #EAEFEA;
-      --ink:         #0C1E1B;
-      --ink-soft:    #435853;
-      --pine:        #0C3832;
-      --pine-light:  #18544B;
+      --card-tint:   #EDEAE0;
+      --ink:         #14201D;
+      --ink-soft:    #4D5C57;
+      --pine:        #1E423D;
+      --pine-light:  #2E5C54;
       --mist:        #8FA89F;
       --mist-dim:    #5C7A71;
       --sage:        #7BABA0;
       --sage-light:  #E5ECE9;
-      --line:        #D3DDD8;
-      --line-dark:   rgba(255,255,255,0.08);
-      --titanium:    #B2C7C1;
-      --gold:        #E8C77B;
+      --line:        #DCD7C8;
+      --line-dark:   rgba(255,255,255,0.09);
       --clay:        #D4824A;
-      --cyan-bright: #00E5BA;
+      --clay-deep:   #B5642F;
+      --gold:        #E8C77B;
 
       --serif: "Fraunces", Georgia, serif;
       --sans:  "Inter", -apple-system, sans-serif;
@@ -61,304 +60,231 @@
     }
 
     body {
-      background: var(--void);
-      color: #EBF2EF;
+      background: var(--paper);
+      color: var(--ink);
       font-family: var(--sans);
-      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Ambient Glow & Grid */
-    .surgical-canvas {
-      position: relative;
-      background: radial-gradient(circle at 50% 0%, #153A33 0%, var(--void) 70%);
-      overflow: hidden;
-    }
-
-    .surgical-grid-overlay {
-      position: absolute;
-      inset: 0;
-      background-image: 
-        linear-gradient(rgba(123, 171, 160, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(123, 171, 160, 0.05) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .surgical-glow-orb {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0, 229, 186, 0.12) 0%, rgba(12, 56, 50, 0.02) 70%, transparent 100%);
-      top: -150px;
-      left: 50%;
-      transform: translateX(-50%);
-      filter: blur(60px);
-      pointer-events: none;
-      z-index: 1;
+    /* Subtle Vital Grid background */
+    .bg-grid {
+      background-image: radial-gradient(circle at 1px 1px, rgba(20, 32, 29, 0.08) 1px, transparent 1.6px);
+      background-size: 26px 26px;
     }
 
     /* Hero Section */
     .hero-surgicals {
-      position: relative;
-      z-index: 2;
-      padding: 100px 0 70px;
+      padding: 90px 0 60px;
       text-align: center;
+      position: relative;
     }
 
-    .launch-pill {
+    .status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      background: rgba(12, 56, 50, 0.6);
-      border: 1px solid rgba(123, 171, 160, 0.35);
+      gap: 9px;
+      background: rgba(30, 66, 61, 0.08);
+      border: 1px solid rgba(30, 66, 61, 0.2);
       border-radius: 30px;
-      padding: 8px 18px;
+      padding: 7px 16px;
       font-family: var(--mono);
-      font-size: 11.5px;
+      font-size: 11px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--cyan-bright);
-      margin-bottom: 28px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 8px 24px -6px rgba(0, 229, 186, 0.2);
+      color: var(--pine);
+      font-weight: 600;
+      margin-bottom: 24px;
     }
 
     .pulse-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--cyan-bright);
-      box-shadow: 0 0 10px var(--cyan-bright);
-      animation: pulseGlow 1.8s infinite;
+      background: var(--pine);
+      animation: pulseDot 2s infinite ease-in-out;
     }
 
-    @keyframes pulseGlow {
+    @keyframes pulseDot {
       0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0.5; }
+      50% { transform: scale(1.3); opacity: 0.4; }
     }
 
     .hero-title {
       font-family: var(--serif);
-      font-size: clamp(38px, 5.5vw, 66px);
+      font-size: clamp(36px, 4.8vw, 58px);
       font-weight: 600;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      color: #FFFFFF;
-      max-width: 980px;
-      margin: 0 auto 24px;
+      line-height: 1.15;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      max-width: 900px;
+      margin: 0 auto 20px;
     }
 
-    .hero-title .highlight {
-      background: linear-gradient(135deg, #FFFFFF 20%, var(--titanium) 60%, var(--cyan-bright) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .hero-title span.italic-gold {
+      color: var(--clay-deep);
       font-style: italic;
     }
 
     .hero-sub {
-      font-size: clamp(16px, 1.8vw, 19.5px);
-      color: var(--mist);
-      max-width: 720px;
-      margin: 0 auto 44px;
+      font-size: clamp(16px, 1.8vw, 18.5px);
+      color: var(--ink-soft);
+      max-width: 700px;
+      margin: 0 auto 40px;
       line-height: 1.65;
-      font-weight: 400;
     }
 
-    /* Countdown Cards */
-    .countdown-wrap {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin: 0 auto 52px;
-      flex-wrap: wrap;
-    }
-
-    .count-card {
-      background: rgba(18, 31, 28, 0.7);
-      border: 1px solid rgba(123, 171, 160, 0.2);
-      border-radius: 14px;
-      padding: 16px 20px;
-      min-width: 105px;
-      text-align: center;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 14px 30px -10px rgba(0,0,0,0.4);
-      transition: border-color .3s ease, transform .2s ease;
-    }
-    .count-card:hover {
-      border-color: var(--cyan-bright);
-      transform: translateY(-2px);
-    }
-    .count-num {
-      font-family: var(--mono);
-      font-size: 34px;
-      font-weight: 700;
-      color: #FFFFFF;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-    }
-    .count-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--mist);
-      margin-top: 6px;
-    }
-
-    /* Early Access Form Box */
-    .early-access-card {
-      background: rgba(18, 31, 28, 0.85);
-      border: 1px solid rgba(123, 171, 160, 0.25);
-      border-radius: 20px;
-      padding: 38px 40px;
+    /* Whitelist Form Card */
+    .lead-box-container {
       max-width: 680px;
-      margin: 0 auto 70px;
+      margin: 0 auto 60px;
       text-align: left;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 24px 60px -15px rgba(0,0,0,0.5), 0 0 0 1px rgba(0, 229, 186, 0.08);
+    }
+
+    .lead-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 38px 40px;
+      box-shadow: 0 20px 45px -20px rgba(15, 27, 25, 0.08), 0 0 0 1px rgba(15, 27, 25, 0.02);
       position: relative;
     }
 
-    .early-access-card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 10%; right: 10%; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--cyan-bright), transparent);
+    .lead-box-head {
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 20px;
     }
 
-    .form-heading {
+    .lead-box-head h2 {
       font-family: var(--serif);
       font-size: 23px;
       font-weight: 600;
-      color: #FFFFFF;
-      margin-bottom: 8px;
+      color: var(--ink);
+      margin-bottom: 6px;
     }
 
-    .form-desc {
-      font-size: 13.5px;
-      color: var(--mist);
-      margin-bottom: 24px;
+    .lead-box-head p {
+      font-size: 14px;
+      color: var(--ink-soft);
       line-height: 1.5;
     }
 
-    .form-row {
+    .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
       margin-bottom: 16px;
     }
 
-    @media (max-width: 600px) {
-      .form-row { grid-template-columns: 1fr; }
-      .early-access-card { padding: 26px 20px; }
-      .countdown-wrap { gap: 10px; }
-      .count-card { min-width: 78px; padding: 12px 10px; }
-      .count-num { font-size: 26px; }
+    @media (max-width: 640px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .lead-box { padding: 26px 20px; }
+      .hero-surgicals { padding: 60px 0 40px; }
     }
 
-    .field-wrap {
+    .field-group {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
 
-    .field-lbl {
+    .field-group label {
       font-family: var(--mono);
-      font-size: 10.5px;
-      letter-spacing: 0.08em;
+      font-size: 11px;
       text-transform: uppercase;
-      color: var(--titanium);
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
       font-weight: 600;
     }
 
-    .field-input, .field-select {
-      background: rgba(10, 18, 17, 0.85);
-      border: 1px solid rgba(123, 171, 160, 0.3);
-      border-radius: 9px;
-      padding: 12px 14px;
-      color: #FFFFFF;
-      font-family: var(--sans);
-      font-size: 14px;
-      outline: none;
-      transition: border-color .2s ease, box-shadow .2s ease;
-    }
-    .field-input:focus, .field-select:focus {
-      border-color: var(--cyan-bright);
-      box-shadow: 0 0 0 3px rgba(0, 229, 186, 0.15);
+    .field-group .req {
+      color: #DC2626;
     }
 
-    .field-select option {
-      background: var(--void-soft);
-      color: #FFFFFF;
+    .field-input, .field-select {
+      width: 100%;
+      font-family: var(--sans);
+      font-size: 14.5px;
+      color: var(--ink);
+      background: #FAFAFA;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    .field-input:focus, .field-select:focus {
+      background: #FFFFFF;
+      border-color: var(--pine);
+      box-shadow: 0 0 0 3px rgba(30, 66, 61, 0.1);
     }
 
     .btn-submit-lead {
       width: 100%;
-      background: linear-gradient(135deg, var(--cyan-bright) 0%, #00B392 100%);
-      color: #061B16;
+      background: var(--pine);
+      color: #FFFFFF;
       border: none;
       padding: 15px 24px;
       border-radius: 10px;
       font-family: var(--sans);
       font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 12px 28px -8px rgba(0, 229, 186, 0.4);
-      transition: transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+      gap: 8px;
+      transition: background .2s ease, transform .15s ease, box-shadow .2s ease;
+      box-shadow: 0 10px 24px -10px rgba(30, 66, 61, 0.4);
       margin-top: 10px;
     }
+
     .btn-submit-lead:hover {
+      background: var(--pine-light);
       transform: translateY(-1px);
-      box-shadow: 0 16px 36px -8px rgba(0, 229, 186, 0.55);
+      box-shadow: 0 14px 28px -10px rgba(30, 66, 61, 0.5);
     }
     .btn-submit-lead:active { transform: translateY(1px); }
 
-    .lead-feedback {
+    .lead-feedback-msg {
       display: none;
-      margin-top: 14px;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-family: var(--mono);
-      font-size: 12px;
-      background: rgba(0, 229, 186, 0.12);
-      border: 1px solid rgba(0, 229, 186, 0.4);
-      color: var(--cyan-bright);
-      text-align: center;
+      margin-top: 16px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      background: #E5ECE9;
+      border: 1px solid var(--sage);
+      color: var(--pine);
     }
 
     /* Pillars Section */
     .section-pillars {
-      padding: 90px 0 100px;
-      border-top: 1px solid var(--line-dark);
-      background: var(--void-soft);
-      position: relative;
-      z-index: 2;
+      padding: 80px 0;
+      background: #FFFFFF;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
     }
 
-    .section-heading-wrap {
+    .section-head {
       text-align: center;
-      max-width: 720px;
-      margin: 0 auto 60px;
+      max-width: 680px;
+      margin: 0 auto 52px;
     }
 
-    .section-title {
+    .section-head h2 {
       font-family: var(--serif);
-      font-size: clamp(30px, 3.8vw, 44px);
+      font-size: clamp(28px, 3.5vw, 40px);
       font-weight: 600;
-      color: #FFFFFF;
-      margin: 12px 0 16px;
+      color: var(--ink);
+      margin: 10px 0 14px;
     }
 
-    .section-sub {
+    .section-head p {
       font-size: 16px;
-      color: var(--mist);
+      color: var(--ink-soft);
       line-height: 1.6;
     }
 
@@ -371,219 +297,156 @@
     @media (max-width: 1024px) {
       .pillars-grid { grid-template-columns: repeat(2, 1fr); }
     }
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       .pillars-grid { grid-template-columns: 1fr; }
     }
 
     .pillar-card {
-      background: rgba(10, 18, 17, 0.65);
-      border: 1px solid rgba(123, 171, 160, 0.18);
-      border-radius: 16px;
-      padding: 32px 26px;
-      transition: transform .25s ease, border-color .25s ease, background .25s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .pillar-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(0, 229, 186, 0.4);
-      background: rgba(10, 18, 17, 0.95);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 30px 24px;
+      transition: transform .2s ease, border-color .2s ease;
+      display: flex;
+      flex-direction: column;
     }
 
-    .pillar-icon-box {
-      width: 52px;
-      height: 52px;
+    .pillar-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--pine);
+    }
+
+    .pillar-icon {
+      width: 48px;
+      height: 48px;
       border-radius: 12px;
-      background: rgba(12, 56, 50, 0.8);
-      border: 1px solid rgba(123, 171, 160, 0.3);
+      background: rgba(30, 66, 61, 0.09);
+      color: var(--pine);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      margin-bottom: 22px;
-      color: var(--cyan-bright);
+      font-size: 22px;
+      margin-bottom: 20px;
     }
 
-    .pillar-title {
+    .pillar-card h3 {
       font-family: var(--serif);
       font-size: 19px;
       font-weight: 600;
-      color: #FFFFFF;
-      margin-bottom: 12px;
-      line-height: 1.25;
+      color: var(--ink);
+      margin-bottom: 10px;
+      line-height: 1.3;
     }
 
-    .pillar-text {
+    .pillar-card p {
       font-size: 14px;
-      color: var(--mist);
+      color: var(--ink-soft);
       line-height: 1.6;
+      flex: 1;
     }
 
     .pillar-tag {
       font-family: var(--mono);
       font-size: 10.5px;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--gold);
-      display: inline-block;
+      color: var(--clay-deep);
       margin-top: 18px;
+      font-weight: 600;
     }
 
-    /* Product Lines / Categories Preview */
-    .section-products {
-      padding: 90px 0;
-      background: var(--void);
-      border-top: 1px solid var(--line-dark);
-      position: relative;
-      z-index: 2;
+    /* Specialties Grid */
+    .section-specialties {
+      padding: 80px 0 100px;
     }
 
-    .products-grid {
+    .specialties-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 28px;
     }
 
     @media (max-width: 900px) {
-      .products-grid { grid-template-columns: 1fr; }
+      .specialties-grid { grid-template-columns: 1fr; }
     }
 
-    .product-line-card {
-      background: rgba(18, 31, 28, 0.5);
-      border: 1px solid rgba(123, 171, 160, 0.2);
-      border-radius: 16px;
+    .spec-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
       padding: 32px 28px;
-      position: relative;
+      box-shadow: 0 10px 30px -15px rgba(15, 27, 25, 0.05);
     }
 
-    .prod-badge {
+    .spec-badge {
       font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
+      font-size: 10.5px;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       padding: 4px 10px;
       border-radius: 6px;
-      background: rgba(232, 199, 123, 0.15);
-      color: var(--gold);
-      border: 1px solid rgba(232, 199, 123, 0.3);
+      background: rgba(30, 66, 61, 0.08);
+      color: var(--pine);
+      font-weight: 600;
       display: inline-block;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
-    .product-line-card h3 {
+    .spec-card h3 {
       font-family: var(--serif);
       font-size: 21px;
       font-weight: 600;
-      color: #FFFFFF;
-      margin-bottom: 12px;
+      color: var(--ink);
+      margin-bottom: 10px;
     }
 
-    .product-line-card p {
+    .spec-card p {
       font-size: 14px;
-      color: var(--mist);
+      color: var(--ink-soft);
       line-height: 1.6;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
-    .spec-items {
+    .spec-list {
       list-style: none;
       padding: 0;
       margin: 0;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 9px;
     }
 
-    .spec-items li {
+    .spec-list li {
       font-size: 13.5px;
-      color: #FFFFFF;
+      color: var(--ink);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
     }
 
-    .spec-items li span.check {
-      color: var(--cyan-bright);
+    .spec-list li span.tick {
+      color: #059669;
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
     }
 
-    /* Hospital Partner Banner */
-    .hospital-callout {
-      background: linear-gradient(135deg, rgba(12, 56, 50, 0.7) 0%, rgba(24, 84, 75, 0.4) 100%);
-      border: 1px solid rgba(123, 171, 160, 0.35);
-      border-radius: 20px;
-      padding: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 32px;
-      margin: 80px auto 0;
-      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4);
-    }
-
-    @media (max-width: 800px) {
-      .hospital-callout {
-        flex-direction: column;
-        text-align: center;
-        padding: 32px 24px;
-      }
-    }
-
-    .hosp-text h3 {
-      font-family: var(--serif);
-      font-size: 26px;
-      color: #FFFFFF;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    .hosp-text p {
-      color: var(--mist);
-      font-size: 15px;
-      max-width: 580px;
-      line-height: 1.6;
-    }
-
-    .hosp-cta-btn {
-      background: #FFFFFF;
-      color: #0C3832;
-      font-family: var(--sans);
-      font-weight: 700;
-      font-size: 15px;
-      padding: 15px 26px;
-      border-radius: 10px;
-      text-decoration: none;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform .15s ease, background .2s ease;
-      flex-shrink: 0;
-    }
-    .hosp-cta-btn:hover {
-      background: var(--paper);
-      transform: translateY(-2px);
-    }
-
-    /* Nav active tag */
+    /* Active Pill in Header */
     .nav-soon-pill {
       font-family: var(--mono);
       font-size: 9.5px;
-      background: rgba(0, 229, 186, 0.15);
-      color: var(--cyan-bright);
-      border: 1px solid rgba(0, 229, 186, 0.35);
-      padding: 2px 7px;
+      background: rgba(212, 130, 74, 0.15);
+      color: var(--clay);
+      border: 1px solid rgba(212, 130, 74, 0.35);
+      padding: 2px 6px;
       border-radius: 4px;
-      margin-left: 5px;
-      letter-spacing: 0.06em;
+      margin-left: 4px;
       vertical-align: 1px;
     }
   </style>
 </head>
-<body>
+<body class="bg-grid">
 
-  <!-- HEADER -->
+  <!-- HEADER (Exact Curelith Signature Navigation) -->
   <header>
     <div class="wrap nav">
       <a href="index.html" class="brand">
@@ -604,8 +467,8 @@
       </nav>
 
       <div class="nav-actions">
-        <a href="tel:+919940099992" class="btn btn-ghost-dark btn-sm">Care Desk: +91 99400 99992</a>
-        <a href="#earlyAccessBox" class="btn btn-primary btn-sm">Get Priority Access</a>
+        <a href="patient-login.html" class="btn btn-ghost-dark btn-sm">Patient Portal</a>
+        <a href="#earlyAccessBox" class="btn btn-primary btn-sm">Priority Whitelist</a>
       </div>
 
       <button class="menu-toggle" aria-label="Open menu" onclick="toggleMobileNav()">
@@ -620,69 +483,46 @@
       <a href="doctors.html">Physicians</a>
       <a href="hospitals.html">Hospitals</a>
       <a href="emergency-card.html">Emergency Health ID</a>
-      <a href="surgicals.html" style="color:var(--cyan-bright); font-weight:700;">Curelith Surgicals (Coming Soon)</a>
+      <a href="surgicals.html" style="color:var(--gold); font-weight:700;">Curelith Surgicals (Coming Soon)</a>
       <a href="about.html">About Us</a>
-      <a href="tel:+919940099992" style="color:var(--gold);">📞 Care Desk: +91 99400 99992</a>
+      <a href="patient-login.html" class="btn btn-ghost-dark btn-sm" style="justify-content:center; margin-top:10px;">Patient Portal</a>
     </div>
   </header>
 
-  <!-- SURGICAL HERO CANVAS -->
-  <section class="surgical-canvas">
-    <div class="surgical-grid-overlay"></div>
-    <div class="surgical-glow-orb"></div>
+  <!-- HERO SECTION -->
+  <main class="wrap hero-surgicals">
+    <div class="status-pill">
+      <span class="pulse-dot"></span>
+      Curelith Surgicals Division • Coming Soon
+    </div>
 
-    <div class="wrap hero-surgicals">
-      <!-- Status Badge -->
-      <div class="launch-pill">
-        <span class="pulse-dot"></span>
-        Curelith Surgicals Division • Launching Q1 2027
-      </div>
+    <h1 class="hero-title">
+      Precision Surgical Infrastructure. <br>
+      <span class="italic-gold">Elevating Operating Theatres Across India.</span>
+    </h1>
 
-      <!-- Main Headline -->
-      <h1 class="hero-title">
-        Precision Surgical Infrastructure. <br>
-        <span class="highlight">Elevating Operating Theatres Across India.</span>
-      </h1>
+    <p class="hero-sub">
+      Bridging instrument durability, direct sterile theatre replenishment, and on-demand surgical logistics for leading surgeons and partner healthcare facilities.
+    </p>
 
-      <p class="hero-sub">
-        Bridging medical-grade instrument durability, direct sterile theatre replenishment, and on-demand surgical logistics for leading surgeons and partner hospitals.
-      </p>
-
-      <!-- Live Launch Countdown -->
-      <div class="countdown-wrap">
-        <div class="count-card">
-          <div class="count-num" id="cdDays">72</div>
-          <div class="count-label">Days</div>
+    <!-- PRIORITY WHITELIST REGISTRATION FORM -->
+    <div class="lead-box-container" id="earlyAccessBox">
+      <div class="lead-box">
+        <div class="lead-box-head">
+          <h2>Request Early Surgical Partner Access</h2>
+          <p>
+            Join our priority whitelist for hospital procurement rates, instrument trials, and launch catalog delivery.
+          </p>
         </div>
-        <div class="count-card">
-          <div class="count-num" id="cdHours">14</div>
-          <div class="count-label">Hours</div>
-        </div>
-        <div class="count-card">
-          <div class="count-num" id="cdMinutes">36</div>
-          <div class="count-label">Minutes</div>
-        </div>
-        <div class="count-card">
-          <div class="count-num" id="cdSeconds">45</div>
-          <div class="count-label">Seconds</div>
-        </div>
-      </div>
-
-      <!-- Early Access / Whitelist Card -->
-      <div class="early-access-card" id="earlyAccessBox">
-        <div class="form-heading">Request Early Surgical Partner Access</div>
-        <p class="form-desc">
-          Join our priority whitelist for hospital procurement rates, instrument trials, and launch-day catalog delivery.
-        </p>
 
         <form id="surgicalLeadForm" onsubmit="handleLeadSubmit(event)">
-          <div class="form-row">
-            <div class="field-wrap">
-              <label class="field-lbl">Full Name *</label>
+          <div class="form-grid">
+            <div class="field-group">
+              <label>Full Name <span class="req">*</span></label>
               <input type="text" id="leadName" class="field-input" placeholder="Dr. Sangeetha Raman" required>
             </div>
-            <div class="field-wrap">
-              <label class="field-lbl">Your Professional Role *</label>
+            <div class="field-group">
+              <label>Professional Role <span class="req">*</span></label>
               <select id="leadRole" class="field-select" required>
                 <option value="Surgeon">Chief Surgeon / Consultant</option>
                 <option value="Hospital Administrator">Hospital Administrator / Medical Director</option>
@@ -694,87 +534,86 @@
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="field-wrap">
-              <label class="field-lbl">Hospital / Clinic / Organization *</label>
+          <div class="form-grid">
+            <div class="field-group">
+              <label>Hospital / Clinic / Organization <span class="req">*</span></label>
               <input type="text" id="leadOrg" class="field-input" placeholder="Orthomed Super Speciality Hospital" required>
             </div>
-            <div class="field-wrap">
-              <label class="field-lbl">City / Location *</label>
+            <div class="field-group">
+              <label>City / Location <span class="req">*</span></label>
               <input type="text" id="leadCity" class="field-input" placeholder="Chennai, Tamil Nadu" required>
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="field-wrap">
-              <label class="field-lbl">Work Email Address *</label>
+          <div class="form-grid">
+            <div class="field-group">
+              <label>Email Address <span class="req">*</span></label>
               <input type="email" id="leadEmail" class="field-input" placeholder="doctor@hospital.org" required>
             </div>
-            <div class="field-wrap">
-              <label class="field-lbl">WhatsApp / Phone *</label>
-              <input type="tel" id="leadPhone" class="field-input" placeholder="+91 98400 12345" required>
+            <div class="field-group">
+              <label>Contact Phone <span class="req">*</span></label>
+              <input type="tel" id="leadPhone" class="field-input" placeholder="9840012345" required>
             </div>
           </div>
 
           <button type="submit" id="leadSubmitBtn" class="btn-submit-lead">
-            <span>⚡ Join Priority Partner Whitelist</span>
+            <span>Join Priority Partner Whitelist →</span>
           </button>
 
-          <div id="leadFeedback" class="lead-feedback"></div>
+          <div id="leadFeedback" class="lead-feedback-msg"></div>
         </form>
       </div>
-
     </div>
-  </section>
+  </main>
 
   <!-- 4 CORE PILLARS SECTION -->
   <section class="section-pillars">
     <div class="wrap">
-      <div class="section-heading-wrap">
-        <span class="eyebrow on-dark">ENGINEERED FOR THE SURGICAL SUITE</span>
-        <h2 class="section-title">The Foundation of Curelith Surgicals</h2>
-        <p class="section-sub">
-          We are dismantling broken middleman markups, instrument wear fatigue, and OT supply bottlenecks through direct clinical manufacturing and smart logistics.
+      <div class="section-head">
+        <span class="eyebrow">ENGINEERED FOR THE SURGICAL SUITE</span>
+        <h2>The Foundation of Curelith Surgicals</h2>
+        <p>
+          We are dismantling broken middleman markups, instrument fatigue, and OT supply bottlenecks through direct clinical manufacturing and smart logistics.
         </p>
       </div>
 
       <div class="pillars-grid">
         <!-- Pillar 1 -->
         <div class="pillar-card">
-          <div class="pillar-icon-box">🔬</div>
-          <h3 class="pillar-title">German &amp; Titanium Precision Instruments</h3>
-          <p class="pillar-text">
-            Surgically hardened surgical alloys crafted for micro-balance, tactile feedback, and endurance through 2,000+ autoclave sterilization cycles.
+          <div class="pillar-icon">🔬</div>
+          <h3>German &amp; Titanium Precision Instruments</h3>
+          <p>
+            Surgically hardened alloys crafted for micro-balance, tactile feedback, and endurance through 2,000+ autoclave sterilization cycles.
           </p>
           <span class="pillar-tag">ISO 13485 • CE Certified</span>
         </div>
 
         <!-- Pillar 2 -->
         <div class="pillar-card">
-          <div class="pillar-icon-box">📦</div>
-          <h3 class="pillar-title">Zero-Markup Direct-to-OT Delivery</h3>
-          <p class="pillar-text">
+          <div class="pillar-icon">📦</div>
+          <h3>Zero-Markup Direct-to-OT Delivery</h3>
+          <p>
             Direct institutional pricing on sterile sutures, laparoscopic trocars, cautery electrodes, and draping barriers straight to partner hospitals.
           </p>
-          <span class="pillar-tag">Up to 38% Supply Savings</span>
+          <span class="pillar-tag">Direct Institutional Supply</span>
         </div>
 
         <!-- Pillar 3 -->
         <div class="pillar-card">
-          <div class="pillar-icon-box">⚡</div>
-          <h3 class="pillar-title">4-Hour Emergency Instrument Dispatch</h3>
-          <p class="pillar-text">
+          <div class="pillar-icon">⚡</div>
+          <h3>Emergency Instrument Dispatch</h3>
+          <p>
             Rapid replacement loaner sets and standby surgical emergency kits stationed at regional metro fulfillment hubs for urgent trauma procedures.
           </p>
-          <span class="pillar-tag">Chennai &amp; Tamil Nadu First</span>
+          <span class="pillar-tag">Regional Hub Fulfillment</span>
         </div>
 
         <!-- Pillar 4 -->
         <div class="pillar-card">
-          <div class="pillar-icon-box">📲</div>
-          <h3 class="pillar-title">RFID &amp; Digital Batch Traceability</h3>
-          <p class="pillar-text">
-            Seamlessly linked to Curelith’s Hospital Portal. Scan QR batch serials to track sterilization history, wear cycles, and instant 1-click reorders.
+          <div class="pillar-icon">📲</div>
+          <h3>RFID &amp; Digital Batch Traceability</h3>
+          <p>
+            Seamlessly linked to Curelith’s Hospital Portal. Scan QR batch serials to track sterilization history, wear cycles, and automated replenishment.
           </p>
           <span class="pillar-tag">Smart OT Integration</span>
         </div>
@@ -782,75 +621,59 @@
     </div>
   </section>
 
-  <!-- PRODUCT LINES PREVIEW -->
-  <section class="section-products">
-    <div class="wrap">
-      <div class="section-heading-wrap">
-        <span class="eyebrow on-dark">CATALOG SNEAK PEEK</span>
-        <h2 class="section-title">Comprehensive Surgical Specialties</h2>
-        <p class="section-sub">
-          Engineered to satisfy the demanding requirements of tertiary care multi-super speciality hospitals and dedicated surgical clinics.
-        </p>
+  <!-- SPECIALTIES PREVIEW -->
+  <section class="section-specialties wrap">
+    <div class="section-head">
+      <span class="eyebrow">CATALOG SNEAK PEEK</span>
+      <h2>Comprehensive Surgical Specialties</h2>
+      <p>
+        Engineered to satisfy the demanding requirements of tertiary care multi-super speciality hospitals and dedicated surgical clinics.
+      </p>
+    </div>
+
+    <div class="specialties-grid">
+      <!-- Category 1 -->
+      <div class="spec-card">
+        <span class="spec-badge">Laparoscopy &amp; Endoscopy</span>
+        <h3>Minimally Invasive Surgery (MIS)</h3>
+        <p>Ultra-sharp optical trocars, ergonomic monopolar &amp; bipolar scissors, clip appliers, and high-flow insufflation sets.</p>
+        <ul class="spec-list">
+          <li><span class="tick">✓</span> 5mm &amp; 10mm Optical Trocars &amp; Cannulas</li>
+          <li><span class="tick">✓</span> 360° Rotating Bipolar Forceps</li>
+          <li><span class="tick">✓</span> Titanium Ligation Clip Appliers</li>
+          <li><span class="tick">✓</span> High-Def Endo-Retractors &amp; Graspers</li>
+        </ul>
       </div>
 
-      <div class="products-grid">
-        <!-- Category 1 -->
-        <div class="product-line-card">
-          <span class="prod-badge">Laparoscopy &amp; Endoscopy</span>
-          <h3>Minimally Invasive Surgery (MIS)</h3>
-          <p>Ultra-sharp optical trocars, ergonomic monopolar &amp; bipolar scissors, clip appliers, and high-flow insufflation tubing.</p>
-          <ul class="spec-items">
-            <li><span class="check">✓</span> 5mm &amp; 10mm Optical Trocars &amp; Cannulas</li>
-            <li><span class="check">✓</span> 360° Rotating Bipolar Forceps</li>
-            <li><span class="check">✓</span> Titanium Ligation Clip Appliers</li>
-            <li><span class="check">✓</span> High-Def Endo-Retractors &amp; Graspers</li>
-          </ul>
-        </div>
-
-        <!-- Category 2 -->
-        <div class="product-line-card">
-          <span class="prod-badge">Orthopedics &amp; Spine</span>
-          <h3>Orthopedic Precision &amp; Trauma</h3>
-          <p>Surgical power tools, titanium plating sets, cannulated screws, and heavy-duty bone rongeurs built for orthopedic mastery.</p>
-          <ul class="spec-items">
-            <li><span class="check">✓</span> High-Torque Cannulated Bone Drills</li>
-            <li><span class="check">✓</span> Locking Compression Plates (LCP)</li>
-            <li><span class="check">✓</span> Tungsten Carbide Bone Cutters &amp; Rongeurs</li>
-            <li><span class="check">✓</span> Joint Replacement Trial Trays</li>
-          </ul>
-        </div>
-
-        <!-- Category 3 -->
-        <div class="product-line-card">
-          <span class="prod-badge">OT Sterile Consumables</span>
-          <h3>Theatre Disposables &amp; Sterility</h3>
-          <p>Class-100 cleanroom packaging for critical barrier surgical drapes, premium braided sutures, and electrosurgical pencils.</p>
-          <ul class="spec-items">
-            <li><span class="check">✓</span> Non-Absorbable &amp; Antibacterial Sutures</li>
-            <li><span class="check">✓</span> Impervious Level 4 Surgical Drapes &amp; Gowns</li>
-            <li><span class="check">✓</span> Smoke Evacuation Cautery Pencils</li>
-            <li><span class="check">✓</span> Suction Irrigation Sets &amp; Yankauer Tips</li>
-          </ul>
-        </div>
+      <!-- Category 2 -->
+      <div class="spec-card">
+        <span class="spec-badge">Orthopedics &amp; Spine</span>
+        <h3>Orthopedic Precision &amp; Trauma</h3>
+        <p>Surgical power tools, titanium plating sets, cannulated screws, and heavy-duty bone rongeurs built for orthopedic mastery.</p>
+        <ul class="spec-list">
+          <li><span class="tick">✓</span> High-Torque Cannulated Bone Drills</li>
+          <li><span class="tick">✓</span> Locking Compression Plates (LCP)</li>
+          <li><span class="tick">✓</span> Tungsten Carbide Bone Cutters &amp; Rongeurs</li>
+          <li><span class="tick">✓</span> Joint Replacement Trial Trays</li>
+        </ul>
       </div>
 
-      <!-- Hospital Partner Callout -->
-      <div class="hospital-callout">
-        <div class="hosp-text">
-          <h3>Are You an Institutional Buyer or Hospital Partner?</h3>
-          <p>
-            Connect directly with our clinical procurement specialists to schedule an on-site sample evaluation kit or discuss customized instrument laser-etching with your hospital branding.
-          </p>
-        </div>
-        <a href="https://wa.me/919940099992?text=Hello%20Curelith%20Team%2C%20I%20would%20like%20to%20inquire%20about%20Curelith%20Surgicals%20partnership%20for%20our%20hospital." target="_blank" class="hosp-cta-btn">
-          💬 Inquire via WhatsApp →
-        </a>
+      <!-- Category 3 -->
+      <div class="spec-card">
+        <span class="spec-badge">OT Sterile Consumables</span>
+        <h3>Theatre Disposables &amp; Sterility</h3>
+        <p>Class-100 cleanroom packaging for critical barrier surgical drapes, premium braided sutures, and electrosurgical pencils.</p>
+        <ul class="spec-list">
+          <li><span class="tick">✓</span> Non-Absorbable &amp; Antibacterial Sutures</li>
+          <li><span class="tick">✓</span> Impervious Level 4 Surgical Drapes &amp; Gowns</li>
+          <li><span class="tick">✓</span> Smoke Evacuation Cautery Pencils</li>
+          <li><span class="tick">✓</span> Suction Irrigation Sets &amp; Yankauer Tips</li>
+        </ul>
       </div>
-
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- FOOTER (NO PHONE NUMBERS) -->
   <footer>
     <div class="wrap">
       <div class="foot-top">
@@ -870,12 +693,11 @@
           <a href="doctors.html">Verified Physicians</a>
           <a href="hospitals.html">Hospital Directory</a>
           <a href="emergency-card.html">Emergency Health ID Pass</a>
-          <a href="surgicals.html" style="color:#FFFFFF; font-weight:600;">Curelith Surgicals (Soon)</a>
+          <a href="surgicals.html" style="color:var(--gold); font-weight:600;">Curelith Surgicals (Soon)</a>
         </div>
 
         <div class="foot-col">
-          <h5>Care Desk &amp; Legal</h5>
-          <span class="line">24/7 Helpline: <a href="tel:+919940099992" style="display:inline; color:var(--cyan-bright); font-weight:700;">+91 99400 99992</a></span>
+          <h5>Information &amp; Legal</h5>
           <span class="line">Chennai, Tamil Nadu, India</span>
           <a href="about.html">About Curelith</a>
           <a href="privacy.html">Privacy Policy</a>
@@ -894,39 +716,14 @@
     </div>
   </footer>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT -->
   <script>
-    // 1. Mobile Nav Toggle
     function toggleMobileNav() {
       const nav = document.getElementById('mobileNav');
       nav.classList.toggle('open');
     }
 
-    // 2. Dynamic Countdown Timer (Targeting Q1 2027: March 31, 2027)
-    const launchDate = new Date("2027-03-31T09:00:00+05:30").getTime();
-
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const distance = launchDate - now;
-
-      if (distance > 0) {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("cdDays").innerText = String(days).padStart(2, '0');
-        document.getElementById("cdHours").innerText = String(hours).padStart(2, '0');
-        document.getElementById("cdMinutes").innerText = String(minutes).padStart(2, '0');
-        document.getElementById("cdSeconds").innerText = String(seconds).padStart(2, '0');
-      }
-    }
-
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-
-    // 3. Early Access Lead Registration
-    function handleLeadSubmit(e) {
+    async function handleLeadSubmit(e) {
       e.preventDefault();
 
       const btn = document.getElementById('leadSubmitBtn');
@@ -938,40 +735,54 @@
         organization: document.getElementById('leadOrg').value.trim(),
         city: document.getElementById('leadCity').value.trim(),
         email: document.getElementById('leadEmail').value.trim(),
-        phone: document.getElementById('leadPhone').value.trim(),
-        timestamp: new Date().toISOString()
+        phone: document.getElementById('leadPhone').value.trim()
       };
 
       btn.disabled = true;
-      btn.innerText = "Registering on Priority Whitelist...";
+      btn.innerText = "Submitting Whitelist Request...";
 
-      // Save lead locally
       try {
-        const existingLeads = JSON.parse(localStorage.getItem('curelith_surgical_leads') || '[]');
-        existingLeads.push(lead);
-        localStorage.setItem('curelith_surgical_leads', JSON.stringify(existingLeads));
-      } catch (err) {
-        console.warn('LocalStorage save failed:', err);
-      }
+        // Send directly to backend to store in DB for admin dashboard
+        const res = await fetch('https://api.curelith.com/emergency/surgicals/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(lead)
+        });
+        const data = await res.json();
 
-      // Simulate network acknowledgement or call backend
-      setTimeout(() => {
+        // Local storage backup
+        try {
+          const list = JSON.parse(localStorage.getItem('curelith_surgical_leads') || '[]');
+          list.push({ ...lead, timestamp: new Date().toISOString() });
+          localStorage.setItem('curelith_surgical_leads', JSON.stringify(list));
+        } catch (_) {}
+
         btn.disabled = false;
-        btn.innerHTML = '<span>✅ You Are on the Priority List!</span>';
-        btn.style.background = '#059669';
-        btn.style.color = '#FFFFFF';
+        btn.innerText = "✓ Request Received";
+        btn.style.background = "#059669";
 
         feedback.style.display = 'block';
-        feedback.innerHTML = `🎉 <strong>Priority Access Confirmed!</strong> Thank you, ${lead.name}. Your hospital registration for <strong>${lead.organization}</strong> is prioritized. Our surgical coordinator will reach out at <strong>${lead.phone}</strong> with the pre-launch catalog.`;
+        feedback.innerHTML = `<strong>Priority Access Confirmed!</strong> Thank you, ${lead.name}. Your hospital registration for <strong>${lead.organization}</strong> has been received by the Curelith Admin Node. Our team will contact you at <strong>${lead.email}</strong> prior to launch.`;
 
-        // Reset inputs after 3 seconds
         setTimeout(() => {
           document.getElementById('surgicalLeadForm').reset();
-        }, 3000);
-      }, 700);
+        }, 3500);
+      } catch (err) {
+        console.warn('Network submission error:', err);
+        // Fallback local persistence
+        try {
+          const list = JSON.parse(localStorage.getItem('curelith_surgical_leads') || '[]');
+          list.push({ ...lead, timestamp: new Date().toISOString() });
+          localStorage.setItem('curelith_surgical_leads', JSON.stringify(list));
+        } catch (_) {}
+
+        btn.disabled = false;
+        btn.innerText = "✓ Request Recorded";
+        feedback.style.display = 'block';
+        feedback.innerHTML = `<strong>Priority Access Confirmed!</strong> Thank you, ${lead.name}. Your registration for <strong>${lead.organization}</strong> has been saved.`;
+      }
     }
 
-    // Set copyright year
     document.getElementById('curYear').innerText = new Date().getFullYear();
   </script>
 </body>

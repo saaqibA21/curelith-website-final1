@@ -332,6 +332,7 @@
         <div class="nav-item" onclick="showView('appointments')"><i data-lucide="calendar"></i> Appointments & Enquiries</div>
         <div class="nav-item" onclick="showView('activity')"><i data-lucide="activity"></i> Activity Logs</div>
         <div class="nav-item" onclick="showView('instagram')"><i data-lucide="camera"></i> Instagram CRM</div>
+        <div class="nav-item" onclick="showView('surgicals')"><i data-lucide="scissors"></i> Surgical Enquiries</div>
         <div style="margin-top: auto; padding-top: 2rem;">
             <div class="nav-item" onclick="logout()"><i data-lucide="log-out"></i> Logout</div>
         </div>
@@ -726,6 +727,66 @@
                     </thead>
                     <tbody id="apptList">
                         <tr><td colspan="8" style="text-align:center; color: var(--admin-text-dim);">Loading appointments & enquiries...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- View: Curelith Surgicals Priority Enquiries -->
+        <div id="view-surgicals" style="display: none;">
+            <div class="stats-grid" style="margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <h3>TOTAL SURGICAL LEADS</h3>
+                    <div class="value" id="statSurgTotal">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Surgeons & Hospital Enquiries</div>
+                </div>
+                <div class="stat-card">
+                    <h3>NEW ENQUIRIES</h3>
+                    <div class="value" id="statSurgNew" style="color: #d97706;">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Pending Pre-Launch Outreach</div>
+                </div>
+                <div class="stat-card">
+                    <h3>CONTACTED</h3>
+                    <div class="value" id="statSurgContacted" style="color: #10b981;">0</div>
+                    <div style="font-size: 0.75rem; color: var(--admin-text-dim); margin-top: 8px;">Catalog / Terms Sent</div>
+                </div>
+            </div>
+
+            <div class="white-panel">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h2>Curelith Surgicals — Priority Whitelist Enquiries</h2>
+                        <p style="color: var(--admin-text-dim); margin-top: 4px; font-size: 0.85rem;">Pre-launch hospital and surgeon equipment/OT partner registrations</p>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                        <input type="text" class="search-box" id="surgicalSearch" placeholder="Filter by surgeon/hospital/city..." onkeyup="filterSurgicals()">
+                        <select id="surgicalStatusFilter" onchange="filterSurgicals()" style="padding: 0.8rem 1.2rem; border: 1px solid #DDD6C4; border-radius: 15px; background: var(--admin-bg); outline: none; font-family: inherit; font-weight: 500; color: var(--admin-text); cursor: pointer;">
+                            <option value="all">All Statuses</option>
+                            <option value="new">🟡 New</option>
+                            <option value="contacted">🟢 Contacted</option>
+                            <option value="partner">⭐ Partner Ready</option>
+                        </select>
+                        <button class="btn-action" style="background: var(--admin-primary); color: white; border-color: var(--admin-primary); font-weight: 700; border-radius: 12px; height: 45px; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="loadSurgicalEnquiries()">
+                            <i data-lucide="refresh-cw" style="width: 18px; height: 18px;"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DATE</th>
+                            <th>NAME</th>
+                            <th>ROLE</th>
+                            <th>HOSPITAL / ORGANIZATION</th>
+                            <th>CITY</th>
+                            <th>CONTACT</th>
+                            <th>STATUS</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="surgicalsList">
+                        <tr><td colspan="8" style="text-align:center; color: var(--admin-text-dim);">Loading surgical enquiries...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1991,6 +2052,7 @@
             document.getElementById('view-appointments').style.display = view === 'appointments' ? 'block' : 'none';
             document.getElementById('view-activity').style.display = view === 'activity' ? 'block' : 'none';
             document.getElementById('view-instagram').style.display = view === 'instagram' ? 'block' : 'none';
+            document.getElementById('view-surgicals').style.display = view === 'surgicals' ? 'block' : 'none';
             
             document.querySelectorAll('.nav-item').forEach(i => {
                 i.classList.remove('active');
@@ -2010,6 +2072,7 @@
             if (view === 'appointments') { loadHospitals(); loadAppointments(); }
             if (view === 'activity') loadActivityLogs();
             if (view === 'instagram') loadInstagramLeads();
+            if (view === 'surgicals') loadSurgicalEnquiries();
         }
 
         async function loadGlobalStats() {
@@ -3187,6 +3250,137 @@
             alert(`Enquiry lead registered & synced to Hospital Portal successfully! Token: ${tokenNumber}`);
             closeAddEnquiryModal();
             loadAppointments();
+        }
+
+        /* ================= CURELITH SURGICALS ENQUIRIES ================= */
+        let allSurgicals = [];
+
+        async function loadSurgicalEnquiries() {
+            const tbody = document.getElementById('surgicalsList');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: var(--admin-text-dim);">Loading surgical enquiries...</td></tr>';
+            }
+
+            try {
+                const res = await adminFetch(`${API_BASE}/emergency/admin/surgicals/leads`, { headers });
+                const data = await res.json();
+                if (data.success && data.enquiries) {
+                    allSurgicals = data.enquiries;
+                } else {
+                    allSurgicals = JSON.parse(localStorage.getItem('curelith_surgical_leads') || '[]');
+                }
+            } catch (err) {
+                console.warn('Failed to fetch surgical leads from API, falling back to local storage:', err);
+                allSurgicals = JSON.parse(localStorage.getItem('curelith_surgical_leads') || '[]');
+            }
+
+            renderSurgicals(allSurgicals);
+        }
+
+        function renderSurgicals(list) {
+            const tbody = document.getElementById('surgicalsList');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const totalEl = document.getElementById('statSurgTotal');
+            const newEl = document.getElementById('statSurgNew');
+            const contactedEl = document.getElementById('statSurgContacted');
+
+            const totalCount = list.length;
+            const newCount = list.filter(x => !x.status || x.status.toLowerCase() === 'new').length;
+            const contactedCount = list.filter(x => x.status && (x.status.toLowerCase() === 'contacted' || x.status.toLowerCase() === 'partner')).length;
+
+            if (totalEl) totalEl.innerText = totalCount;
+            if (newEl) newEl.innerText = newCount;
+            if (contactedEl) contactedEl.innerText = contactedCount;
+
+            if (!list || list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2.5rem; color: var(--admin-text-dim);">No surgical priority enquiries received yet.</td></tr>';
+                return;
+            }
+
+            list.forEach(item => {
+                const tr = document.createElement('tr');
+                const rawDate = item.created_at || item.timestamp || '';
+                const dateStr = rawDate ? new Date(rawDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+                const status = (item.status || 'new').toLowerCase();
+                
+                let badgeStyle = 'background: rgba(217, 119, 6, 0.12); color: #d97706; border: 1px solid rgba(217, 119, 6, 0.3);';
+                let badgeText = '🟡 New';
+                if (status === 'contacted') {
+                    badgeStyle = 'background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);';
+                    badgeText = '🟢 Contacted';
+                } else if (status === 'partner') {
+                    badgeStyle = 'background: rgba(30, 66, 61, 0.15); color: var(--admin-primary); border: 1px solid var(--admin-primary); font-weight:700;';
+                    badgeText = '⭐ Partner Ready';
+                }
+
+                tr.innerHTML = `
+                    <td style="font-family: var(--mono); font-size: 0.8rem; color: var(--admin-text-dim);">${dateStr}</td>
+                    <td style="font-weight: 600; color: var(--admin-primary);">${item.name || '—'}</td>
+                    <td><span style="font-size: 0.8rem; background: var(--admin-bg); padding: 3px 8px; border-radius: 6px; font-weight: 500;">${item.role || 'Surgeon'}</span></td>
+                    <td style="font-weight: 500;">${item.organization || '—'}</td>
+                    <td style="color: var(--admin-text-dim); font-size: 0.85rem;">${item.city || '—'}</td>
+                    <td>
+                        <div style="font-size: 0.85rem;"><a href="mailto:${item.email}" style="color: var(--admin-primary); text-decoration: underline;">${item.email || '—'}</a></div>
+                        <div style="font-family: var(--mono); font-size: 0.8rem; color: var(--admin-text-dim); margin-top: 2px;">📞 ${item.phone || '—'}</div>
+                    </td>
+                    <td><span style="padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; ${badgeStyle}">${badgeText}</span></td>
+                    <td>
+                        <select onchange="updateSurgicalLeadStatus(${item.id}, this.value)" style="padding: 5px 8px; font-size: 0.8rem; border-radius: 8px; border: 1px solid #DDD6C4; background: white; cursor: pointer;">
+                            <option value="new" ${status === 'new' ? 'selected' : ''}>Mark New</option>
+                            <option value="contacted" ${status === 'contacted' ? 'selected' : ''}>Mark Contacted</option>
+                            <option value="partner" ${status === 'partner' ? 'selected' : ''}>Mark Partner Ready</option>
+                        </select>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            initIcons();
+        }
+
+        function filterSurgicals() {
+            const query = (document.getElementById('surgicalSearch')?.value || '').toLowerCase();
+            const statusFilter = document.getElementById('surgicalStatusFilter')?.value || 'all';
+
+            const filtered = allSurgicals.filter(item => {
+                const matchesQuery = 
+                    (item.name || '').toLowerCase().includes(query) ||
+                    (item.organization || '').toLowerCase().includes(query) ||
+                    (item.city || '').toLowerCase().includes(query) ||
+                    (item.email || '').toLowerCase().includes(query) ||
+                    (item.phone || '').toLowerCase().includes(query);
+
+                const currentStatus = (item.status || 'new').toLowerCase();
+                const matchesStatus = statusFilter === 'all' || currentStatus === statusFilter;
+
+                return matchesQuery && matchesStatus;
+            });
+
+            renderSurgicals(filtered);
+        }
+
+        async function updateSurgicalLeadStatus(leadId, newStatus) {
+            try {
+                if (leadId) {
+                    await adminFetch(`${API_BASE}/emergency/admin/surgicals/leads/${leadId}/status`, {
+                        method: 'POST',
+                        headers: {
+                            ...headers,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+                }
+                const item = allSurgicals.find(x => x.id === leadId);
+                if (item) item.status = newStatus;
+                renderSurgicals(allSurgicals);
+            } catch (err) {
+                console.error('Failed to update lead status:', err);
+                const item = allSurgicals.find(x => x.id === leadId);
+                if (item) item.status = newStatus;
+                renderSurgicals(allSurgicals);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => { 
