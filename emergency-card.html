@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curelith Emergency Health Card — Create Your Medical Pass</title>
+  <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- html2canvas and jsPDF for instant HD card download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+    
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    .perspective-1000 { perspective: 1200px; }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card-inner.flipped { transform: rotateY(180deg); }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 20px;
+    }
+    .card-back { transform: rotateY(180deg); }
+
+    .white-security-pattern {
+      background-image: 
+        radial-gradient(circle at 100% 0%, rgba(13, 148, 136, 0.05) 0%, transparent 60%),
+        radial-gradient(circle at 0% 100%, rgba(225, 29, 72, 0.04) 0%, transparent 50%),
+        linear-gradient(to right, rgba(15, 23, 42, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 12px 12px, 12px 12px;
+    }
+
+    /* Print styles */
+    @media print {
+      body * { visibility: hidden; }
+      #printableCardArea, #printableCardArea * { visibility: visible; }
+      #printableCardArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#0A0F1E] text-slate-100 min-h-screen selection:bg-teal-500 selection:text-slate-900">
+
+  <!-- Navigation Bar -->
+  <header class="border-b border-slate-800 bg-[#0A0F1E]/90 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <img src="assets/logo.png" alt="Curelith" class="h-8 w-auto">
+        <span class="text-xs font-mono font-bold tracking-widest text-teal-400 uppercase bg-teal-950/80 border border-teal-500/30 px-2 py-0.5 rounded">
+          Emergency ID
+        </span>
+      </a>
+      <div class="flex items-center gap-4">
+        <a href="/" class="text-xs sm:text-sm text-slate-400 hover:text-white transition">Home</a>
+        <a href="https://wa.me/919940099992?text=Hi%20Curelith" target="_blank" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition">
+          WhatsApp Support 💬
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <div class="text-center max-w-2xl mx-auto mb-10">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-300 text-xs font-bold tracking-wide uppercase mb-4">
+        <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+        Lifesaving Medical Pass
+      </div>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+        Your Curelith Emergency Health Card
+      </h1>
+      <p class="text-slate-400 text-sm sm:text-base mt-3 leading-relaxed">
+        A pocket-sized smart medical card for emergencies. Paramedics can scan the <strong class="text-rose-400">Front QR</strong> for instant blood group, allergies & family SOS, while doctors scan the <strong class="text-teal-400">Back QR</strong> to upload prescriptions.
+      </p>
+    </div>
+
+    <!-- Main Grid: Builder Form (Left) & Live 3D Card Preview (Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- LEFT: Form Builder (7 cols) -->
+      <div class="lg:col-span-7 bg-slate-900/70 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur shadow-xl">
+        <div class="flex items-center justify-between pb-5 border-b border-slate-800 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-white">1. Patient Details</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Fill in your information to generate your card & QR codes.</p>
+          </div>
+          <span class="text-xs font-mono text-teal-400 bg-teal-950/60 border border-teal-500/30 px-2.5 py-1 rounded-full font-bold">
+            Step 1 of 2
+          </span>
+        </div>
+
+        <form id="cardForm" class="space-y-6" onsubmit="handleFormSubmit(event)">
+          <!-- Row 1: Phone & Full Name -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                Mobile Number <span class="text-rose-400">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-mono text-slate-400 font-bold">+91</span>
+                <input type="tel" id="patientPhone" required placeholder="98400 99992" maxlength="10"
+                  class="w-full pl-12 pr-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500 font-mono"
+                  oninput="updatePreviewFromForm()">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                Full Name <span class="text-rose-400">*</span>
+              </label>
+              <input type="text" id="patientName" required placeholder="e.g. Rahul Sharma"
+                class="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500 font-semibold"
+                oninput="updatePreviewFromForm()">
+            </div>
+          </div>
+
+          <!-- Row 2: Blood Group, Age, Gender -->
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                Blood Group <span class="text-rose-400">*</span>
+              </label>
+              <select id="bloodGroup" required
+                class="w-full px-3 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-rose-400 font-black text-sm focus:outline-none focus:border-teal-500"
+                onchange="updatePreviewFromForm()">
+                <option value="O+VE">O+ve</option>
+                <option value="O-VE">O-ve</option>
+                <option value="A+VE">A+ve</option>
+                <option value="A-VE">A-ve</option>
+                <option value="B+VE">B+ve</option>
+                <option value="B-VE">B-ve</option>
+                <option value="AB+VE">AB+ve</option>
+                <option value="AB-VE">AB-ve</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Age</label>
+              <input type="number" id="patientAge" placeholder="28" min="1" max="120"
+                class="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500 font-semibold"
+                oninput="updatePreviewFromForm()">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Gender</label>
+              <select id="patientGender"
+                class="w-full px-3 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-teal-500 font-semibold"
+                onchange="updatePreviewFromForm()">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 3: Photo Upload -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              Passport Photo (Optional but Recommended)
+            </label>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-xl border-2 border-dashed border-slate-700 flex items-center justify-center bg-slate-800 overflow-hidden shrink-0">
+                <img id="photoThumb" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&auto=format&fit=crop&q=80" alt="Thumb" class="w-full h-full object-cover">
+              </div>
+              <input type="file" id="photoInput" accept="image/*" class="text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-500/10 file:text-teal-400 hover:file:bg-teal-500/20" onchange="handlePhotoSelect(event)">
+            </div>
+          </div>
+
+          <!-- Section 2: Emergency Contact -->
+          <div class="pt-4 border-t border-slate-800">
+            <h3 class="text-sm font-bold text-rose-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+              <span>🚨 In Case of Emergency (ICE) Contact</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Contact Name & Relation</label>
+                <input type="text" id="emergencyName" placeholder="e.g. Ramesh (Father)"
+                  class="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500"
+                  oninput="updatePreviewFromForm()">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Emergency Phone Number</label>
+                <input type="tel" id="emergencyPhone" placeholder="+91 98400 99992"
+                  class="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500 font-mono"
+                  oninput="updatePreviewFromForm()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Allergies & Chronic Conditions -->
+          <div class="pt-4 border-t border-slate-800">
+            <h3 class="text-sm font-bold text-teal-400 uppercase tracking-wider mb-3">
+              Medical Alerts & Conditions
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Known Drug/Food Allergies</label>
+                <input type="text" id="knownAllergies" placeholder="e.g. Penicillin, Peanuts (or None)"
+                  class="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500"
+                  oninput="updatePreviewFromForm()">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Chronic Conditions / Implants</label>
+                <input type="text" id="chronicConditions" placeholder="e.g. Type 2 Diabetes, Cardiac Stent"
+                  class="w-full px-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-teal-500"
+                  oninput="updatePreviewFromForm()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-4">
+            <button type="submit" id="generateBtn"
+              class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-black text-sm uppercase tracking-wider shadow-lg shadow-teal-500/25 transition-all flex items-center justify-center gap-2">
+              <span>Generate Official Card & QRs</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </button>
+            <p id="statusMsg" class="text-xs text-center mt-2 text-slate-400 hidden"></p>
+          </div>
+        </form>
+      </div>
+
+      <!-- RIGHT: Interactive 3D Card Preview & Download (5 cols) -->
+      <div class="lg:col-span-5 flex flex-col items-center sticky top-28">
+        
+        <!-- Side Toggle Buttons -->
+        <div class="flex items-center justify-between w-full max-w-[440px] mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Live Card Preview</span>
+          </div>
+
+          <div class="flex bg-slate-900 border border-slate-800 rounded-xl p-1 text-xs font-medium text-slate-400">
+            <button onclick="showSide('front')" id="tabFront" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white font-semibold">Front</button>
+            <button onclick="showSide('back')" id="tabBack" class="px-3 py-1.5 rounded-lg hover:text-white">Back</button>
+          </div>
+        </div>
+
+        <!-- 3D Card Area (CR80 Standard Wallet Size) -->
+        <div id="printableCardArea" class="perspective-1000 w-full max-w-[440px] h-[278px] select-none">
+          <div id="cardInner" class="flip-card-inner shadow-2xl shadow-black/80 cursor-pointer" onclick="toggleFlip()">
+
+            <!-- ================= FRONT FACE (CLEAN MEDICAL WHITE) ================= -->
+            <div id="cardFrontFace" class="card-face bg-[#FFFFFF] border-2 border-slate-300 text-slate-900 p-4 sm:p-5 flex flex-col justify-between overflow-hidden relative shadow-md">
+              <div class="absolute inset-0 white-security-pattern pointer-events-none"></div>
+              <!-- Top Ribbon -->
+              <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600"></div>
+
+              <!-- Header -->
+              <div class="flex items-center justify-between relative z-10 pt-0.5">
+                <div class="flex items-center gap-2">
+                  <img src="assets/logo.png" alt="Curelith" class="h-6 w-auto object-contain">
+                  <span class="text-[9px] tracking-wider text-teal-800 uppercase font-mono font-bold bg-teal-50 border border-teal-200 px-1.5 py-0.5 rounded">
+                    MED-PASS
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5 bg-rose-50 border border-rose-200 text-rose-700 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
+                  <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse"></span>
+                  Medical Alert
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div class="grid grid-cols-12 gap-2.5 items-center relative z-10 mt-1">
+                <!-- Photo -->
+                <div class="col-span-3 flex flex-col items-center">
+                  <div class="w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden border-2 border-teal-600/30 p-0.5 bg-slate-100 shadow-sm relative">
+                    <img id="cardPhotoPreview" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&auto=format&fit=crop&q=80" alt="Patient" class="w-full h-full object-cover rounded-lg">
+                  </div>
+                  <span id="cardUuidDisplay" class="text-[9px] font-mono font-bold text-slate-500 mt-1 tracking-tight">CL-DEMO-01</span>
+                </div>
+
+                <!-- Info -->
+                <div class="col-span-6 pr-1">
+                  <div class="text-[9px] text-teal-700 font-bold uppercase tracking-wider">Patient Name</div>
+                  <div id="cardNameDisplay" class="text-sm sm:text-base font-extrabold text-slate-900 leading-tight truncate">Sarah Ananya</div>
+                  <div id="cardDemographicsDisplay" class="text-[11px] text-slate-600 font-semibold mt-0.5">Age 28 • Female</div>
+
+                  <div class="mt-1.5 space-y-1">
+                    <div class="flex items-center gap-1 text-[10px]">
+                      <span class="text-rose-700 font-extrabold uppercase text-[8px] bg-rose-100 px-1 py-0.2 rounded border border-rose-200">Allergy</span>
+                      <span id="cardAllergiesDisplay" class="text-slate-800 font-bold truncate">Penicillin, Peanuts</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-[10px]">
+                      <span class="text-amber-800 font-extrabold uppercase text-[8px] bg-amber-100 px-1 py-0.2 rounded border border-amber-200">Alert</span>
+                      <span id="cardConditionsDisplay" class="text-slate-800 font-semibold truncate">Type 2 Diabetes</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Blood Badge -->
+                <div class="col-span-3 flex flex-col items-center justify-center">
+                  <div class="w-14 h-14 sm:w-15 sm:h-15 rounded-2xl bg-gradient-to-br from-rose-600 to-red-700 text-white flex flex-col items-center justify-center shadow-md shadow-rose-600/30 border-2 border-white ring-2 ring-rose-200">
+                    <span class="text-[8px] font-extrabold uppercase tracking-widest text-rose-100">Blood</span>
+                    <span id="cardBloodDisplay" class="text-base sm:text-lg font-black leading-none mt-0.5">O+ve</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <div class="flex items-center justify-between border-t border-slate-200 pt-1.5 relative z-10">
+                <div>
+                  <div class="text-[8px] uppercase tracking-wider text-slate-500 font-bold">ICE (Emergency Contact)</div>
+                  <div class="text-[11px] font-bold text-slate-900 flex items-center gap-1 mt-0.5">
+                    <span id="cardEmergencyNameDisplay">📞 Ramesh</span>
+                    <span id="cardEmergencyPhoneDisplay" class="text-teal-700 font-mono font-extrabold">+91 98400 99992</span>
+                  </div>
+                </div>
+
+                <!-- Front QR -->
+                <div class="flex flex-col items-center">
+                  <div class="w-12 h-12 bg-white p-0.5 rounded border-2 border-slate-300 shadow-sm flex items-center justify-center">
+                    <img id="cardFrontQrImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='13' width='12' height='12'/><rect x='67' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='75' y='13' width='12' height='12'/><rect x='5' y='67' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='75' width='12' height='12'/><rect x='42' y='42' width='16' height='16' fill='%23E11D48'/></svg>" class="w-full h-full object-contain">
+                  </div>
+                  <span class="text-[7px] font-extrabold text-rose-600 uppercase tracking-tight mt-0.5">Scan for SOS</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= BACK FACE (DOCTOR & CLINICAL UPLOAD) ================= -->
+            <div id="cardBackFace" class="card-face card-back bg-[#FFFFFF] border-2 border-slate-300 text-slate-900 p-4 sm:p-5 flex flex-col justify-between overflow-hidden relative shadow-md">
+              <div class="absolute inset-0 white-security-pattern pointer-events-none"></div>
+              <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-600 via-cyan-500 to-teal-500"></div>
+
+              <!-- Back Header -->
+              <div class="flex items-center justify-between relative z-10 pt-0.5">
+                <div class="flex items-center gap-2">
+                  <img src="assets/logo.png" alt="Curelith" class="h-5 w-auto object-contain">
+                  <span class="text-[9px] text-teal-800 font-bold uppercase tracking-wider font-mono">Clinical Network</span>
+                </div>
+                <span class="text-[8px] bg-slate-100 border border-slate-300 text-slate-700 px-2 py-0.5 rounded font-mono font-bold">
+                  DOCTOR PORTAL ACCESS
+                </span>
+              </div>
+
+              <!-- Center -->
+              <div class="grid grid-cols-12 gap-3 items-center relative z-10 my-1">
+                <div class="col-span-4 flex flex-col items-center">
+                  <div class="w-18 h-18 bg-white p-1 rounded-xl border-2 border-teal-600/40 shadow-sm flex items-center justify-center">
+                    <img id="cardBackQrImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='5' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='13' width='12' height='12'/><rect x='67' y='5' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='75' y='13' width='12' height='12'/><rect x='5' y='67' width='28' height='28' rx='4' fill='none' stroke='black' stroke-width='7'/><rect x='13' y='75' width='12' height='12'/><rect x='42' y='42' width='16' height='16' fill='%230D9488'/></svg>" class="w-full h-full object-contain">
+                  </div>
+                  <span class="text-[8px] font-extrabold text-teal-700 tracking-tight mt-1 uppercase">Doctor Upload QR</span>
+                </div>
+
+                <div class="col-span-8 pl-1 text-left">
+                  <div class="text-[11px] font-bold text-slate-900 flex items-center gap-1">
+                    <span>🩺 For Doctors, Clinics & Labs</span>
+                  </div>
+                  <p class="text-[10px] text-slate-600 mt-1 leading-snug">
+                    Scan this QR to upload medical prescriptions, discharge summaries, or diagnostic reports directly to this patient's locker.
+                  </p>
+                  
+                  <div class="mt-2 flex items-center gap-2">
+                    <div class="bg-amber-50 border border-amber-300 px-2 py-0.5 rounded">
+                      <div class="text-[7px] text-amber-800 uppercase font-bold tracking-wider">Access PIN</div>
+                      <div id="cardPinDisplay" class="text-xs font-mono font-black text-amber-950">4 8 2 1</div>
+                    </div>
+                    <div class="text-[8px] text-slate-500 leading-tight">
+                      Required for doctors to download full clinical files.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <div class="border-t border-slate-200 pt-1 flex items-center justify-between text-[8px] text-slate-500 relative z-10 font-mono">
+                <div>Curelith Care Desk: +91 99400 99992</div>
+                <div class="text-teal-700 font-bold">www.curelith.com</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Download & Print Action Buttons -->
+        <div class="w-full max-w-[440px] mt-6 space-y-3">
+          <button onclick="downloadCardPDF()"
+            class="w-full py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2">
+            <span>📥 Download Printable Card (PDF / HD Image)</span>
+          </button>
+          
+          <button onclick="window.print()"
+            class="w-full py-2.5 px-5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs transition flex items-center justify-center gap-2">
+            <span>🖨️ Print Direct (PVC / Paper Card)</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let isFlipped = false;
+    let currentPhotoBase64 = null;
+    let generatedCardData = null;
+
+    function toggleFlip() {
+      isFlipped = !isFlipped;
+      updateCardSide();
+    }
+
+    function showSide(side) {
+      isFlipped = (side === 'back');
+      updateCardSide();
+    }
+
+    function updateCardSide() {
+      const cardInner = document.getElementById('cardInner');
+      const tabFront = document.getElementById('tabFront');
+      const tabBack = document.getElementById('tabBack');
+
+      if (isFlipped) {
+        cardInner.classList.add('flipped');
+        tabBack.className = 'px-3 py-1.5 rounded-lg bg-slate-800 text-white font-semibold';
+        tabFront.className = 'px-3 py-1.5 rounded-lg hover:text-white text-slate-400';
+      } else {
+        cardInner.classList.remove('flipped');
+        tabFront.className = 'px-3 py-1.5 rounded-lg bg-slate-800 text-white font-semibold';
+        tabBack.className = 'px-3 py-1.5 rounded-lg hover:text-white text-slate-400';
+      }
+    }
+
+    function updatePreviewFromForm() {
+      const name = document.getElementById('patientName').value.trim() || 'Sarah Ananya';
+      const blood = document.getElementById('bloodGroup').value || 'O+VE';
+      const age = document.getElementById('patientAge').value.trim() || '28';
+      const gender = document.getElementById('patientGender').value || 'Female';
+      const emName = document.getElementById('emergencyName').value.trim() || 'Ramesh (Father)';
+      const emPhone = document.getElementById('emergencyPhone').value.trim() || '+91 98400 99992';
+      const allergies = document.getElementById('knownAllergies').value.trim() || 'None';
+      const conditions = document.getElementById('chronicConditions').value.trim() || 'None';
+
+      document.getElementById('cardNameDisplay').innerText = name;
+      document.getElementById('cardBloodDisplay').innerText = blood.replace('VE', 've');
+      document.getElementById('cardDemographicsDisplay').innerText = `Age ${age} • ${gender}`;
+      document.getElementById('cardEmergencyNameDisplay').innerText = `📞 ${emName}`;
+      document.getElementById('cardEmergencyPhoneDisplay').innerText = emPhone;
+      document.getElementById('cardAllergiesDisplay').innerText = allergies;
+      document.getElementById('cardConditionsDisplay').innerText = conditions;
+    }
+
+    function handlePhotoSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          currentPhotoBase64 = e.target.result;
+          document.getElementById('photoThumb').src = currentPhotoBase64;
+          document.getElementById('cardPhotoPreview').src = currentPhotoBase64;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+      const btn = document.getElementById('generateBtn');
+      const statusMsg = document.getElementById('statusMsg');
+      btn.disabled = true;
+      btn.innerText = 'Generating Official Card & QRs...';
+      statusMsg.className = 'text-xs text-center mt-2 text-teal-400 block';
+      statusMsg.innerText = 'Communicating with Curelith Medical Server...';
+
+      const formData = new FormData();
+      formData.append('patient_phone', document.getElementById('patientPhone').value);
+      formData.append('patient_name', document.getElementById('patientName').value);
+      formData.append('blood_group', document.getElementById('bloodGroup').value);
+      formData.append('age', document.getElementById('patientAge').value);
+      formData.append('gender', document.getElementById('patientGender').value);
+      formData.append('emergency_contact_name', document.getElementById('emergencyName').value);
+      formData.append('emergency_contact_phone', document.getElementById('emergencyPhone').value);
+      formData.append('known_allergies', document.getElementById('knownAllergies').value);
+      formData.append('chronic_conditions', document.getElementById('chronicConditions').value);
+
+      const photoInput = document.getElementById('photoInput');
+      if (photoInput.files[0]) {
+        formData.append('photo', photoInput.files[0]);
+      }
+
+      try {
+        const res = await fetch('https://api.curelith.com/emergency/cards/create', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          generatedCardData = data;
+          document.getElementById('cardUuidDisplay').innerText = data.card_uuid;
+          document.getElementById('cardPinDisplay').innerText = data.access_pin.split('').join(' ');
+          
+          if (data.front_qr_base64) {
+            document.getElementById('cardFrontQrImg').src = data.front_qr_base64;
+          }
+          if (data.back_qr_base64) {
+            document.getElementById('cardBackQrImg').src = data.back_qr_base64;
+          }
+
+          statusMsg.className = 'text-xs text-center mt-2 text-emerald-400 font-bold block';
+          statusMsg.innerText = `✅ Card Generated! Unique ID: ${data.card_uuid}`;
+        } else {
+          statusMsg.className = 'text-xs text-center mt-2 text-rose-400 font-bold block';
+          statusMsg.innerText = `Error: ${data.error || 'Failed to generate card'}`;
+        }
+      } catch (err) {
+        statusMsg.className = 'text-xs text-center mt-2 text-rose-400 font-bold block';
+        statusMsg.innerText = `Network Error: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Generate Official Card & QRs</span><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>`;
+      }
+    }
+
+    async function downloadCardPDF() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [85.6, 53.98] // standard CR80 wallet card size
+      });
+
+      const frontEl = document.getElementById('cardFrontFace');
+      const canvasFront = await html2canvas(frontEl, { scale: 3, useCORS: true });
+      const imgFront = canvasFront.toDataURL('image/png');
+      pdf.addImage(imgFront, 'PNG', 0, 0, 85.6, 53.98);
+
+      pdf.addPage([85.6, 53.98], 'landscape');
+      const backEl = document.getElementById('cardBackFace');
+      const canvasBack = await html2canvas(backEl, { scale: 3, useCORS: true });
+      const imgBack = canvasBack.toDataURL('image/png');
+      pdf.addImage(imgBack, 'PNG', 0, 0, 85.6, 53.98);
+
+      const name = document.getElementById('patientName').value.trim() || 'Curelith_Emergency_Card';
+      pdf.save(`${name.replace(/\s+/g, '_')}_Emergency_Card.pdf`);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curelith Emergency Health SOS — First Responder View</title>
+  <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-[#050814] text-slate-100 min-h-screen p-4 sm:p-6 flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+
+  <!-- Top Emergency Alert Header -->
+  <header class="max-w-xl w-full mx-auto mb-4">
+    <div class="bg-rose-600/20 border-2 border-rose-500/50 rounded-2xl p-4 flex items-center justify-between shadow-lg shadow-rose-950/40">
+      <div class="flex items-center gap-3">
+        <span class="w-3.5 h-3.5 rounded-full bg-rose-500 animate-ping shrink-0"></span>
+        <div>
+          <div class="text-xs font-black uppercase tracking-widest text-rose-300">Curelith Medical SOS</div>
+          <div class="text-sm font-extrabold text-white">First Responder Triage Portal</div>
+        </div>
+      </div>
+      <a href="/" class="shrink-0">
+        <img src="assets/logo.png" alt="Curelith" class="h-6 w-auto brightness-125">
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Patient Emergency Card View -->
+  <main class="max-w-xl w-full mx-auto space-y-4">
+    
+    <!-- Loading State -->
+    <div id="loadingBox" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">
+      <div class="w-8 h-8 border-2 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-sm font-semibold">Retrieving patient emergency vitals...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorBox" class="hidden bg-slate-900 border border-rose-500/30 rounded-2xl p-6 text-center text-rose-300">
+      <p class="text-base font-bold mb-1">Emergency Card Not Found</p>
+      <p class="text-xs text-slate-400">Please verify the QR code URL or contact Curelith Care Desk at +91 99400 99992.</p>
+    </div>
+
+    <!-- Loaded Patient Data Card -->
+    <div id="dataBox" class="hidden space-y-4">
+
+      <!-- Patient Header (Photo + Name + Big Blood Badge) -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 shadow-xl relative overflow-hidden">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5">
+            <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 border-teal-500/50 p-0.5 bg-slate-800 shrink-0">
+              <img id="patientPhoto" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&auto=format&fit=crop&q=80" alt="Patient" class="w-full h-full object-cover rounded-xl">
+            </div>
+            <div>
+              <span id="cardUuid" class="text-[10px] font-mono font-bold text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded border border-teal-500/30">
+                CL-88258-E7
+              </span>
+              <h1 id="patientName" class="text-xl sm:text-2xl font-black text-white mt-1 leading-tight">Sarah Ananya</h1>
+              <p id="patientDemo" class="text-xs text-slate-300 font-semibold mt-0.5">Age 28 • Female</p>
+            </div>
+          </div>
+
+          <!-- Giant Blood Badge -->
+          <div class="shrink-0 flex flex-col items-center justify-center w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-rose-600 to-red-700 text-white shadow-lg shadow-rose-900/50 border-2 border-rose-400/50">
+            <span class="text-[8px] font-black uppercase tracking-widest text-rose-200">Blood</span>
+            <span id="patientBlood" class="text-2xl sm:text-3xl font-black leading-none mt-0.5">O+ve</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Critical 1-Tap SOS Call Buttons -->
+      <div class="bg-rose-950/40 border border-rose-500/40 rounded-2xl p-4 shadow-lg">
+        <div class="text-xs font-bold uppercase tracking-wider text-rose-300 mb-2 flex items-center gap-1.5">
+          <span>🚨 In Case of Emergency (ICE) Contacts</span>
+        </div>
+        
+        <div id="iceContainer" class="space-y-2">
+          <a id="iceCallBtn" href="tel:+919840099992" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-black text-sm flex items-center justify-between shadow-md transition active:scale-95">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📞</span>
+              <div>
+                <div id="iceName" class="leading-tight font-extrabold text-sm">Call Ramesh (Father)</div>
+                <div id="icePhone" class="text-[11px] font-mono opacity-90">+91 98400 99992</div>
+              </div>
+            </div>
+            <span class="text-xs uppercase bg-white/20 px-2.5 py-1 rounded-full font-bold">Call Now</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Critical Medical Warnings -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-3.5">
+        <div class="text-xs font-bold uppercase tracking-wider text-teal-400">
+          Medical Flags & Critical Notes
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="bg-slate-800/60 border border-rose-500/30 rounded-xl p-3">
+            <div class="text-[10px] font-bold text-rose-400 uppercase tracking-wider">Allergies</div>
+            <div id="allergiesText" class="text-sm font-extrabold text-white mt-1">Penicillin, Peanuts</div>
+          </div>
+
+          <div class="bg-slate-800/60 border border-amber-500/30 rounded-xl p-3">
+            <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Chronic Conditions</div>
+            <div id="conditionsText" class="text-sm font-extrabold text-white mt-1">Type 2 Diabetes</div>
+          </div>
+        </div>
+
+        <!-- Recent Health Camp Screening Vitals -->
+        <div class="pt-3 border-t border-slate-800/80">
+          <div class="text-[11px] text-slate-400 mb-2 font-medium flex items-center justify-between">
+            <span>Recent Health Camp Vitals:</span>
+            <span id="campName" class="text-teal-400 font-semibold font-mono text-[10px]">Curelith Health Camp</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-slate-800/40 border border-slate-700/60 rounded-lg p-2.5 flex items-center justify-between">
+              <span class="text-xs text-slate-400 font-medium">Blood Pressure (BP)</span>
+              <span id="bpText" class="text-sm font-black font-mono text-emerald-400">120/80</span>
+            </div>
+            <div class="bg-slate-800/40 border border-slate-700/60 rounded-lg p-2.5 flex items-center justify-between">
+              <span class="text-xs text-slate-400 font-medium">Random Sugar (RBS)</span>
+              <span id="rbsText" class="text-sm font-black font-mono text-cyan-400">104 mg/dL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-xl w-full mx-auto mt-6 text-center text-slate-500 text-xs py-2">
+    <div>Curelith 24/7 Medical Care Desk: <a href="tel:+919940099992" class="text-teal-400 font-bold hover:underline">+91 99400 99992</a></div>
+    <div class="text-[10px] text-slate-600 mt-1">Verified Clinical Emergency Record • www.curelith.com</div>
+  </footer>
+
+  <script>
+    async function loadEmergencyData() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cardId = urlParams.get('id') || 'CL-99992-610A';
+
+      try {
+        const res = await fetch(`https://api.curelith.com/emergency/data/${cardId}`);
+        const data = await res.json();
+
+        document.getElementById('loadingBox').classList.add('hidden');
+
+        if (data.success && data.card) {
+          const c = data.card;
+          document.getElementById('dataBox').classList.remove('hidden');
+
+          document.getElementById('cardUuid').innerText = c.card_uuid;
+          document.getElementById('patientName').innerText = c.patient_name;
+          document.getElementById('patientDemo').innerText = `Age ${c.age || '--'} • ${c.gender || 'Not specified'}`;
+          document.getElementById('patientBlood').innerText = (c.blood_group || 'O+VE').replace('VE', 've');
+          
+          if (c.photo_url) {
+            document.getElementById('patientPhoto').src = c.photo_url;
+          }
+
+          const emName = c.emergency_contact_name || 'Emergency Contact';
+          const emPhone = c.emergency_contact_phone || '+91 99400 99992';
+          document.getElementById('iceName').innerText = `Call ${emName}`;
+          document.getElementById('icePhone').innerText = emPhone;
+          document.getElementById('iceCallBtn').href = `tel:${emPhone.replace(/\s+/g, '')}`;
+
+          document.getElementById('allergiesText').innerText = c.known_allergies || 'None declared';
+          document.getElementById('conditionsText').innerText = c.chronic_conditions || 'None declared';
+          document.getElementById('campName').innerText = c.last_camp_name || 'Curelith Camp';
+          document.getElementById('bpText').innerText = c.recent_bp || '120/80';
+          document.getElementById('rbsText').innerText = (c.recent_rbs || '104') + ' mg/dL';
+        } else {
+          document.getElementById('errorBox').classList.remove('hidden');
+        }
+      } catch (err) {
+        document.getElementById('loadingBox').classList.add('hidden');
+        document.getElementById('errorBox').classList.remove('hidden');
+      }
+    }
+
+    loadEmergencyData();
+  </script>
+</body>
+</html>
