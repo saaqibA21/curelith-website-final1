@@ -1295,18 +1295,23 @@
           ` : '';
 
           return `
-          <div class="file-card" style="flex-direction: column; align-items: stretch;">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <div class="file-card-left">
+          <div class="file-card" id="locker-file-${f.id}" style="flex-direction: column; align-items: stretch;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+              <div class="file-card-left" style="flex: 1; min-width: 200px;">
                 <div class="file-icon-box">
                   <i data-lucide="${isImage ? 'image' : 'file-text'}" style="width: 20px; height: 20px;"></i>
                 </div>
                 <div>
-                  <div style="font-weight: 600; font-size: 15px; color: var(--void);">${escapeHtml(f.file_name)}</div>
+                  <div style="font-weight: 600; font-size: 15px; color: var(--void); word-break: break-word;">${escapeHtml(f.file_name)}</div>
                   <div style="font-size: 12px; color: var(--ink-soft); font-family: var(--mono);">${f.category || 'Scan Image'} • ${f.created_at ? f.created_at.slice(0,10) : 'Recent'}</div>
                 </div>
               </div>
-              <a class="btn btn-ghost btn-sm" style="padding: 6px 12px; font-size: 12px;" href="${fileUrl}" target="_blank">Full View →</a>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <a class="btn btn-ghost btn-sm" style="padding: 6px 12px; font-size: 12px;" href="${fileUrl}" target="_blank">Full View →</a>
+                <button type="button" class="btn btn-sm" style="padding: 6px 12px; font-size: 12px; color: #DC2626; border: 1px solid #FCA5A5; background: #FEF2F2; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 4px;" onclick="deleteLockerFile('${f.id}', '${escapeHtml(f.file_name).replace(/'/g, "\\'")}')">
+                  🗑️ Remove
+                </button>
+              </div>
             </div>
             ${imagePreview}
           </div>
@@ -1316,6 +1321,53 @@
       }
     } catch(e) {
       box.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--ink-soft);">Unable to load locker.</div>`;
+    }
+  }
+
+  async function deleteLockerFile(fileId, fileName) {
+    if (!confirm(`Are you sure you want to remove "${fileName || 'this medical document'}" from your Medical Locker?`)) {
+      return;
+    }
+
+    const card = document.getElementById(`locker-file-${fileId}`);
+    if (card) {
+      card.style.opacity = '0.5';
+      card.style.pointerEvents = 'none';
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/patient/locker/${encodeURIComponent(fileId)}`, {
+        method: 'DELETE',
+        headers: {
+          'X-Patient-Token': token,
+          'X-Patient-Phone': phone
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (card) {
+          card.style.transition = 'all 0.3s ease';
+          card.style.transform = 'scale(0.95)';
+          card.style.opacity = '0';
+          setTimeout(() => {
+            loadLockerFiles();
+          }, 300);
+        } else {
+          loadLockerFiles();
+        }
+      } else {
+        alert(data.error || 'Failed to remove document.');
+        if (card) {
+          card.style.opacity = '1';
+          card.style.pointerEvents = 'auto';
+        }
+      }
+    } catch (err) {
+      alert('Error deleting document: ' + err.message);
+      if (card) {
+        card.style.opacity = '1';
+        card.style.pointerEvents = 'auto';
+      }
     }
   }
 
