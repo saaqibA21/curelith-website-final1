@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curelith · Seed Pitch Deck (8 Slides)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark-bg: #111315;
+      --dark-card: #181B1E;
+      --dark-border: #282C31;
+      --dark-text: #FFFFFF;
+      --dark-muted: #8A929A;
+      
+      --light-bg: #F7F6F2;
+      --light-card: #FFFFFF;
+      --light-border: #E4E0D6;
+      --light-text: #14181B;
+      --light-muted: #666E76;
+      
+      --orange: #FF5722;
+      --orange-light: rgba(255, 87, 34, 0.12);
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    /* Fixed Top Navigation Bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 54px;
+      background: rgba(17, 19, 21, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 700;
+      background: var(--orange-light);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,87,34,0.25);
+    }
+
+    .brand-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #E2E8F0;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-counter {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #94A3B8;
+      padding: 0 8px;
+    }
+
+    .btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #F1F5F9;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      font-family: var(--font-sans);
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #E64A19;
+      border-color: #E64A19;
+    }
+
+    /* Presentation Stage (16:9 aspect ratio container) */
+    .deck-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 68px 24px 24px;
+    }
+
+    .slide-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1333px;
+      aspect-ratio: 16 / 9;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 56px 64px 44px;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transition: opacity 0.25s ease-in-out;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* Slide Themes */
+    .slide-dark {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    .slide-light {
+      background: var(--light-bg);
+      color: var(--light-text);
+    }
+
+    /* Header styling */
+    .slide-category {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 14px;
+    }
+
+    .slide-title {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      max-width: 1080px;
+      margin-bottom: 12px;
+    }
+
+    .bracket-metric {
+      color: var(--orange);
+      font-family: var(--font-sans);
+    }
+
+    .slide-subtitle {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 24px;
+      line-height: 1.35;
+      font-weight: 400;
+    }
+
+    .slide-dark .slide-subtitle {
+      color: #CBD5E1;
+    }
+
+    .slide-light .slide-subtitle {
+      color: #475569;
+    }
+
+    /* Slide Footer */
+    .slide-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 18px;
+      border-top: 1px solid;
+    }
+
+    .slide-dark .slide-footer {
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .slide-light .slide-footer {
+      border-color: var(--light-border);
+    }
+
+    .slide-tip {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slide-dark .slide-tip {
+      color: #64748B;
+    }
+
+    .slide-light .slide-tip {
+      color: #78828C;
+    }
+
+    .slide-tip span.tag {
+      color: var(--orange);
+      font-weight: 700;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .slide-index {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+
+    .slide-dark .slide-index {
+      color: #64748B;
+    }
+
+    .slide-light .slide-index {
+      color: #94A3B8;
+    }
+
+    /* Content Layouts */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 18px 0;
+    }
+
+    /* Grid Layouts */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      width: 100%;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      width: 100%;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      width: 100%;
+    }
+
+    /* Cards */
+    .card {
+      border-radius: 10px;
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .slide-light .card {
+      background: var(--light-card);
+      border: 1px solid var(--light-border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .slide-dark .card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+    }
+
+    .card-top-tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 8px;
+      letter-spacing: 0.08em;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    .slide-light .card-desc {
+      color: var(--light-muted);
+    }
+
+    .slide-dark .card-desc {
+      color: var(--dark-muted);
+    }
+
+    /* Big Metric Cards */
+    .metric-value {
+      font-family: var(--font-sans);
+      font-size: 44px;
+      font-weight: 900;
+      color: var(--orange);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .metric-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .metric-sub {
+      font-size: 12.5px;
+      color: #94A3B8;
+      line-height: 1.45;
+    }
+
+    /* Architecture Bar */
+    .arch-bar {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.7);
+      border: 1px dashed #CBD5E1;
+      padding: 12px 18px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12.5px;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .arch-badge {
+      background: #111315;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Team Member Card */
+    .team-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #0F172A;
+      margin-bottom: 14px;
+      border: 1px solid #CBD5E1;
+    }
+
+    /* Bottom Milestones */
+    .milestone-accent {
+      border-top: 3px solid var(--orange) !important;
+    }
+
+    .milestone-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 6px;
+    }
+
+    /* Responsive & Keys guide */
+    .keyboard-hint {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: #64748B;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .kbd {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      color: #CBD5E1;
+      font-size: 10px;
+    }
+
+    /* Print styling: Print clean 8-slide landscape booklet */
+    @media print {
+      body {
+        background: none;
+        color: #000;
+      }
+      .top-bar, .keyboard-hint {
+        display: none !important;
+      }
+      .deck-container {
+        padding: 0;
+        height: auto;
+        display: block;
+      }
+      .slide-wrapper {
+        box-shadow: none;
+        border-radius: 0;
+        max-width: none;
+        aspect-ratio: auto;
+        height: auto;
+      }
+      .slide {
+        position: relative !important;
+        display: flex !important;
+        opacity: 1 !important;
+        page-break-after: always;
+        height: 100vh;
+        width: 100vw;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Fixed Bar -->
+  <header class="top-bar">
+    <div class="brand-wrap">
+      <span class="brand-badge">PITCH DECK</span>
+      <span class="brand-title">Curelith · Seed Round 2026</span>
+    </div>
+
+    <div class="nav-controls">
+      <span class="slide-counter" id="slideCount">01 / 08</span>
+      <button class="btn" onclick="prevSlide()" title="Previous slide (Left Arrow)">← Prev</button>
+      <button class="btn" onclick="nextSlide()" title="Next slide (Right Arrow)">Next →</button>
+      <button class="btn" onclick="toggleFullscreen()" title="Toggle full screen">⛶ Fullscreen</button>
+      <a href="/Curelith_Pitch_Deck.pptx" download="Curelith_Pitch_Deck.pptx" class="btn btn-primary">
+        ↓ Download .PPTX
+      </a>
+      <button class="btn" onclick="window.print()" title="Print or save as PDF">🖨 Save PDF</button>
+    </div>
+  </header>
+
+  <!-- Slide Stage -->
+  <main class="deck-container">
+    <div class="slide-wrapper">
+
+      <!-- SLIDE 1 (DARK): Title & One-Liner -->
+      <section class="slide slide-dark active" data-index="1">
+        <div>
+          <div class="slide-category">SEED ROUND · CHENNAI 2026</div>
+          <h1 class="slide-title">Healthcare that starts where 500M Indians already live: WhatsApp.</h1>
+          <p class="slide-subtitle">A zero-friction clinical triage and emergency health pass network transforming primary care in India.</p>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-3" style="width: 100%;">
+            <div class="card">
+              <div class="card-top-tag">THE PROBLEM</div>
+              <div class="card-title">4.2 Hrs Lost Per Visit</div>
+              <p class="card-desc">Urban patients navigate ERs blind, facing misdirected appointments and fragmented health records.</p>
+            </div>
+            <div class="card">
+              <div class="card-top-tag">OUR SOLUTION</div>
+              <div class="card-title">WhatsApp AI + MED-PASS</div>
+              <p class="card-desc">Clinical triage in 60 seconds with instant emergency pass, digitized records, and verified hospital routing.</p>
+            </div>
+            <div class="card">
+              <div class="card-top-tag">TRACTION</div>
+              <div class="card-title">25,000+ Triaged</div>
+              <p class="card-desc">15+ partner hospitals in Chennai, 34% MoM growth, zero paid user acquisition spend.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-tip"><span class="tag">TIP:</span> Keep your one-liner ruthlessly clear — who you are, the medium, and the immediate impact.</div>
+          <div class="slide-index">01 / 08</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 2 (LIGHT): Problem -->
+      <section class="slide slide-light" data-index="2">
+        <div>
+          <div class="slide-category">02 · PROBLEM</div>
+          <h1 class="slide-title">Urban Indians lose 6+ hours and ₹3,500 just trying to find the right doctor.</h1>
+          <p class="slide-subtitle">The healthcare discovery loop in tier-1 & tier-2 cities is deeply broken.</p>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-top-tag">01 / WHO FEELS IT</div>
+              <div class="card-title">180M Urban Households</div>
+              <p class="card-desc">Smartphone-literate families who still rely on word-of-mouth or unverified Google reviews during late-night medical distress.</p>
+            </div>
+            <div class="card">
+              <div class="card-top-tag">02 / HOW OFTEN</div>
+              <div class="card-title">4.2 Visits Per Family / Year</div>
+              <p class="card-desc">Each episode requires multiple calls, hospital counter queues, repeated diagnostic explanations, and lost workday wages.</p>
+            </div>
+            <div class="card">
+              <div class="card-top-tag">03 / WHAT IT COSTS</div>
+              <div class="card-title">₹14,000+ Annual Waste</div>
+              <p class="card-desc">Unnecessary tier-3 emergency room visits, duplicate blood scans, and late clinical interventions due to delayed triage.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-tip"><span class="tag">TIP:</span> Frame the problem by who feels it, how often, and the exact cost of inaction.</div>
+          <div class="slide-index">02 / 08</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3 (LIGHT): Solution -->
+      <section class="slide slide-light" data-index="3">
+        <div>
+          <div class="slide-category">03 · SOLUTION</div>
+          <h1 class="slide-title">Meet Curelith: an AI clinical triage bot on WhatsApp + verified emergency pass.</h1>
+          <p class="slide-subtitle">Zero app download required. Instant medical direction in under 60 seconds.</p>
+        </div>
+
+        <div class="slide-body" style="flex-direction: column; align-items: stretch;">
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-top-tag">STEP 01</div>
+              <div class="card-title">Multilingual Chat</div>
+              <p class="card-desc">Patients text or voice note symptoms in Tamil, Hindi, or English directly on WhatsApp with zero app installation.</p>
+            </div>
+            <div class="card">
+              <div class="card-top-tag">STEP 02</div>
+              <div class="card-title">Clinical AI Engine</div>
+              <p class="card-desc">Llama-3 70B clinical engine calculates acuity score, flags red-alerts, and matches with verified partner specialists.</p>
+            </div>
+            <div class="card">
+              <div class="card-top-tag">STEP 03</div>
+              <div class="card-title">MED-PASS QR Card</div>
+              <p class="card-desc">Instant digital health pass generated with encrypted locker, emergency contacts, blood group, and hospital priority lane.</p>
+            </div>
+          </div>
+
+          <div class="arch-bar">
+            <span class="arch-badge">SYSTEM ARCHITECTURE</span>
+            <span>WhatsApp Baileys Webhook → Groq Llama 3 70B Clinical Engine → Hospital Partner EMR / Admin Dashboard</span>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-tip"><span class="tag">TIP:</span> Keep product architecture simple — show inputs, engine, and immediate clinical output.</div>
+          <div class="slide-index">03 / 08</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4 (DARK): Traction -->
+      <section class="slide slide-dark" data-index="4">
+        <div>
+          <div class="slide-category">04 · TRACTION</div>
+          <h1 class="slide-title"><span class="bracket-metric">[ 25,000+ ]</span> patients triaged with 34% MoM growth.</h1>
+          <p class="slide-subtitle">Real clinical adoption across Chennai with zero paid digital marketing.</p>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-4">
+            <div class="card">
+              <div class="metric-value">25K+</div>
+              <div class="metric-label">Patients Triaged</div>
+              <p class="metric-sub">34% compound MoM growth, 100% organic through hospital QR standees & patient word-of-mouth.</p>
+            </div>
+            <div class="card">
+              <div class="metric-value">15+</div>
+              <div class="metric-label">Hospital Partners</div>
+              <p class="metric-sub">Contracted clinical network across Chennai including Orthomed Hospital and specialty centers.</p>
+            </div>
+            <div class="card">
+              <div class="metric-value">88%</div>
+              <div class="metric-label">Referral Retention</div>
+              <p class="metric-sub">Patients re-consult Curelith on WhatsApp within 60 days for follow-ups and family health queries.</p>
+            </div>
+            <div class="card">
+              <div class="metric-value">4,200+</div>
+              <div class="metric-label">Active MED-PASSes</div>
+              <p class="metric-sub">Emergency QR cards actively scanned and stored in mobile wallets and physical ID pouches.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-tip"><span class="tag">TIP:</span> Lead with your single most impressive bracketed metric [ ] followed by hard retention proof.</div>
+          <div class="slide-index">04 / 08</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5 (LIGHT): Insight -->
+      <section class="slide slide-light" data-index="5">
+        <div>
+          <div class="slide-category">05 · INSIGHT</div>
+          <h1 class="slide-title">Everyone thinks patients want another health app. We learned they want a physical wallet card linked to WhatsApp.</h1>
+          <p class="slide-subtitle">App fatigue in digital health is real. Tangible utility wins enduring patient trust.</p>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card" style="border-left: 4px solid #94A3B8;">
+              <div class="card-top-tag" style="color: #64748B;">CONVENTIONAL WISDOM</div>
+              <div class="card-title" style="color: #334155;">"Build a 120MB Native Mobile App"</div>
+              <p class="card-desc" style="font-size: 14.5px; line-height: 1.6;">
+                Companies spend ₹150+ CAC to acquire app installs. Patients delete the app 48 hours after recovery. When an emergency strikes at 2 AM, passwords are forgotten and app updates block triage. <strong>Result: 92% churn.</strong>
+              </p>
+            </div>
+
+            <div class="card" style="border-left: 4px solid var(--orange); background: #FFFDFB;">
+              <div class="card-top-tag">THE CURELITH INSIGHT</div>
+              <div class="card-title">"Zero-Install WhatsApp + NFC/QR Emergency Card"</div>
+              <p class="card-desc" style="font-size: 14.5px; line-height: 1.6; color: #1E293B;">
+                A physical card stays in the patient's wallet alongside their Aadhaar and driving license. When scanned or messaged, WhatsApp opens instantly with pre-loaded emergency medical profile. <strong>Result: 88% repeat engagement, zero churn.</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-tip"><span class="tag">TIP:</span> The best insights challenge common industry assumptions with ground truth from real users.</div>
+          <div class="slide-index">05 / 08</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6 (LIGHT): Market & Model -->
+      <section class="slide slide-light" data-index="6">
+        <div>
+          <div class="slide-category">06 · MARKET & MODEL</div>
+          <h1 class="slide-title">₹1,800 Cr bottom-up serviceable market in South India urban clusters.</h1>
+          <p class="slide-subtitle">Three proven monetization streams with negative net churn potential.</p>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <!-- Market Size Box -->
+            <div class="card">
+              <div class="card-top-tag">MARKET SIZING (BOTTOM-UP)</div>
+              <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 6px;">
+                <div>
+                  <div style="font-size: 12px; font-weight: 700; color: #64748B;">TAM · ₹42,000 CR</div>
+                  <div style="font-size: 14px; font-weight: 600; color: #0F172A;">Indian out-of-pocket primary & outpatient diagnostic healthcare.</div>
+                </div>
+                <div style="border-top: 1px dashed var(--light-border); padding-top: 10px;">
+                  <div style="font-size: 12px; font-weight: 700; color: #64748B;">SAM · ₹8,400 CR</div>
+                  <div style="font-size: 14px; font-weight: 600; color: #0F172A;">Top 10 tier-1 and tier-2 metropolitan healthcare markets.</div>
+                </div>
+                <div style="border-top: 1px dashed var(--light-border); padding-top: 10px;">
+                  <div style="font-size: 12px; font-weight: 700; color: var(--orange);">SOM · ₹1,800 CR (SERVICEABLE)</div>
+                  <div style="font-size: 14px; font-weight: 700; color: #0F172A;">Tamil Nadu & Karnataka: 60 Lakh families × ₹3,000 annual spend.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Revenue Model Box -->
+            <div class="card">
+              <div class="card-top-tag">REVENUE STREAMS</div>
+              <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 6px;">
+                <div>
+                  <div style="font-size: 14px; font-weight: 700; color: #0F172A;">01 · Hospital Referral Fee</div>
+                  <p class="card-desc" style="font-size: 13px;">₹250 - ₹600 per confirmed inpatient, surgical, or specialist consultation booked via triage.</p>
+                </div>
+                <div style="border-top: 1px dashed var(--light-border); padding-top: 10px;">
+                  <div style="font-size: 14px; font-weight: 700; color: #0F172A;">02 · MED-PASS Annual Memberships</div>
+                  <p class="card-desc" style="font-size: 13px;">₹499 / family / year for priority hospital lane, encrypted medical vault, and physical QR card.</p>
+                </div>
+                <div style="border-top: 1px dashed var(--light-border); padding-top: 10px;">
+                  <div style="font-size: 14px; font-weight: 700; color: #0F172A;">03 · Diagnostic & Home Scans</div>
+                  <p class="card-desc" style="font-size: 13px;">12% take-rate on partnered MRI, CT, ultrasound, and home blood test bookings.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-tip"><span class="tag">TIP:</span> Build your market bottom-up (Families × Annual Value) rather than top-down percentages.</div>
+          <div class="slide-index">06 / 08</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 7 (LIGHT): Team -->
+      <section class="slide slide-light" data-index="7">
+        <div>
+          <div class="slide-category">07 · TEAM</div>
+          <h1 class="slide-title">Engineered by clinicians and operators who lived the emergency room problem.</h1>
+          <p class="slide-subtitle">A focused founding team with deep hospital network roots in Chennai.</p>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="card">
+              <div class="team-avatar">MS</div>
+              <div class="card-title" style="margin-bottom: 2px;">Mohammed Saaqib</div>
+              <div class="card-top-tag" style="font-size: 11px; margin-bottom: 8px;">FOUNDER & CEO</div>
+              <p class="card-desc">Full-stack health-tech builder. Scaled Curelith from inception to 25K+ triaged patients, 15+ hospital partnerships, and end-to-end Baileys/AI architecture.</p>
+            </div>
+            <div class="card">
+              <div class="team-avatar">MD</div>
+              <div class="card-title" style="margin-bottom: 2px;">Clinical Advisory Board</div>
+              <div class="card-top-tag" style="font-size: 11px; margin-bottom: 8px;">EMERGENCY & ORTHOPEDIC SPECIALISTS</div>
+              <p class="card-desc">Senior surgeons & hospital administrators from Chennai partner networks validating clinical triage algorithms, triage SLAs, and hospital onboarding.</p>
+            </div>
+            <div class="card">
+              <div class="team-avatar">OPS</div>
+              <div class="card-title" style="margin-bottom: 2px;">Hospital Network Lead</div>
+              <div class="card-top-tag" style="font-size: 11px; margin-bottom: 8px;">PARTNERSHIPS & DEPLOYMENTS</div>
+              <p class="card-desc">Ex-hospital ops driving receptionist training, QR standee placement across clinics, doctor credential verification, and pharmacy SLA integrations.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-tip"><span class="tag">TIP:</span> Highlight founder-market fit and specific unfair advantages in distribution.</div>
+          <div class="slide-index">07 / 08</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 8 (DARK): The Ask -->
+      <section class="slide slide-dark" data-index="8">
+        <div>
+          <div class="slide-category">08 · THE ASK</div>
+          <h1 class="slide-title">Raising ₹2.5 Cr ($300K) to scale Chennai and expand to Bengaluru & Hyderabad.</h1>
+          <p class="slide-subtitle">18-month runway to reach ₹1.2 Cr ARR and 50+ hospital network partners.</p>
+        </div>
+
+        <div class="slide-body" style="flex-direction: column; align-items: stretch;">
+          <div class="grid-3">
+            <div class="card milestone-accent">
+              <div class="milestone-num">MILESTONE 01</div>
+              <div class="card-title">₹1.2 Cr ARR Run-Rate</div>
+              <p class="card-desc">150,000 active triaged patients and 25,000 paid MED-PASS family annual subscribers.</p>
+            </div>
+            <div class="card milestone-accent">
+              <div class="milestone-num">MILESTONE 02</div>
+              <div class="card-title">50+ Hospital Network</div>
+              <p class="card-desc">Deep hospital integrations across Chennai, Bengaluru, Coimbatore, and Hyderabad clusters.</p>
+            </div>
+            <div class="card milestone-accent">
+              <div class="milestone-num">MILESTONE 03</div>
+              <div class="card-title">Series A Readiness</div>
+              <p class="card-desc">Positive unit economics per hospital cluster, negative churn, and clear playbook for pan-India scale.</p>
+            </div>
+          </div>
+
+          <!-- Founder Contact Box -->
+          <div style="margin-top: 18px; background: #181B1E; border: 1px solid #282C31; border-radius: 8px; padding: 14px 22px; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 15px; font-weight: 700; color: #fff;">Mohammed Saaqib · Founder & CEO</div>
+              <div style="font-size: 13px; color: #94A3B8;">saaqib@curelith.com · +91 91508 73474 · Chennai, India</div>
+            </div>
+            <div>
+              <a href="mailto:saaqib@curelith.com" class="btn btn-primary">Connect with Founder →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div class="slide-tip"><span class="tag">TIP:</span> State exact round size, instrument (SAFE/equity), and concrete 18-month milestones.</div>
+          <div class="slide-index">08 / 08</div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Keyboard navigation hint -->
+  <footer class="keyboard-hint">
+    <span>Navigate: <span class="kbd">←</span> <span class="kbd">→</span> or <span class="kbd">Space</span></span>
+    <span>•</span>
+    <span><span class="kbd">F</span> Fullscreen</span>
+    <span>•</span>
+    <span><span class="kbd">P</span> Print/PDF</span>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 8;
+    const slides = document.querySelectorAll('.slide');
+    const slideCountEl = document.getElementById('slideCount');
+
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      slides.forEach((slide) => {
+        const slideIndex = parseInt(slide.getAttribute('data-index'), 10);
+        if (slideIndex === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      slideCountEl.textContent = `0${currentSlide} / 0${totalSlides}`;
+      window.location.hash = `slide-${currentSlide}`;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        showSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        showSlide(currentSlide - 1);
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Keyboard listener
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      } else if (e.key === 'p' || e.key === 'P') {
+        window.print();
+      } else if (e.key >= '1' && e.key <= '8') {
+        showSlide(parseInt(e.key, 10));
+      }
+    });
+
+    // Hash navigation on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#slide-')) {
+        const num = parseInt(hash.replace('#slide-', ''), 10);
+        if (num >= 1 && num <= totalSlides) {
+          showSlide(num);
+          return;
+        }
+      }
+      showSlide(1);
+    });
+
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 50) nextSlide();
+      if (touchEndX > touchStartX + 50) prevSlide();
+    }, false);
+  </script>
+</body>
+</html>
